@@ -10,7 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.yomikaze_app_kotlin.ui.theme.YomikazeappkotlinTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
+import com.example.yomikaze_app_kotlin.Presentation.Home.MainScreenView
+import com.example.yomikaze_app_kotlin.Presentation.Splash.SplashScreen
+import com.example.yomikaze_app_kotlin.Presentation.theme.YomikazeappkotlinTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,29 +24,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             YomikazeappkotlinTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
+                val navController = rememberNavController()
+                NavHost(navController, startDestination = "splash_route") {
+                    composable("splash_route") {
+                        SplashScreen(navController)
+                        // After a delay or when app is ready, navigate to main content
+                        // navController.navigate("main_content_route")
+                    }
+                    composable("main_screen_route") {
+                        MainScreenView()
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    YomikazeappkotlinTheme {
-        Greeting("Android")
-    }
-}
+    YomikazeappkotlinTheme { MainScreenView() }}

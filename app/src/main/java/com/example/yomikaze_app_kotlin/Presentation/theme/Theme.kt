@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.ui.theme
+package com.example.yomikaze_app_kotlin.Presentation.theme
 
 import android.app.Activity
 import android.os.Build

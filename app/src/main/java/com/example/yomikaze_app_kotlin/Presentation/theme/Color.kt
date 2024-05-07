@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.ui.theme
+package com.example.yomikaze_app_kotlin.Presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
