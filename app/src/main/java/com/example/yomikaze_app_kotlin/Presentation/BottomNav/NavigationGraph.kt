@@ -46,8 +46,8 @@ fun NavigationGraph(navController: NavHostController) {
 fun BottomNavigationBar(navController: NavController) {
 
     val items = listOf(
-        BottomNavItem.Home,
         BottomNavItem.Bookcase,
+        BottomNavItem.Home,
         BottomNavItem.Profile
     )
     BottomNavigation(backgroundColor = MaterialTheme.colors.onPrimary, contentColor = Color.White, elevation = 8.dp) {
