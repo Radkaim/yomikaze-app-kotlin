@@ -1,11 +1,30 @@
 package com.example.yomikaze_app_kotlin.Presentation.theme
 
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val Green100 = Color(0xffF2FFFD)
+val Green200 = Color(0xffBFFEF2)
+val Green300 = Color(0xff89F8DC)
+val Green400 = Color(0xff1FC488)
+val Green500 = Color(0xff0B9D5F)
+val Green600 = Color(0xff0B9D5F)
+val Green700 = Color(0xff02753E)
+val Green800 = Color(0xff004E24)
+val Green900 = Color(0xff00260F)
+//Green
+val Red100 = Color(0xffFFF7F2)
+val Red200 = Color(0xffFFDACA)
+val Red300 = Color(0xffFBB69F)
+val Red400 = Color(0xffF28C74)
+val Red500 = Color(0xffE05C48)
+val Red600 = Color(0xffB22F24)
+val Red700 = Color(0xff831513)
+val Red800 = Color(0xff550A0A)
+val Red900 = Color(0xff260505)
+//Red
+private val LightColorScheme = lightColorScheme(
+    primary = Green100,
+    onPrimary = Red100,
+    secondary = Red100,
+)
