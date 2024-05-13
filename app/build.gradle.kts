@@ -72,4 +72,10 @@ dependencies {
     implementation ("androidx.compose.ui:ui:1.0.0")
     implementation ("androidx.compose.material:material:1.0.0")
     implementation ("androidx.navigation:navigation-compose:2.7.1")
+
+    //for auto image slider
+    implementation("com.google.accompanist:accompanist-pager:0.22.0-rc")
+
+    // paper use for shared preferences
+    implementation ("io.github.pilgr:paperdb:2.7.2")
 }

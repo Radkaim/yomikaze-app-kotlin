@@ -19,6 +19,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController){
+
     val scale = remember {
         androidx.compose.animation.core.Animatable(0f)
     }
