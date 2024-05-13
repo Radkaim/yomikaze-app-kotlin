@@ -48,7 +48,7 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem.Home,
         BottomNavItem.Profile
     )
-    BottomNavigation(backgroundColor = MaterialTheme.colorScheme.onPrimary, contentColor = MaterialTheme.colorScheme.primary, elevation = 8.dp) {
+    BottomNavigation(backgroundColor = MaterialTheme.colorScheme.onBackground, contentColor = MaterialTheme.colorScheme.primary, elevation = 8.dp) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { item ->
