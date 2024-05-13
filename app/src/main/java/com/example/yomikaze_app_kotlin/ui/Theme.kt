@@ -14,7 +14,8 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = Red300,
-    onPrimary = Red400
+    onPrimary = Red400,
+    secondary = Green900
 
 
     /* Other default colors to override
