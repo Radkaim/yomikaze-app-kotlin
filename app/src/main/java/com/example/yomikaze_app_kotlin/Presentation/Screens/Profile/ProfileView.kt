@@ -1,5 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Bookcase
-
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
-fun BookcaseView() {
+fun ProfileView() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -25,7 +24,7 @@ fun BookcaseView() {
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Library Screen",
+            text = "Profile Screen",
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier.align(Alignment.CenterHorizontally),

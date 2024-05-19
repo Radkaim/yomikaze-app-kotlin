@@ -1,10 +1,10 @@
-package com.example.yomikaze_app_kotlin.Presentation.Home
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.yomikaze_app_kotlin.Core.AppPreferences
+import com.example.yomikaze_app_kotlin.Core.AppThemeSate
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 
 class MainViewModel: ViewModel() {
@@ -26,5 +26,5 @@ sealed class MainEvent {
 }
 
 data class MainState(
-    val theme: AppTheme = AppPreferences.getTheme(),
+    val theme: AppTheme = AppThemeSate.getTheme(),
 )

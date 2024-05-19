@@ -9,9 +9,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Presentation.Home.MainScreenView
-import com.example.yomikaze_app_kotlin.Presentation.Home.MainViewModel
-import com.example.yomikaze_app_kotlin.Presentation.Splash.SplashScreen
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.MainScreenView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.MainViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
 import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
 import io.paperdb.Paper
 

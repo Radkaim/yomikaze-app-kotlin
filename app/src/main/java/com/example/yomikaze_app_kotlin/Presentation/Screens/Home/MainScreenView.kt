@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Home
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 import android.annotation.SuppressLint
 import androidx.compose.material.MaterialTheme
@@ -7,8 +7,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Presentation.BottomNav.BottomNavigationBar
-import com.example.yomikaze_app_kotlin.Presentation.BottomNav.NavigationGraph
+import com.example.yomikaze_app_kotlin.Presentation.Screens.BottomNav.BottomNavigationBar
+import com.example.yomikaze_app_kotlin.Presentation.Navigation.NavigationGraph
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable()

@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Splash
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Splash
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.tween
