@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.yomikaze_app_kotlin.R
 
@@ -33,4 +34,10 @@ fun BookcaseView() {
             fontSize = 20.sp
         )
     }
+}
+
+@Preview
+@Composable
+fun BookcasePreview() {
+    BookcaseView()
 }

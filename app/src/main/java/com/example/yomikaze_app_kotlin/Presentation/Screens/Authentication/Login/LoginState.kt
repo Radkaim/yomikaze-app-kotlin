@@ -1,4 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 
-class LoginState {
-}
+data class LoginState(
+    val isLoading: Boolean = true,
+    val error: String? = null
+)

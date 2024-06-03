@@ -7,8 +7,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Presentation.Screens.BottomNav.BottomNavigationBar
 import com.example.yomikaze_app_kotlin.Presentation.Navigation.NavigationGraph
+import com.example.yomikaze_app_kotlin.Presentation.Screens.BottomNav.BottomNavigationBar
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable()
@@ -18,6 +18,7 @@ fun MainScreenView(){
         topBar = { TopAppBar(title = {Text("Yomikaze")},backgroundColor = MaterialTheme.colors.primary)  },
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) {
+
         NavigationGraph(navController = navController)
     }
 }

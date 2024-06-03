@@ -1,4 +1,4 @@
-  package com.example.yomikaze_app_kotlin
+package com.example.yomikaze_app_kotlin
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,13 +13,14 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.MainScreenView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
 import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
+import dagger.hilt.android.AndroidEntryPoint
 import io.paperdb.Paper
-
+@AndroidEntryPoint
   class MainActivity : ComponentActivity() {
-
       override fun onCreate(savedInstanceState: Bundle?) {
           Paper.init(this)
           val viewModel: MainViewModel = MainViewModel() // use paperdb show paper.init should be called before any other method
+
 
           super.onCreate(savedInstanceState)
         setContent {

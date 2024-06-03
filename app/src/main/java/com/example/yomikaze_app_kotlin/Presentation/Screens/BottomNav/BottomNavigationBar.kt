@@ -23,7 +23,8 @@ fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.Bookcase,
         BottomNavItem.Home,
-        BottomNavItem.Profile
+        BottomNavItem.Profile,
+        BottomNavItem.Login
     )
     BottomNavigation(
         backgroundColor = MaterialTheme.colorScheme.tertiary,

@@ -19,17 +19,18 @@ object AppThemeSate {
     }
 
 }
-class AppPreferences(context : Context) {
+
+class AppPreference(context : Context) {
     private val preferences: SharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
     // save user token
-    var userToken: String?
-        get() = preferences.getString("user_token", null)
-        set(value) = preferences.edit().putString("user_token", value).apply()
+    var authToken: String?
+        get() = preferences.getString("auth_token", null)
+        set(value) = preferences.edit().putString("auth_token", value).apply()
 
     // delete user token
     fun deleteUserToken() {
-        preferences.edit().remove("user_token").apply()
+        preferences.edit().remove("auth_token").apply()
     }
 
     // save app theme
