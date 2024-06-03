@@ -77,7 +77,7 @@ fun BottomNavigationBar(navController: NavController) {
 @Preview
 @Composable
 fun BottomNavigationBarPreview() {
-    YomikazeappkotlinTheme(appTheme = AppTheme.Light) {
+    YomikazeappkotlinTheme(appTheme = AppTheme.LIGHT) {
         val navController = rememberNavController()
         BottomNavigationBar(navController)
     }

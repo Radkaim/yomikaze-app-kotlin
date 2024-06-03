@@ -8,12 +8,14 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.BottomNav.BottomNavItem
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.ProfileView
 
 
 @Composable
 fun NavigationGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: MainViewModel
 ) {
     NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
         // for bottom nav
@@ -21,7 +23,7 @@ fun NavigationGraph(
             HomeView()
         }
         composable(BottomNavItem.Bookcase.screen_route) {
-            BookcaseView()
+            BookcaseView(viewModel)
         }
         composable(BottomNavItem.Profile.screen_route) {
             ProfileView()

@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +32,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+        state.hung = "hung"
 
         TextField(
             value = email,
@@ -38,6 +40,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
         )
+
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -46,11 +49,15 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
             visualTransformation = PasswordVisualTransformation()
         )
         Button(
+
             content = {
                 Text("Login")
             },
 
-            onClick = { viewModel.onLogin(email, password) },
+
+            onClick = { viewModel.onLogin(email, password)
+
+            },
             modifier = Modifier.fillMaxWidth()
 //        ) {
 ////            if (state.isLoading) {
@@ -58,6 +65,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
 ////            }
 //        })
         )
+
         state.error?.let {
             Text(
                 text = it,

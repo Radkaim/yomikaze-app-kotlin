@@ -14,8 +14,12 @@ object AppThemeSate {
         Paper.book().write(APP_THEME, theme)
     }
 
+    fun resetTheme() {
+        Paper.book().delete(APP_THEME)
+    }
+
     fun getTheme(): AppTheme {
-        return Paper.book().read(APP_THEME, AppTheme.Default) ?: AppTheme.Default
+        return Paper.book().read(APP_THEME, AppTheme.DEFAULT) !!
     }
 
 }
@@ -33,13 +37,4 @@ class AppPreference(context : Context) {
         preferences.edit().remove("auth_token").apply()
     }
 
-    // save app theme
-    var appTheme: String?
-        get() = preferences.getString("app_theme", null)
-        set(value) = preferences.edit().putString("app_theme", value).apply()
-
-    // delete app theme
-    fun deleteAppTheme() {
-        preferences.edit().remove("app_theme").apply()
-    }
 }

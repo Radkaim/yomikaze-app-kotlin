@@ -2,5 +2,6 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Logi
 
 data class LoginState(
     val isLoading: Boolean = true,
-    val error: String? = null
+    val error: String? = null,
+    var hung: String = "",
 )

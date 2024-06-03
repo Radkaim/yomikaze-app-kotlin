@@ -12,13 +12,13 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.BottomNav.BottomNavi
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable()
-fun MainScreenView(){
+fun MainScreenView(viewModel: MainViewModel){
     val navController = rememberNavController()
     Scaffold(
         topBar = { TopAppBar(title = {Text("Yomikaze")},backgroundColor = MaterialTheme.colors.primary)  },
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) {
 
-        NavigationGraph(navController = navController)
+        NavigationGraph(navController = navController, viewModel = viewModel)
     }
 }

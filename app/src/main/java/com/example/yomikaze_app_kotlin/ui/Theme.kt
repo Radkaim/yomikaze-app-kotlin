@@ -8,9 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-//    primary = Purple80,
-//    secondary = PurpleGrey80,
-//    tertiary = Pink80
+    primary = Green300,
+    onPrimary = Green400,
+    secondary = Red300,
+    onSecondary = Red400,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -42,17 +43,17 @@ fun YomikazeappkotlinTheme(
 ) {
 
     val colorScheme = when (appTheme) {
-        AppTheme.Default -> {
+        AppTheme.DEFAULT -> {
             if (isDarkMode) {
                 DarkColorScheme
             } else {
                 LightColorScheme
             }
         }
-        AppTheme.Light -> {
+        AppTheme.LIGHT -> {
             LightColorScheme
         }
-        AppTheme.Dark -> {
+        AppTheme.DARK -> {
             DarkColorScheme
         }
     }
