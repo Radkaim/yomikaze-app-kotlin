@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.BottomNav
+package com.example.yomikaze_app_kotlin.Presentation.Screens.BottomNav
 
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -12,33 +12,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Presentation.Bookcase.BookcaseView
-import com.example.yomikaze_app_kotlin.Presentation.Home.HomeView
-import com.example.yomikaze_app_kotlin.Presentation.Profile.ProfileView
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
-
-
-@Composable
-fun NavigationGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
-
-        composable(BottomNavItem.Home.screen_route) {
-            HomeView()
-        }
-        composable(BottomNavItem.Bookcase.screen_route) {
-            BookcaseView()
-        }
-        composable(BottomNavItem.Profile.screen_route) {
-            ProfileView()
-        }
-    }
-}
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -46,23 +23,39 @@ fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.Bookcase,
         BottomNavItem.Home,
-        BottomNavItem.Profile
+        BottomNavItem.Profile,
+        BottomNavItem.Login
     )
-    BottomNavigation(backgroundColor = MaterialTheme.colorScheme.onBackground, contentColor = MaterialTheme.colorScheme.primary, elevation = 8.dp) {
+    BottomNavigation(
+        backgroundColor = MaterialTheme.colorScheme.tertiary,
+        contentColor = MaterialTheme.colorScheme.primary,
+        elevation = 8.dp
+    ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { item ->
+            val isSelected = currentRoute == item.screen_route
             BottomNavigationItem(
-                icon = { Icon(painterResource(id = item.icon), contentDescription = item.title, tint = MaterialTheme.colorScheme.primary) },
+                icon = {
+                    Icon(
+                        painterResource(id = item.icon),
+                        contentDescription = item.title,
+                        tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary.copy(
+                            alpha = 0.5f
+                        )
+                    )
+                },
                 label = {
                     Text(
                         text = item.title,
                         fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.primary
+                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary.copy(
+                            alpha = 0.5f
+                        )
                     )
                 },
                 selectedContentColor = MaterialTheme.colorScheme.onPrimary,
-                unselectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                 alwaysShowLabel = true,
                 selected = currentRoute == item.screen_route,
                 onClick = {
@@ -84,10 +77,9 @@ fun BottomNavigationBar(navController: NavController) {
 @Preview
 @Composable
 fun BottomNavigationBarPreview() {
-    YomikazeappkotlinTheme(appTheme = AppTheme.Light) {
+    YomikazeappkotlinTheme(appTheme = AppTheme.LIGHT) {
         val navController = rememberNavController()
         BottomNavigationBar(navController)
     }
 
 }
-

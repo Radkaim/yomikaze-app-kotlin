@@ -5,31 +5,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-//    primary = Purple80,
-//    secondary = PurpleGrey80,
-//    tertiary = Pink80
+    primary = Green300,
+    onPrimary = Green400,
+    secondary = Red300,
+    onSecondary = Red400,
 )
 
 private val LightColorScheme = lightColorScheme(
-    //
-    primary = Red500,
-    onPrimary = Green600,
-    onPrimaryContainer = Red400,
-    secondary = Green900,
-    onSecondary = Red900,
-    onSecondaryContainer = Green200,
-    //font
-    tertiary = Green900,
-    onTertiary = Red900,
-    onTertiaryContainer = white,
-    //
-    outline = Green400,
-    outlineVariant = Red600,
+    primary = Red300,
+    onPrimary = Red400,
+    secondary = Green300,
+    onSecondary = Green400,
 
-    background = Green100,
-    onBackground = white
+    tertiary = Color.White
+
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -50,17 +43,17 @@ fun YomikazeappkotlinTheme(
 ) {
 
     val colorScheme = when (appTheme) {
-        AppTheme.Default -> {
+        AppTheme.DEFAULT -> {
             if (isDarkMode) {
                 DarkColorScheme
             } else {
                 LightColorScheme
             }
         }
-        AppTheme.Light -> {
+        AppTheme.LIGHT -> {
             LightColorScheme
         }
-        AppTheme.Dark -> {
+        AppTheme.DARK -> {
             DarkColorScheme
         }
     }

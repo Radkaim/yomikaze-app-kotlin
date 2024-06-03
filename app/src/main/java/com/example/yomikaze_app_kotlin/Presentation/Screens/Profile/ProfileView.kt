@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Profile
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

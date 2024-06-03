@@ -1,36 +1,42 @@
-package com.example.yomikaze_app_kotlin.Presentation.Bookcase
-
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
-fun BookcaseView() {
+fun HomeView() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.teal_700))
+            .background(MaterialTheme.colors.background)
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Library Screen",
+            text = stringResource(id = R.string.home),
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = MaterialTheme.colors.primary,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
     }
+}
+
+@Preview
+@Composable
+fun HomeViewPreview() {
+    HomeView()
 }

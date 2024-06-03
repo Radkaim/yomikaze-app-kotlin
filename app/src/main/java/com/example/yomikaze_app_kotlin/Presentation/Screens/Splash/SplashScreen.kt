@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Splash
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Splash
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.tween
@@ -18,6 +18,7 @@ import kotlinx.coroutines.delay
 
 
 @Composable
+
 fun SplashScreen(navController: NavController){
 
     val scale = remember {
@@ -34,7 +35,7 @@ fun SplashScreen(navController: NavController){
                     OvershootInterpolator(4f).getInterpolation(it)
                 })
         )
-        delay(3000L)
+        delay(1000L)
         navController.navigate("main_screen_route")
     }
 
