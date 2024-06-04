@@ -4,11 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav.BottomNavItem
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.BottomNav.BottomNavItem
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.MainViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Notifi.NotificationView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.ProfileView
 
 
@@ -27,6 +28,9 @@ fun NavigationGraph(
         }
         composable(BottomNavItem.Profile.screen_route) {
             ProfileView()
+        }
+        composable(BottomNavItem.Notification.screen_route) {
+            NotificationView()
         }
 
         //for other screens

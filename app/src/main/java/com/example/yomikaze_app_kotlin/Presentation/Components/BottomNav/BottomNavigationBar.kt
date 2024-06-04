@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.BottomNav
+package com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav
 
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -24,6 +24,7 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem.Bookcase,
         BottomNavItem.Home,
         BottomNavItem.Profile,
+        BottomNavItem.Notification,
         BottomNavItem.Login
     )
     BottomNavigation(
@@ -41,7 +42,7 @@ fun BottomNavigationBar(navController: NavController) {
                         painterResource(id = item.icon),
                         contentDescription = item.title,
                         tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary.copy(
-                            alpha = 0.5f
+                            alpha = 0.36f
                         )
                     )
                 },
@@ -50,12 +51,12 @@ fun BottomNavigationBar(navController: NavController) {
                         text = item.title,
                         fontSize = 11.sp,
                         color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary.copy(
-                            alpha = 0.5f
+                            alpha = 0.36f
                         )
                     )
                 },
                 selectedContentColor = MaterialTheme.colorScheme.onPrimary,
-                unselectedContentColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                unselectedContentColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.36f),
                 alwaysShowLabel = true,
                 selected = currentRoute == item.screen_route,
                 onClick = {
