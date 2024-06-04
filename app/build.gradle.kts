@@ -107,8 +107,8 @@ dependencies {
     // Coroutines for asynchronous programming
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    //rounded
-    implementation("com.google.android.gms:play-services-wallet:19.4.0")
+    //
+    //implementation("com.google.android.gms:play-services-wallet:19.4.0") //
 
 }
 kapt {
