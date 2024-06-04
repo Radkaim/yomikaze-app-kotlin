@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Notifi
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,15 +15,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ProfileView() {
+fun NotificationView() {
+    //
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onBackground)
+            .background(MaterialTheme.colorScheme.onPrimary)
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Profile Screen",
+            text = "Library Screen",
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier.align(Alignment.CenterHorizontally),

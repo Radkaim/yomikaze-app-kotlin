@@ -8,8 +8,6 @@ import com.example.yomikaze_app_kotlin.Core.AppThemeSate
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 
 class MainViewModel: ViewModel() {
-//    private val _stateApp = MutableStateFlow(MainState())
-//    val stateApp: StateFlow<MainState> get() = _stateApp.asStateFlow()
 
     var stateApp by mutableStateOf(MainState())
         private set
