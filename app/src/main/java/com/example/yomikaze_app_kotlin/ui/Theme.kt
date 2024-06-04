@@ -10,13 +10,13 @@ import androidx.compose.ui.graphics.Color
 private val DarkColorScheme = darkColorScheme(
     primary = Green300,
     onPrimary = Green400,
-    secondary = Red300,
-    onSecondary = Red400,
+    secondary = Orange300,
+    onSecondary = Orange400,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Green500,
-    onPrimary = Red500,
+    onPrimary = Orange500,
     secondary = Green300,
     onSecondary = Green400,
 
@@ -24,8 +24,11 @@ private val LightColorScheme = lightColorScheme(
 
 
     background = Green100,
-    onBackground = Gray100,
+    onBackground = GrayA07,
     tertiary = Color.White,
+
+    outline = OrangeSplash,
+    outlineVariant = GreenSplash,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
