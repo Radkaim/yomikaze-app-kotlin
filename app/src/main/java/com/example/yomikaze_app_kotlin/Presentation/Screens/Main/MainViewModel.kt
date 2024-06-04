@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

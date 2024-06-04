@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.yomikaze_app_kotlin.Core.AppThemeSate
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.MainEvent
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.MainViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainEvent
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 
 @Composable

@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav.BottomNavItem
+import com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav.BottomHomeNavItems
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.MainViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notifi.NotificationView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.ProfileView
 
@@ -18,20 +18,21 @@ fun NavigationGraph(
     navController: NavHostController,
     viewModel: MainViewModel
 ) {
-    NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
+    NavHost(navController, startDestination = BottomHomeNavItems.Home.screen_route) {
         // for bottom nav
-        composable(BottomNavItem.Home.screen_route) {
+        composable(BottomHomeNavItems.Home.screen_route) {
             HomeView()
         }
-        composable(BottomNavItem.Bookcase.screen_route) {
+        composable(BottomHomeNavItems.Bookcase.screen_route) {
             BookcaseView(viewModel)
         }
-        composable(BottomNavItem.Profile.screen_route) {
-            ProfileView()
+        composable(BottomHomeNavItems.Profile.screen_route) {
+            ProfileView(navController)
         }
-        composable(BottomNavItem.Notification.screen_route) {
+        composable(BottomHomeNavItems.Notification.screen_route) {
             NotificationView()
         }
+
 
         //for other screens
          composable("login_route") {

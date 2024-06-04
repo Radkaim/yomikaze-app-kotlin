@@ -18,14 +18,13 @@ import com.example.yomikaze_app_kotlin.ui.AppTheme
 import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+fun HomeBottomNavBar(navController: NavController) {
 
     val items = listOf(
-        BottomNavItem.Bookcase,
-        BottomNavItem.Home,
-        BottomNavItem.Notification,
-        BottomNavItem.Profile,
-        BottomNavItem.Login
+        BottomHomeNavItems.Bookcase,
+        BottomHomeNavItems.Home,
+        BottomHomeNavItems.Notification,
+        BottomHomeNavItems.Profile
     )
     BottomNavigation(
         backgroundColor = MaterialTheme.colorScheme.tertiary,
@@ -80,7 +79,7 @@ fun BottomNavigationBar(navController: NavController) {
 fun BottomNavigationBarPreview() {
     YomikazeappkotlinTheme(appTheme = AppTheme.LIGHT) {
         val navController = rememberNavController()
-        BottomNavigationBar(navController)
+        HomeBottomNavBar(navController)
     }
 
 }
