@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Components
+package com.example.yomikaze_app_kotlin.Presentation.Components.Loading
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
