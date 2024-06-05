@@ -31,7 +31,7 @@ private val LightColorScheme = lightColorScheme(
     outline = OrangeSplash,
     outlineVariant = GreenSplash,
 
-    surface = Orange600
+    surface = Orange400
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
