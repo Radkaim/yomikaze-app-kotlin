@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -26,6 +25,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -67,7 +67,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
     ) {
         var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
-//        state.hung = "hung"
+        state.hung = "hung"
 
         Column(
 //            Alignment = Alignment.Center,
@@ -182,8 +182,10 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
 //               elevation = ButtonDefaults.buttonColors(
 //
 //               ),
+                   onClick = {
+                             viewModel.onLogin(username, password)
+                             },
 
-                   onClick = { viewModel.onLogin(username, password)},
                    )
                {
                    if (state.isLoading) {
@@ -225,7 +227,6 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
 
                    )
                {
-
                    Text(text = "Login with Google",
                        color = Color.White,
                        style = TextStyle(

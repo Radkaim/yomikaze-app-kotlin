@@ -19,8 +19,8 @@ class LoginViewModel @Inject constructor(
     fun onLogin(username: String, password: String) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
-            val result = loginUseCase(username, password)
-            _state.value = _state.value.copy(isLoading = false, error = "Invalid")
+            val result = loginUseCase.login(username, password)
+            _state.value = _state.value.copy(isLoading = false)
             result.onSuccess { token ->
                 // Handle success
             }.onFailure { error ->

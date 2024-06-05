@@ -14,6 +14,9 @@ data class LoginResponse(val token: String)
 interface AuthApiService {
     @POST("/auth/login")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
+
+    @POST("/auth/register")
+    suspend fun register(@Body loginRequest: LoginRequest): Response<LoginResponse>
 }
 
 
