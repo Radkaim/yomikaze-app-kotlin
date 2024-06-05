@@ -17,7 +17,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -59,8 +59,8 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp)
-            .background(color = MaterialTheme.colors.background),
+//            .padding(10.dp)
+            .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
     ) {
         var username by remember { mutableStateOf("") }
@@ -98,9 +98,9 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
 //                        },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 20.dp)
+                    .padding(10.dp)
                     .background(
-                        color = MaterialTheme.colors.secondary.copy(alpha = 0.1f),
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(24.dp),
                     ),
                 shape = RoundedCornerShape(24.dp),
@@ -129,9 +129,9 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 10.dp)
+                    .padding(10.dp)
                     .background(
-                        color = MaterialTheme.colors.secondary.copy(alpha = 0.1f),
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(24.dp),
                     ),
                 shape = RoundedCornerShape(24.dp),
@@ -173,7 +173,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
            ){
                OutlinedButton(
                    modifier = Modifier
-//                       .height(60.dp)
+                       .height(40.dp)
                        .width(200.dp),
 //                        .padding(bottom = 10.dp),
                    shape = RoundedCornerShape(12.dp),
@@ -199,8 +199,8 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                    )
                    )
                OutlinedButton(
-//                   colors = buttonColors(MaterialTheme.colors.onPrimary),
-                 colors = buttonColors(MaterialTheme.colors.secondary),
+//                   colors = buttonColors(MaterialTheme.coloS.onPrimary),
+                 colors = buttonColors(MaterialTheme.colorScheme.surface),
                    modifier = Modifier
                        .height(50.dp)
                        .width(200.dp)
@@ -255,7 +255,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
         state.error?.let {
             Text(
                 text = it,
-                color = MaterialTheme.colors.error,
+                color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
