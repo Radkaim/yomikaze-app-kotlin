@@ -2,9 +2,11 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Logi
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,10 +14,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults.buttonColors
+import androidx.compose.material.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,10 +33,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yomikaze_app_kotlin.R
 
@@ -47,10 +59,11 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .background(color = MaterialTheme.colors.background),
+//            .padding(10.dp)
+            .background(color = MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
     ) {
-        var email by remember { mutableStateOf("") }
+        var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         state.hung = "hung"
 
@@ -70,15 +83,24 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                 contentScale = ContentScale.Fit
             )
 
-            TextField(value = email,
-                onValueChange = {email = it},
-                label = { Text(text = "Email")},
-                visualTransformation = PasswordVisualTransformation(),
+            TextField(value = username,
+                onValueChange = {username = it},
+                label = {
+                           Text(text = "User Name",
+                               fontSize = 12.sp)
+                       },
+                        leadingIcon = {
+                          Icon(painter = painterResource(id = R.drawable.ic_email),
+                              contentDescription = "",
+                              tint = Color.Unspecified
+                          )
+                        },
+//                        },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                    .padding(10.dp)
                     .background(
-                        color = MaterialTheme.colors.secondary.copy(alpha = 0.1f),
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(24.dp),
                     ),
                 shape = RoundedCornerShape(24.dp),
@@ -94,13 +116,22 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
 
             TextField(value = password,
                 onValueChange = {password = it},
-                label = { Text(text = "Password")},
+                label = {
+                    Text(text = "Password",
+                        fontSize = 12.sp)
+                },
+                leadingIcon = {
+                    Icon(painter = painterResource(id = R.drawable.ic_eye_passwpord),
+                        contentDescription = "",
+                        tint = Color.Unspecified
+                    )
+                },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                    .padding(10.dp)
                     .background(
-                        color = MaterialTheme.colors.secondary.copy(alpha = 0.1f),
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(24.dp),
                     ),
                 shape = RoundedCornerShape(24.dp),
@@ -112,27 +143,110 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                     errorIndicatorColor = Color.Transparent
                 )
             )
+            Row {
+                Text(text = "Sign Up",
+//                    color = MaterialTheme.colors.surface,
+                    style = TextStyle(fontStyle = FontStyle.Italic,
+//                        color = MaterialTheme.colors.surface
+                    ),
+                    modifier = Modifier.padding(
+//                        top = 3.dp,
+                        start = 0.dp,
+                        end = 170.dp,
+                        bottom = 3.dp
+                    ))
+                Text(text = "Forgot Password?",
+                    style = TextStyle(fontStyle = FontStyle.Italic),
+                    modifier = Modifier.padding(
+                        top = 3.dp,
+                        bottom = 3.dp),
+                )
 
-            Button(
-                content = {
-                    Text("Login")
+            }
+           Column (
+               modifier = Modifier.padding(
+                   top = 20.dp,
+                   bottom = 20.dp
+               ),
+               verticalArrangement = Arrangement.Center,
+               horizontalAlignment = Alignment.CenterHorizontally
+           ){
+               OutlinedButton(
+                   modifier = Modifier
+                       .height(40.dp)
+                       .width(200.dp),
+//                        .padding(bottom = 10.dp),
+                   shape = RoundedCornerShape(12.dp),
+//               elevation = ButtonDefaults.buttonColors(
+//
+//               ),
+                   onClick = { /*TODO*/ },
 
-                },
-//                Color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .fillMaxWidth()
-//                    .width(50.dp)
-                    .height(50.dp),
-                shape = RoundedCornerShape(24.dp),
-                onClick = { viewModel.onLogin(email, password)
+                   )
+               {
+                   Text(text = "Login",
+                       color = Color.Black,
+                       style = TextStyle(
+                           fontSize = 16.sp,
+                       ),
+                   )
+               }
+                
+               Text(text = "or",
+                   style = TextStyle(
+                       textAlign = TextAlign.Center,
+                       fontSize = 16.sp
+                   )
+                   )
+               OutlinedButton(
+//                   colors = buttonColors(MaterialTheme.coloS.onPrimary),
+                 colors = buttonColors(MaterialTheme.colorScheme.surface),
+                   modifier = Modifier
+                       .height(50.dp)
+                       .width(200.dp)
+                       .padding(
+                           top = 10.dp
+                       ),
+//                       .background(color = MaterialTheme.colors.secondary),
+                   shape = RoundedCornerShape(12.dp),
+//               elevation = ButtonDefaults.buttonColors(
+//
+//               ),
+                   onClick = { /*TODO*/ },
 
-                },
-//        ) {
-////            if (state.isLoading) {
-////                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-////            }
-//        })
-            )
+                   )
+               {
+                   Text(text = "Login with Google",
+                       color = Color.White,
+                       style = TextStyle(
+                           fontSize = 16.sp,
+                           fontStyle = FontStyle.Italic,
+                           ),
+                       )
+               }
+           }
+
+//            Button(
+//                content = {
+//                    Text("Login with Google")
+//
+//                },
+////                Color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+////                    .width(50.dp)
+//                    .height(50.dp),
+//                shape = RoundedCornerShape(24.dp),
+//                onClick = { viewModel.onLogin(email, password)
+//
+//                },
+////        ) {
+//////            if (state.isLoading) {
+//////                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+//////            }
+////        })
+//            )
+
         }
 //
 
@@ -141,7 +255,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
         state.error?.let {
             Text(
                 text = it,
-                color = MaterialTheme.colors.error,
+                color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
