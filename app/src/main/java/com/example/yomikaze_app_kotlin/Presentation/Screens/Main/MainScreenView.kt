@@ -26,6 +26,11 @@ fun MainScreenView(viewModel: MainViewModel) {
         topBar = {
             when (currentDestination?.route) {
                 "home_route" -> TopHomeAppBar()
+                "bookcase_route", "notification_route", "profile_route" -> CustomeAppBar(
+                    title = getNameOfRoute(currentDestination?.route.toString()),
+                    navigationIcon = {},
+                )
+
                 else -> CustomeAppBar(
                     title = getNameOfRoute(currentDestination?.route.toString()),
                     navigationIcon = {
@@ -39,7 +44,6 @@ fun MainScreenView(viewModel: MainViewModel) {
                         }
                     },
                 )
-
             }
         },
 
@@ -55,9 +59,9 @@ fun MainScreenView(viewModel: MainViewModel) {
     }
 }
 
+
 // get the name before_
 fun getNameOfRoute(route: String): String {
-   //get  the name before_
     val name = route.substringBefore("_")
     return name.capitalize()
 }
