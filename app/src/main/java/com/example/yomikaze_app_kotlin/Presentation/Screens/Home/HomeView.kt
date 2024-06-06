@@ -65,7 +65,7 @@ fun HomeContent(
         Text(
             text = stringResource(id = R.string.home),
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.primary,
+            color = MaterialTheme.colors.background,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             fontSize = 20.sp

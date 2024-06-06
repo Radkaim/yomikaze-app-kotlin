@@ -3,7 +3,6 @@ package com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,7 +18,8 @@ fun IndicatorDot(
     Box(
         modifier = modifier
             .size(size)
-            .clip(CircleShape)
+            // Clip the box to be a heart shape
+            .clip(HeartShape())
             .background(color)
     )
 }

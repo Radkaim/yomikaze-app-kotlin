@@ -111,6 +111,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.22.0-rc")
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation("com.google.accompanist:accompanist-coil:0.15.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.24.13-rc")
 
     //
     //implementation("com.google.android.gms:play-services-wallet:19.4.0") //
