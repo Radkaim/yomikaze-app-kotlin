@@ -26,19 +26,27 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.R
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 
 
 @Composable
 
-fun SplashScreen(navController: NavController){
+fun SplashScreen(navController: NavController) {
 
     val scale = remember {
         androidx.compose.animation.core.Animatable(0f)
     }
+    val systemUiController = rememberSystemUiController()
 
     // AnimationEffect
+    val color = MaterialTheme.colorScheme.background
     LaunchedEffect(key1 = true) {
+
+
+        systemUiController.isStatusBarVisible = false
+        systemUiController.isNavigationBarVisible = false
+
         scale.animateTo(
             targetValue = 0.7f,
             animationSpec = tween(
@@ -48,7 +56,11 @@ fun SplashScreen(navController: NavController){
                 })
         )
         delay(3000L)
-       navController.navigate("main_screen_route")
+        // Optionally, show the system bars again after the splash screen
+
+        navController.navigate("main_screen_route")
+        systemUiController.isStatusBarVisible = true
+        systemUiController.isNavigationBarVisible = true
     }
 
     // Image
@@ -56,7 +68,8 @@ fun SplashScreen(navController: NavController){
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Image(painter = painterResource(id = R.drawable.logo),
+        Image(
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
             modifier = Modifier
                 .height(150.dp)
