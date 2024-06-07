@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav
 
+import android.annotation.SuppressLint
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
@@ -17,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun HomeBottomNavBar(navController: NavController) {
 
