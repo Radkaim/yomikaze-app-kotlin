@@ -38,7 +38,7 @@ fun NavigationGraph(
 
         //for other screens
          composable("login_route") {
-            LoginView()
+            LoginView(navController = navController)
          }
 
         // for history tab in bookcase screen

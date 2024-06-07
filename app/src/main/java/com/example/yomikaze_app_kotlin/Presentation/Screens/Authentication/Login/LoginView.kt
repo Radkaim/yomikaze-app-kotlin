@@ -16,10 +16,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +40,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,18 +48,40 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yomikaze_app_kotlin.R
 
 
+
 @Composable
-fun LoginView(loginViewModel: LoginViewModel = hiltViewModel()) {
+fun LoginView(loginViewModel: LoginViewModel = hiltViewModel(),
+              navController: NavController) {
     val state by loginViewModel.state.collectAsState()
-    LoginContent(state, loginViewModel)
+
+    LoginContent(state, loginViewModel, navController)
 }
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
+fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: NavController) {
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
+    Scaffold(
+        topBar = {
+            CustomeAppBar(
+                title = "Notification",
+                navigationIcon = {
+                    IconButton(onClick = {
+                            navController.popBackStack()
+
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                },
+            )
+        })
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
 //            .padding(10.dp)
             .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
