@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedButton
@@ -35,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -83,8 +85,14 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                 onValueChange = {username = it},
                 label = {
                            Text(text = "User Name",
-                               fontSize = 12.sp)
+                               fontSize = 12.sp,
+                               color = MaterialTheme.colorScheme.primary)
+
                        },
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                         ),
                         leadingIcon = {
                           Icon(painter = painterResource(id = R.drawable.ic_email),
                               contentDescription = "",
@@ -95,6 +103,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
+                    .height(56.dp)
                     .background(
                         color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(24.dp),
@@ -106,15 +115,31 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent
-                )
+                ),
+                isError = state.usernameError != null
             )
+            if (state.usernameError != null) {
+                Text(
+                    text = state.usernameError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
+                )
+            }
 
             TextField(value = password,
                 onValueChange = {password = it},
                 label = {
                     Text(text = "Password",
-                        fontSize = 12.sp)
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary)
                 },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                ),
                 leadingIcon = {
                     Icon(painter = painterResource(id = R.drawable.ic_eye_passwpord),
                         contentDescription = "",
@@ -125,6 +150,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
+                    .height(56.dp)
                     .background(
                         color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(24.dp),
@@ -143,8 +169,10 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                 Text(
                     text = state.passwordError ?: "",
                     color = MaterialTheme.colorScheme.error,
-                    style = TextStyle(fontSize = 12.sp),
-                    modifier = Modifier.padding(start = 16.dp, top = 0.dp, bottom = 8.dp)
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                 )
             }
             Row {
@@ -154,9 +182,9 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
 //                        color = MaterialTheme.colors.surface
                     ),
                     modifier = Modifier.padding(
-//                        top = 3.dp,
+                        top = 3.dp,
                         start = 0.dp,
-                        end = 170.dp,
+                        end = 200.dp,
                         bottom = 3.dp
                     ))
                 Text(text = "Forgot Password?",
@@ -191,16 +219,18 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
                    )
                {
                    if (state.isLoading) {
-                       CircularProgressIndicator(
-                           modifier = Modifier.size(20.dp )
-                       )
-                   }else{
                        Text(text = "Login",
                            color = Color.Black,
                            style = TextStyle(
                                fontSize = 16.sp,
                            ),
                        )
+
+                   }else{
+                       CircularProgressIndicator(
+                           modifier = Modifier.size(20.dp )
+                       )
+
                    }
 
                }
