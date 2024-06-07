@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,10 +15,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -38,190 +43,230 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
 import com.example.yomikaze_app_kotlin.R
 
 
 
 @Composable
-fun LoginView(loginViewModel: LoginViewModel = hiltViewModel()) {
+fun LoginView(loginViewModel: LoginViewModel = hiltViewModel(),
+              navController: NavController) {
     val state by loginViewModel.state.collectAsState()
-    LoginContent(state, loginViewModel)
+
+    LoginContent(state, loginViewModel, navController)
 }
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
+fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: NavController) {
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
+    Scaffold(
+        topBar = {
+            CustomeAppBar(
+                title = "Notification",
+                navigationIcon = {
+                    IconButton(onClick = {
+                            navController.popBackStack()
+
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                },
+            )
+        })
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
 //            .padding(10.dp)
-            .background(color = MaterialTheme.colorScheme.background),
+                .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
-    ) {
-        var username by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        state.hung = "hung"
+        ) {
+            var username by remember { mutableStateOf("") }
+            var password by remember { mutableStateOf("") }
+            state.hung = "hung"
 
-        Column(
+            Column(
 //            Alignment = Alignment.Center,
 
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
 
-        ) {
-            Image(painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo",
-                modifier = Modifier
-                    .height(200.dp)
-                    .width(100.dp),
-                contentScale = ContentScale.Fit
-            )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier
+                        .height(200.dp)
+                        .width(100.dp),
+                    contentScale = ContentScale.Fit
+                )
 
-            TextField(value = username,
-                onValueChange = {username = it},
-                label = {
-                           Text(text = "User Name",
-                               fontSize = 12.sp)
-                       },
-                        leadingIcon = {
-                          Icon(painter = painterResource(id = R.drawable.ic_email),
-                              contentDescription = "",
-                              tint = Color.Unspecified
-                          )
-                        },
+                TextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    label = {
+                        Text(
+                            text = "User Name",
+                            fontSize = 12.sp
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_email),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    },
 //                        },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(24.dp),
-                    ),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                )
-            )
-
-
-            TextField(value = password,
-                onValueChange = {password = it},
-                label = {
-                    Text(text = "Password",
-                        fontSize = 12.sp)
-                },
-                leadingIcon = {
-                    Icon(painter = painterResource(id = R.drawable.ic_eye_passwpord),
-                        contentDescription = "",
-                        tint = Color.Unspecified
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
                     )
-                },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(24.dp),
-                    ),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
                 )
-            )
-            Row {
-                Text(text = "Sign Up",
+
+
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = {
+                        Text(
+                            text = "Password",
+                            fontSize = 12.sp
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_eye_passwpord),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    )
+                )
+                Row {
+                    Text(
+                        text = "Sign Up",
 //                    color = MaterialTheme.colors.surface,
-                    style = TextStyle(fontStyle = FontStyle.Italic,
+                        style = TextStyle(
+                            fontStyle = FontStyle.Italic,
 //                        color = MaterialTheme.colors.surface
-                    ),
-                    modifier = Modifier.padding(
+                        ),
+                        modifier = Modifier.padding(
 //                        top = 3.dp,
-                        start = 0.dp,
-                        end = 170.dp,
-                        bottom = 3.dp
-                    ))
-                Text(text = "Forgot Password?",
-                    style = TextStyle(fontStyle = FontStyle.Italic),
+                            start = 0.dp,
+                            end = 170.dp,
+                            bottom = 3.dp
+                        )
+                    )
+                    Text(
+                        text = "Forgot Password?",
+                        style = TextStyle(fontStyle = FontStyle.Italic),
+                        modifier = Modifier.padding(
+                            top = 3.dp,
+                            bottom = 3.dp
+                        ),
+                    )
+
+                }
+                Column(
                     modifier = Modifier.padding(
-                        top = 3.dp,
-                        bottom = 3.dp),
-                )
-
-            }
-           Column (
-               modifier = Modifier.padding(
-                   top = 20.dp,
-                   bottom = 20.dp
-               ),
-               verticalArrangement = Arrangement.Center,
-               horizontalAlignment = Alignment.CenterHorizontally
-           ){
-               OutlinedButton(
-                   modifier = Modifier
-                       .height(40.dp)
-                       .width(200.dp),
+                        top = 20.dp,
+                        bottom = 20.dp
+                    ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    OutlinedButton(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .width(200.dp),
 //                        .padding(bottom = 10.dp),
-                   shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(12.dp),
 //               elevation = ButtonDefaults.buttonColors(
 //
 //               ),
-                   onClick = {
-                             viewModel.onLogin(username, password)
-                             },
+                        onClick = {
+                            viewModel.onLogin(username, password)
+                        },
 
-                   )
-               {
-                   Text(text = "Login",
-                       color = Color.Black,
-                       style = TextStyle(
-                           fontSize = 16.sp,
-                       ),
-                   )
-               }
-                
-               Text(text = "or",
-                   style = TextStyle(
-                       textAlign = TextAlign.Center,
-                       fontSize = 16.sp
-                   )
-                   )
-               OutlinedButton(
+                        )
+                    {
+                        Text(
+                            text = "Login",
+                            color = Color.Black,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                            ),
+                        )
+                    }
+
+                    Text(
+                        text = "or",
+                        style = TextStyle(
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp
+                        )
+                    )
+                    OutlinedButton(
 //                   colors = buttonColors(MaterialTheme.coloS.onPrimary),
-                 colors = buttonColors(MaterialTheme.colorScheme.surface),
-                   modifier = Modifier
-                       .height(50.dp)
-                       .width(200.dp)
-                       .padding(
-                           top = 10.dp
-                       ),
+                        colors = buttonColors(MaterialTheme.colorScheme.surface),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp)
+                            .padding(
+                                top = 10.dp
+                            ),
 //                       .background(color = MaterialTheme.colors.secondary),
-                   shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(12.dp),
 //               elevation = ButtonDefaults.buttonColors(
 //
 //               ),
-                   onClick = { /*TODO*/ },
+                        onClick = { /*TODO*/ },
 
-                   )
-               {
-                   Text(text = "Login with Google",
-                       color = Color.White,
-                       style = TextStyle(
-                           fontSize = 16.sp,
-                           fontStyle = FontStyle.Italic,
-                           ),
-                       )
-               }
-           }
+                        )
+                    {
+                        Text(
+                            text = "Login with Google",
+                            color = Color.White,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontStyle = FontStyle.Italic,
+                            ),
+                        )
+                    }
+                }
 
 //            Button(
 //                content = {
@@ -244,17 +289,17 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel) {
 ////        })
 //            )
 
-        }
+            }
 //
 
 
-
-        state.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            state.error?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
         }
     }
 }

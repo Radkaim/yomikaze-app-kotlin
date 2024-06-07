@@ -61,6 +61,6 @@ class HomeViewModel @Inject constructor(
     }
     fun onViewMoreHistoryClicked(){
         //  navController?.navigate("Bookcase/history_route")
-        navController?.navigate("bookcase_route/0")
+        navController?.navigate("bookcase_route/0") //mean navigate to history tab in bookcase screen
     }
 }
