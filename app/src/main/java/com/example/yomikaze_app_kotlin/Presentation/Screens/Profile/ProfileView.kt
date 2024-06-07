@@ -15,13 +15,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppThemeSate
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainEvent
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
+import com.example.yomikaze_app_kotlin.ui.AppTheme
 
 @Composable
-fun ProfileView(navController: NavController) {
+fun ProfileView(
+    navController: NavController,
+    viewModel: MainViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onBackground)
+            .background(MaterialTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
@@ -32,7 +39,31 @@ fun ProfileView(navController: NavController) {
             textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
+        Button(
+            onClick =
+            {
+
+                val currentTheme = viewModel.stateApp
+                val newTheme = when (currentTheme.theme) {
+                    AppTheme.DARK -> AppTheme.LIGHT
+                    AppTheme.LIGHT -> AppTheme.DARK
+                    AppTheme.DEFAULT -> AppTheme.DARK
+
+                    else -> {
+                        AppTheme.DEFAULT
+                    }
+                }
+                AppThemeSate.resetTheme()
+                AppThemeSate.setTheme(newTheme)
+                viewModel.onEvent(MainEvent.ThemeChange(newTheme))
+            },
+        ) {
+            Text(text = "Change Theme")
+        }
     }
+
+
+
 
     Button(onClick = {
 
@@ -41,4 +72,6 @@ fun ProfileView(navController: NavController) {
         Text(text = "Go to Login")
 
     }
+
+
 }

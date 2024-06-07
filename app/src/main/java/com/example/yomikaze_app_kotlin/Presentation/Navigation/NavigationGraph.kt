@@ -24,10 +24,10 @@ fun NavigationGraph(
             HomeView()
         }
         composable(BottomHomeNavItems.Bookcase.screen_route) {
-            BookcaseView(viewModel)
+            BookcaseView()
         }
         composable(BottomHomeNavItems.Profile.screen_route) {
-            ProfileView(navController)
+            ProfileView(navController, viewModel)
         }
         composable(BottomHomeNavItems.Notification.screen_route) {
             NotificationView()
