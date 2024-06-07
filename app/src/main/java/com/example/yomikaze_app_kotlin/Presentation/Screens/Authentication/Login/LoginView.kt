@@ -77,7 +77,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
                         }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Localized description"
+                                contentDescription = "Back Icon"
                             )
                         }
                 },

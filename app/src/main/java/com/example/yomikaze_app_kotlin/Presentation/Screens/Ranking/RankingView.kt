@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking
 
 
 import android.annotation.SuppressLint
@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -25,24 +28,37 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.History.HistoryView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewComment.CommentComicView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewFollow.FollowComicView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewHot.HotComicView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewRating.RatingComicView
 import com.example.yomikaze_app_kotlin.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BookcaseView(initialTab: Int ) {
+fun RankingView(initialTab: Int, navController: NavController) {
     var tabIndex by remember { mutableStateOf(initialTab) }
 
-    val tabs = listOf("History", "Library", "Download")
+    val tabs = listOf("Hot", "Rating", "Comment", "Follow")
 
     Scaffold(
         topBar = {
             CustomeAppBar(
-                title = "Bookcase",
-                navigationIcon = {},
+                title = "Ranking",
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
+                        androidx.compose.material.Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back Icon",
+                        )
+                    }
+
+                },
             )
         })
     {
@@ -77,43 +93,58 @@ fun BookcaseView(initialTab: Int ) {
                 }
             }
             when (tabIndex) {
-                0 -> HistoryView()
-                1 -> LibraryView()
-                2 -> DownloadView()
+                0 -> HotComicView()
+                1 -> RatingComicView()
+                2 -> CommentComicView()
+                3 -> FollowComicView()
             }
         }
     }
 }
 
+
+/**
+ * TODO: set icon for each tab
+ */
 @Composable
-fun setIcon(index: Int, tabIndex: Int){
+fun setIcon(index: Int, tabIndex: Int) {
     return when (index) {
         0 -> {
             Icon(
-                painterResource(id = R.drawable.ic_history),
-                contentDescription = "History icon",
+                painterResource(id = R.drawable.ic_ranking_home),
+                contentDescription = "Hot icon",
                 tint = changeColor(tabIndex, 0),
-                modifier = changeSizeIcon(),
+                modifier = changeSizeIcon()
             )
         }
 
         1 -> {
             Icon(
-                painterResource(id = R.drawable.ic_library),
-                contentDescription = "Library icon",
+                painterResource(id = R.drawable.ic_star_fill),
+                contentDescription = "Rating icon",
                 tint = changeColor(tabIndex, 1),
-                modifier = changeSizeIcon(),
+                modifier = changeSizeIcon()
             )
         }
 
         2 -> {
             Icon(
-                painterResource(id = R.drawable.ic_download),
-                contentDescription = "Download icon",
+                painterResource(id = R.drawable.ic_comment),
+                contentDescription = "Comment icon",
                 tint = changeColor(tabIndex, 2),
-                modifier = changeSizeIcon(),
+                modifier = changeSizeIcon()
             )
         }
+
+        3 -> {
+            Icon(
+                painterResource(id = R.drawable.ic_following),
+                contentDescription = "Follow icon",
+                tint = changeColor(tabIndex, 3),
+                modifier = changeSizeIcon()
+            )
+        }
+
         else -> {}
     }
 }
@@ -135,5 +166,5 @@ fun changeColor(tabIndex: Int, index: Int): Color {
 @Preview
 @Composable
 fun BookcasePreview() {
-    BookcaseView( initialTab =  0)
+    RankingView(initialTab = 0, navController = rememberNavController())
 }

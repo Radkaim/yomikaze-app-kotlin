@@ -50,7 +50,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun checkUserToken() {
+        appPreference.authToken = "Hung is here"
        val token = appPreference.authToken
+
         Log.d("HomeViewModel", "User token: $token")
         if (token != null) {
             _state.value = _state.value.copy(isUserLoggedIn = true)
@@ -61,6 +63,12 @@ class HomeViewModel @Inject constructor(
     }
     fun onViewMoreHistoryClicked(){
         //  navController?.navigate("Bookcase/history_route")
-        navController?.navigate("bookcase_route/0") //mean navigate to history tab in bookcase screen
+
+        //ok
+      //  navController?.navigate("bookcase_route/0") //mean navigate to history tab in bookcase screen
+
+
+        //test for ranking screen
+        navController?.navigate("ranking_route/0")
     }
 }

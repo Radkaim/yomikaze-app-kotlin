@@ -11,6 +11,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notifi.NotificationView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.ProfileView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.RankingView
 
 
 @Composable
@@ -19,14 +20,16 @@ fun NavigationGraph(
     viewModel: MainViewModel
 ) {
     NavHost(navController, startDestination = BottomHomeNavItems.Home.screen_route) {
-        // for bottom nav
+
+        /**
+         * Todo for Bottom Navigation
+         */
         composable(BottomHomeNavItems.Home.screen_route) {
             HomeView(navController = navController)
         }
         composable(BottomHomeNavItems.Bookcase.screen_route) {
             BookcaseView(initialTab = 0)
         }
-
 
         composable(BottomHomeNavItems.Profile.screen_route) {
             ProfileView(navController, viewModel)
@@ -36,7 +39,11 @@ fun NavigationGraph(
         }
 
 
-        //for other screens
+        /**
+         * Todo for other screen
+         */
+
+        // for login screen
          composable("login_route") {
             LoginView(navController = navController)
          }
@@ -58,6 +65,21 @@ fun NavigationGraph(
             }
         }
 
+        // for ranking screen
+        composable("ranking_route") {
+            RankingView( initialTab =  0, navController = navController)
+        }
+
+        composable("ranking_route/{param}") { navBackStackEntry ->
+            val param = navBackStackEntry.arguments?.getString("param")
+            when (param) {
+                "0" -> RankingView( initialTab =  0, navController = navController)
+                "1" -> RankingView( initialTab =  1, navController = navController)
+                "2" -> RankingView( initialTab =  2, navController = navController)
+                "3" -> RankingView( initialTab =  3, navController = navController)
+                else -> RankingView( initialTab =  0, navController = navController)
+            }
+        }
     }
 }
 
