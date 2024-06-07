@@ -1,6 +1,8 @@
 package com.example.yomikaze_app_kotlin
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.media.RouteListingPreference.Item
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,9 +19,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav.BottomHomeNavItems.Bookcase.title
+import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.ComicCardItem
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainScreenView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
+import com.example.yomikaze_app_kotlin.R.drawable.*
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +32,8 @@ import io.paperdb.Paper
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         Paper.init(this) // use paperdb show paper.init should be called before any other method

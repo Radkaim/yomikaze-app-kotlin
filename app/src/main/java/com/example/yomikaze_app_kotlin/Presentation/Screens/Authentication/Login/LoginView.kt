@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,18 +41,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
 import com.example.yomikaze_app_kotlin.R
 
 
 
 @Composable
 fun LoginView(loginViewModel: LoginViewModel = hiltViewModel(),
-              navController: NavController) {
+              navController: NavController
+) {
     val state by loginViewModel.state.collectAsState()
 
     LoginContent(state, loginViewModel, navController)
@@ -83,216 +88,233 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
             modifier = Modifier
                 .fillMaxSize()
 //            .padding(10.dp)
-            .background(color = MaterialTheme.colorScheme.background),
+                .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
-    ) {
-        var username by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
+        ) {
+            var username by remember { mutableStateOf("") }
+            var password by remember { mutableStateOf("") }
 //        state.hung = "hung"
 
-        Column(
+            Column(
 //            Alignment = Alignment.Center,
 
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
 
-        ) {
-            Image(painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo",
-                modifier = Modifier
-                    .height(200.dp)
-                    .width(100.dp),
-                contentScale = ContentScale.Fit
-            )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier
+                        .height(200.dp)
+                        .width(100.dp),
+                    contentScale = ContentScale.Fit
+                )
 
-            TextField(value = username,
-                onValueChange = {username = it},
-                label = {
-                           Text(text = "User Name",
-                               fontSize = 12.sp,
-                               color = MaterialTheme.colorScheme.primary)
+                TextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    label = {
+                        Text(
+                            text = "User Name",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
 
-                       },
-                        maxLines = 1,
-                        keyboardOptions = KeyboardOptions.Default.copy(
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                         ),
-                        leadingIcon = {
-                          Icon(painter = painterResource(id = R.drawable.ic_email),
-                              contentDescription = "",
-                              tint = Color.Unspecified
-                          )
-                        },
+                    ),
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_email),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    },
 //                        },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .height(56.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(24.dp),
-                    ),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                ),
-                isError = state.usernameError != null
-            )
-            if (state.usernameError != null) {
-                Text(
-                    text = state.usernameError ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    isError = state.usernameError != null
                 )
-            }
-
-            TextField(value = password,
-                onValueChange = {password = it},
-                label = {
-                    Text(text = "Password",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.primary)
-                },
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                ),
-                leadingIcon = {
-                    Icon(painter = painterResource(id = R.drawable.ic_eye_passwpord),
-                        contentDescription = "",
-                        tint = Color.Unspecified
+                if (state.usernameError != null) {
+                    Text(
+                        text = state.usernameError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
                     )
-                },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .height(56.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(24.dp),
+                }
+
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = {
+                        Text(
+                            text = "Password",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                ),
-                isError = state.passwordError != null
-            )
-            if (state.passwordError != null) {
-                Text(
-                    text = state.passwordError ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_eye_passwpord),
+                            contentDescription = "",
+                            tint = Color.Unspecified
+                        )
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
-                )
-            }
-            Row {
-                Text(text = "Sign Up",
-//                    color = MaterialTheme.colors.surface,
-                    style = TextStyle(fontStyle = FontStyle.Italic,
-//                        color = MaterialTheme.colors.surface
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
                     ),
-                    modifier = Modifier.padding(
-                        top = 3.dp,
-                        start = 0.dp,
-                        end = 200.dp,
-                        bottom = 3.dp
-                    ))
-                Text(text = "Forgot Password?",
-                    style = TextStyle(fontStyle = FontStyle.Italic),
-                    modifier = Modifier.padding(
-                        top = 3.dp,
-                        bottom = 3.dp),
+                    isError = state.passwordError != null
                 )
+                if (state.passwordError != null) {
+                    Text(
+                        text = state.passwordError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
+                    )
+                }
+                Row {
+                    Text(
+                        text = "Sign Up",
+//                    color = MaterialTheme.colors.surface,
+                        style = TextStyle(
+                            fontStyle = FontStyle.Italic,
+//                        color = MaterialTheme.colors.surface
+                        ),
+                        modifier = Modifier.padding(
+                            top = 3.dp,
+                            start = 0.dp,
+                            end = 200.dp,
+                            bottom = 3.dp
+                        )
+                    )
+                    Text(
+                        text = "Forgot Password?",
+                        style = TextStyle(fontStyle = FontStyle.Italic),
+                        modifier = Modifier.padding(
+                            top = 3.dp,
+                            bottom = 3.dp
+                        ),
+                    )
 
-            }
-           Column (
-               modifier = Modifier.padding(
-                   top = 20.dp,
-                   bottom = 20.dp
-               ),
-               verticalArrangement = Arrangement.Center,
-               horizontalAlignment = Alignment.CenterHorizontally
-           ){
-               OutlinedButton(
-                   modifier = Modifier
-                       .height(40.dp)
-                       .width(200.dp),
+                }
+                Column(
+                    modifier = Modifier.padding(
+                        top = 20.dp,
+                        bottom = 20.dp
+                    ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    OutlinedButton(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .width(200.dp),
 //                        .padding(bottom = 10.dp),
-                   shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(12.dp),
 //               elevation = ButtonDefaults.buttonColors(
 //
 //               ),
-                   onClick = {
-                             viewModel.onLogin(username, password)
-                             },
+                        onClick = {
+                            viewModel.onLogin(username, password)
+                        },
 
-                   )
-               {
-                   if (state.isLoading) {
-                       Text(text = "Login",
-                           color = Color.Black,
-                           style = TextStyle(
-                               fontSize = 16.sp,
-                           ),
-                       )
+                        )
+                    {
+                        if (state.isLoading) {
+                            Text(
+                                text = "Login",
+                                color = Color.Black,
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                ),
+                            )
 
-                   }else{
-                       CircularProgressIndicator(
-                           modifier = Modifier.size(20.dp )
-                       )
+                        } else {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp)
+                            )
 
-                   }
+                        }
 
-               }
+                    }
 
-               Text(text = "or",
-                   style = TextStyle(
-                       textAlign = TextAlign.Center,
-                       fontSize = 16.sp
-                   )
-                   )
-               OutlinedButton(
+                    Text(
+                        text = "or",
+                        style = TextStyle(
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp
+                        )
+                    )
+                    OutlinedButton(
 //                   colors = buttonColors(MaterialTheme.coloS.onPrimary),
-                 colors = buttonColors(MaterialTheme.colorScheme.surface),
-                   modifier = Modifier
-                       .height(50.dp)
-                       .width(200.dp)
-                       .padding(
-                           top = 10.dp
-                       ),
+                        colors = buttonColors(MaterialTheme.colorScheme.surface),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp)
+                            .padding(
+                                top = 10.dp
+                            ),
 //                       .background(color = MaterialTheme.colors.secondary),
-                   shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(12.dp),
 //               elevation = ButtonDefaults.buttonColors(
 //
 //               ),
-                   onClick = { /*TODO*/ },
+                        onClick = { /*TODO*/ },
 
-                   )
-               {
-                   Text(text = "Login with Google",
-                       color = Color.White,
-                       style = TextStyle(
-                           fontSize = 16.sp,
-                           fontStyle = FontStyle.Italic,
-                           ),
-                       )
-               }
-           }
+                        )
+                    {
+                        Text(
+                            text = "Login with Google",
+                            color = Color.White,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontStyle = FontStyle.Italic,
+                            ),
+                        )
+                    }
+                }
 
 //            Button(
 //                content = {
@@ -315,17 +337,17 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
 ////        })
 //            )
 
-        }
+            }
 //
 
 
-
-        state.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            state.error?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
         }
     }
 }

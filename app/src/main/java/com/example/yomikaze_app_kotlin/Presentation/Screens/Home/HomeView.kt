@@ -1,8 +1,14 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.Button
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,6 +61,10 @@ fun HomeContent(
         }
 
 
+}
+
+@Composable
+fun Card(){
 
 }
 
