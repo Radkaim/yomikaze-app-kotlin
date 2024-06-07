@@ -21,13 +21,15 @@ fun NavigationGraph(
     NavHost(navController, startDestination = BottomHomeNavItems.Home.screen_route) {
         // for bottom nav
         composable(BottomHomeNavItems.Home.screen_route) {
-            HomeView()
+            HomeView(navController = navController)
         }
         composable(BottomHomeNavItems.Bookcase.screen_route) {
-            BookcaseView(viewModel)
+            BookcaseView(initialTab = 0)
         }
+
+
         composable(BottomHomeNavItems.Profile.screen_route) {
-            ProfileView(navController)
+            ProfileView(navController, viewModel)
         }
         composable(BottomHomeNavItems.Notification.screen_route) {
             NotificationView()
@@ -38,6 +40,24 @@ fun NavigationGraph(
          composable("login_route") {
             LoginView()
          }
+
+        // for history tab in bookcase screen
+        composable("${BottomHomeNavItems.Bookcase.screen_route}/{param}") { navBackStackEntry ->
+            navController.navigate("${BottomHomeNavItems.Bookcase.screen_route}") {
+                popUpTo(BottomHomeNavItems.Home.screen_route) { inclusive = true } // pop up to home screen
+            }
+            val param = navBackStackEntry.arguments?.getString("param")
+            when (param) {
+                "0" -> BookcaseView(initialTab = 0)
+                "1" -> BookcaseView(initialTab = 1)
+                "2" -> BookcaseView(initialTab = 2)
+                else -> BookcaseView(initialTab = 0)
+
+//            BookcaseView(initialTab = param?.toInt() ?: 0)
+
+            }
+        }
+
     }
 }
 

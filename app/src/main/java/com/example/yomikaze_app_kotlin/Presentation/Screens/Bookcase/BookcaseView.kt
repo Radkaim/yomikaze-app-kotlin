@@ -1,69 +1,121 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase
 
 
-import androidx.compose.foundation.background
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Scaffold
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
-import com.example.yomikaze_app_kotlin.Core.AppThemeSate
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainEvent
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
-import com.example.yomikaze_app_kotlin.ui.AppTheme
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.History.HistoryView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryView
+import com.example.yomikaze_app_kotlin.R
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BookcaseView(viewModel: MainViewModel) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onPrimary)
-            .wrapContentSize(Alignment.Center)
-    ) {
-        Text(
-            text = "Library Screen",
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            textAlign = TextAlign.Center,
-            fontSize = 20.sp
-        )
-        Button(
-            onClick =
-            {
+fun BookcaseView(initialTab: Int ) {
+    var tabIndex by remember { mutableStateOf(initialTab) }
 
-                val currentTheme = viewModel.stateApp
-                val newTheme = when (currentTheme.theme) {
-                    AppTheme.DARK -> AppTheme.LIGHT
-                    AppTheme.LIGHT -> AppTheme.DARK
-                    AppTheme.DEFAULT -> AppTheme.DARK
+    val tabs = listOf("History", "Library", "Download")
 
-                    else -> {
-                        AppTheme.DEFAULT
-                    }
+    Scaffold(
+        topBar = {
+            CustomeAppBar(
+                title = "BookCase",
+                navigationIcon = {},
+            )
+        })
+    {
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            TabRow(
+                selectedTabIndex = tabIndex,
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f) // Change this to your desired color
+                    )
                 }
-                AppThemeSate.resetTheme()
-                AppThemeSate.setTheme(newTheme)
-                viewModel.onEvent(MainEvent.ThemeChange(newTheme))
-            },
-        ) {
-            Text(text = "Change Theme")
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(text = {
+                        Text(
+                            text = title,
+                            color = changeColor(tabIndex, index),
+                            fontWeight = FontWeight.Medium
+
+                        )
+                    },
+                        selected = tabIndex == index,
+                        onClick = { tabIndex = index },
+
+                        icon = {
+                            when (index) {
+                                0 -> {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_history),
+                                        contentDescription = "History icon",
+                                        tint = changeColor(tabIndex, 0)
+                                    )
+                                }
+
+                                1 -> {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_library),
+                                        contentDescription = "Library icon",
+                                        tint = changeColor(tabIndex, 1)
+                                    )
+                                }
+
+                                2 -> {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_download),
+                                        contentDescription = "Download icon",
+                                        tint = changeColor(tabIndex, 2)
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+            when (tabIndex) {
+                0 -> HistoryView()
+                1 -> LibraryView()
+                2 -> DownloadView()
+            }
         }
     }
+}
 
+
+@Composable
+fun changeColor(tabIndex: Int, index: Int): Color {
+    return if (tabIndex == index) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary.copy(
+        alpha = 0.36f
+    )
 }
 
 @Preview
 @Composable
 fun BookcasePreview() {
-    BookcaseView(viewModel = MainViewModel())
+    BookcaseView( initialTab =  0)
 }
