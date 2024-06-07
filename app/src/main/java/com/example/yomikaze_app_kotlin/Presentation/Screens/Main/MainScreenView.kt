@@ -45,7 +45,8 @@ fun MainScreenView(viewModel: MainViewModel) {
         bottomBar = {
             when (currentDestination?.route) {
                 "login_route" -> ChapterBottomNavBar(navController = navController)
-                else -> HomeBottomNavBar(navController = navController)
+                "home_route", "bookcase_route", "notification_route", "profile_route" -> HomeBottomNavBar(navController = navController)
+                else ->{}
             }
 
         }
