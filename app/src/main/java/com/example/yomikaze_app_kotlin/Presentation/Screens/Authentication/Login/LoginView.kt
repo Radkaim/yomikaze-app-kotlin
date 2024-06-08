@@ -153,7 +153,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
                     },
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_eye_passwpord),
+                            painter = painterResource(id = R.drawable.ic_eye),
                             contentDescription = "",
                             tint = Color.Unspecified
                         )

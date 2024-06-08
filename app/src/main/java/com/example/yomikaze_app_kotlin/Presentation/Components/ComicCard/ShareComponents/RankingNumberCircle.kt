@@ -27,8 +27,8 @@ fun RankingNumberCircle(
     backgroundColor: Color = MaterialTheme.colorScheme.onSecondary,
     borderColor: Color = MaterialTheme.colorScheme.onPrimary,
     size: Dp = 24.dp,
-    fontSize: TextUnit = 10.sp,
-    fontWeight: FontWeight = FontWeight.Medium,
+    fontSize: TextUnit = 12.sp,
+    fontWeight: FontWeight = FontWeight.Bold,
     textAlign: TextAlign = TextAlign.Center
 ) {
     Surface(
@@ -47,6 +47,7 @@ fun RankingNumberCircle(
                 .background(backgroundColor)
                 .size(size)
                 .size(size)
+
         ) {
             Text(
                 text = number.toString(),

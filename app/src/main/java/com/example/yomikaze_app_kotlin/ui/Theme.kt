@@ -16,23 +16,25 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Green500,
-    onPrimary = Orange500,
-    primaryContainer = Green900,
-    secondary = Green300,
-    onSecondary = Green400,
+    primary = Green500, //0B9D5F
+    onPrimary = Orange500, //E05C48
+    primaryContainer = Green900, //00260F
+    secondary = Green300, //89F8DC
+    onSecondary = Green400, //1FC488
 
-    secondaryContainer = Green500,
+    secondaryContainer = Green500, //0B9D5F
+    onSecondaryContainer = Orange900, //02753E
 
+    background = Green100, //F2FFFD
+    surface = Orange400, //F28C74
+    onSurface = Orange100, //FFF7F2
+    onBackground = GrayA07, //D9D9D9
+    tertiary = Color.White, //FFFFFF
+    onTertiary = Color.Black,
 
-    background = Green100,
-    onBackground = GrayA07,
-    tertiary = Color.White,
+    outline = OrangeSplash, //E38B6C
+    outlineVariant = GreenSplash //65F6D1
 
-    outline = OrangeSplash,
-    outlineVariant = GreenSplash,
-
-    surface = Orange400
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),

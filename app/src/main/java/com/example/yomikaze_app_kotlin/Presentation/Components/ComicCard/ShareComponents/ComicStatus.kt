@@ -23,7 +23,7 @@ fun ComicStatus(
     status: String,
     textSize: TextUnit = 12.sp,
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
-    textColor: Color = MaterialTheme.colorScheme.background
+    textColor: Color = MaterialTheme.colorScheme.background,
 
 ) {
     // TODO: Implement ComicStatus
@@ -54,5 +54,5 @@ fun ComicStatus(
 @Preview
 @Composable
 fun ComicStatusPreview() {
-    ComicStatus(status = "連載中")
+    ComicStatus(status = "Completed")
 }
