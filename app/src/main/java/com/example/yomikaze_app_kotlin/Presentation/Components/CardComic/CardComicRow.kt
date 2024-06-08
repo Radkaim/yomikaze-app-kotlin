@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,39 +37,40 @@ fun CardComicRow(navController: NavController) {
 
         val item: List<ComicCardItem> = listOf(
             ComicCardItem(
-                title = "Naruto",
+                comicName = "Naruto",
                 image = R.drawable.logo,
-                chapter = "1",
-                auth = "123"
+                authorName = "23",
+                chapter = "123"
             ),
             ComicCardItem(
-                title = "Naruto",
+                comicName = "Naruto",
                 image = R.drawable.logo,
-                chapter = "1",
-                auth = "123"
+                authorName = "23",
+                chapter = "123"
             ),
             ComicCardItem(
-                title = "Naruto",
+                comicName = "Naruto",
                 image = R.drawable.logo,
-                chapter = "1",
-                auth = "123"
+                authorName = "23",
+                chapter = "123"
             ),
             ComicCardItem(
-                title = "Naruto",
+                comicName = "Naruto",
                 image = R.drawable.logo,
-                chapter = "1",
-                auth = "123"
-            ),
-
+                authorName = "23",
+                chapter = "123"
+            )
         )
-    LazyRow(
+    Row(
         modifier = Modifier.fillMaxSize()
-            .padding(start = 28.dp),
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
+            .padding(start = 25.dp, end = 23.dp),
+//            .background(color = MaterialTheme.colorScheme.tertiary),
+        horizontalArrangement = Arrangement.spacedBy(25.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        items(item) { item ->
+        item.forEach { item ->
             RowItem(item = item)
+
         }
     }
 
@@ -82,7 +84,7 @@ fun RowItem(item: ComicCardItem){
             .height(130.dp)
             .width(71.dp),
         shape = RoundedCornerShape(8.dp),
-//        elevation = 4.dp
+        color = MaterialTheme.colorScheme.tertiary
     ) {
         Column(
             modifier = Modifier
@@ -97,14 +99,15 @@ fun RowItem(item: ComicCardItem){
             Image(
                 modifier = Modifier
                     .width(69.dp)
-                    .height(81.dp),
+                    .height(81.dp)
+                    .background(color = MaterialTheme.colorScheme.tertiary),
                 painter = painterResource(id = item.image),
-                contentDescription = item.title,
+                contentDescription = item.comicName,
                 contentScale = ContentScale.Crop
             )
 //        Spacer(modifier = Modifier.height(8.dp))
 
-            Text(text = item.title, fontWeight = FontWeight.SemiBold)
+            Text(text = item.comicName, fontWeight = FontWeight.SemiBold)
             Text(text = item.chapter)
         }
         }

@@ -4,11 +4,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -33,71 +40,123 @@ fun CardComicColumn(navController1: NavController) {
 
     val item: List<ComicCardItem> = listOf(
         ComicCardItem(
-            title = "Naruto",
+            comicName = "Naruto",
             image = R.drawable.logo,
-            chapter = "123",
-            auth = "123"
+            authorName = "23",
+            chapter = "123"
         ),
         ComicCardItem(
-            title = "Naruto",
+            comicName = "Naruto",
             image = R.drawable.logo,
-            chapter = "123",
-            auth = "123"
+            authorName = "23",
+            chapter = "123"
         ),
         ComicCardItem(
-            title = "Naruto",
+            comicName = "Naruto",
             image = R.drawable.logo,
-            chapter = "123",
-            auth = "123"
+            authorName = "23",
+            chapter = "123"
         ),
         ComicCardItem(
-            title = "Naruto",
+            comicName = "Naruto",
             image = R.drawable.logo,
-            chapter = "123",
-            auth = "123"
+            authorName = "23",
+            chapter = "123"
         ),
+        ComicCardItem(
+            comicName = "Naruto",
+            image = R.drawable.logo,
+            authorName = "23",
+            chapter = "123"
+        ),
+        ComicCardItem(
+            comicName = "Naruto",
+            image = R.drawable.logo,
+            authorName = "23",
+            chapter = "123"
+        ),
+        ComicCardItem(
+            comicName = "Naruto",
+            image = R.drawable.logo,
+            authorName = "23",
+            chapter = "123"
+        ),
+        ComicCardItem(
+            comicName = "Naruto",
+            image = R.drawable.logo,
+            authorName = "23",
+            chapter = "123"
+        ),
+        ComicCardItem(
+            comicName = "Naruto",
+            image = R.drawable.logo,
+            authorName = "23",
+            chapter = "123"
+        ),
+        ComicCardItem(
+            comicName = "Naruto",
+            image = R.drawable.logo,
+            authorName = "23",
+            chapter = "123"
+        ),
+        ComicCardItem(
+            comicName = "Naruto",
+            image = R.drawable.logo,
+            authorName = "23",
+            chapter = "123"
+        ),
+        ComicCardItem(
+            comicName = "Naruto",
+            image = R.drawable.logo,
+            authorName = "23",
+            chapter = "123"
+        ),
+        ComicCardItem(
+            comicName = "Naruto",
+            image = R.drawable.logo,
+            authorName = "23",
+            chapter = "123"
+        )
     )
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(25.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(item) { item ->
-            RowItem(item = item)
+            ColumnItem(item = item)
         }
     }
-
 }
 
-//}
 @Composable
-fun ColumnItem(item: ComicCardItem){
+fun ColumnItem(item: ComicCardItem) {
     Surface(
         modifier = Modifier
-            .height(214.dp)
-            .width(127.dp)
-            .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp)),
+            .height(200.dp)
+            .width(142.dp),
         shape = RoundedCornerShape(8.dp),
-//        elevation = 4.dp
+        color = MaterialTheme.colorScheme.tertiary
     ) {
         Column(
             modifier = Modifier
-                .height(204.dp)
-                .width(127.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .height(200.dp)
+                .width(142.dp)
+                .padding(vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Image(
                 modifier = Modifier
-                    .height(128.dp)
-                    .width(114.dp),
+                    .width(138.dp)
+                    .height(162.dp),
                 painter = painterResource(id = item.image),
-                contentDescription = item.title,
+                contentDescription = item.comicName,
                 contentScale = ContentScale.Crop
             )
-//        Spacer(modifier = Modifier.height(8.dp))
-
-            Text(text = item.title, fontWeight = FontWeight.SemiBold)
-            Text(text = item.auth)
+            Text(text = item.comicName, fontWeight = FontWeight.SemiBold)
+            Text(text = item.authorName)
         }
     }
 }

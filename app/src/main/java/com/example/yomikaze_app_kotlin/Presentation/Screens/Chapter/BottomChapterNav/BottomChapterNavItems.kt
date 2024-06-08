@@ -8,5 +8,5 @@ sealed class BottomChapterNavItems(var title: String, var icon: Int, var screen_
   object ListChapter : BottomChapterNavItems ("Chapters", R.drawable.ic_chapter, "list_chapter_route")
   object Comment : BottomChapterNavItems ("Comment", R.drawable.ic_comment, "comment_route")
   object Setting : BottomChapterNavItems ("Setting", R.drawable.ic_setting, "setting_route")
-  object NextChapter : BottomChapterNavItems ("Next", R.drawable.ic_next_chapter, "next_chapter_route")
+  object NextChapter : BottomChapterNavItems ("Next", R.drawable.ic_next, "next_chapter_route")
 }
