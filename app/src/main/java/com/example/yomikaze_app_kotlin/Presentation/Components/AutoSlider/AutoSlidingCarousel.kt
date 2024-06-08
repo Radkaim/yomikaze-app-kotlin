@@ -91,4 +91,5 @@ fun Autoslider(images: List<String>) {
             }
         )
     }
+
 }

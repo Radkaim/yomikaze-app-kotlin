@@ -1,14 +1,9 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 import android.util.Log
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.Button
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,6 +15,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
+import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicColumn
+import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
 
 @Composable
 fun HomeView(
@@ -28,7 +25,7 @@ fun HomeView(
 ) {
     val state by homeViewModel.state.collectAsState()
     homeViewModel.setNavController(navController)
-    HomeContent(state, homeViewModel)
+    HomeContent(state, homeViewModel, navController)
 
 }
 
@@ -37,18 +34,20 @@ fun HomeView(
 fun HomeContent(
     state: HomeState,
     viewModel: HomeViewModel,
-    ) {
-    if (state.isLoading) {
-        Text(
-            text = "Loading...",
-            modifier = Modifier.padding(16.dp)
-        )
-    } else if (state.images.isNotEmpty()) {
-        Autoslider(images = state.images)
-    } else {
-        // Show a placeholder or message when there are no images
-        Text("No images available")
-    }
+    navController: NavHostController
+) {
+    Column {
+        if (state.isLoading) {
+            Text(
+                text = "Loading...",
+                modifier = Modifier.padding(9.dp)
+            )
+        } else if (state.images.isNotEmpty()) {
+            Autoslider(images = state.images)
+        } else {
+            // Show a placeholder or message when there are no images
+            Text("No images available")
+        }
 
 
         Log.d("HomeView", "User is logged in: ${state.isUserLoggedIn}")
@@ -57,14 +56,11 @@ fun HomeContent(
             Button(onClick = { viewModel.onViewMoreHistoryClicked() }) {
                 Text(text = "Click me")
             }
-
         }
 
-
-}
-
-@Composable
-fun Card(){
+        CardComicRow(navController)
+        CardComicColumn(navController)
+    }
 
 }
 
