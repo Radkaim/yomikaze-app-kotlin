@@ -71,4 +71,10 @@ class HomeViewModel @Inject constructor(
         //test for ranking screen
         navController?.navigate("ranking_route/0")
     }
+
+    fun onViewMore(){
+        navController?.navigate("history_rounte/0")
+    }
+//    fun onViewMore
+
 }

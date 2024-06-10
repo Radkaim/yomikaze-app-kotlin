@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Logi
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -23,6 +26,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -38,6 +42,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,7 +56,8 @@ import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun LoginView(loginViewModel: LoginViewModel = hiltViewModel(),
-              navController: NavController) {
+              navController: NavController
+) {
     val state by loginViewModel.state.collectAsState()
 
     LoginContent(state, loginViewModel, navController)
@@ -88,7 +94,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
         ) {
             var username by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
-            state.hung = "hung"
+//        state.hung = "hung"
 
             Column(
 //            Alignment = Alignment.Center,
@@ -113,9 +119,15 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
                     label = {
                         Text(
                             text = "User Name",
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
                         )
+
                     },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                    ),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_email),
@@ -127,6 +139,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
+                        .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                             shape = RoundedCornerShape(24.dp),
@@ -138,9 +151,19 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
-                    )
+                    ),
+                    isError = state.usernameError != null
                 )
-
+                if (state.usernameError != null) {
+                    Text(
+                        text = state.usernameError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
+                    )
+                }
 
                 TextField(
                     value = password,
@@ -148,9 +171,14 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
                     label = {
                         Text(
                             text = "Password",
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                    ),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_eye),
@@ -162,6 +190,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
+                        .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                             shape = RoundedCornerShape(24.dp),
@@ -173,8 +202,19 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
-                    )
+                    ),
+                    isError = state.passwordError != null
                 )
+                if (state.passwordError != null) {
+                    Text(
+                        text = state.passwordError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
+                    )
+                }
                 Row {
                     Text(
                         text = "Sign Up",
@@ -184,11 +224,11 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
 //                        color = MaterialTheme.colors.surface
                         ),
                         modifier = Modifier.padding(
-//                        top = 3.dp,
+                            top = 3.dp,
                             start = 0.dp,
-                            end = 170.dp,
+                            end = 200.dp,
                             bottom = 3.dp
-                        )
+                        ) .clickable {  }
                     )
                     Text(
                         text = "Forgot Password?",
@@ -223,13 +263,22 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
 
                         )
                     {
-                        Text(
-                            text = "Login",
-                            color = Color.Black,
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                            ),
-                        )
+                        if (state.isLoading) {
+                            Text(
+                                text = "Login",
+                                color = Color.Black,
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                ),
+                            )
+
+                        } else {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                        }
+
                     }
 
                     Text(
