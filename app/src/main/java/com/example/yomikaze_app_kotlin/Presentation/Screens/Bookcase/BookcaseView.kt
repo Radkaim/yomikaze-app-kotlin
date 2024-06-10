@@ -25,6 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.History.HistoryView
@@ -33,7 +35,10 @@ import com.example.yomikaze_app_kotlin.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BookcaseView(initialTab: Int ) {
+fun BookcaseView(
+    initialTab: Int,
+    navController: NavController
+) {
     var tabIndex by remember { mutableStateOf(initialTab) }
 
     val tabs = listOf("History", "Library", "Download")
@@ -77,7 +82,7 @@ fun BookcaseView(initialTab: Int ) {
                 }
             }
             when (tabIndex) {
-                0 -> HistoryView()
+                0 -> HistoryView(navController = navController)
                 1 -> LibraryView()
                 2 -> DownloadView()
             }
@@ -86,7 +91,7 @@ fun BookcaseView(initialTab: Int ) {
 }
 
 @Composable
-fun setIcon(index: Int, tabIndex: Int){
+fun setIcon(index: Int, tabIndex: Int) {
     return when (index) {
         0 -> {
             Icon(
@@ -114,12 +119,13 @@ fun setIcon(index: Int, tabIndex: Int){
                 modifier = changeSizeIcon(),
             )
         }
+
         else -> {}
     }
 }
 
 @Composable
-fun changeSizeIcon():Modifier {
+fun changeSizeIcon(): Modifier {
     return Modifier
         .width(20.dp)
         .height(20.dp)
@@ -135,5 +141,6 @@ fun changeColor(tabIndex: Int, index: Int): Color {
 @Preview
 @Composable
 fun BookcasePreview() {
-    BookcaseView( initialTab =  0)
+    val navController = rememberNavController()
+    BookcaseView(initialTab = 0, navController = navController)
 }

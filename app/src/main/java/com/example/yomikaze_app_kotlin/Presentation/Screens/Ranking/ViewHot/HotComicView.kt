@@ -55,7 +55,7 @@ fun HotComicView(
             comments = 10
         ),
         Comic(
-            comicId = 2,
+            comicId = 3,
             rankingNumber = 2,
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
@@ -67,7 +67,7 @@ fun HotComicView(
             views = 100,
             comments = 10
         ),  Comic(
-            comicId = 2,
+            comicId = 4,
             rankingNumber = 2,
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
@@ -79,7 +79,7 @@ fun HotComicView(
             views = 100,
             comments = 10
         ),  Comic(
-            comicId = 2,
+            comicId = 5,
             rankingNumber = 2,
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
@@ -91,7 +91,7 @@ fun HotComicView(
             views = 100,
             comments = 10
         ),  Comic(
-            comicId = 2,
+            comicId = 6,
             rankingNumber = 2,
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
@@ -103,7 +103,7 @@ fun HotComicView(
             views = 100,
             comments = 10
         ),  Comic(
-            comicId = 2,
+            comicId = 7,
             rankingNumber = 2,
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
@@ -116,9 +116,6 @@ fun HotComicView(
             comments = 10
         ),
     )
-    //   modifier = Modifier.clickable {
-    //                navController.navigate("comicDetail/${1}")
-    //            }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card

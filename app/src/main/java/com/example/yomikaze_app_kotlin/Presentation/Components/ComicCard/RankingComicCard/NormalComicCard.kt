@@ -119,6 +119,7 @@ fun NormalComicCard(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.offset(y = (3).dp)
                     ) {
                         Text(
                             text = cutComicName(comicName),

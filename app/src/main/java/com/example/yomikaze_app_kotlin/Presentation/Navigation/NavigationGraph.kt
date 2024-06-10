@@ -14,6 +14,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notifi.NotificationView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.ProfileView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.RankingView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.ViewChapter.ViewChapter
 
 
 @Composable
@@ -30,7 +31,7 @@ fun NavigationGraph(
             HomeView(navController = navController)
         }
         composable(BottomHomeNavItems.Bookcase.screen_route) {
-            BookcaseView(initialTab = 0)
+            BookcaseView(initialTab = 0, navController)
         }
 
         composable(BottomHomeNavItems.Profile.screen_route) {
@@ -64,10 +65,10 @@ fun NavigationGraph(
             }
             val param = navBackStackEntry.arguments?.getString("param")
             when (param) {
-                "0" -> BookcaseView(initialTab = 0)
-                "1" -> BookcaseView(initialTab = 1)
-                "2" -> BookcaseView(initialTab = 2)
-                else -> BookcaseView(initialTab = 0)
+                "0" -> BookcaseView(initialTab = 0, navController)
+                "1" -> BookcaseView(initialTab = 1, navController)
+                "2" -> BookcaseView(initialTab = 2, navController)
+                else -> BookcaseView(initialTab = 0, navController)
 
 //            BookcaseView(initialTab = param?.toInt() ?: 0)
 
@@ -82,11 +83,11 @@ fun NavigationGraph(
         composable("ranking_route/{param}") { navBackStackEntry ->
             val param = navBackStackEntry.arguments?.getString("param")
             when (param) {
-                "0" -> RankingView(initialTab = 0, navController = navController)
-                "1" -> RankingView(initialTab = 1, navController = navController)
-                "2" -> RankingView(initialTab = 2, navController = navController)
-                "3" -> RankingView(initialTab = 3, navController = navController)
-                else -> RankingView(initialTab = 0, navController = navController)
+                "0" -> RankingView(initialTab = 0, navController)
+                "1" -> RankingView(initialTab = 1, navController)
+                "2" -> RankingView(initialTab = 2, navController)
+                "3" -> RankingView(initialTab = 3, navController)
+                else -> RankingView(initialTab = 0, navController)
             }
         }
 
@@ -94,6 +95,12 @@ fun NavigationGraph(
         composable("comicDetail/{comicId}") { navBackStackEntry ->
             val comicId = navBackStackEntry.arguments?.getString("comicId")
             ComicDetailsView(comicId = comicId?.toInt() ?: 0, navController)
+        }
+
+        //view chapter screen
+        composable("viewChapter/{chapterId}") { navBackStackEntry ->
+            val chapterId = navBackStackEntry.arguments?.getString("chapterId")
+            ViewChapter(navController = navController, chapterId = chapterId?.toInt() ?: 0 )
         }
     }
 }

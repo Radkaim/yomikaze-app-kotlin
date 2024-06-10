@@ -51,7 +51,8 @@ class HomeViewModel @Inject constructor(
 
     fun checkUserToken() {
         appPreference.authToken = "Hung is here"
-       val token = appPreference.authToken
+        // appPreference.deleteUserToken()
+        val token = appPreference.authToken
 
         Log.d("HomeViewModel", "User token: $token")
         if (token != null) {
@@ -62,7 +63,6 @@ class HomeViewModel @Inject constructor(
         }
     }
     fun onViewMoreHistoryClicked(){
-
         navController?.navigate("bookcase_route/0")
     }
 
