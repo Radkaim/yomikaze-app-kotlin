@@ -74,48 +74,6 @@ fun CardComicColumn(navController1: NavController) {
             image = R.drawable.logo,
             authorName = "23",
             chapter = "123"
-        ),
-        ComicCardItem(
-            comicName = "Naruto",
-            image = R.drawable.logo,
-            authorName = "23",
-            chapter = "123"
-        ),
-        ComicCardItem(
-            comicName = "Naruto",
-            image = R.drawable.logo,
-            authorName = "23",
-            chapter = "123"
-        ),
-        ComicCardItem(
-            comicName = "Naruto",
-            image = R.drawable.logo,
-            authorName = "23",
-            chapter = "123"
-        ),
-        ComicCardItem(
-            comicName = "Naruto",
-            image = R.drawable.logo,
-            authorName = "23",
-            chapter = "123"
-        ),
-        ComicCardItem(
-            comicName = "Naruto",
-            image = R.drawable.logo,
-            authorName = "23",
-            chapter = "123"
-        ),
-        ComicCardItem(
-            comicName = "Naruto",
-            image = R.drawable.logo,
-            authorName = "23",
-            chapter = "123"
-        ),
-        ComicCardItem(
-            comicName = "Naruto",
-            image = R.drawable.logo,
-            authorName = "23",
-            chapter = "123"
         )
     )
     LazyVerticalGrid(
