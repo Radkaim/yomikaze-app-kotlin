@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav.BottomHomeNavItems
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notifi.NotificationView
@@ -44,14 +45,16 @@ fun NavigationGraph(
          */
 
         // for login screen
-         composable("login_route") {
+        composable("login_route") {
             LoginView(navController = navController)
-         }
+        }
 
         // for history tab in bookcase screen
         composable("${BottomHomeNavItems.Bookcase.screen_route}/{param}") { navBackStackEntry ->
             navController.navigate("${BottomHomeNavItems.Bookcase.screen_route}") {
-                popUpTo(BottomHomeNavItems.Home.screen_route) { inclusive = true } // pop up to home screen
+                popUpTo(BottomHomeNavItems.Home.screen_route) {
+                    inclusive = true
+                } // pop up to home screen
             }
             val param = navBackStackEntry.arguments?.getString("param")
             when (param) {
@@ -67,18 +70,24 @@ fun NavigationGraph(
 
         // for ranking screen
         composable("ranking_route") {
-            RankingView( initialTab =  0, navController = navController)
+            RankingView(initialTab = 0, navController = navController)
         }
 
         composable("ranking_route/{param}") { navBackStackEntry ->
             val param = navBackStackEntry.arguments?.getString("param")
             when (param) {
-                "0" -> RankingView( initialTab =  0, navController = navController)
-                "1" -> RankingView( initialTab =  1, navController = navController)
-                "2" -> RankingView( initialTab =  2, navController = navController)
-                "3" -> RankingView( initialTab =  3, navController = navController)
-                else -> RankingView( initialTab =  0, navController = navController)
+                "0" -> RankingView(initialTab = 0, navController = navController)
+                "1" -> RankingView(initialTab = 1, navController = navController)
+                "2" -> RankingView(initialTab = 2, navController = navController)
+                "3" -> RankingView(initialTab = 3, navController = navController)
+                else -> RankingView(initialTab = 0, navController = navController)
             }
+        }
+
+        // comic Details screen
+        composable("comicDetail/{comicId}") { navBackStackEntry ->
+            val comicId = navBackStackEntry.arguments?.getString("comicId")
+            ComicDetailsView(comicId = comicId?.toInt() ?: 0, navController)
         }
     }
 }

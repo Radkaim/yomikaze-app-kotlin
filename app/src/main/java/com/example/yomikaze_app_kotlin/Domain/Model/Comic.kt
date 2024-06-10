@@ -1,11 +1,15 @@
 package com.example.yomikaze_app_kotlin.Domain.Model
 
 data class Comic(
-    val id: Int,
-    val title: String,
-    val description: String,
-    val thumbnail: String,
-    val images: List<String>,
-    val author: String
-
+    val comicId: Int,
+    val rankingNumber: Int,
+    val image: String,
+    val comicName: String,
+    val status: String,
+    val authorName: String,
+    val publishedDate: String,
+    val ratingScore: Float,
+    val follows: Int,
+    val views: Int,
+    val comments: Int
 )

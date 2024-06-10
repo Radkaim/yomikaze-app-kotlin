@@ -93,7 +93,7 @@ fun RankingView(initialTab: Int, navController: NavController) {
                 }
             }
             when (tabIndex) {
-                0 -> HotComicView()
+                0 -> HotComicView(navController = navController)
                 1 -> RatingComicView()
                 2 -> CommentComicView()
                 3 -> FollowComicView()
