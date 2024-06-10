@@ -18,7 +18,12 @@ import com.example.yomikaze_app_kotlin.Domain.Model.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 
 @Composable
-fun HotComicView(navController: NavController) {
+fun HotComicView(
+
+    navController: NavController) {
+
+    //set navController for viewModel
+//    hotComicViewModel.setNavController(navController)
 
     //create listOf comics
     val comicsListCardModel = listOf(
@@ -84,6 +89,7 @@ fun HotComicView(navController: NavController) {
                     backgroundColor = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.clickable {
                         navController.navigate("comicDetail/${comic.comicId}")
+                        // TODO change to viewModel.navigateToComicDetail(comic.comicId) if using viewModel
                     }
                 )
             }
