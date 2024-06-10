@@ -53,34 +53,36 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeApp
 import com.example.yomikaze_app_kotlin.R
 
 
-
 @Composable
-fun LoginView(loginViewModel: LoginViewModel = hiltViewModel(),
-              navController: NavController
+fun LoginView(
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val state by loginViewModel.state.collectAsState()
+    loginViewModel.setNavController(navController)
 
     LoginContent(state, loginViewModel, navController)
 }
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: NavController) {
+fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navController: NavController) {
 
     Scaffold(
         topBar = {
             CustomeAppBar(
-                title = "Notification",
+                title = "Login",
                 navigationIcon = {
                     IconButton(onClick = {
-                            navController.popBackStack()
+                        navController.popBackStack()
 
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back Icon"
-                            )
-                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back Icon"
+                        )
+                    }
                 },
             )
         })
@@ -223,12 +225,14 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
                             fontStyle = FontStyle.Italic,
 //                        color = MaterialTheme.colors.surface
                         ),
-                        modifier = Modifier.padding(
-                            top = 3.dp,
-                            start = 0.dp,
-                            end = 200.dp,
-                            bottom = 3.dp
-                        ) .clickable {  }
+                        modifier = Modifier
+                            .padding(
+                                top = 3.dp,
+                                start = 0.dp,
+                                end = 200.dp,
+                                bottom = 3.dp
+                            )
+                            .clickable { loginViewModel.navigateToRegister() }
                     )
                     Text(
                         text = "Forgot Password?",
@@ -258,7 +262,7 @@ fun LoginContent(state: LoginState, viewModel: LoginViewModel, navController: Na
 //
 //               ),
                         onClick = {
-                            viewModel.onLogin(username, password)
+                            loginViewModel.onLogin(username, password)
                         },
 
                         )

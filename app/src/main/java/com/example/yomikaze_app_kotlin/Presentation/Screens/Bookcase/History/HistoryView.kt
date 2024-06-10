@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.ComicStatus
 
 @Composable
 fun HistoryView() {
@@ -31,9 +30,6 @@ fun HistoryView() {
             textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
-//        RankingNumberCircle(number = 2)
-//        ComicStatus(status = "Ong Going")
-        ComicStatus(status = "Completed")
     }
 
 }

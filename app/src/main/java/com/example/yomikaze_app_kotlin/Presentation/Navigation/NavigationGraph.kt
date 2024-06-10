@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav.BottomHomeNavItems
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Register.RegisterView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
@@ -47,6 +48,11 @@ fun NavigationGraph(
         // for login screen
         composable("login_route") {
             LoginView(navController = navController)
+        }
+
+        //for register screen
+        composable("register_route") {
+            RegisterView(navController = navController)
         }
 
         // for history tab in bookcase screen
