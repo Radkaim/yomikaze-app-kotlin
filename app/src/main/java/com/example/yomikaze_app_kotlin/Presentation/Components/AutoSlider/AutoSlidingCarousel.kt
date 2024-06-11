@@ -72,7 +72,6 @@ fun AutoSlidingCarousel(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Autoslider(images: List<String>) {
-
     Card(
         modifier = Modifier.padding(16.dp),
         shape = RoundedCornerShape(16.dp),

@@ -36,6 +36,8 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autosl
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.Networks.NetworkDisconnectedDialog
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangle
 import com.example.yomikaze_app_kotlin.R
 
 
@@ -45,8 +47,14 @@ fun HomeView(
     navController: NavHostController
 ) {
     val state by homeViewModel.state.collectAsState()
+
     homeViewModel.setNavController(navController)
     HomeContent(state, homeViewModel, navController)
+
+    if (state.isNetworkAvailable.not()) {
+        // Show dialog when network is disconnected
+        NetworkDisconnectedDialog()
+    }
 }
 
 @Composable
@@ -131,15 +139,9 @@ fun getListComicForRanking(): List<Comic> {
 @Composable
 fun showAutoSlider(state: HomeState, images: List<String>) {
     if (state.isLoading) {
-        Text(
-            text = "Loading...",
-            modifier = Modifier.padding(9.dp)
-        )
-    } else if (state.images.isNotEmpty()) {
+        ComponentRectangle()
+    } else if (state.images.isNotEmpty() && !state.isLoading) {
         Autoslider(images = state.images)
-    } else {
-        // Show a placeholder or message when there are no images
-        Text("No images available")
     }
 }
 
@@ -339,6 +341,7 @@ fun RowWithThreeItems(list: List<String>) {
         }
     }
 }
+
 @Preview
 @Composable
 fun HomeViewPreview() {

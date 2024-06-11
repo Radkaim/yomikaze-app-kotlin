@@ -1,10 +1,12 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Core.NetworkMonitor
 import com.example.yomikaze_app_kotlin.Domain.UseCase.GetHotComicBannerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,37 +17,48 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getHotComicBannerUseCase: GetHotComicBannerUseCase,
-    private val appPreference: AppPreference
+    private val appPreference: AppPreference,
+    private val application: Application
 ) :ViewModel () {
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> get() = _state
     private var navController: NavController? = null
-
+    private val networkMonitor = NetworkMonitor(application)
 
     init {
-
-        fetchImages()
-        checkUserToken()
+        networkMonitor.registerCallback(
+            onAvailable = {
+                viewModelScope.launch {
+                    _state.value = _state.value.copy(isNetworkAvailable = true)
+                    fetchImages()
+                    checkUserToken()
+                }
+            },
+            onLost = {
+                // Xử lý khi mất kết nối nếu cần
+                _state.value = _state.value.copy(isNetworkAvailable = false)
+            }
+        )
     }
 
+
+    // for HomeView use
     fun setNavController(navController: NavController) {
         this.navController = navController
     }
 
     fun fetchImages() {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
             val result = getHotComicBannerUseCase.getHotComicBannerImages()
-            _state.value = _state.value.copy(isLoading = false)
             result.onSuccess { images ->
               //get list string from images
                 val imageList = images.map {it.thumbnailUrl }
-                Log.d("HomeViewModel", "fetchImages: ${imageList.take(5)}")
                 //get 5 images api 5000 images testcase
-                _state.value = _state.value.copy(images = imageList.take(5))
+               _state.value = _state.value.copy(images = imageList.take(5),  isLoading = false)
             }.onFailure {
-                _state.value = _state.value.copy(error = it.message)
+                _state.value = _state.value.copy(isLoading = true, error = it.message)
             }
+
         }
     }
 
@@ -62,6 +75,12 @@ class HomeViewModel @Inject constructor(
             Log.d("HomeViewModel", "User is logged in: false")
         }
     }
+
+
+    /**
+     * Todo: Implement navigation functions
+
+     */
     fun onViewMoreHistoryClicked(){
         navController?.navigate("bookcase_route/0")
     }
