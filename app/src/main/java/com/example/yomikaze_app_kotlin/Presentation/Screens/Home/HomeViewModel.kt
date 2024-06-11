@@ -21,7 +21,7 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> get() = _state
     private var navController: NavController? = null
-    private val networkMonitor = NetworkMonitor(application)
+
 
     init {
 //        _state.value = _state.value.copy(isNetworkAvailable = true)
@@ -48,11 +48,6 @@ class HomeViewModel @Inject constructor(
 //            }
 //        )
 //    }
-
-    override fun onCleared() {
-        super.onCleared()
-        networkMonitor.unregisterCallback()
-    }
 
 
     // for HomeView use
