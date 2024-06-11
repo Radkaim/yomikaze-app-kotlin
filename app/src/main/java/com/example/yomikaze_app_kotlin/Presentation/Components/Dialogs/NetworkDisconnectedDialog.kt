@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Components.Networks
+package com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs
 
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button

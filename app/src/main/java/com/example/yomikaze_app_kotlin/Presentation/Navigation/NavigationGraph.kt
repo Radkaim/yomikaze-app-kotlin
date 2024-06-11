@@ -20,7 +20,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.ViewChapter.ViewChap
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
 ) {
     NavHost(navController, startDestination = BottomHomeNavItems.Home.screen_route) {
 

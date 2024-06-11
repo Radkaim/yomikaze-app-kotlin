@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,12 +32,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.yomikaze_app_kotlin.Core.Networks.ConnectionState
+import com.example.yomikaze_app_kotlin.Core.Networks.connectivityState
 import com.example.yomikaze_app_kotlin.Domain.Model.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
-import com.example.yomikaze_app_kotlin.Presentation.Components.Networks.NetworkDisconnectedDialog
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangle
 import com.example.yomikaze_app_kotlin.R
 
@@ -44,17 +47,36 @@ import com.example.yomikaze_app_kotlin.R
 @Composable
 fun HomeView(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+
 ) {
     val state by homeViewModel.state.collectAsState()
-
+    // fetching local context
+    val mContext = LocalContext.current
     homeViewModel.setNavController(navController)
-    HomeContent(state, homeViewModel, navController)
 
-    if (state.isNetworkAvailable.not()) {
-        // Show dialog when network is disconnected
+    // This will cause re-composition on every network state change
+    val connection by connectivityState()
+
+    val isConnected = connection === ConnectionState.Available
+
+
+    if (isConnected) {
+        // Show UI when connectivity is available
+        HomeContent(state, homeViewModel, navController)
+    } else {
+        // Show UI for No Internet Connectivity
         NetworkDisconnectedDialog()
+        NoDataAvailable()
     }
+}
+
+@Composable
+fun NoDataAvailable() {
+    Text(
+        text = "No data available",
+        color = MaterialTheme.colorScheme.onPrimary,
+    )
 }
 
 @Composable
@@ -346,5 +368,5 @@ fun RowWithThreeItems(list: List<String>) {
 @Composable
 fun HomeViewPreview() {
     val navController = rememberNavController()
-    HomeView(navController = navController)
+//    HomeView(navController = navController)
 }
