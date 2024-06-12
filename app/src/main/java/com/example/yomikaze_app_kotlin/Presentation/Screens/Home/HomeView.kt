@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Core.Networks.ConnectionState
 import com.example.yomikaze_app_kotlin.Core.Networks.connectivityState
@@ -47,9 +47,9 @@ import com.example.yomikaze_app_kotlin.R
 @Composable
 fun HomeView(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navController: NavHostController,
+    navController: NavController,
 
-) {
+    ) {
     val state by homeViewModel.state.collectAsState()
     // fetching local context
     val mContext = LocalContext.current
@@ -83,7 +83,7 @@ fun NoDataAvailable() {
 fun HomeContent(
     state: HomeState,
     viewModel: HomeViewModel,
-    navController: NavHostController
+    navController: NavController
 ) {
     val comics = getListComicForRanking() // test data
 
@@ -168,7 +168,7 @@ fun showAutoSlider(state: HomeState, images: List<String>) {
 }
 
 @Composable
-fun showHistory(navController: NavHostController, viewModel: HomeViewModel) {
+fun showHistory(navController: NavController, viewModel: HomeViewModel) {
     Row(
         modifier = Modifier.padding(start = 8.dp, end = 8.dp)
     ) {
@@ -314,7 +314,7 @@ fun showRankingComicCard() {
 }
 
 @Composable
-fun showWeekly(state: HomeState, navController: NavHostController) {
+fun showWeekly(state: HomeState, navController: NavController) {
     Spacer(modifier = Modifier.height(16.dp))
     Row(
         modifier = Modifier

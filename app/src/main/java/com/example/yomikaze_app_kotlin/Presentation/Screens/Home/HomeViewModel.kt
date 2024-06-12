@@ -86,7 +86,6 @@ class HomeViewModel @Inject constructor(
 
     /**
      * Todo: Implement navigation functions
-
      */
     fun onViewMoreHistoryClicked() {
         navController?.navigate("bookcase_route/0")

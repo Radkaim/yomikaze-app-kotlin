@@ -18,6 +18,6 @@ class HotComicViewModel @Inject constructor(): ViewModel(){
 
     //navigate to comic detail
     fun navigateToComicDetail(comicId: Int){
-        navController?.navigate("comicDetail/$comicId")
+        navController?.navigate("comic_detail_route/$comicId")
     }
 }

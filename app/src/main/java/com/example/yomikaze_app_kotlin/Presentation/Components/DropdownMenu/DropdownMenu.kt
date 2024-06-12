@@ -59,7 +59,6 @@ fun DropdownMenuCustom(
                 onClick = {
                     // Gọi callback để thông báo về sự thay đổi của chooseOptionState khi một mục được chọn
                     onOptionSelected(ChooseOptionState(tabs.route)) // Đây là một ví dụ, bạn cần cập nhật tham số tùy thuộc vào cấu trúc của chooseOptionState
-                    onDismiss()
                 },
                 onOptionSelected = onOptionSelected // Truyền callback vào DropdownMenuItemCustom
             )

@@ -30,6 +30,9 @@ fun ComicDetailsView(
     comicId: Int,
     navController: NavController
 ) {
+    /**
+     * for menu option
+     */
     var chooseOptionState by remember { mutableStateOf(ChooseOptionState("")) } // Khởi tạo chooseOptionState
 
     // Callback để cập nhật chooseOptionState
@@ -44,7 +47,7 @@ fun ComicDetailsView(
 //        MenuOptions("Report", "report", R.drawable.ic_report),
 //        MenuOptions("Share", "settings", R.drawable.ic_share),
 
-        )
+    )
     Scaffold(
         topBar = {
             CustomeAppBar(
@@ -64,7 +67,7 @@ fun ComicDetailsView(
                     // Creating Icon button for dropdown menu
                     var isDisplayMenu by remember { mutableStateOf(false) }
 
-                    IconButton(onClick = { isDisplayMenu = !isDisplayMenu}) {
+                    IconButton(onClick = { isDisplayMenu = !isDisplayMenu }) {
                         Icon(Icons.Default.MoreVert, "Icon for dropdown menu")
                     }
                     if (isDisplayMenu) {
@@ -78,6 +81,19 @@ fun ComicDetailsView(
                     }
                     Log.d("ComicDetailsView", "chooseOptionState: ${chooseOptionState.route}")
 
+                    when (chooseOptionState.route) {
+                        "add_to_library_dialog_route" -> CustomDialog(
+                            title = "${chooseOptionState.route}",
+                            message = ""
+                        )
+
+                        "download_dialog_route" -> CustomDialog(
+                            title = "${chooseOptionState.route}",
+                            message = ""
+                        )
+
+                        else -> {}
+                    }
                 }
             )
         })
@@ -87,16 +103,17 @@ fun ComicDetailsView(
         }
     }
 }
+
 @Composable
-fun CustomDialog(title: String, message: String, onDismiss: () -> Unit) {
+fun CustomDialog(title: String, message: String) {
     val openDialog = remember { mutableStateOf(true) }
     if (openDialog.value) {
         AlertDialog(
-            onDismissRequest = {onDismiss()},
+            onDismissRequest = { openDialog.value = false },
             title = { Text(text = title) },
             text = { Text(text = message) },
             confirmButton = {
-                TextButton(onClick = {}) {
+                TextButton(onClick = { openDialog.value = false }) {
                     Text("OK")
                 }
             }
