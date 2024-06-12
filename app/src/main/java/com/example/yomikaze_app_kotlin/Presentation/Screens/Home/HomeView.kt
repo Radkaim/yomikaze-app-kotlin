@@ -1,5 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
+//import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
+import CardComicHistoryHome
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +35,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Domain.Model.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
-import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
+import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicItem
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Networks.NetworkDisconnectedDialog
@@ -64,7 +66,7 @@ fun HomeContent(
     navController: NavHostController
 ) {
     val comics = getListComicForRanking() // test data
-
+    val comic = getListCardComicHistory()
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(0.dp),
@@ -136,6 +138,46 @@ fun getListComicForRanking(): List<Comic> {
     return comics
 }
 
+//@Composable
+
+
+fun getListCardComicHistory(): List<CardComicItem> {
+    val comics = listOf(
+        CardComicItem(
+            comicName = "Comic 1",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 1"
+        ),
+        CardComicItem(
+            comicName = "Comic 2",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 2"
+        ),
+        CardComicItem(
+            comicName = "Comic 3",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 3"
+        ),
+        CardComicItem(
+            comicName = "Comic 3",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 3"
+        ),
+        CardComicItem(
+            comicName = "Comic 3",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 3"
+        )
+    )
+
+    return comics
+}
+
 @Composable
 fun showAutoSlider(state: HomeState, images: List<String>) {
     if (state.isLoading) {
@@ -180,8 +222,33 @@ fun showHistory(navController: NavHostController, viewModel: HomeViewModel) {
 
         }
     }
-    CardComicRow(navController)
+    showHistoryCardComic()
+//   /**/ CardComicRow(navController)
 }
+
+@Composable
+fun showHistoryCardComic() {
+    val comics = getListCardComicHistory()
+    Row(
+        modifier = Modifier.fillMaxSize()
+            .padding(start = 25.dp, end = 23.dp),
+//            .background(color = MaterialTheme.colorScheme.tertiary),
+        horizontalArrangement = Arrangement.spacedBy(1.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+    comics.forEach { comic ->
+            CardComicHistoryHome(
+                image = comic.image,
+                comicName = comic.comicName,
+                comicChapter = comic.comicChapter
+            )
+        }
+    }
+
+}
+
+
 
 @Composable
 fun showRanking(viewModel: HomeViewModel) {
@@ -320,7 +387,7 @@ fun showWeekly(state: HomeState, navController: NavHostController) {
     } else {
         Text("No images available")
     }
-    CardComicRow(navController)
+//    CardComicRow(navController)
     //CardComicRow(navController)
 }
 
