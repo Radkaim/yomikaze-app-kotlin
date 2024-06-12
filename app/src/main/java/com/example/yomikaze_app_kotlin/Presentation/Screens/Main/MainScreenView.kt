@@ -17,6 +17,7 @@ fun MainScreenView(viewModel: MainViewModel) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+
     Scaffold(
         topBar = {
             when (currentDestination?.route) {
