@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Domain.Model.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicItem
+import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicWeeklyHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Networks.NetworkDisconnectedDialog
@@ -67,6 +70,7 @@ fun HomeContent(
 ) {
     val comics = getListComicForRanking() // test data
     val comic = getListCardComicHistory()
+    val comicCard = getListCardComicWeekly()
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(0.dp),
@@ -178,6 +182,30 @@ fun getListCardComicHistory(): List<CardComicItem> {
     return comics
 }
 
+fun getListCardComicWeekly(): List<CardComicItem> {
+    val comicCard = listOf(
+        CardComicItem(
+            comicName = "Comic 1",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 1"
+        ),
+        CardComicItem(
+            comicName = "Comic 2",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 2"
+        ),
+        CardComicItem(
+            comicName = "Comic 3",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 3"
+        )
+    )
+    return comicCard
+}
+
 @Composable
 fun showAutoSlider(state: HomeState, images: List<String>) {
     if (state.isLoading) {
@@ -230,14 +258,15 @@ fun showHistory(navController: NavHostController, viewModel: HomeViewModel) {
 fun showHistoryCardComic() {
     val comics = getListCardComicHistory()
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(start = 25.dp, end = 23.dp),
 //            .background(color = MaterialTheme.colorScheme.tertiary),
         horizontalArrangement = Arrangement.spacedBy(1.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
-    comics.forEach { comic ->
+        comics.forEach { comic ->
             CardComicHistoryHome(
                 image = comic.image,
                 comicName = comic.comicName,
@@ -247,7 +276,6 @@ fun showHistoryCardComic() {
     }
 
 }
-
 
 
 @Composable
@@ -369,7 +397,8 @@ fun showWeekly(state: HomeState, navController: NavHostController) {
         Spacer(modifier = Modifier.width(10.dp))
         Icon(
             painter = painterResource(id = R.drawable.ic_weekly_home),
-            contentDescription = ""
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.onPrimary
         )
         Text(
             text = "Weekly",
@@ -387,9 +416,36 @@ fun showWeekly(state: HomeState, navController: NavHostController) {
     } else {
         Text("No images available")
     }
-//    CardComicRow(navController)
-    //CardComicRow(navController)
+    showWeeklyCardComic()
+
 }
+
+@Composable
+fun showWeeklyCardComic() {
+    val comics = getListCardComicWeekly()
+
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 5.dp, end = 5.dp, top = 15.dp),
+//            .background(color = MaterialTheme.colorScheme.tertiary),
+        horizontalArrangement = Arrangement.spacedBy(15.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+        comics.forEach { comic ->
+            CardComicWeeklyHome(
+                image = comic.image,
+                comicName = comic.comicName,
+                comicAuth = comic.comicAuth
+            )
+        }
+    }
+
+}
+
+
+
 
 @Composable
 fun ShowListWithThreeItemsPerRow(list: List<String>) {
