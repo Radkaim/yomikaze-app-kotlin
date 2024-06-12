@@ -111,7 +111,13 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.22.0-rc")
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation("com.google.accompanist:accompanist-coil:0.15.0")
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.24.13-rc")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+
+    //for bottom navigation animation
+   // implementation("com.exyte:animated-navigation-bar:1.0.0")
+
+    // for lotie animation
+    implementation("com.airbnb.android:lottie-compose:4.0.0")
 
     //
     //implementation("com.google.android.gms:play-services-wallet:19.4.0") //
