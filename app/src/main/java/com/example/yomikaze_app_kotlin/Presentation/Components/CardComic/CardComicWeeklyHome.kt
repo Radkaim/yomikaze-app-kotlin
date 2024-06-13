@@ -29,8 +29,9 @@ fun CardComicWeeklyHome(
 ) {
     Surface(
         modifier = Modifier
-            .height(300.dp)
-            .width(115.dp),
+            .height(230.dp)
+            .width(115.dp)
+            .padding(bottom = 20.dp),
         shape = RoundedCornerShape(8.dp),
         color = MaterialTheme.colorScheme.tertiary
     ) {
@@ -45,7 +46,7 @@ fun CardComicWeeklyHome(
                 model = image,
                 contentDescription = null,
                 modifier = Modifier
-                    .height(190.dp)
+                    .height(150.dp)
                     .width(115.dp)
                     .clip(RoundedCornerShape(8.dp)),
             )

@@ -53,7 +53,6 @@ import com.example.yomikaze_app_kotlin.R
 fun HomeView(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
-
     ) {
     val state by homeViewModel.state.collectAsState()
     // fetching local context
@@ -93,10 +92,13 @@ fun HomeContent(
     val comics = getListComicForRanking() // test data
     val comic = getListCardComicHistory()
     val comicCard = getListCardComicWeekly()
+
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .padding(bottom = 55.dp)
+            .background(MaterialTheme.colorScheme.background),
         contentPadding = PaddingValues(0.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     )
     {
         item {
@@ -115,6 +117,7 @@ fun HomeContent(
 
         item {
             showWeekly(state = state, navController = navController)
+
         }
     }
 }
@@ -239,41 +242,47 @@ fun showAutoSlider(state: HomeState, images: List<String>) {
 
 @Composable
 fun showHistory(navController: NavController, viewModel: HomeViewModel) {
-    Row(
-        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+    Column(
+//        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.width(10.dp))
-        Icon(
-            painter = painterResource(id = R.drawable.ic_history),
-            contentDescription = "Icon History",
-            tint = MaterialTheme.colorScheme.onPrimary
-        )
-        Text(
-            text = "History",
-            modifier = Modifier.padding(top = 5.dp, start = 5.dp)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
-            Text(
-                text = "More",
-                modifier = Modifier.padding(top = 8.dp, end = 5.dp),
-                fontSize = 10.sp
-            )
+        Row(
+            modifier = Modifier
+                .padding(start = 8.dp, bottom = 1.dp)
+                .fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.width(2.dp))
             Icon(
-                painter = painterResource(id = R.drawable.ic_next),
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(top = 10.dp, end = 8.dp)
-                    .width(8.dp)
-                    .height(8.dp)
-                    .clickable { viewModel.onViewMoreHistoryClicked() }
-
+                painter = painterResource(id = R.drawable.ic_history),
+                contentDescription = "Icon History",
+                tint = MaterialTheme.colorScheme.onPrimary
             )
+            Text(
+                text = "History",
+                modifier = Modifier.padding(top = 5.dp, start = 5.dp)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
+                Text(
+                    text = "More",
+                    modifier = Modifier.padding(top = 8.dp, end = 5.dp),
+                    fontSize = 10.sp
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_next),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(top = 10.dp, end = 8.dp)
+                        .width(8.dp)
+                        .height(8.dp)
+                        .clickable { viewModel.onViewMoreHistoryClicked() }
 
+                )
+
+            }
         }
     }
     showHistoryCardComic()
-//   /**/ CardComicRow(navController)
 }
 
 @Composable
@@ -282,9 +291,9 @@ fun showHistoryCardComic() {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 25.dp, end = 23.dp),
+            .padding(start = 9.dp, end = 5.dp, bottom = 8.dp, top = 10.dp),
 //            .background(color = MaterialTheme.colorScheme.tertiary),
-        horizontalArrangement = Arrangement.spacedBy(1.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
@@ -302,9 +311,9 @@ fun showHistoryCardComic() {
 
 @Composable
 fun showRanking(viewModel: HomeViewModel) {
-    Spacer(modifier = Modifier.height(10.dp))
+//    Spacer(modifier = Modifier.height(5.dp))
     Column(
-        verticalArrangement = Arrangement.spacedBy(15.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
@@ -348,7 +357,7 @@ fun showRanking(viewModel: HomeViewModel) {
 
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
         ) {
             ItemRankingTabHome(
                 tabName = "Hot",
@@ -380,7 +389,7 @@ fun showRankingComicCard() {
         verticalArrangement = Arrangement.spacedBy(10.dp), // 15.dp space between each card
         modifier = Modifier
             .padding(
-                top = 15.dp,
+                top = 8.dp,
                 start = 4.dp,
                 end = 4.dp,
                 bottom = 4.dp
@@ -410,36 +419,41 @@ fun showRankingComicCard() {
 
 @Composable
 fun showWeekly(state: HomeState, navController: NavController) {
-    Spacer(modifier = Modifier.height(16.dp))
-    Row(
-        modifier = Modifier
-            .padding(start = 8.dp)
-            .fillMaxWidth()
+//    Spacer(modifier = Modifier.height(10.dp))
+    Column(
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.width(10.dp))
-        Icon(
-            painter = painterResource(id = R.drawable.ic_weekly_home),
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.onPrimary
-        )
-        Text(
-            text = "Weekly",
-            modifier = Modifier.padding(top = 5.dp, start = 5.dp)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-    }
-    if (state.isLoading) {
-        Text(
-            text = "Loading...",
-            modifier = Modifier.padding(9.dp)
-        )
-    } else if (state.images.isNotEmpty()) {
-        Autoslider(images = state.images)
-    } else {
-        Text("No images available")
+        Row(
+            modifier = Modifier
+                .padding(start = 8.dp, bottom = 1.dp)
+                .fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_weekly_home),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+            Text(
+                text = "Weekly",
+                modifier = Modifier.padding(top = 5.dp, start = 5.dp)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        }
+        if (state.isLoading) {
+            Text(
+                text = "Loading...",
+                modifier = Modifier.padding(9.dp)
+            )
+        } else if (state.images.isNotEmpty()) {
+            Autoslider(images = state.images)
+        } else {
+            Text("No images available")
+        }
     }
     showWeeklyCardComic()
-
+    showWeeklyCardComic()
 }
 
 @Composable
@@ -449,11 +463,10 @@ fun showWeeklyCardComic() {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 5.dp, end = 5.dp, top = 15.dp),
-//            .background(color = MaterialTheme.colorScheme.tertiary),
-        horizontalArrangement = Arrangement.spacedBy(15.dp),
+            .padding(start = 10.dp, end = 8.dp),
+      horizontalArrangement = Arrangement.spacedBy(12.dp), // Reduced horizontal spacing
         verticalAlignment = Alignment.CenterVertically,
-    ) {
+        ) {
 
         comics.forEach { comic ->
             CardComicWeeklyHome(
