@@ -122,6 +122,9 @@ dependencies {
     //
     //implementation("com.google.android.gms:play-services-wallet:19.4.0") //
 
+
+    // use for EncryptedSharedPreferences
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }
 kapt {
     correctErrorTypes = true
