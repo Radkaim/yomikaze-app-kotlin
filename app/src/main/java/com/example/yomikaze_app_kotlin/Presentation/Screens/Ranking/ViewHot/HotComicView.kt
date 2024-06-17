@@ -37,9 +37,9 @@ fun HotComicView(
             authorName = "Yoshihiro Togashi",
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
-            follows = 100,
-            views = 100,
-            comments = 100
+            follows = 8000000000,
+            views = 100000000000,
+            comments = 80000000000
         ),
         Comic(
             comicId = 2,

@@ -43,9 +43,9 @@ fun NormalComicCard(
     authorName: String,
     publishedDate: String,
     ratingScore: Float,
-    follows: Int,
-    views: Int,
-    comments: Int,
+    follows: Long,
+    views: Long,
+    comments: Long,
     backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
     isDeleted: Boolean = false,
     modifier: Modifier,
@@ -56,7 +56,7 @@ fun NormalComicCard(
             if (isDeleted) {
                 Modifier
                     .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small)
-                    .clickable {  }
+                    .clickable { }
 
             } else {
                 Modifier
@@ -101,7 +101,9 @@ fun NormalComicCard(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(image)
+                        //.memoryCachePolicy(CachePolicy.ENABLED)
                         .build(),
+                    placeholder = painterResource(R.drawable.ic_star),
                     contentDescription = "Comic Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -171,7 +173,7 @@ fun NormalComicCard(
                     // Published Date , Follows, Views, Comments
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(25.dp),
+                        horizontalArrangement = Arrangement.spacedBy(18.dp),
                         modifier = Modifier.padding(top = 10.dp)
                     ) {
                         Text(

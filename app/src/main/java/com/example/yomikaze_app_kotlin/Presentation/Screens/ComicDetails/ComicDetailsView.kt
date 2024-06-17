@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
@@ -31,11 +33,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
@@ -53,7 +57,6 @@ fun ComicDetailsView(
 
     var showPopupMenu by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf<Int?>(null) }
-
 
     val listTitlesOfComicMenuOption = listOf(
         MenuOptions("Add to Library", "add_to_library_dialog_route", R.drawable.ic_library),
@@ -135,20 +138,24 @@ fun ComicDetailsView(
                     }
                 }
             )
-        })
-    {
-        // Nội dung của ComicDetailScreen
-        if (showDialog != null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f))
-            )
-            {
-                Text(text = "Dialog ${comicId}")
 
-            }
-        }
+        },
+        // drawerBackgroundColor = MaterialTheme.colorScheme.onBackground,
+    )
+    {
+        Text(text = "Dialog ${comicId}")
+        // Nội dung của ComicDetailScreen
+//        if (showDialog != null) {
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                //  .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f))
+//            )
+//            {
+//                Text(text = "Dialog ${comicId}")
+//
+//            }
+//        }
 
         if (showDialog != null) {
             when (showDialog) {
@@ -164,20 +171,44 @@ fun ComicDetailsView(
 
 @Composable
 fun CustomDialog1(onDismiss: () -> Unit) {
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colorScheme.background
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = true
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray.copy(alpha = 0.7f)) // Màu xám với độ mờ
+                .offset(y = (100).dp)
+                .clickable { onDismiss() }
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Dialog 1")
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = onDismiss) {
-                    Text("OK")
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.background
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(text = "Dialog 1")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = onDismiss) {
+                        Text("OK")
+                    }
+                    Button(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
                 }
             }
         }
     }
+
+
 }
 
 @Composable
@@ -194,7 +225,7 @@ fun CustomDialog2(onDismiss: () -> Unit) {
                 Text(text = "Dialog 2")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = onDismiss) {
-                    Text("OK")
+                    Text(Int.MAX_VALUE.toString())
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -60,7 +61,7 @@ fun HomeView(
 
     val isConnected = connection === ConnectionState.Available
 
-
+    Log.d("HomeView", "Connection State: $isConnected")
     if (isConnected) {
         // Show UI when connectivity is available
         HomeContent(state, homeViewModel, navController)
@@ -273,8 +274,6 @@ fun showRanking(viewModel: HomeViewModel) {
         showRankingComicCard()
 
     }
-
-
 }
 
 
