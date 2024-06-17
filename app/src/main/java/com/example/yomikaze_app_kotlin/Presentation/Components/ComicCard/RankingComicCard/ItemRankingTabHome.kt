@@ -1,6 +1,8 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -11,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -21,9 +25,10 @@ import androidx.compose.ui.unit.sp
 fun ItemRankingTabHome(
     tabName: String,
     textSize: TextUnit = 12.sp,
-    isSelected : Boolean = false,
+    isSelected: Boolean,
     textColor: Color = MaterialTheme.colorScheme.background,
-    modifier: Modifier
+    modifier: Modifier,
+    onClick: () -> Unit
 ) {
     // TODO: Implement ComicStatus
     val color: Color
@@ -34,7 +39,18 @@ fun ItemRankingTabHome(
     }
 
     Surface(
-        modifier = Modifier.wrapContentWidth().wrapContentHeight().then(modifier),
+        modifier = Modifier
+            .wrapContentWidth()
+            .wrapContentHeight()
+            .clickable(onClick = onClick)
+            .then(
+                if(isSelected)
+                    Modifier.scale(1.2f)
+                        .padding( start = 3.dp, end = 3.dp)
+                        .offset(y = (-3).dp)
+                        .shadow(elevation = 5.dp, shape = RoundedCornerShape(50) )
+                else modifier
+            ),
         color = color,
         shape = RoundedCornerShape(50), // Making it oval
     ) {

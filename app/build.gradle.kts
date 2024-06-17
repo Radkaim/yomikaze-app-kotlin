@@ -115,7 +115,7 @@ dependencies {
 
     //for bottom navigation animation
    // implementation("com.exyte:animated-navigation-bar:1.0.0")
-
+   // implementation("androidx.graphics:graphics-shapes:1.0.0-alpha05")
     // for lotie animation
     implementation("com.airbnb.android:lottie-compose:4.0.0")
 

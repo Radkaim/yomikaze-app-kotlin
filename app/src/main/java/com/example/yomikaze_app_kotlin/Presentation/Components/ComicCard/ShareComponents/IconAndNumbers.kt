@@ -34,7 +34,6 @@ fun IconAndNumbers(
     // Assign the icon width and height if they are not null
     val finalIconWith = iconWidth ?: 24
     val finalIconHeight = iconHeight ?: 24
-    val finalNumber = numberRating ?: number // mean if numberRating is null, use number
 
     Row(
         verticalAlignment = Alignment.CenterVertically,

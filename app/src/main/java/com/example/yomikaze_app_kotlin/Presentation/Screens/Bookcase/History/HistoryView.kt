@@ -166,7 +166,7 @@ fun showListHistories(
                     )
                     .clickable {
                         //navController.navigate("comicDetail/${comic.comicId}")
-                        historyViewModel.navigateToViewChapter(comic.comicId)
+                        historyViewModel.onHistoryComicClicked(comic.comicId)
                         // TODO change to viewModel.navigateToComicDetail(comic.comicId) if using viewModel
                     }
             )

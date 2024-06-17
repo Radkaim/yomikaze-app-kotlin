@@ -23,9 +23,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,19 +50,16 @@ import com.example.yomikaze_app_kotlin.R
 fun HomeView(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
-
     ) {
     val state by homeViewModel.state.collectAsState()
-    // fetching local context
-    val mContext = LocalContext.current
+
     homeViewModel.setNavController(navController)
 
     // This will cause re-composition on every network state change
     val connection by connectivityState()
-
     val isConnected = connection === ConnectionState.Available
 
-    Log.d("HomeView", "Connection State: $isConnected")
+
     if (isConnected) {
         // Show UI when connectivity is available
         HomeContent(state, homeViewModel, navController)
@@ -89,7 +87,7 @@ fun HomeContent(
     val comics = getListComicForRanking() // test data
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         contentPadding = PaddingValues(0.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     )
@@ -252,33 +250,38 @@ fun showRanking(viewModel: HomeViewModel) {
         val listTabs = listOf("Hot", "Rating", "Comment", "Follow") //-> for future implementation
         // create a comics list mutable state
 
+        showTabRow()
+        showRankingComicCard(viewModel = viewModel)
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
+    }
+}
+
+@Composable
+fun showTabRow() {
+    // Duy trì trạng thái của tab được chọn
+    val (selectedTabIndex, setSelectedTabIndex) = remember { mutableStateOf(0) }
+
+    // Các tên tab và các hành động tương ứng
+    val tabs = listOf("Hot", "Rating", "Comment", "Follow")
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        tabs.forEachIndexed { index, tabName ->
             ItemRankingTabHome(
-                tabName = "Hot",
-                isSelected = true,
-                modifier = Modifier.clickable { /*TODO: Implement Hot tab */ })
-            ItemRankingTabHome(
-                tabName = "Rating",
-                modifier = Modifier.clickable {/*TODO: Implement Rating tab */ })
-            ItemRankingTabHome(
-                tabName = "Comment",
-                modifier = Modifier.clickable {/*TODO: Implement Comment tab */ })
-            ItemRankingTabHome(
-                tabName = "Follow",
-                modifier = Modifier.clickable { /*TODO: Implement Follow tab */ })
+                tabName = tabName,
+                isSelected = index == selectedTabIndex,
+                onClick = { setSelectedTabIndex(index)
+                Log.d("HomeView", "Selected tab index: $index") },
+                modifier = Modifier
+            )
         }
-
-        showRankingComicCard()
-
     }
 }
 
 
 @Composable
-fun showRankingComicCard() {
+fun showRankingComicCard(viewModel: HomeViewModel) {
     val comics = getListComicForRanking()
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp), // 15.dp space between each card
@@ -305,7 +308,9 @@ fun showRankingComicCard() {
                 follows = comic.follows,
                 views = comic.views,
                 comments = comic.comments,
-                modifier = Modifier.fillMaxWidth() // Make sure each card takes the full width
+                modifier = Modifier
+                    .fillMaxWidth() // Make sure each card takes the full width
+                    .clickable { viewModel.onComicRankingClicked(comic.comicId) }
             )
             // Add space between each card
         }

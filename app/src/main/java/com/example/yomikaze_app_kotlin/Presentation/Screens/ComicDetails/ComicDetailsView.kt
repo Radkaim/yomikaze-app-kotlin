@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,6 +45,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
 import com.example.yomikaze_app_kotlin.R
@@ -70,6 +77,7 @@ fun ComicDetailsView(
         topBar = {
             CustomeAppBar(
                 title = "",
+                isComicDetails = true,
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -143,19 +151,24 @@ fun ComicDetailsView(
         // drawerBackgroundColor = MaterialTheme.colorScheme.onBackground,
     )
     {
-        Text(text = "Dialog ${comicId}")
-        // Nội dung của ComicDetailScreen
-//        if (showDialog != null) {
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                //  .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f))
-//            )
-//            {
-//                Text(text = "Dialog ${comicId}")
-//
-//            }
-//        }
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images")
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .build(),
+            placeholder = painterResource(R.drawable.placeholder),
+            contentDescription = "Comic Image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .width(78.dp)
+                .height(113.dp)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    shape = MaterialTheme.shapes.small
+                )
+                .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small)
+        )
 
         if (showDialog != null) {
             when (showDialog) {
@@ -168,6 +181,18 @@ fun ComicDetailsView(
         }
     }
 }
+
+@Composable
+fun ComicDetatilsContent() {
+    Column {
+        Text(text = "Comic Details")
+    }
+}
+
+
+/**
+ * TODO : dialog for menu option
+ */
 
 @Composable
 fun CustomDialog1(onDismiss: () -> Unit) {
