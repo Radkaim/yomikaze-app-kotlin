@@ -13,7 +13,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.BottomChapte
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable()
-fun MainScreenView(viewModel: MainViewModel) {
+fun MainView(viewModel: MainViewModel) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -45,7 +45,7 @@ fun MainScreenView(viewModel: MainViewModel) {
 
         bottomBar = {
             when (currentDestination?.route) {
-                "login_route" -> ChapterBottomNavBar(navController = navController)
+                "view_chapter_route/{chapterId}" -> ChapterBottomNavBar(navController = navController)
                 "home_route", "bookcase_route", "notification_route", "profile_route" -> HomeBottomNavBar(navController = navController)
                 else ->{}
             }

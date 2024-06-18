@@ -17,7 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainScreenView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
 import com.example.yomikaze_app_kotlin.ui.AppTheme
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                             // navController.navigate("main_content_route")
                         }
                         composable("main_screen_route") {
-                            MainScreenView(viewModel)
+                            MainView(viewModel)
                         }
                     }
                 }
@@ -99,5 +99,5 @@ fun checkAndChangeStatusBarColor(theme: AppTheme, windowInsetsController: Window
 fun MainPreview() {
     val viewModel: MainViewModel = viewModel()
     //val currentTheme by viewModel.stateApp.collectAsState()
-    YomikazeappkotlinTheme(appTheme = viewModel.stateApp.theme) { MainScreenView(viewModel) }
+    YomikazeappkotlinTheme(appTheme = viewModel.stateApp.theme) { MainView(viewModel) }
 }

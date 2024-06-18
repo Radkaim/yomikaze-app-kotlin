@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.ViewChapter
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column

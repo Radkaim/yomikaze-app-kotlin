@@ -100,6 +100,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onComicRankingClicked(comicId: Int) {
-        navController?.navigate("comic_detail1_route/$comicId")
+        navController?.navigate("comic_detail_route/$comicId")
     }
 }

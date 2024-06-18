@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
@@ -65,9 +66,10 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.Menu
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
-fun ComicDetailsView1(
+fun ComicDetailsView(
     comicId: Int,
-    navController: NavController
+    navController: NavController,
+    comicDetailViewModel: ComicDetailViewModel = hiltViewModel()
 ) {
     /**
      * for menu option
@@ -80,6 +82,12 @@ fun ComicDetailsView1(
     // for tab layout description and list chapter
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Description", "Chapter")
+
+
+    //set navController for viewModel
+    comicDetailViewModel.setNavController(navController)
+
+
 
     val listTitlesOfComicMenuOption = listOf(
         MenuOptions("Add to Library", "add_to_library_dialog_route", R.drawable.ic_library),
@@ -195,11 +203,11 @@ fun ComicDetailsView1(
                         }
                         if (showDialog != null) {
                             when (showDialog) {
-                                1 -> CustomDialog1(onDismiss = { showDialog = null })
-                                2 -> CustomDialog2(onDismiss = { showDialog = null })
-                                3 -> CustomDialog1(onDismiss = { showDialog = null })
-                                4 -> CustomDialog2(onDismiss = { showDialog = null })
-                                5 -> CustomDialog1(onDismiss = { showDialog = null })
+                                1 -> CustomDialog3(onDismiss = { showDialog = null })
+                                2 -> CustomDialog4(onDismiss = { showDialog = null })
+                                3 -> CustomDialog3(onDismiss = { showDialog = null })
+                                4 -> CustomDialog4(onDismiss = { showDialog = null })
+                                5 -> CustomDialog3(onDismiss = { showDialog = null })
                             }
                         }
                     }
@@ -392,7 +400,7 @@ fun ComicDetailsView1(
             }
             when (tabIndex) {
                 0 -> DescriptionInComicDetailView()
-                1 -> ListChapterInComicDetailView()
+                1 -> ListChapterInComicDetailView(comicDetailViewModel = comicDetailViewModel)
             }
         }
     }
@@ -420,7 +428,7 @@ fun DescriptionInComicDetailView() {
 }
 
 @Composable
-fun ListChapterInComicDetailView() {
+fun ListChapterInComicDetailView(comicDetailViewModel: ComicDetailViewModel) {
     val items = 50
     Row {
         Text(text = "Total Chapter: $items")
@@ -457,7 +465,7 @@ fun ListChapterInComicDetailView() {
             verticalArrangement = Arrangement.spacedBy(10.dp) // 8.dp space between each item
         ) {
             items(items) {
-                Text(text = "Chapter $it")
+                Text(text = "Chapter $it", modifier = Modifier.clickable { comicDetailViewModel.navigateToViewChapter(it) })
             }
         }
     }
