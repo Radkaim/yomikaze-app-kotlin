@@ -46,10 +46,12 @@ fun MainView(viewModel: MainViewModel) {
         bottomBar = {
             when (currentDestination?.route) {
                 "view_chapter_route/{chapterId}" -> ChapterBottomNavBar(navController = navController)
-                "home_route", "bookcase_route", "notification_route", "profile_route" -> HomeBottomNavBar(navController = navController)
-                else ->{}
-            }
+                "home_route", "bookcase_route", "notification_route", "profile_route" -> HomeBottomNavBar(
+                    navController = navController
+                )
 
+                else -> {}
+            }
         }
     ) {
         NavigationGraph(navController = navController, viewModel = viewModel)

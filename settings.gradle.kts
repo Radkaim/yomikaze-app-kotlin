@@ -18,6 +18,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+
 }
 
 rootProject.name = "Yomikaze-app-kotlin"

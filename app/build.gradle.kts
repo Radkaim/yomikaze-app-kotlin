@@ -81,8 +81,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     //for navigation
-    implementation ("androidx.compose.ui:ui:1.6.7")
-    implementation ("androidx.compose.material:material:1.6.7")
+    implementation ("androidx.compose.ui:ui:1.7.0-beta02")
+    implementation ("androidx.compose.material:material:1.7.0-beta02")
     implementation ("androidx.navigation:navigation-compose:2.7.7")
 
     //for auto image slider

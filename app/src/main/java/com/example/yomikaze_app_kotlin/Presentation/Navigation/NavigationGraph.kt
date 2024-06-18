@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ForgotPassword.ForgotPasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Register.RegisterView
@@ -68,6 +69,10 @@ fun NavigationGraph(
         composable("view_chapter_route/{chapterId}") { navBackStackEntry ->
             val chapterId = navBackStackEntry.arguments?.getString("chapterId")
             ViewChapter(navController = navController, chapterId = chapterId?.toInt() ?: 0 )
+        }
+
+        composable("wifi_route"){
+            NetworkDisconnectedDialog()
         }
     }
 }
