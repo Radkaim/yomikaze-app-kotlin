@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Notifi
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Notification
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background

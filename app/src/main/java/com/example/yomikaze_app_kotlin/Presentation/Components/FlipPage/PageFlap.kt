@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.FlipPage
+package com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi

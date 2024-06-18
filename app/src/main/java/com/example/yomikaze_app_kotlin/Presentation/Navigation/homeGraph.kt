@@ -4,11 +4,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav.BottomHomeNavItems
+import com.example.yomikaze_app_kotlin.Presentation.Navigation.BottomNav.BottomHomeNavItems
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Notifi.NotificationView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Notification.NotificationView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.ProfileView
 
 fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavController) {
