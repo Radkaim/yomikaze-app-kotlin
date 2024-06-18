@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Regi
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
+import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,8 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -34,7 +33,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,14 +48,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
 import com.example.yomikaze_app_kotlin.R
-import java.lang.reflect.Modifier
 
 @Composable
 fun RegisterView(
@@ -114,18 +111,30 @@ fun RegisterContent(
             var password by remember { mutableStateOf("") }
             var confirmPassword by remember { mutableStateOf("") }
 
+            var passwordVisible by remember { mutableStateOf(false) }
             var checked by remember { mutableStateOf(true) }
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH)
             val day = calendar.get(Calendar.DAY_OF_MONTH)
 
+            val context = LocalContext.current
             val datePickerDialog = DatePickerDialog(
-                LocalContext.current,
-                { _, year, monthOfYear, dayOfMonth ->
-                    dateOfBirth = "$dayOfMonth/${monthOfYear + 1}/$year"
+                context,
+                { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+                    val selectedDate = Calendar.getInstance().apply {
+                        set(selectedYear, selectedMonth, selectedDay)
+                    }
+                    if (selectedDate.after(Calendar.getInstance())) {
+                        dateOfBirthError = "Date of birth cannot be in the future"
+                    } else {
+                        dateOfBirth = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                        dateOfBirthError = null // Clear error on successful date selection
+                    }
                 }, year, month, day
-            )
+            ).apply {
+                datePicker.maxDate = System.currentTimeMillis()
+            }
             Column(
 //            Alignment = Alignment.Center,
                 modifier = androidx.compose.ui.Modifier
@@ -249,60 +258,8 @@ fun RegisterContent(
                     )
                 }
 
-//                TextField(
-//                    value = dateOfBirth,
-//                    onValueChange = { dateOfBirth = it },
-//                    label = {
-//                        Text(
-//                            text = "Date Of Birth",
-//                            fontSize = 12.sp,
-//                            color = MaterialTheme.colorScheme.primary
-//                        )
-//
-//                    },
-//
-//                    maxLines = 1,
-//                    keyboardOptions = KeyboardOptions.Default.copy(
-//                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-//                    ),
-//                    leadingIcon = {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.ic_dateofbirth),
-//                            contentDescription = "",
-//                            tint = Color.Unspecified
-//                        )
-//                    },
-////                        },
-//                    modifier = androidx.compose.ui.Modifier
-//                        .fillMaxWidth()
-//                        .padding(5.dp)
-//                        .height(56.dp)
-//                        .background(
-//                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-//                            shape = RoundedCornerShape(24.dp),
-//                        ),
-//                    shape = RoundedCornerShape(24.dp),
-//                    colors = TextFieldDefaults.textFieldColors(
-//                        backgroundColor = Color.Transparent,
-//                        focusedIndicatorColor = Color.Transparent,
-//                        unfocusedIndicatorColor = Color.Transparent,
-//                        disabledIndicatorColor = Color.Transparent,
-//                        errorIndicatorColor = Color.Transparent
-//                    ),
-//                    isError = state.dateOfBirthError != null
-//                )
-//                if (state.dateOfBirthError != null) {
-//                    Text(
-//                        text = state.emailError ?: "",
-//                        color = MaterialTheme.colorScheme.error,
-//                        style = MaterialTheme.typography.bodySmall,
-//                        modifier = androidx.compose.ui.Modifier
-//                            .align(Alignment.Start)
-////                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
-//                    )
-//                }
-
                 TextField(
+
                     value = dateOfBirth,
                     onValueChange = { dateOfBirth = it },
                     label = {
@@ -336,6 +293,7 @@ fun RegisterContent(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                             shape = RoundedCornerShape(24.dp)
                         ),
+
                     shape = RoundedCornerShape(24.dp),
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.Transparent,
@@ -344,18 +302,8 @@ fun RegisterContent(
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
                     ),
-//                    readOnly = true,
-//                    isError = dateOfBirthError != null,
-//                    trailingIcon = {
-//                        IconButton(onClick = { datePickerDialog.show() }) {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.ic_dateofbirth),
-//                                contentDescription = "Select Date of Birth"
-//                            )
-//                        }
-//                    }
+//
                 )
-
                 if (dateOfBirthError != null) {
                     Text(
                         text = dateOfBirthError ?: "",
@@ -364,6 +312,7 @@ fun RegisterContent(
 //                        modifier = Modifier.align(Alignment.Start)
                     )
                 }
+
 
 
                 TextField(
@@ -380,14 +329,23 @@ fun RegisterContent(
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
+
                     leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_eye),
-                            contentDescription = "",
-                            tint = Color.Unspecified
-                        )
+
+                        val image = if (passwordVisible)
+                            painterResource(id = R.drawable.ic_eye)
+                        else
+                            painterResource(id = R.drawable.ic_visibility_eye)
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.onTertiary,
+                                painter = image,
+                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            )
+                        }
                     },
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
                         .padding(5.dp)
