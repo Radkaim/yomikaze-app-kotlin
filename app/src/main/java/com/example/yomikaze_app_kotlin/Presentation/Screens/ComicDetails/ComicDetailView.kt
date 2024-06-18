@@ -88,7 +88,6 @@ fun ComicDetailsView(
     comicDetailViewModel.setNavController(navController)
 
 
-
     val listTitlesOfComicMenuOption = listOf(
         MenuOptions("Add to Library", "add_to_library_dialog_route", R.drawable.ic_library),
         MenuOptions("Download", "download_dialog_route", R.drawable.ic_download),
@@ -207,7 +206,7 @@ fun ComicDetailsView(
                                 2 -> CustomDialog4(onDismiss = { showDialog = null })
                                 3 -> CustomDialog3(onDismiss = { showDialog = null })
                                 4 -> CustomDialog4(onDismiss = { showDialog = null })
-                                5 -> CustomDialog3(onDismiss = { showDialog = null })
+                                5 -> CustomDialog4(onDismiss = { showDialog = null })
                             }
                         }
                     }
@@ -457,7 +456,7 @@ fun ListChapterInComicDetailView(comicDetailViewModel: ComicDetailViewModel) {
                 bottom = 4.dp
             ) // Optional padding for the entire list
             .background(MaterialTheme.colorScheme.background)
-            //.wrapContentSize(Alignment.Center)
+        //.wrapContentSize(Alignment.Center)
     ) {
         LazyColumn(
             modifier = Modifier
@@ -465,7 +464,9 @@ fun ListChapterInComicDetailView(comicDetailViewModel: ComicDetailViewModel) {
             verticalArrangement = Arrangement.spacedBy(10.dp) // 8.dp space between each item
         ) {
             items(items) {
-                Text(text = "Chapter $it", modifier = Modifier.clickable { comicDetailViewModel.navigateToViewChapter(it) })
+                Text(
+                    text = "Chapter $it",
+                    modifier = Modifier.clickable { comicDetailViewModel.navigateToViewChapter(it) })
             }
         }
     }
