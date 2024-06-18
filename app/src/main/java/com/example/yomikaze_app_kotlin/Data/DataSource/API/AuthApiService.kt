@@ -8,7 +8,15 @@ import retrofit2.http.POST
 // Định nghĩa các request và response data classes
 data class LoginRequest(val email: String, val password: String)
 data class LoginResponse(val token: String)
+//email, username, dateOfBirth, password, confirmPassword
+data class RegisterRequest(val email: String, val username: String, val dateOfBirth: String, val password: String, val confimPassword: String)
+data class RegisterResponse(val token: String)
 
+data class ForgotPasswordRequest(val email: String)
+data class ForgotPasswordResponse(val token: String)
+
+data class ResetPasswordRequest(val password: String, val confimPassword: String)
+data class ResetPasswordResponse(val token: String)
 
 // Định nghĩa các API endpoints
 interface AuthApiService {
@@ -16,8 +24,17 @@ interface AuthApiService {
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
     @POST("/auth/register")
-    suspend fun register(@Body loginRequest: LoginRequest): Response<LoginResponse>
+    suspend fun register(@Body loginRequest: RegisterRequest): Response<LoginResponse>
+
+
+    @POST("/auth/forgotPassword")
+    suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest): Response<ForgotPasswordResponse>
+
+    @POST("/auth/resetPassword")
+    suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<ResetPasswordResponse>
+
 }
+
 
 
 

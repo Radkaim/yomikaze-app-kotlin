@@ -26,3 +26,10 @@ data class ComicChapter(
     val views: Int,
     val comments: Int
 )
+//data class CardComic(
+//    val comicId: Int,
+//    val image: String,
+//    val comicName: String,
+//    val authorName: String,
+//    val chapter: String
+//)

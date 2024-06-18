@@ -32,6 +32,18 @@ class LoginViewModel @Inject constructor(
         navController?.navigate("register_route")
     }
 
+  fun navigateToForgotPassword() {
+        navController?.navigate("forgot_password_route")
+    }
+
+    class ForgotPasswordViewModel : ViewModel() {
+        private lateinit var navController: NavController
+
+        fun setNavController(navController: NavController) {
+            this.navController = navController
+        }
+    }
+
     fun onLogin(username: String, password: String) {
         val currentState = _state.value
         val username = currentState.username

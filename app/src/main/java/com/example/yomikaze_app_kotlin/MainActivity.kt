@@ -20,7 +20,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainScreenView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
-import com.example.yomikaze_app_kotlin.R.drawable.*
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
 import dagger.hilt.android.AndroidEntryPoint

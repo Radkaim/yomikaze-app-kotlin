@@ -5,7 +5,8 @@ import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    private val
+    authRepository: AuthRepository
 ) {
     suspend fun login(username: String, password: String): Result<LoginResponse> {
         return authRepository.login(username, password)

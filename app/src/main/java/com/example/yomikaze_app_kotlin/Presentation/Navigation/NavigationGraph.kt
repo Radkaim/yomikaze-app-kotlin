@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ForgotPassword.ForgotPasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Register.RegisterView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
@@ -38,6 +39,8 @@ fun NavigationGraph(
         composable("register_route") {
             RegisterView(navController = navController)
         }
+
+        composable("forgot_password_route") { ForgotPasswordView(navController = navController) }
 
         // for ranking screen
         composable("ranking_route") {

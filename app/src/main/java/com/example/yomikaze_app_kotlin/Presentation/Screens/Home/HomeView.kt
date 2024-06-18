@@ -1,5 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
+//import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
+import CardComicHistoryHome
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +42,8 @@ import com.example.yomikaze_app_kotlin.Core.Networks.ConnectionState
 import com.example.yomikaze_app_kotlin.Core.Networks.connectivityState
 import com.example.yomikaze_app_kotlin.Domain.Model.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
-import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
+import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicItem
+import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicWeeklyHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs.NetworkDisconnectedDialog
@@ -50,6 +55,7 @@ import com.example.yomikaze_app_kotlin.R
 fun HomeView(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
+
     ) {
     val state by homeViewModel.state.collectAsState()
 
@@ -85,11 +91,15 @@ fun HomeContent(
     navController: NavController
 ) {
     val comics = getListComicForRanking() // test data
+    val comic = getListCardComicHistory()
+    val comicCard = getListCardComicWeekly()
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        modifier = Modifier.fillMaxSize()
+            .padding(bottom = 55.dp)
+            .background(MaterialTheme.colorScheme.background),
         contentPadding = PaddingValues(0.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     )
     {
         item {
@@ -112,7 +122,7 @@ fun HomeContent(
     }
 }
 
-fun getListComicForRanking(): List<Comic> {
+fun getListComicForRanking(): List< Comic > {
     val comics = listOf(
         Comic(
             comicId = 1,
@@ -157,6 +167,70 @@ fun getListComicForRanking(): List<Comic> {
     return comics
 }
 
+//@Composable
+
+
+fun getListCardComicHistory(): List<CardComicItem> {
+    val comics = listOf(
+        CardComicItem(
+            comicName = "Comic 1",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 1"
+        ),
+        CardComicItem(
+            comicName = "Comic 2",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 2"
+        ),
+        CardComicItem(
+            comicName = "Comic 3",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 3"
+        ),
+        CardComicItem(
+            comicName = "Comic 3",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 3"
+        ),
+        CardComicItem(
+            comicName = "Comic 3",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 3"
+        )
+    )
+
+    return comics
+}
+
+fun getListCardComicWeekly(): List<CardComicItem> {
+    val comicCard = listOf(
+        CardComicItem(
+            comicName = "Comic 1",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 1"
+        ),
+        CardComicItem(
+            comicName = "Comic 2",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 2"
+        ),
+        CardComicItem(
+            comicName = "Comic 3",
+            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+            comicAuth = "auth",
+            comicChapter = "Chapter 3"
+        )
+    )
+    return comicCard
+}
+
 @Composable
 fun showAutoSlider(state: HomeState, images: List<String>) {
     if (state.isLoading) {
@@ -168,47 +242,78 @@ fun showAutoSlider(state: HomeState, images: List<String>) {
 
 @Composable
 fun showHistory(navController: NavController, viewModel: HomeViewModel) {
-    Row(
-        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+    Column(
+//        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.width(10.dp))
-        Icon(
-            painter = painterResource(id = R.drawable.ic_history),
-            contentDescription = "Icon History",
-            tint = MaterialTheme.colorScheme.onPrimary
-        )
-        Text(
-            text = "History",
-            modifier = Modifier.padding(top = 5.dp, start = 5.dp)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
-            Text(
-                text = "More",
-                modifier = Modifier.padding(top = 8.dp, end = 5.dp),
-                fontSize = 10.sp
-            )
+        Row(
+            modifier = Modifier
+                .padding(start = 8.dp, bottom = 1.dp)
+                .fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.width(2.dp))
             Icon(
-                painter = painterResource(id = R.drawable.ic_next),
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(top = 10.dp, end = 8.dp)
-                    .width(8.dp)
-                    .height(8.dp)
-                    .clickable { viewModel.onViewMoreHistoryClicked() }
-
+                painter = painterResource(id = R.drawable.ic_history),
+                contentDescription = "Icon History",
+                tint = MaterialTheme.colorScheme.onPrimary
             )
+            Text(
+                text = "History",
+                modifier = Modifier.padding(top = 5.dp, start = 5.dp)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
+                Text(
+                    text = "More",
+                    modifier = Modifier.padding(top = 8.dp, end = 5.dp),
+                    fontSize = 10.sp
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_next),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(top = 10.dp, end = 8.dp)
+                        .width(8.dp)
+                        .height(8.dp)
+                        .clickable { viewModel.onViewMoreHistoryClicked() }
 
+                )
+
+            }
         }
     }
-    CardComicRow(navController)
+    showHistoryCardComic()
 }
+
+@Composable
+fun showHistoryCardComic() {
+    val comics = getListCardComicHistory()
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 9.dp, end = 5.dp, bottom = 8.dp, top = 10.dp),
+//            .background(color = MaterialTheme.colorScheme.tertiary),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+        comics.forEach { comic ->
+            CardComicHistoryHome(
+                image = comic.image,
+                comicName = comic.comicName,
+                comicChapter = comic.comicChapter
+            )
+        }
+    }
+
+}
+
 
 @Composable
 fun showRanking(viewModel: HomeViewModel) {
     Spacer(modifier = Modifier.height(10.dp))
     Column(
-        verticalArrangement = Arrangement.spacedBy(15.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
@@ -287,7 +392,7 @@ fun showRankingComicCard(viewModel: HomeViewModel) {
         verticalArrangement = Arrangement.spacedBy(10.dp), // 15.dp space between each card
         modifier = Modifier
             .padding(
-                top = 15.dp,
+                top = 8.dp,
                 start = 4.dp,
                 end = 4.dp,
                 bottom = 4.dp
@@ -319,36 +424,68 @@ fun showRankingComicCard(viewModel: HomeViewModel) {
 
 @Composable
 fun showWeekly(state: HomeState, navController: NavController) {
-    Spacer(modifier = Modifier.height(16.dp))
+//    Spacer(modifier = Modifier.height(10.dp))
+    Column(
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 8.dp, bottom = 1.dp)
+                .fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_weekly_home),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+            Text(
+                text = "Weekly",
+                modifier = Modifier.padding(top = 5.dp, start = 5.dp)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        }
+        if (state.isLoading) {
+            Text(
+                text = "Loading...",
+                modifier = Modifier.padding(9.dp)
+            )
+        } else if (state.images.isNotEmpty()) {
+            Autoslider(images = state.images)
+        } else {
+            Text("No images available")
+        }
+    }
+    showWeeklyCardComic()
+    showWeeklyCardComic()
+}
+
+@Composable
+fun showWeeklyCardComic() {
+    val comics = getListCardComicWeekly()
+
     Row(
         modifier = Modifier
-            .padding(start = 8.dp)
-            .fillMaxWidth()
-    ) {
-        Spacer(modifier = Modifier.width(10.dp))
-        Icon(
-            painter = painterResource(id = R.drawable.ic_weekly_home),
-            contentDescription = ""
-        )
-        Text(
-            text = "Weekly",
-            modifier = Modifier.padding(top = 5.dp, start = 5.dp)
-        )
-        Spacer(modifier = Modifier.weight(1f))
+            .fillMaxSize()
+            .padding(start = 10.dp, end = 8.dp),
+      horizontalArrangement = Arrangement.spacedBy(12.dp), // Reduced horizontal spacing
+        verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+        comics.forEach { comic ->
+            CardComicWeeklyHome(
+                image = comic.image,
+                comicName = comic.comicName,
+                comicAuth = comic.comicAuth
+            )
+        }
     }
-    if (state.isLoading) {
-        Text(
-            text = "Loading...",
-            modifier = Modifier.padding(9.dp)
-        )
-    } else if (state.images.isNotEmpty()) {
-        Autoslider(images = state.images)
-    } else {
-        Text("No images available")
-    }
-    CardComicRow(navController)
-    //CardComicRow(navController)
+
 }
+
+
+
 
 @Composable
 fun ShowListWithThreeItemsPerRow(list: List<String>) {
