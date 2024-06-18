@@ -75,9 +75,6 @@ fun ProfileView(
             }
         }
 
-
-
-
         Button(onClick = {
 
             navController.navigate("login_route")

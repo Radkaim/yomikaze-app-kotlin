@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 //import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
 import CardComicHistoryHome
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -121,7 +122,7 @@ fun HomeContent(
     }
 }
 
-fun getListComicForRanking(): List<Comic> {
+fun getListComicForRanking(): List< Comic > {
     val comics = listOf(
         Comic(
             comicId = 1,
