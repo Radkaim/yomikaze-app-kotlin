@@ -78,7 +78,7 @@ fun RankingView(initialTab: Int, navController: NavController) {
                     Tab(text = {
                         Text(
                             text = title,
-                            color = changeColor(tabIndex, index),
+                            color = changeColorForRankingTabScreen(tabIndex, index),
                             fontWeight = FontWeight.Medium
 
                         )
@@ -113,7 +113,7 @@ fun setIcon(index: Int, tabIndex: Int) {
             Icon(
                 painterResource(id = R.drawable.ic_ranking_home),
                 contentDescription = "Hot icon",
-                tint = changeColor(tabIndex, 0),
+                tint = changeColorForRankingTabScreen(tabIndex, 0),
                 modifier = changeSizeIcon()
             )
         }
@@ -122,7 +122,7 @@ fun setIcon(index: Int, tabIndex: Int) {
             Icon(
                 painterResource(id = R.drawable.ic_star_fill),
                 contentDescription = "Rating icon",
-                tint = changeColor(tabIndex, 1),
+                tint = changeColorForRankingTabScreen(tabIndex, 1),
                 modifier = changeSizeIcon()
             )
         }
@@ -131,7 +131,7 @@ fun setIcon(index: Int, tabIndex: Int) {
             Icon(
                 painterResource(id = R.drawable.ic_comment),
                 contentDescription = "Comment icon",
-                tint = changeColor(tabIndex, 2),
+                tint = changeColorForRankingTabScreen(tabIndex, 2),
                 modifier = changeSizeIcon()
             )
         }
@@ -140,7 +140,7 @@ fun setIcon(index: Int, tabIndex: Int) {
             Icon(
                 painterResource(id = R.drawable.ic_following),
                 contentDescription = "Follow icon",
-                tint = changeColor(tabIndex, 3),
+                tint = changeColorForRankingTabScreen(tabIndex, 3),
                 modifier = changeSizeIcon()
             )
         }
@@ -157,7 +157,7 @@ fun changeSizeIcon():Modifier {
 }
 
 @Composable
-fun changeColor(tabIndex: Int, index: Int): Color {
+fun changeColorForRankingTabScreen(tabIndex: Int, index: Int): Color {
     return if (tabIndex == index) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary.copy(
         alpha = 0.36f
     )

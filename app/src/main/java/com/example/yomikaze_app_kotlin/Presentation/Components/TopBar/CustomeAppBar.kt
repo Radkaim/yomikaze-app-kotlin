@@ -5,10 +5,8 @@ package com.example.yomikaze_app_kotlin.Presentation.Components.TopBar
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
-
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -28,13 +26,15 @@ fun CustomeAppBar(
     titleFontSize: TextUnit = 20.sp,
     titleFontWeight: FontWeight = FontWeight.Medium,
     textAlign: TextAlign = TextAlign.Center,
+    isComicDetails: Boolean = false,
     navigationIcon: @Composable () -> Unit ,
     actions: @Composable RowScope.() -> Unit = {}
 
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.tertiary,
+            containerColor =
+            if (isComicDetails) MaterialTheme.colorScheme.tertiary else Color.Transparent,
             titleContentColor = MaterialTheme.colorScheme.primaryContainer,
         ),
         title = {

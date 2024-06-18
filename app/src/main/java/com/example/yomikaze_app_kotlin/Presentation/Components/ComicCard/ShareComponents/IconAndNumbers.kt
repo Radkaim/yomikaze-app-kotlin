@@ -25,17 +25,15 @@ fun IconAndNumbers(
     iconWidth: Int? = null,
     iconHeight: Int? = null,
     numberRating: Float? = null,
-    number: Int? = null,
+    number: Long = 0,
     numberColor: Color,
     numberWeight: FontWeight,
     numberSize: Int,
-
 
 ) {
     // Assign the icon width and height if they are not null
     val finalIconWith = iconWidth ?: 24
     val finalIconHeight = iconHeight ?: 24
-    val finalNumber = numberRating ?: number // mean if numberRating is null, use number
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -52,11 +50,34 @@ fun IconAndNumbers(
                 .height(finalIconHeight.dp)
         )
         Text(
-            text = finalNumber.toString(),
+            text = numberRating?.toString() ?: changeTextFormat(number!!),
             color = numberColor,
             fontSize = numberSize.sp,
             fontWeight = numberWeight
         )
+    }
+}
 
+fun changeTextFormat(number: Long): String {
+    var numberAfterDivide = number
+    return when (number) {
+        in 1000..999000 ->
+        {
+            numberAfterDivide /= 1000
+            "$numberAfterDivide" + "K"
+        }
+        in 1000000..999000000 ->
+        {
+            numberAfterDivide /= 1000000
+            "$numberAfterDivide" + "M"
+        }
+
+        in 1000000000..999000000000 ->
+        {
+            numberAfterDivide /= 1000000000
+            "$numberAfterDivide" + "B"
+        }
+
+        else -> number.toString()
     }
 }

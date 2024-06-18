@@ -18,7 +18,6 @@ import com.example.yomikaze_app_kotlin.R
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NotificationView() {
-
     Scaffold(
         topBar = {
             CustomeAppBar(
@@ -41,7 +40,7 @@ fun NotificationView() {
                 autoPlay = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .scale(0.4f)
+                    .scale(0.15f)
             )
         }
     }

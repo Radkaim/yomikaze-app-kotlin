@@ -1,7 +1,10 @@
 package com.example.yomikaze_app_kotlin.Core.Networks
 
+
 import android.content.Context
+import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -10,10 +13,6 @@ import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-
-
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 
 sealed class ConnectionState {
     object Available : ConnectionState()
@@ -49,7 +48,20 @@ private fun getCurrentConnectivityState(
 fun Context.observeConnectivityAsFlow() = callbackFlow {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    val callback = NetworkCallback { connectionState -> trySend(connectionState) }
+   // val callback = NetworkCallback { connectionState -> trySend(connectionState) }
+    val callback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            trySend(getCurrentConnectivityState(connectivityManager)).isSuccess
+        }
+
+        override fun onLost(network: Network) {
+            trySend(getCurrentConnectivityState(connectivityManager)).isSuccess
+        }
+
+        override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+            trySend(getCurrentConnectivityState(connectivityManager)).isSuccess
+        }
+    }
 
     val networkRequest = NetworkRequest.Builder()
         .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -77,6 +89,7 @@ fun NetworkCallback(callback: (ConnectionState) -> Unit): ConnectivityManager.Ne
         override fun onLost(network: Network) {
             callback(ConnectionState.Unavailable)
         }
+
     }
 }
 

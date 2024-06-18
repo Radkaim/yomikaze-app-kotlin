@@ -28,9 +28,9 @@ fun RankingComicCard(
     authorName: String,
     publishedDate: String,
     ratingScore: Float,
-    follows: Int,
-    views: Int,
-    comments: Int,
+    follows: Long,
+    views: Long,
+    comments: Long,
     backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
     modifier: Modifier,
 ) {

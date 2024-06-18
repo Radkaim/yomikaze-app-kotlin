@@ -9,9 +9,9 @@ data class Comic(
     val authorName: String,
     val publishedDate: String,
     val ratingScore: Float,
-    val follows: Int,
-    val views: Int,
-    val comments: Int
+    val follows: Long,
+    val views: Long,
+    val comments: Long
 )
 data class ComicChapter(
     val chapterId: Int,
