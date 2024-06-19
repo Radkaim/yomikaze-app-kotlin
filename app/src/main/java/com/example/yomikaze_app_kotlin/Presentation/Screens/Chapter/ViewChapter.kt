@@ -52,16 +52,15 @@ fun ViewChapter(
         "https://i.pinimg.com/236x/0e/8a/9d/0e8a9da27fc5a051071d29c31ebb191d.jpg",
     )
 
-
     val state = rememberPagerState { images.size }
+    val currentPage = state.currentPage + 1
     Scaffold(
         topBar = {
             CustomeAppBar(
-                title = "View Chapter",
+                title = "View Chapter ($currentPage / ${images.size})",
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
-
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
