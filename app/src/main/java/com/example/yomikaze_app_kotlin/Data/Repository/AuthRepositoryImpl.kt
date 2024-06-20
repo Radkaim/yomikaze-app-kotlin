@@ -4,16 +4,11 @@ import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Domain.Model.ChangePasswordRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.ChangePasswordResponse
 import com.example.yomikaze_app_kotlin.Domain.Model.ForgotPasswordRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.ForgotPasswordResponse
-
 import com.example.yomikaze_app_kotlin.Domain.Model.LoginRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.LoginResponse
 import com.example.yomikaze_app_kotlin.Domain.Model.RegisterRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.RegisterResponse
 import com.example.yomikaze_app_kotlin.Domain.Model.ResetPasswordRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.ResetPasswordResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.TokenResponse
 import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
 import javax.inject.Inject
 import kotlin.Result.Companion.failure
@@ -23,7 +18,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val appPreference: AppPreference
 ) : AuthRepository {
 
-    override suspend fun login(username: String, password: String): Result<LoginResponse> {
+    override suspend fun login(username: String, password: String): Result<TokenResponse> {
         val result = api.login(LoginRequest(username, password))
         Log.d("Login", result.toString())
         if (result.isSuccessful) {
@@ -39,7 +34,7 @@ class AuthRepositoryImpl @Inject constructor(
         dateOfBirth: String,
         password: String,
         confirmPassword: String
-    ): Result<RegisterResponse> {
+    ): Result<TokenResponse> {
         val result = api.register(RegisterRequest(email, username, dateOfBirth, password, confirmPassword))
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
@@ -48,7 +43,7 @@ class AuthRepositoryImpl @Inject constructor(
         return failure(Exception("Register failed"))
     }
 
-    override suspend fun forgotPassword(email: String): Result<ForgotPasswordResponse> {
+    override suspend fun forgotPassword(email: String): Result<TokenResponse> {
         val result = api.forgotPassword(ForgotPasswordRequest(email))
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
@@ -57,7 +52,7 @@ class AuthRepositoryImpl @Inject constructor(
         return failure(Exception("Forgot Password failed"))
     }
 
-    override suspend fun resetPassword(password: String, confirmPassword: String): Result<ResetPasswordResponse> {
+    override suspend fun resetPassword(password: String, confirmPassword: String): Result<TokenResponse> {
         val result = api.resetPassword(ResetPasswordRequest(password, confirmPassword))
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
@@ -66,7 +61,7 @@ class AuthRepositoryImpl @Inject constructor(
         return failure(Exception("Reset Password failed"))
     }
 
-    override suspend fun changePassword(oldPassword: String, newPassword: String ,confirmPassword: String): Result<ChangePasswordResponse> {
+    override suspend fun changePassword(oldPassword: String, newPassword: String ,confirmPassword: String): Result<TokenResponse> {
         val result = api.changePassword(ChangePasswordRequest(oldPassword, newPassword, confirmPassword))
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
