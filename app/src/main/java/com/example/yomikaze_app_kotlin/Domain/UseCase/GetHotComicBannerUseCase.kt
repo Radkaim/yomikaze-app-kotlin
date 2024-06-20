@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Domain.UseCase
 
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicResponseTest
+
+import com.example.yomikaze_app_kotlin.Domain.Model.ComicResponseTest
 import com.example.yomikaze_app_kotlin.Domain.Repository.ComicRepository
 import javax.inject.Inject
 

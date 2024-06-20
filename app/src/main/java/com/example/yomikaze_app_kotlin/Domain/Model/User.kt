@@ -3,7 +3,10 @@ package com.example.yomikaze_app_kotlin.Domain.Model
 import com.google.gson.annotations.SerializedName
 
 
-// Định nghĩa các request và response data classes
+
+/**
+ * Login
+ */
 data class LoginRequest(
 
     @SerializedName("username")
@@ -13,39 +16,100 @@ data class LoginRequest(
     val password: String
 )
 
+/**
+ * Token
+ */
 data class TokenResponse(
     @SerializedName("token")
     val token: String
 )
 
+/**
+ * Register
+ */
 data class RegisterRequest(
-    val email: String,
+    @SerializedName("username")
     val username: String,
-    val dateOfBirth: String,
+
+    @SerializedName("password")
     val password: String,
-    val confirmPassword: String
+
+    @SerializedName("fullName")
+    val fullName: String,
+
+    @SerializedName("confirmPassword")
+    val confirmPassword: String,
+
+    @SerializedName("email")
+    val email: String,
+
+    @SerializedName("birthday")
+    val birthday: String,
 )
 
-data class ForgotPasswordRequest(val email: String)
+/**
+ * Forgot Password
+ */
+data class ForgotPasswordRequest(
+    @SerializedName("email")
+    val email: String
+)
 
+/**
+ * Reset Password
+ */
 data class ResetPasswordRequest(
-    val password: String,
+    @SerializedName("confirmPassword")
     val confirmPassword: String
 )
 
+/**
+ * Change Password
+ */
 data class ChangePasswordRequest(
+    @SerializedName("oldPassword")
     val oldPassword: String,
-    val newPassword: String,
+
+    @SerializedName("newPassword")
     val confirmPassword: String
+)
+
+/**
+ * User Info
+ */
+data class UserInfoResponse(
+    @SerializedName("success")
+    val success: Boolean,
+
+    @SerializedName("message")
+    val message: String,
+
+    @SerializedName("data")
+    val data: UserData
+)
+
+data class UserData(
+    @SerializedName("data")
+    val data: User,
+
+    @SerializedName("claims")
+    val claims: UserClaims
 )
 
 data class User(
-    var id: Int = 0,
-    var name: String = "",
-    var email: String = "",
-    var password: String = "",
-    var token: String = "",
-    var createdAt: String = "",
-    var updatedAt: String = "",
-    var deletedAt: String = ""
+    @SerializedName("id")
+    val id: Int,
+
+    @SerializedName("username")
+    val username: String,
+
+    @SerializedName("email")
+    val email: String,
+
+    @SerializedName("isAdmin")
+    val isAdmin: Boolean,
+)
+data class UserClaims(
+    @SerializedName("roles")
+    val role : String
 )

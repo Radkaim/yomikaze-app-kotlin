@@ -3,7 +3,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Logi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Domain.UseCase.LoginUseCase
+import com.example.yomikaze_app_kotlin.Domain.UseCase.LoginUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUC
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginState())
     private var navController: NavController? = null

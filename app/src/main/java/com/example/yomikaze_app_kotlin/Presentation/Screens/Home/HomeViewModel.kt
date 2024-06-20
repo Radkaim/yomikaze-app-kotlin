@@ -27,13 +27,13 @@ class HomeViewModel @Inject constructor(
 //        _state.value = _state.value.copy(isNetworkAvailable = true)
 //        networkMonitor.registerCallback(
 //            onAvailable = {
-                viewModelScope.launch {
-                    fetchImages()
-                    checkUserToken()
-                }
+        viewModelScope.launch {
+            fetchImages()
+            checkUserToken()
+        }
 //            },
 //            onLost = {
-                // Xử lý khi mất kết nối nếu cần
+        // Xử lý khi mất kết nối nếu cần
 //                networkAvailable()
 //            }
 //        )
@@ -70,19 +70,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun checkUserToken() {
-        appPreference.authToken = "Hung is here" // test đã đăng nhập
-        // appPreference.deleteUserToken() // chưa đăng nhập
+   private fun checkUserToken() {
         val token = appPreference.authToken
-
-        // Log.d("HomeViewModel", "User token: $token")
         if (token != null) {
             _state.value = _state.value.copy(isUserLoggedIn = true)
+            //test get user Info here
+            //getUserInfo(token)
         } else {
             _state.value = _state.value.copy(isUserLoggedIn = false)
         }
     }
-
 
     /**
      * Todo: Implement navigation functions
