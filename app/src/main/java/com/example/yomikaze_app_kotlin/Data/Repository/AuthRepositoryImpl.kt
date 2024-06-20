@@ -21,7 +21,7 @@ class AuthRepositoryImpl @Inject constructor(
             appPreference.authToken = result.body()?.token
             return Result.success(result.body()!!)
         }
-        return failure(Exception())
+        return failure(Exception("Login failed"))
     }
 
     override suspend fun register(
