@@ -73,6 +73,27 @@ fun ProfileView(
             ) {
                 Text(text = "Change Theme")
             }
+            Button(onClick = {
+
+                navController.navigate("reset_password_route")
+            }) {
+                Text(text = "Go to reset")
+
+            }
+            Button(onClick = {
+
+                navController.navigate("edit_profile_route")
+            }) {
+                Text(text = "Go to edit")
+
+            }
+            Button(onClick = {
+
+                navController.navigate("setting_route")
+            }) {
+                Text(text = "Go to edit")
+
+            }
         }
 
         Button(onClick = {
@@ -82,6 +103,7 @@ fun ProfileView(
             Text(text = "Go to Login")
 
         }
+
 
     }
 }

@@ -3,6 +3,8 @@ package com.example.yomikaze_app_kotlin.Data.Repository
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChangePasswordRequest
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChangePasswordResponse
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ForgotPasswordRequest
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ForgotPasswordResponse
 
@@ -61,6 +63,17 @@ class AuthRepositoryImpl @Inject constructor(
             appPreference.authToken = result.body()?.token
             //  return Result.success(result.body()!!)
         }
-        return failure(Exception("Forgot Password failed"))
+        return failure(Exception("Reset Password failed"))
     }
+
+    override suspend fun changePassword(oldPassword: String, newPassword: String ,confirmPassword: String): Result<ChangePasswordResponse> {
+        val result = api.changePassword(ChangePasswordRequest(oldPassword, newPassword, confirmPassword))
+        if (result.isSuccessful) {
+            appPreference.authToken = result.body()?.token
+            //  return Result.success(result.body()!!)
+        }
+        return failure(Exception("Change Password failed"))
+    }
+
+
 }

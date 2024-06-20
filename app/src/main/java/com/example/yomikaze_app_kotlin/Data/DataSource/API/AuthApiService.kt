@@ -18,13 +18,18 @@ data class ForgotPasswordResponse(val token: String)
 data class ResetPasswordRequest(val password: String, val confimPassword: String)
 data class ResetPasswordResponse(val token: String)
 
+data class ChangePasswordRequest(val oldPassword: String, val newPassword: String, val confimPassword: String)
+data class ChangePasswordResponse(val token: String)
+
+
+
 // Định nghĩa các API endpoints
 interface AuthApiService {
     @POST("authentication/signin")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
     @POST("/auth/register")
-    suspend fun register(@Body loginRequest: RegisterRequest): Response<LoginResponse>
+    suspend fun register(@Body registerRequest: RegisterRequest): Response<RegisterResponse>
 
 
     @POST("/auth/forgotPassword")
@@ -32,6 +37,9 @@ interface AuthApiService {
 
     @POST("/auth/resetPassword")
     suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<ResetPasswordResponse>
+
+    @POST("/auth/changePassword")
+    suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<ChangePasswordResponse>
 
 }
 

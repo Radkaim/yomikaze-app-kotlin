@@ -1,6 +1,9 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ResetPassword
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.icu.util.Calendar
+import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,49 +41,45 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ForgotPassword.ForgotPasswordContent
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ForgotPassword.ForgotPasswordState
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ForgotPassword.ForgotPasswordViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordContent
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordViewModel
 import com.example.yomikaze_app_kotlin.R
-import com.example.yomikaze_app_kotlin.ui.AppTheme
-import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
+
 
 @Composable
-fun ResetPasswordView(
-    resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel(),
+fun EditProfileView(
+    editProfileViewModel: EditProfileViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val state by resetPasswordViewModel.state.collectAsState()
-    resetPasswordViewModel.setNavController(navController)
-
-    ResetPasswordContent(state, resetPasswordViewModel, navController)
+    val state by editProfileViewModel.state.collectAsState()
+    editProfileViewModel.setNavController(navController)
+    EditProfileContent(state, editProfileViewModel, navController)
 }
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResetPasswordContent(
-    state: ResetPasswordState,
-    ResetPasswordViewModel: ResetPasswordViewModel,
+fun EditProfileContent(
+    state: EditProfileState,
+    editProfileViewModel: EditProfileViewModel,
     navController: NavController
+
 ) {
     Scaffold(
         topBar = {
             CustomeAppBar(
-                title = "Reset Password",
+                title = "Edit Profile",
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -98,20 +97,26 @@ fun ResetPasswordContent(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .offset(y = (-50).dp)
+                .offset(y = (-20).dp)
 //                .padding(bottom = 30.dp)
                 .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
 
         ) {
-            var passwordVisible by remember { mutableStateOf(false) }
+            var username by remember { mutableStateOf("") }
+            var dateOfBirth by remember { mutableStateOf("") }
+            var dateOfBirthError by remember { mutableStateOf<String?>(null) }
             var password by remember { mutableStateOf("") }
-            var confirmPassword by remember { mutableStateOf("") }
+            var aboutMe by remember { mutableStateOf("") }
+            var aboutMeError by remember { mutableStateOf("") }
+
+
+            var passwordVisible by remember { mutableStateOf(false) }
 
             Column(
 //            Alignment = Alignment.Center,
                 modifier = Modifier
-                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 40.dp)
+//                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 40.dp)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -126,6 +131,58 @@ fun ResetPasswordContent(
                         .width(100.dp),
                     contentScale = ContentScale.Fit
                 )
+
+                TextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    label = {
+                        Text(
+                            text = "User Name",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                    ),
+
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    trailingIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = "Select Date of Birth"
+                            )
+                        }
+                    }
+                )
+                if (state.passwordError != null) {
+                    Text(
+                        text = state.passwordError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
+                    )
+                }
+
                 TextField(
                     value = password,
                     onValueChange = { password = it },
@@ -141,25 +198,10 @@ fun ResetPasswordContent(
                         imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
 
-                    leadingIcon = {
-
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
-
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
-                            )
-                        }
-                    },
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    modifier = androidx.compose.ui.Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(5.dp)
+                        .padding(10.dp)
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
@@ -173,25 +215,32 @@ fun ResetPasswordContent(
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
                     ),
-                    isError = state.passwordError != null
+                    trailingIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = "Select Date of Birth"
+                            )
+                        }
+                    }
                 )
                 if (state.passwordError != null) {
                     Text(
                         text = state.passwordError ?: "",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
-                        modifier = androidx.compose.ui.Modifier
+                        modifier = Modifier
                             .align(Alignment.Start)
 //                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
 
                 TextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
+                    value = dateOfBirth,
+                    onValueChange = { dateOfBirth = it },
                     label = {
                         Text(
-                            text = "Confirm Password",
+                            text = "Date Of Birth",
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -200,24 +249,11 @@ fun ResetPasswordContent(
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
-                    leadingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
 
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
-                            )
-                        }
-                    },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = androidx.compose.ui.Modifier
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    modifier = Modifier
                         .fillMaxWidth()
-//                        .padding(5.dp)
+                        .padding(10.dp)
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
@@ -231,22 +267,80 @@ fun ResetPasswordContent(
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
                     ),
-                    isError = state.passwordError != null
+                    trailingIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = "Select Date of Birth"
+                            )
+                        }
+                    }
                 )
-                if (state.confirmPasswordError != null) {
+                if (state.passwordError != null) {
                     Text(
                         text = state.passwordError ?: "",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
-                        modifier = androidx.compose.ui.Modifier
+                        modifier = Modifier
                             .align(Alignment.Start)
 //                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
 
-                OutlinedButton(
+                TextField(
+                    value = aboutMe,
+                    onValueChange = { aboutMe = it },
+                    label = {
+                        Text(
+                            text = "About Me",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    ),
                     modifier = Modifier
-                        .padding(top = 12.dp)
+                        .fillMaxWidth()
+                        .padding(5.dp)
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp)
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    readOnly = true,
+                    isError = dateOfBirthError != null,
+                    trailingIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = "Select Date of Birth"
+                            )
+                        }
+                    }
+                )
+
+                if (dateOfBirthError != null) {
+                    Text(
+                        text = dateOfBirthError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.align(Alignment.Start)
+                    )
+                }
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier
+                        .padding(top = 20.dp)
                         .height(40.dp)
                         .width(200.dp),
 //                        .padding(bottom = 10.dp),
@@ -255,7 +349,7 @@ fun ResetPasswordContent(
 //
 //               ),
                     onClick = {
-                        navController.navigate("login_route")
+                        //  navController.navigate("login_route")
                     },
 
                     )
@@ -263,8 +357,8 @@ fun ResetPasswordContent(
                     if (state.isLoading) {
                         Text(
 
-                            text = "SEND",
-                            color = Color.Black,
+                            text = "SAVE PROFILE",
+                            color = MaterialTheme.colorScheme.tertiary,
                             style = TextStyle(
                                 fontSize = 16.sp,
                             ),
@@ -278,46 +372,7 @@ fun ResetPasswordContent(
                     }
 
                 }
-
-                Text(
-                    modifier = Modifier.padding(top = 12.dp),
-                    text = "or",
-                    style = TextStyle(
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp
-                    )
-
-                )
-                OutlinedButton(
-                    onClick = { navController.navigate("login_route") },
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(200.dp)
-                        .padding(
-                            top = 10.dp
-                        ),
-                    shape = RoundedCornerShape(12.dp),
-                    )
-                {
-                    Text(
-                        text = "LOGIN",
-                        color = Color.White,
-                        style = TextStyle(
-                            fontSize = 16.sp,
-//                            fontStyle = FontStyle.,
-                        ),
-                    )
-                }
             }
         }
-        state.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 6.dp)
-            )
-        }
     }
-
 }

@@ -35,7 +35,9 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.Black,
 
     outline = OrangeSplash, //E38B6C
-    outlineVariant = GreenSplash //65F6D1
+    outlineVariant = GreenSplash, //65F6D1
+
+    scrim = yellow
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

@@ -32,7 +32,7 @@ class RegisterViewModel @Inject constructor(
         _state.value = _state.value.copy(password = newPassword, passwordError = null)
     }
     fun onconfirmPasswordChange(newconfirmPassword: String) {
-        _state.value = _state.value.copy(confirmpassword = newconfirmPassword, confirmpasswordError = null)
+        _state.value = _state.value.copy(confirmPassword = newconfirmPassword, confirmPasswordError = null)
     }
     fun setNavController(navController: NavController) {
         this.navController = navController
@@ -46,7 +46,7 @@ class RegisterViewModel @Inject constructor(
         val username = currentState.username
         val dateOfBirth = currentState.dateOfBirth
         val password = currentState.password
-        val confirmPassword = currentState.confirmpassword
+        val confirmPassword = currentState.confirmPassword
 
         var hasError = false
 
@@ -79,10 +79,10 @@ class RegisterViewModel @Inject constructor(
         }
 
         if (confirmPassword.isBlank() || confirmPassword != password) {
-            _state.value = _state.value.copy(confirmpasswordError = "Passwords do not match.")
+            _state.value = _state.value.copy(confirmPasswordError = "Passwords do not match.")
             hasError = true
         } else {
-            _state.value = _state.value.copy(confirmpasswordError = null)
+            _state.value = _state.value.copy(confirmPasswordError = null)
         }
 
         if (hasError) return
