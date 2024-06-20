@@ -3,7 +3,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Regi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Domain.UseCase.RegisterUseCase
+import com.example.yomikaze_app_kotlin.Domain.UseCase.RegisterUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,84 +12,59 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerUseCase: RegisterUseCase
-) : ViewModel(){
+    private val registerUC: RegisterUC
+) : ViewModel() {
     private val _state = MutableStateFlow(RegisterState())
     private var navController: NavController? = null
 
     val state: StateFlow<RegisterState> get() = _state
 
-    fun onEmailChange(newEmail: String){
-        _state.value = _state.value.copy(email = newEmail, emailError = null)
-    }
-    fun onUsernameChange(newUsername: String) {
-        _state.value = _state.value.copy(username = newUsername, usernameError = null)
-    }
-    fun ondateOfBirthChange(newDateOfBirth: String) {
-        _state.value = _state.value.copy(dateOfBirth = newDateOfBirth, dateOfBirthError = null)
-    }
-    fun onPasswordChange(newPassword: String) {
-        _state.value = _state.value.copy(password = newPassword, passwordError = null)
-    }
-    fun onconfirmPasswordChange(newconfirmPassword: String) {
-        _state.value = _state.value.copy(confirmPassword = newconfirmPassword, confirmPasswordError = null)
-    }
     fun setNavController(navController: NavController) {
         this.navController = navController
     }
+
     fun navigateToRegister() {
         navController?.navigate("login_route")
     }
-    fun onRegister(email: String, username: String, dateOfBirth: String, password: String, confimPassword: String){
-        val currentState = _state.value
-        val email = currentState.email
-        val username = currentState.username
-        val dateOfBirth = currentState.dateOfBirth
-        val password = currentState.password
-        val confirmPassword = currentState.confirmPassword
 
-        var hasError = false
+    fun onRegister(
+        username: String,
+        password: String,
+        fullName: String,
+        confirmPassword: String,
+        email: String,
+        birthday: String
+    ) {
+        val emailError = "Invalid email."
+        val usernameError = "Invalid username."
+        val dateOfBirthError = "Invalid Date of Birth."
+        val passwordError = "Invalid password."
+        val confirmPasswordError = "Passwords do not match."
 
-        if (email.isBlank()){
-            _state.value = _state.value.copy(emailError = "Invalid email.")
-            hasError = true
-        } else {
-            _state.value = _state.value.copy(emailError = null)
+        updateErrorState(email.isBlank(), emailError) {
+            _state.value = _state.value.copy(emailError = it)
         }
 
-        if (username.isBlank()) {
-            _state.value = _state.value.copy(usernameError = "Invalid username.")
-            hasError = true
-        } else {
-            _state.value = _state.value.copy(usernameError = null)
+        updateErrorState(username.isBlank(), usernameError) {
+            _state.value = _state.value.copy(usernameError = it)
         }
 
-        if (dateOfBirth.isBlank()) {
-            _state.value = _state.value.copy(dateOfBirthError = "Invalid Date of Birth.")
-            hasError = true
-        } else {
-            _state.value = _state.value.copy(dateOfBirthError = null)
+        updateErrorState(birthday.isBlank(), dateOfBirthError) {
+            _state.value = _state.value.copy(dateOfBirthError = it)
         }
 
-        if (password.isBlank()) {
-            _state.value = _state.value.copy(passwordError = "Invalid password.")
-            hasError = true
-        } else {
-            _state.value = _state.value.copy(passwordError = null)
+        updateErrorState(password.isBlank(), passwordError) {
+            _state.value = _state.value.copy(passwordError = it)
         }
 
-        if (confirmPassword.isBlank() || confirmPassword != password) {
-            _state.value = _state.value.copy(confirmPasswordError = "Passwords do not match.")
-            hasError = true
-        } else {
-            _state.value = _state.value.copy(confirmPasswordError = null)
+        updateErrorState(confirmPassword.isBlank() || confirmPassword != password, confirmPasswordError) {
+            _state.value = _state.value.copy(confirmPasswordError = it)
         }
-
-        if (hasError) return
 
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
-            val result = registerUseCase.register(email, username, dateOfBirth, password, confimPassword)
+            val result =
+                registerUC.register(username, password, fullName, confirmPassword, email, birthday)
             _state.value = _state.value.copy(isLoading = false)
             result.onFailure { token ->
                 //handle success
@@ -97,6 +72,18 @@ class RegisterViewModel @Inject constructor(
                 _state.value = _state.value.copy(error = error.message)
 
             }
+        }
+    }
+
+    private fun updateErrorState(
+        condition: Boolean,
+        errorMessage: String?,
+        updateState: (String?) -> Unit
+    ) {
+        if (condition) {
+            updateState(errorMessage)
+        } else {
+            updateState(null)
         }
     }
 }

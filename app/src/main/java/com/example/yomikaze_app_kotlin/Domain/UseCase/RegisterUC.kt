@@ -5,16 +5,17 @@ import com.example.yomikaze_app_kotlin.Domain.Model.TokenResponse
 import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
 import javax.inject.Inject
 
-class RegisterUseCase @Inject constructor(
+class RegisterUC @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     suspend fun register(
-        email: String,
         username: String,
-        dateOfBirth: String,
         password: String,
-        confirmPassword: String
+        fullName: String,
+        confirmPassword: String,
+        email: String,
+        birthday: String
     ): Result<TokenResponse> {
-        return authRepository.register(email, username, dateOfBirth, password, confirmPassword)
+        return authRepository.register( username, password,fullName, confirmPassword, email, birthday)
     }
 }
