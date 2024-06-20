@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.border
@@ -30,9 +30,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPager
+import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPagerOrientation
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.FlipPage.FlipPager
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.FlipPage.FlipPagerOrientation
 import com.example.yomikaze_app_kotlin.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -52,16 +52,15 @@ fun ViewChapter(
         "https://i.pinimg.com/236x/0e/8a/9d/0e8a9da27fc5a051071d29c31ebb191d.jpg",
     )
 
-
     val state = rememberPagerState { images.size }
+    val currentPage = state.currentPage + 1
     Scaffold(
         topBar = {
             CustomeAppBar(
-                title = "View Chapter",
+                title = "View Chapter ($currentPage / ${images.size})",
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
-
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -105,5 +104,4 @@ fun ViewChapter(
             }
         }
     }
-
 }

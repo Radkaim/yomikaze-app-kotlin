@@ -18,13 +18,6 @@ class LoginViewModel @Inject constructor(
     private var navController: NavController? = null
     val state: StateFlow<LoginState> get() = _state
 
-    fun onUsernameChange(newUsername: String) {
-        _state.value = _state.value.copy(username = newUsername, usernameError = null)
-    }
-
-    fun onPasswordChange(newPassword: String) {
-        _state.value = _state.value.copy(password = newPassword, passwordError = null)
-    }
     fun setNavController(navController: NavController) {
         this.navController = navController
     }
@@ -36,35 +29,18 @@ class LoginViewModel @Inject constructor(
         navController?.navigate("forgot_password_route")
     }
 
-    class ForgotPasswordViewModel : ViewModel() {
-        private lateinit var navController: NavController
-
-        fun setNavController(navController: NavController) {
-            this.navController = navController
-        }
-    }
-
     fun onLogin(username: String, password: String) {
-        val currentState = _state.value
-        val username = currentState.username
-        val password = currentState.password
-
-        var hasError = false
+        _state.value = _state.value.copy(isLoading = true)
         if (username.isBlank()) {
             _state.value = _state.value.copy(usernameError = "Invalid username.")
-            hasError = true
         } else {
             _state.value = _state.value.copy(usernameError = null)
         }
-
         if (password.isBlank()) {
             _state.value = _state.value.copy(passwordError = "Invalid password.")
-            hasError = true
         } else {
             _state.value = _state.value.copy(passwordError = null)
         }
-
-        if (hasError) return
 
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
@@ -72,6 +48,8 @@ class LoginViewModel @Inject constructor(
             _state.value = _state.value.copy(isLoading = false)
             result.onSuccess { token ->
                 // Handle success
+                _state.value = _state.value.copy(isLoading = false)
+                navController?.navigate("home_route")
             }.onFailure { error ->
                 _state.value = _state.value.copy(error = error.message)
             }

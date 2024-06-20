@@ -28,11 +28,13 @@ object AppModule {
     /**
      * Todo: Provide the Retrofit
      */
+    private const val ApiUrlTest = "https://yomikaze.org/api/"
+    private const val ApiUrl = "https://yomikaze.org/api/"
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://jsonplaceholder.typicode.com/") // Change this to your base URL
+            .baseUrl(ApiUrl) // Change this to your base URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

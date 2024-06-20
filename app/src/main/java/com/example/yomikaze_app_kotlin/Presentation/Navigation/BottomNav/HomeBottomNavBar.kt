@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav
+package com.example.yomikaze_app_kotlin.Presentation.Navigation.BottomNav
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.height

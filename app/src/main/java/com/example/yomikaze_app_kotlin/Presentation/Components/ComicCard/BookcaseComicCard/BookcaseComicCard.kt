@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.ComicStatus
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 
 @Composable
 fun BookcaseComicCard(
@@ -97,7 +97,7 @@ fun BookcaseComicCard(
                         fontWeight = FontWeight.Medium,
                     )
 
-                    ComicStatus(status = status)
+                    TagComponent(status = status)
                 }
 
                 Row(

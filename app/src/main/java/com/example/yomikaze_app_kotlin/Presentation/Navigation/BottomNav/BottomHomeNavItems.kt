@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Components.BottomNav
+package com.example.yomikaze_app_kotlin.Presentation.Navigation.BottomNav
 
 import com.example.yomikaze_app_kotlin.R
 

@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.ComicStatus
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconAndNumbers
 import com.example.yomikaze_app_kotlin.R
 
@@ -135,7 +135,7 @@ fun NormalComicCard(
                             // contentAlignment = Alignment.Center,
                             modifier = Modifier.offset(y = (-8).dp)
                         ) {
-                            ComicStatus(status = status)
+                            TagComponent(status = status)
                         }
 
                     }

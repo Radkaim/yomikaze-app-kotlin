@@ -25,7 +25,7 @@ private val LightColorScheme = lightColorScheme(
     secondaryContainer = Green500, //0B9D5F
     onSecondaryContainer = Orange900, //02753E
 
-
+    error = Orange600, //B22F24
     background = Green100, //F2FFFD
     surface = Orange400, //F28C74
     inverseSurface = Orange800,

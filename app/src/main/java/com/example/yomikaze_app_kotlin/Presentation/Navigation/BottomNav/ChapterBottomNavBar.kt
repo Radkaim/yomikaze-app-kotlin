@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.BottomChapterNav
+package com.example.yomikaze_app_kotlin.Presentation.Navigation.BottomNav
 
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -8,14 +8,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.ui.AppTheme
-import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
 
 @Composable
 fun ChapterBottomNavBar(navController: NavController) {
@@ -74,14 +70,4 @@ fun ChapterBottomNavBar(navController: NavController) {
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun BottomNavigationBarPreview() {
-    YomikazeappkotlinTheme(appTheme = AppTheme.LIGHT) {
-        val navController = rememberNavController()
-        ChapterBottomNavBar(navController)
-    }
-
 }

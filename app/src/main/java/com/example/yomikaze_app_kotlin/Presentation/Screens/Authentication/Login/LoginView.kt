@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,7 +27,6 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,7 +41,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -68,7 +65,6 @@ fun LoginView(
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navController: NavController) {
 
@@ -93,7 +89,6 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
         Box(
             modifier = Modifier
                 .fillMaxSize()
-//                .padding(bottom = 30.dp)
                 .offset(x = 10.dp)
                 .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center,
@@ -105,10 +100,10 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
             var passwordVisible by remember { mutableStateOf(false) }
 //        state.hung = "hung"
 
+
             Column(
-//            Alignment = Alignment.Center,
                 modifier = Modifier
-//                    .padding(bottom = 40.dp, start = 10.dp, end = 10.dp)
+                    .padding(bottom = 40.dp, start = 10.dp, end = 10.dp)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -118,7 +113,6 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
                     modifier = Modifier
-//                        .padding(top = 30.dp)
                         .height(200.dp)
                         .width(100.dp),
                     contentScale = ContentScale.Fit
@@ -153,7 +147,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                             tint = Color.Unspecified
                         )
                     },
-//                        },
+
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
@@ -179,7 +173,6 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
                     )
                 }
 
@@ -237,16 +230,13 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
                 Row {
                     Text(
                         text = "Sign Up",
-//                    color = MaterialTheme.colors.surface,
                         style = TextStyle(
                             fontStyle = FontStyle.Italic,
-//                        color = MaterialTheme.colors.surface
                         ),
                         modifier = Modifier
                             .padding(
@@ -260,14 +250,13 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     Text(
                         text = "Forgot Password?",
                         style = TextStyle(fontStyle = FontStyle.Italic),
-                        modifier = Modifier.padding(
-                            top = 3.dp,
-                            bottom = 3.dp
-                        )
+                        modifier = Modifier
+                            .padding(
+                                top = 3.dp,
+                                bottom = 3.dp
+                            )
                             .clickable { loginViewModel.navigateToForgotPassword() }
                     )
-                        //.clickable { loginViewModel.navigateToRegister() }
-
 
                 }
                 Column(
@@ -278,22 +267,20 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                OutlinedButton(
-                    modifier = Modifier
-                        .height(40.dp)
-                        .width(200.dp),
-//                        .padding(bottom = 10.dp),
-                    shape = RoundedCornerShape(12.dp),
-//               elevation = ButtonDefaults.buttonColors(
-//
-//               ),
-                    onClick = {
-                      //  .clickable { forgotPasswordViewModel.navigateToRegister() }
-                    },
+                    OutlinedButton(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .width(200.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        onClick = {loginViewModel.onLogin(username, password)},
 
-                    )
-                {
-                    if (state.isLoading) {
+                        )
+                    {
+                        if (state.isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                         Text(
                             text = "Login",
                             color = Color.Black,
@@ -302,51 +289,40 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                             ),
                         )
 
-                    } else {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp)
-                        )
-
                     }
 
-                }
-
-                Text(
-                    modifier = Modifier.padding(top = 12.dp),
-                    text = "or",
-                    style = TextStyle(
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp
-                    )
-                )
-                OutlinedButton(
-//                   colors = buttonColors(MaterialTheme.coloS.onPrimary),
-                    colors = buttonColors(MaterialTheme.colorScheme.surface),
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(200.dp)
-                        .padding(
-                            top = 10.dp
-                        ),
-//                       .background(color = MaterialTheme.colors.secondary),
-                    shape = RoundedCornerShape(12.dp),
-//               elevation = ButtonDefaults.buttonColors(
-//
-//               ),
-                    onClick = { /*TODO*/ },
-
-                    )
-                {
                     Text(
-                        text = "Login with Google",
-                        color = Color.White,
+                        modifier = Modifier.padding(top = 12.dp),
+                        text = "or",
                         style = TextStyle(
-                            fontSize = 16.sp,
-                            fontStyle = FontStyle.Italic,
-                        ),
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp
+                        )
                     )
+                    OutlinedButton(
+                        colors = buttonColors(MaterialTheme.colorScheme.surface),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp)
+                            .padding(
+                                top = 10.dp
+                            ),
+                        shape = RoundedCornerShape(12.dp),
+
+                        onClick = { /*TODO*/ },
+
+                        )
+                    {
+                        Text(
+                            text = "Login with Google",
+                            color = Color.White,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontStyle = FontStyle.Italic,
+                            ),
+                        )
+                    }
                 }
-            }
 
 //            Button(
 //                content = {
@@ -369,18 +345,18 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
 ////        })
 //            )
 
-        }
+            }
 //
 
 
-        state.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 6.dp)
-            )
+            state.error?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+            }
         }
-    }
     }
 }
 
