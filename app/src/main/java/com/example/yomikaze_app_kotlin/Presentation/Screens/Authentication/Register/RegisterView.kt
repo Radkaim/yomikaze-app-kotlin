@@ -96,13 +96,13 @@ fun RegisterContent(
     {
 
         Box(
+
             modifier = androidx.compose.ui.Modifier
                 .fillMaxSize()
                 .offset(y = (-30).dp)
 //                .padding(bottom = 30.dp)
                 .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
-
         ) {
             var email by remember { mutableStateOf("") }
             var username by remember { mutableStateOf("") }
@@ -138,9 +138,9 @@ fun RegisterContent(
             Column(
 //            Alignment = Alignment.Center,
                 modifier = androidx.compose.ui.Modifier
-                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 40.dp)
+                    .padding(start = 10.dp, end = 10.dp)
                     .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
@@ -176,10 +176,8 @@ fun RegisterContent(
                             tint = Color.Unspecified
                         )
                     },
-//                        },
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
-//                        .padding(top = 20.dp, start = 10.dp, bottom = 10.dp, end = 10.dp)
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
@@ -205,7 +203,6 @@ fun RegisterContent(
 //                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
                     )
                 }
-                //
                 TextField(
                     value = username,
                     onValueChange = { username = it },
@@ -228,10 +225,8 @@ fun RegisterContent(
                             tint = Color.Unspecified
                         )
                     },
-//                        },
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
-                        .padding(5.dp)
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
@@ -254,12 +249,9 @@ fun RegisterContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = androidx.compose.ui.Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
                     )
                 }
-
                 TextField(
-
                     value = dateOfBirth,
                     onValueChange = { dateOfBirth = it },
                     label = {
@@ -271,84 +263,19 @@ fun RegisterContent(
                     },
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done
-                    ),
-                    readOnly = true,
-                    isError = dateOfBirthError != null,
-                    leadingIcon = {
-                        IconButton(onClick = { datePickerDialog.show() }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_dateofbirth),
-                                contentDescription = "Select Date of Birth",
-                                tint = MaterialTheme.colorScheme.onTertiary
-
-                            )
-                        }
-                    },
-                    modifier = androidx.compose.ui.Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp)
-                        .height(56.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp)
-                        ),
-
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-//
-                )
-                if (dateOfBirthError != null) {
-                    Text(
-                        text = dateOfBirthError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-//                        modifier = Modifier.align(Alignment.Start)
-                    )
-                }
-
-
-
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = {
-                        Text(
-                            text = "Password",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
-
                     leadingIcon = {
-
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
-
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        IconButton(onClick = { datePickerDialog.show()}) {
                             Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                                painter = painterResource(id = R.drawable.ic_dateofbirth),
+                                contentDescription = "",
+                                tint = Color.Unspecified
                             )
                         }
                     },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
-                        .padding(5.dp)
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
@@ -362,7 +289,63 @@ fun RegisterContent(
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
                     ),
-                    isError = state.passwordError != null
+                    isError = state.usernameError != null
+                )
+                if (state.dateOfBirthError != null) {
+                    Text(
+                        text = state.dateOfBirthError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = androidx.compose.ui.Modifier
+                            .align(Alignment.Start)
+                    )
+                }
+//
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = {
+                        Text(
+                            text = "Password",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                    ),
+                    leadingIcon = {
+                        val image = if (passwordVisible)
+                            painterResource(id = R.drawable.ic_eye)
+                        else
+                            painterResource(id = R.drawable.ic_visibility_eye)
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.onTertiary,
+                                painter = image,
+                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            )
+                        }
+                    },
+                    modifier = androidx.compose.ui.Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    isError = state.usernameError != null
                 )
                 if (state.passwordError != null) {
                     Text(
@@ -371,7 +354,6 @@ fun RegisterContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = androidx.compose.ui.Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
 
@@ -406,7 +388,6 @@ fun RegisterContent(
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
-//                        .padding(5.dp)
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
@@ -429,13 +410,9 @@ fun RegisterContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = androidx.compose.ui.Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
-//                Column(
-//                    verticalArrangement = Arrangement.Center,
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
+//
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = androidx.compose.ui.Modifier
@@ -451,26 +428,23 @@ fun RegisterContent(
                     )
                     Text(
                         text = "Term of Service",
-//                    color = MaterialTheme.colors.surface,
                         style = TextStyle(
                             fontStyle = FontStyle.Italic,
-//                        color = MaterialTheme.colors.surface
                         ),
                         modifier = androidx.compose.ui.Modifier
                             .padding(
                                 top = 3.dp,
-                                start = 0.dp,
                                 end = 150.dp,
-//                                    bottom = 20.dp
                             )
                     )
                     Text(
                         text = "Sign In?",
                         style = TextStyle(fontStyle = FontStyle.Italic),
-                        modifier = androidx.compose.ui.Modifier.padding(
-                            top = 3.dp,
-                            bottom = 3.dp
-                        )
+                        modifier = androidx.compose.ui.Modifier
+                            .padding(
+                                top = 3.dp,
+                                bottom = 3.dp
+                            )
                             .clickable { registerViewModel.navigateToRegister() }
 
                     )
@@ -479,15 +453,9 @@ fun RegisterContent(
                     modifier = androidx.compose.ui.Modifier
                         .height(40.dp)
                         .width(200.dp),
-//                        .padding(bottom = 10.dp),
                     shape = RoundedCornerShape(12.dp),
-//               elevation = ButtonDefaults.buttonColors(
-//
-//               ),
-                    onClick = {
-                        //   regiterViewModel.onLogin(username, password)
+                    onClick = {//
                     },
-
                     )
                 {
                     if (state.isLoading) {
@@ -498,14 +466,12 @@ fun RegisterContent(
                                 fontSize = 16.sp,
                             ),
                         )
-
                     } else {
                         CircularProgressIndicator(
                             modifier = androidx.compose.ui.Modifier.size(20.dp)
                         )
 
                     }
-
                 }
             }
         }

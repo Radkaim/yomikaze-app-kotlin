@@ -92,14 +92,12 @@ fun ForgotPasswordContent(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = (-50).dp)
-//                .padding(bottom = 30.dp)
                 .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
 
         ) {
             var email by remember { mutableStateOf("") }
             Column(
-//            Alignment = Alignment.Center,
                 modifier = Modifier
                     .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 40.dp)
                     .fillMaxSize(),
@@ -111,7 +109,6 @@ fun ForgotPasswordContent(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
                     modifier = Modifier
-//                        .padding(5.dp)
                         .height(200.dp)
                         .width(100.dp),
                     contentScale = ContentScale.Fit
@@ -140,7 +137,6 @@ fun ForgotPasswordContent(
                             tint = Color.Unspecified
                         )
                     },
-//                        },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp)
@@ -166,7 +162,6 @@ fun ForgotPasswordContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
                     )
                 }
                 OutlinedButton(
@@ -176,11 +171,9 @@ fun ForgotPasswordContent(
                         .width(200.dp),
 //                        .padding(bottom = 10.dp),
                     shape = RoundedCornerShape(12.dp),
-//               elevation = ButtonDefaults.buttonColors(
 //
 //               ),
                     onClick = {
-                        //  .clickable { forgotPasswordViewModel.navigateToRegister() }
                     },
 
                     )
@@ -211,10 +204,8 @@ fun ForgotPasswordContent(
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp
                     )
-
                 )
                 OutlinedButton(
-//                   colors = buttonColors(MaterialTheme.coloS.onPrimary),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
                     modifier = Modifier
                         .height(50.dp)
@@ -222,13 +213,8 @@ fun ForgotPasswordContent(
                         .padding(
                             top = 10.dp
                         ),
-//                       .background(color = MaterialTheme.colors.secondary),
                     shape = RoundedCornerShape(12.dp),
-//               elevation = ButtonDefaults.buttonColors(
-//
-//               ),
                     onClick = { /*TODO*/ },
-
                     )
                 {
                     Text(
@@ -236,7 +222,6 @@ fun ForgotPasswordContent(
                         color = Color.White,
                         style = TextStyle(
                             fontSize = 16.sp,
-//                            fontStyle = FontStyle.,
                         ),
                     )
                 }
