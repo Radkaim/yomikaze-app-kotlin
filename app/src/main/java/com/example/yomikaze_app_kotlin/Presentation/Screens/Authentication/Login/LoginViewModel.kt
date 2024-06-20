@@ -51,6 +51,7 @@ class LoginViewModel @Inject constructor(
                 _state.value = _state.value.copy(isLoading = false)
                 navController?.navigate("home_route")
             }.onFailure { error ->
+                _state.value = _state.value.copy(isLoading = false)
                 _state.value = _state.value.copy(error = error.message)
             }
         }

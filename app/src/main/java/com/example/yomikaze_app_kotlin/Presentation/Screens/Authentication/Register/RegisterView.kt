@@ -31,7 +31,6 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,6 +54,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
 import com.example.yomikaze_app_kotlin.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun RegisterView(
@@ -68,7 +69,6 @@ fun RegisterView(
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterContent(
     state: RegisterState,
@@ -99,7 +99,6 @@ fun RegisterContent(
             modifier = androidx.compose.ui.Modifier
                 .fillMaxSize()
                 .offset(y = (-30).dp)
-//                .padding(bottom = 30.dp)
                 .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
 
@@ -128,7 +127,9 @@ fun RegisterContent(
                     if (selectedDate.after(Calendar.getInstance())) {
                         dateOfBirthError = "Date of birth cannot be in the future"
                     } else {
-                        dateOfBirth = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                        // Định dạng ngày sinh theo kiểu `yyyy-MM-dd`
+                        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        dateOfBirth = sdf.format(selectedDate.time)
                         dateOfBirthError = null // Clear error on successful date selection
                     }
                 }, year, month, day
@@ -136,7 +137,6 @@ fun RegisterContent(
                 datePicker.maxDate = System.currentTimeMillis()
             }
             Column(
-//            Alignment = Alignment.Center,
                 modifier = androidx.compose.ui.Modifier
                     .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 40.dp)
                     .fillMaxSize(),
@@ -148,7 +148,6 @@ fun RegisterContent(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
                     modifier = androidx.compose.ui.Modifier
-//                        .padding(5.dp)
                         .height(200.dp)
                         .width(100.dp),
                     contentScale = ContentScale.Fit
@@ -176,10 +175,8 @@ fun RegisterContent(
                             tint = Color.Unspecified
                         )
                     },
-//                        },
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
-//                        .padding(top = 20.dp, start = 10.dp, bottom = 10.dp, end = 10.dp)
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
@@ -202,10 +199,8 @@ fun RegisterContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = androidx.compose.ui.Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
                     )
                 }
-                //
                 TextField(
                     value = username,
                     onValueChange = { username = it },
@@ -228,7 +223,6 @@ fun RegisterContent(
                             tint = Color.Unspecified
                         )
                     },
-//                        },
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
                         .padding(5.dp)
@@ -254,7 +248,6 @@ fun RegisterContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = androidx.compose.ui.Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
                     )
                 }
 
@@ -302,14 +295,12 @@ fun RegisterContent(
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
                     ),
-//
                 )
                 if (dateOfBirthError != null) {
                     Text(
                         text = dateOfBirthError ?: "",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
-//                        modifier = Modifier.align(Alignment.Start)
                     )
                 }
 
@@ -371,7 +362,6 @@ fun RegisterContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = androidx.compose.ui.Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
 
@@ -406,7 +396,6 @@ fun RegisterContent(
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
-//                        .padding(5.dp)
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
@@ -429,13 +418,9 @@ fun RegisterContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = androidx.compose.ui.Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
-//                Column(
-//                    verticalArrangement = Arrangement.Center,
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = androidx.compose.ui.Modifier
@@ -451,26 +436,24 @@ fun RegisterContent(
                     )
                     Text(
                         text = "Term of Service",
-//                    color = MaterialTheme.colors.surface,
                         style = TextStyle(
                             fontStyle = FontStyle.Italic,
-//                        color = MaterialTheme.colors.surface
                         ),
                         modifier = androidx.compose.ui.Modifier
                             .padding(
                                 top = 3.dp,
                                 start = 0.dp,
                                 end = 150.dp,
-//                                    bottom = 20.dp
                             )
                     )
                     Text(
                         text = "Sign In?",
                         style = TextStyle(fontStyle = FontStyle.Italic),
-                        modifier = androidx.compose.ui.Modifier.padding(
-                            top = 3.dp,
-                            bottom = 3.dp
-                        )
+                        modifier = androidx.compose.ui.Modifier
+                            .padding(
+                                top = 3.dp,
+                                bottom = 3.dp
+                            )
                             .clickable { registerViewModel.navigateToRegister() }
 
                     )
@@ -479,18 +462,25 @@ fun RegisterContent(
                     modifier = androidx.compose.ui.Modifier
                         .height(40.dp)
                         .width(200.dp),
-//                        .padding(bottom = 10.dp),
                     shape = RoundedCornerShape(12.dp),
-//               elevation = ButtonDefaults.buttonColors(
-//
-//               ),
                     onClick = {
-                        //   regiterViewModel.onLogin(username, password)
+                        registerViewModel.onRegister(
+                            username = username,
+                            password = password,
+                            fullName = username,
+                            confirmPassword = confirmPassword,
+                            email = email,
+                            birthday = dateOfBirth,
+                        )
                     },
 
                     )
                 {
                     if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = androidx.compose.ui.Modifier.size(20.dp)
+                        )
+                    } else {
                         Text(
                             text = "Register",
                             color = Color.Black,
@@ -498,12 +488,6 @@ fun RegisterContent(
                                 fontSize = 16.sp,
                             ),
                         )
-
-                    } else {
-                        CircularProgressIndicator(
-                            modifier = androidx.compose.ui.Modifier.size(20.dp)
-                        )
-
                     }
 
                 }

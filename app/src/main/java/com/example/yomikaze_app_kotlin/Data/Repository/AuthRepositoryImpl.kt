@@ -1,6 +1,5 @@
 package com.example.yomikaze_app_kotlin.Data.Repository
 
-import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Domain.Model.LoginRequest
@@ -18,12 +17,11 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun login(username: String, password: String): Result<TokenResponse> {
         val result = api.login(LoginRequest(username, password))
-        Log.d("Login", result.toString())
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
             return Result.success(result.body()!!)
         }
-        return failure(Exception("Login failed"))
+        return failure(Exception())
     }
 
     override suspend fun register(

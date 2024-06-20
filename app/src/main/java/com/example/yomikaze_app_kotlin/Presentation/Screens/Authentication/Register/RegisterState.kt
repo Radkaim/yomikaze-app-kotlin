@@ -11,6 +11,6 @@ data class RegisterState(
     val passwordError: String? = "",
     val confirmPassword: String = "",
     val confirmPasswordError: String? = "",
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val error: String? = null,
 )
