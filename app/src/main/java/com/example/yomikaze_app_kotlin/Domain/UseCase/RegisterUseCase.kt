@@ -1,7 +1,7 @@
 package com.example.yomikaze_app_kotlin.Domain.UseCase
 
-import android.provider.ContactsContract.CommonDataKinds.Email
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.RegisterResponse
+
+import com.example.yomikaze_app_kotlin.Domain.Model.RegisterResponse
 import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
 import javax.inject.Inject
 

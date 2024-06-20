@@ -3,17 +3,17 @@ package com.example.yomikaze_app_kotlin.Data.Repository
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChangePasswordRequest
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChangePasswordResponse
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ForgotPasswordRequest
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ForgotPasswordResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.ChangePasswordRequest
+import com.example.yomikaze_app_kotlin.Domain.Model.ChangePasswordResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.ForgotPasswordRequest
+import com.example.yomikaze_app_kotlin.Domain.Model.ForgotPasswordResponse
 
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.RegisterRequest
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.RegisterResponse
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ResetPasswordRequest
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ResetPasswordResponse
 import com.example.yomikaze_app_kotlin.Domain.Model.LoginRequest
 import com.example.yomikaze_app_kotlin.Domain.Model.LoginResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.RegisterRequest
+import com.example.yomikaze_app_kotlin.Domain.Model.RegisterResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.ResetPasswordRequest
+import com.example.yomikaze_app_kotlin.Domain.Model.ResetPasswordResponse
 import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
 import javax.inject.Inject
 import kotlin.Result.Companion.failure

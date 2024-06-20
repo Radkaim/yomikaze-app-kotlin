@@ -1,11 +1,11 @@
 package com.example.yomikaze_app_kotlin.Domain.Repository
 
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChangePasswordResponse
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ForgotPasswordResponse
 
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.RegisterResponse
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ResetPasswordResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.ChangePasswordResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.ForgotPasswordResponse
 import com.example.yomikaze_app_kotlin.Domain.Model.LoginResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.RegisterResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.ResetPasswordResponse
 
 interface AuthRepository {
     suspend fun login(username: String, password: String): Result<LoginResponse>

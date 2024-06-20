@@ -21,14 +21,19 @@ data class LoginResponse(
 
 
 //email, username, dateOfBirth, password, confirmPassword
+
+//email, username, dateOfBirth, password, confirmPassword
 data class RegisterRequest(val email: String, val username: String, val dateOfBirth: String, val password: String, val confimPassword: String)
 data class RegisterResponse(val token: String)
 
 data class ForgotPasswordRequest(val email: String)
 data class ForgotPasswordResponse(val token: String)
 
-data class ResetPasswordRequest(val password: String, val confirmPassword: String)
+data class ResetPasswordRequest(val password: String, val confimPassword: String)
 data class ResetPasswordResponse(val token: String)
+
+data class ChangePasswordRequest(val oldPassword: String, val newPassword: String, val confimPassword: String)
+data class ChangePasswordResponse(val token: String)
 
 
 data class User(

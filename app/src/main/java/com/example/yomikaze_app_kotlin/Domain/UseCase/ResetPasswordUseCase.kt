@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Domain.UseCase
 
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.ResetPasswordResponse
+
+import com.example.yomikaze_app_kotlin.Domain.Model.ResetPasswordResponse
 import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
 import javax.inject.Inject
 
