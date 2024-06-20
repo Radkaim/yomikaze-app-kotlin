@@ -1,15 +1,17 @@
 package com.example.yomikaze_app_kotlin.Data.Repository
 
+import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ForgotPasswordRequest
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ForgotPasswordResponse
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.LoginRequest
-import com.example.yomikaze_app_kotlin.Data.DataSource.API.LoginResponse
+
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.RegisterRequest
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.RegisterResponse
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ResetPasswordRequest
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ResetPasswordResponse
+import com.example.yomikaze_app_kotlin.Domain.Model.LoginRequest
+import com.example.yomikaze_app_kotlin.Domain.Model.LoginResponse
 import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
 import javax.inject.Inject
 import kotlin.Result.Companion.failure
@@ -21,6 +23,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun login(username: String, password: String): Result<LoginResponse> {
         val result = api.login(LoginRequest(username, password))
+        Log.d("Login", result.toString())
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
             return Result.success(result.body()!!)

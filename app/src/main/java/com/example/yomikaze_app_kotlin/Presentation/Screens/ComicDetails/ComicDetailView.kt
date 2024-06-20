@@ -612,6 +612,7 @@ fun DescriptionInComicDetailView() {
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold
                         )
+                        //OutlinedButton
                     }
                 }
             }
