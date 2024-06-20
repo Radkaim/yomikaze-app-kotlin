@@ -19,11 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ComicStatus(
+fun TagComponent(
     status: String,
     textSize: TextUnit = 12.sp,
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
-    textColor: Color = MaterialTheme.colorScheme.background,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
 
 ) {
     // TODO: Implement ComicStatus
@@ -54,5 +54,5 @@ fun ComicStatus(
 @Preview
 @Composable
 fun ComicStatusPreview() {
-    ComicStatus(status = "Completed")
+    TagComponent(status = "Completed")
 }

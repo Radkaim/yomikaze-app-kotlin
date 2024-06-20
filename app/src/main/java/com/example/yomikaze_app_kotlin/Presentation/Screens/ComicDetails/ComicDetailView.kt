@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -41,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
@@ -52,6 +55,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,9 +68,9 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Domain.Model.Chapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.ComicStatus
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconicDataComicDetail
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.R
 
@@ -382,7 +386,7 @@ fun ComicDetailsView(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal
                             )
-                            ComicStatus(status = "On Going")
+                            TagComponent(status = "On Going")
                         }
                     }
                 }
@@ -515,68 +519,158 @@ fun ComicDetailsView(
 
 @Composable
 fun DescriptionInComicDetailView() {
-    Column(
-        modifier = Modifier.fillMaxSize()
+    val textLength = 200
+    var isExpanded by remember { mutableStateOf(false) }
+    val text =
+        "Hunter x Hunter is a Japanese manga series written and illustrated by Yoshihiro Togashi." +
+                " It has been serialized in Weekly Shōnen Jump magazine since March 3, 1998," +
+                " although the manga has frequently gone on extended" +
+                " hiatuses  October 2018, 380 chapters have been collected since 2006. As of October 2018, 380 chapters have been collected into 36 volumes by Shueisha. The story focuses on a young boy named Gon Freecss who discovers that his father, who he was told was dead, is actually alive and a legendary Hunter."
+    val shortText = if (isExpanded) text else text.take(textLength)
+
+    //for tag genre
+    val listTag = listOf(
+        "Action",
+        "Adventure",
+        "Fantasy",
+        "Shounen",
+        "Super Power",
+        "Supernatural",
+        "Mystery",
+        "Drama",
+        "Psychological"
+    )
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 20.dp)
     ) {
-        Text(
-            text = "Hunter x Hunter is a Japanese manga series written and" +
-                    " illustrated by Yoshihiro Togashi. It has been serialized in Weekly" +
-                    " Shōnen Jump magazine since March 3, 1998, although the manga has " +
-                    "frequently gone on extended hiatuses since 2006. As of October 2018," +
-                    " 380 chapters have been collected into 36 volumes by Shueisha. The story focuses"
-        )
+
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    //  .padding(8.dp)
+                    .clickable { isExpanded = !isExpanded }
+            ) {
+                Text(
+                    text = if (isExpanded) text else shortText,
+                )
+                if (!isExpanded && shortText.length <= textLength)
+                    Text(
+                        text = "...more",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.offset(x = 100.dp, y = 95.dp)
+                    )
+                else if (isExpanded && text.length > 50) {
+                    Text(
+                        text = "less",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(top = 10.dp)
+                    )
+                }
+            }
+        }
+
+        item {
+            LazyRow(
+                contentPadding = PaddingValues(start = 2.dp, top = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(listTag) { tag ->
+                    TagComponent(status = tag)
+                }
+            }
+        }
+
+        item {
+            Surface(
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.65f),
+                shape = RoundedCornerShape(20), // Making it oval
+                modifier = Modifier
+                    .padding(start = 40.dp, top = 20.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .height(42.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Start Read",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        }
+
+
     }
 
 }
+
 
 @Composable
 fun ListChapterInComicDetailView(
     comicDetailViewModel: ComicDetailViewModel,
     listChapter: List<Chapter>
 ) {
+    var isSelected by remember { mutableStateOf(true) }
 
     Row(
-
-   ) {
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             text = "Total Chapter: ${listChapter.size}",
-            modifier = Modifier.padding(start = 5.dp, top = 5.dp)
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.padding(8.dp)
+
         )
 
-        Box() {
-            Row(
-                modifier = Modifier
-                    .padding(5.dp),
-                horizontalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-                SortComponent(
-                    isOldestSelected = false,
-                    onnNewSortClick = {},
-                    onOldSortClick = {}
-                )
+        SortComponent(
+            isOldestSelected = isSelected,
+            onnNewSortClick = { isSelected = false },
+            onOldSortClick = { isSelected = true }
+        )
+    }
+
+    //list Chapter
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .offset(x = (-4).dp),
+        verticalArrangement = Arrangement.spacedBy(1.5.dp) // 8.dp space between each item
+    ) {
+        items(listChapter) { chapter ->
+            ChapterCard(
+                chapterIndex = chapter.chapterIndex,
+                title = chapter.title,
+                views = chapter.views,
+                comments = chapter.comments,
+                publishedDate = chapter.publishedDate,
+                isLocked = chapter.isLocked,
+                onClick = { comicDetailViewModel.navigateToViewChapter(chapter.chapterIndex) }) {
+
             }
         }
     }
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .offset(x = (-4).dp),
-            verticalArrangement = Arrangement.spacedBy(1.5.dp) // 8.dp space between each item
-        ) {
-            items(listChapter) { chapter ->
-                ChapterCard(
-                    chapterIndex = chapter.chapterIndex,
-                    title = chapter.title,
-                    views = chapter.views,
-                    comments = chapter.comments,
-                    publishedDate = chapter.publishedDate,
-                    isLocked = chapter.isLocked,
-                    onClick = { comicDetailViewModel.navigateToViewChapter(chapter.chapterIndex) }) {
-
-                }
-            }
-        }
 }
 
 
@@ -585,6 +679,8 @@ fun ListChapterInComicDetailView(
 fun changeColorForTabComicDetail(tabIndex: Int, index: Int): Color {
     return if (tabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer
 }
+
+//
 
 /**
  * TODO : dialog for menu option
