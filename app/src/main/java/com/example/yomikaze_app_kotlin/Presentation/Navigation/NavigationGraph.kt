@@ -5,12 +5,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs.NetworkDisconnectedDialog
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ForgotPassword.ForgotPasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Register.RegisterView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ResetPassword.ResetPasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile.EditProfileView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile.EditProfileViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting.SettingView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.RankingView
 
 
@@ -39,9 +44,26 @@ fun NavigationGraph(
         composable("register_route") {
             RegisterView(navController = navController)
         }
+        //for forgot password screen
+        composable("forgot_password_route") {
+            ForgotPasswordView(navController = navController) }
 
-        composable("forgot_password_route") { ForgotPasswordView(navController = navController) }
+        composable("reset_password_route") {
+            ResetPasswordView(navController = navController)
+        }
 
+        // for change password screen
+        composable("change_password_route") {
+            ChangePasswordView(navController = navController)
+        }
+
+        composable("edit_profile_route") {
+            EditProfileView(navController = navController)
+        }
+
+        composable("setting_route") {
+            SettingView(navController = navController)
+        }
         // for ranking screen
         composable("ranking_route") {
             RankingView(initialTab = 0, navController = navController)

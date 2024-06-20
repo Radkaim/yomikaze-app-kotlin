@@ -390,11 +390,18 @@ fun RegisterContent(
                         imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
                     leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_eye),
-                            contentDescription = "",
-                            tint = Color.Unspecified
-                        )
+                        val image = if (passwordVisible)
+                            painterResource(id = R.drawable.ic_eye)
+                        else
+                            painterResource(id = R.drawable.ic_visibility_eye)
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.onTertiary,
+                                painter = image,
+                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            )
+                        }
                     },
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = androidx.compose.ui.Modifier
@@ -415,7 +422,7 @@ fun RegisterContent(
                     ),
                     isError = state.passwordError != null
                 )
-                if (state.confirmpasswordError != null) {
+                if (state.confirmPasswordError != null) {
                     Text(
                         text = state.passwordError ?: "",
                         color = MaterialTheme.colorScheme.error,

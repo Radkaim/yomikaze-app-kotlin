@@ -41,6 +41,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -72,13 +74,13 @@ fun ResetPasswordView(
 @Composable
 fun ResetPasswordContent(
     state: ResetPasswordState,
-    resetPasswordViewModel: ResetPasswordViewModel,
+    ResetPasswordViewModel: ResetPasswordViewModel,
     navController: NavController
 ) {
     Scaffold(
         topBar = {
             CustomeAppBar(
-                title = "Forgot Password",
+                title = "Reset Password",
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -102,6 +104,10 @@ fun ResetPasswordContent(
             contentAlignment = Alignment.Center
 
         ) {
+            var passwordVisible by remember { mutableStateOf(false) }
+            var password by remember { mutableStateOf("") }
+            var confirmPassword by remember { mutableStateOf("") }
+
             Column(
 //            Alignment = Alignment.Center,
                 modifier = Modifier
@@ -120,7 +126,123 @@ fun ResetPasswordContent(
                         .width(100.dp),
                     contentScale = ContentScale.Fit
                 )
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = {
+                        Text(
+                            text = "Password",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                    ),
 
+                    leadingIcon = {
+
+                        val image = if (passwordVisible)
+                            painterResource(id = R.drawable.ic_eye)
+                        else
+                            painterResource(id = R.drawable.ic_visibility_eye)
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.onTertiary,
+                                painter = image,
+                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            )
+                        }
+                    },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    modifier = androidx.compose.ui.Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp)
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    isError = state.passwordError != null
+                )
+                if (state.passwordError != null) {
+                    Text(
+                        text = state.passwordError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = androidx.compose.ui.Modifier
+                            .align(Alignment.Start)
+//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
+                    )
+                }
+
+                TextField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    label = {
+                        Text(
+                            text = "Confirm Password",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                    ),
+                    leadingIcon = {
+                        val image = if (passwordVisible)
+                            painterResource(id = R.drawable.ic_eye)
+                        else
+                            painterResource(id = R.drawable.ic_visibility_eye)
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.onTertiary,
+                                painter = image,
+                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            )
+                        }
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = androidx.compose.ui.Modifier
+                        .fillMaxWidth()
+//                        .padding(5.dp)
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    isError = state.passwordError != null
+                )
+                if (state.confirmPasswordError != null) {
+                    Text(
+                        text = state.passwordError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = androidx.compose.ui.Modifier
+                            .align(Alignment.Start)
+//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
+                    )
+                }
 
                 OutlinedButton(
                     modifier = Modifier
@@ -199,5 +321,3 @@ fun ResetPasswordContent(
     }
 
 }
-
-

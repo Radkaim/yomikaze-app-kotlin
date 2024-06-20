@@ -1,13 +1,14 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.icu.util.Calendar
+import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,7 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults.buttonColors
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
@@ -40,42 +41,45 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordContent
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordViewModel
 import com.example.yomikaze_app_kotlin.R
 
 
 @Composable
-fun LoginView(
-    loginViewModel: LoginViewModel = hiltViewModel(),
+fun EditProfileView(
+    editProfileViewModel: EditProfileViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val state by loginViewModel.state.collectAsState()
-    loginViewModel.setNavController(navController)
-
-    LoginContent(state, loginViewModel, navController)
+    val state by editProfileViewModel.state.collectAsState()
+    editProfileViewModel.setNavController(navController)
+    EditProfileContent(state, editProfileViewModel, navController)
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navController: NavController) {
+fun EditProfileContent(
+    state: EditProfileState,
+    editProfileViewModel: EditProfileViewModel,
+    navController: NavController
 
+) {
     Scaffold(
         topBar = {
             CustomeAppBar(
-                title = "Login",
+                title = "Edit Profile",
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -93,22 +97,26 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .offset(y = (-20).dp)
 //                .padding(bottom = 30.dp)
-                .offset(x = 10.dp)
                 .background(color = MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
 
-            ) {
+        ) {
             var username by remember { mutableStateOf("") }
+            var dateOfBirth by remember { mutableStateOf("") }
+            var dateOfBirthError by remember { mutableStateOf<String?>(null) }
             var password by remember { mutableStateOf("") }
+            var aboutMe by remember { mutableStateOf("") }
+            var aboutMeError by remember { mutableStateOf("") }
+
 
             var passwordVisible by remember { mutableStateOf(false) }
-//        state.hung = "hung"
 
             Column(
 //            Alignment = Alignment.Center,
                 modifier = Modifier
-//                    .padding(bottom = 40.dp, start = 10.dp, end = 10.dp)
+//                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 40.dp)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -118,18 +126,11 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
                     modifier = Modifier
-//                        .padding(top = 30.dp)
+//                        .padding(5.dp)
                         .height(200.dp)
                         .width(100.dp),
                     contentScale = ContentScale.Fit
                 )
-
-//                Text(
-//                    text = "LOGIN",
-//                    fontSize = 20.sp,
-//                    fontWeight = FontWeight.SemiBold,
-//                    modifier = Modifier.padding(bottom = 30.dp)
-//                )
 
                 TextField(
                     value = username,
@@ -140,20 +141,12 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.primary
                         )
-
                     },
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_email),
-                            contentDescription = "",
-                            tint = Color.Unspecified
-                        )
-                    },
-//                        },
+
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
@@ -170,16 +163,23 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
                     ),
-                    isError = state.usernameError != null
+                    trailingIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = "Select Date of Birth"
+                            )
+                        }
+                    }
                 )
-                if (state.usernameError != null) {
+                if (state.passwordError != null) {
                     Text(
-                        text = state.usernameError ?: "",
+                        text = state.passwordError ?: "",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
+//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
 
@@ -197,20 +197,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
-                    leadingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
 
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
-                            )
-                        }
-                    },
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -228,7 +215,14 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
                     ),
-                    isError = state.passwordError != null
+                    trailingIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = "Select Date of Birth"
+                            )
+                        }
+                    }
                 )
                 if (state.passwordError != null) {
                     Text(
@@ -240,46 +234,113 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
 //                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
-                Row {
-                    Text(
-                        text = "Sign Up",
-//                    color = MaterialTheme.colors.surface,
-                        style = TextStyle(
-                            fontStyle = FontStyle.Italic,
-//                        color = MaterialTheme.colors.surface
-                        ),
-                        modifier = Modifier
-                            .padding(
-                                top = 3.dp,
-                                start = 0.dp,
-                                end = 200.dp,
-                                bottom = 3.dp
-                            )
-                            .clickable { loginViewModel.navigateToRegister() }
-                    )
-                    Text(
-                        text = "Forgot Password?",
-                        style = TextStyle(fontStyle = FontStyle.Italic),
-                        modifier = Modifier.padding(
-                            top = 3.dp,
-                            bottom = 3.dp
+
+                TextField(
+                    value = dateOfBirth,
+                    onValueChange = { dateOfBirth = it },
+                    label = {
+                        Text(
+                            text = "Date Of Birth",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
                         )
-                            .clickable { loginViewModel.navigateToForgotPassword() }
-                    )
-                        //.clickable { loginViewModel.navigateToRegister() }
-
-
-                }
-                Column(
-                    modifier = Modifier.padding(
-                        top = 20.dp,
-                        bottom = 70.dp
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                OutlinedButton(
+
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    trailingIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = "Select Date of Birth"
+                            )
+                        }
+                    }
+                )
+                if (state.passwordError != null) {
+                    Text(
+                        text = state.passwordError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
+                    )
+                }
+
+                TextField(
+                    value = aboutMe,
+                    onValueChange = { aboutMe = it },
+                    label = {
+                        Text(
+                            text = "About Me",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp)
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(24.dp)
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    readOnly = true,
+                    isError = dateOfBirthError != null,
+                    trailingIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = "Select Date of Birth"
+                            )
+                        }
+                    }
+                )
+
+                if (dateOfBirthError != null) {
+                    Text(
+                        text = dateOfBirthError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.align(Alignment.Start)
+                    )
+                }
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier
+                        .padding(top = 20.dp)
                         .height(40.dp)
                         .width(200.dp),
 //                        .padding(bottom = 10.dp),
@@ -288,15 +349,16 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
 //
 //               ),
                     onClick = {
-                      //  .clickable { forgotPasswordViewModel.navigateToRegister() }
+                        //  navController.navigate("login_route")
                     },
 
                     )
                 {
                     if (state.isLoading) {
                         Text(
-                            text = "Login",
-                            color = Color.Black,
+
+                            text = "SAVE PROFILE",
+                            color = MaterialTheme.colorScheme.tertiary,
                             style = TextStyle(
                                 fontSize = 16.sp,
                             ),
@@ -310,77 +372,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     }
 
                 }
-
-                Text(
-                    modifier = Modifier.padding(top = 12.dp),
-                    text = "or",
-                    style = TextStyle(
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp
-                    )
-                )
-                OutlinedButton(
-//                   colors = buttonColors(MaterialTheme.coloS.onPrimary),
-                    colors = buttonColors(MaterialTheme.colorScheme.surface),
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(200.dp)
-                        .padding(
-                            top = 10.dp
-                        ),
-//                       .background(color = MaterialTheme.colors.secondary),
-                    shape = RoundedCornerShape(12.dp),
-//               elevation = ButtonDefaults.buttonColors(
-//
-//               ),
-                    onClick = { /*TODO*/ },
-
-                    )
-                {
-                    Text(
-                        text = "Login with Google",
-                        color = Color.White,
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            fontStyle = FontStyle.Italic,
-                        ),
-                    )
-                }
             }
-
-//            Button(
-//                content = {
-//                    Text("Login with Google")
-//
-//                },
-////                Color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-////                    .width(50.dp)
-//                    .height(50.dp),
-//                shape = RoundedCornerShape(24.dp),
-//                onClick = { viewModel.onLogin(email, password)
-//
-//                },
-////        ) {
-//////            if (state.isLoading) {
-//////                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-//////            }
-////        })
-//            )
-
         }
-//
-
-
-        state.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 6.dp)
-            )
-        }
-    }
     }
 }
-

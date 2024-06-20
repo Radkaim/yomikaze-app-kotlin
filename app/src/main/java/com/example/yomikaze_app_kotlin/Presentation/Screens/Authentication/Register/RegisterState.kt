@@ -9,8 +9,8 @@ data class RegisterState(
     val dateOfBirthError: String? = "",
     val password: String = "",
     val passwordError: String? = "",
-    val confirmpassword: String = "",
-    val confirmpasswordError: String? = "",
+    val confirmPassword: String = "",
+    val confirmPasswordError: String? = "",
     val isLoading: Boolean = true,
     val error: String? = null,
 )

@@ -1,28 +1,23 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ResetPassword
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Domain.UseCase.ChangePasswordUseCase
-import com.example.yomikaze_app_kotlin.Domain.UseCase.ResetPasswordUseCase
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import java.lang.Thread.State
 import javax.inject.Inject
 
 @HiltViewModel
-class ResetPasswordViewModel @Inject constructor(
-    private val changePasswordUseCase: ChangePasswordUseCase
+class EditProfileViewModel @Inject constructor(
+   // private val editProfileUseCase: ChangePasswordUseCase
 ): ViewModel(){
-    private val _state = MutableStateFlow(ResetPasswordState())
+    private val _state = MutableStateFlow(EditProfileState("", "","","","","","",""))
     private var navController: NavController? = null
-    val state: StateFlow<ResetPasswordState> get() = _state
+
+    val state: StateFlow<EditProfileState> get() = _state
     fun setNavController(navController: NavController) {
         this.navController = navController
     }
-
-
 }
