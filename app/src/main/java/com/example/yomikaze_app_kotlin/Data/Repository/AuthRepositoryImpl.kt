@@ -35,6 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
         val result = api.register(RegisterRequest(username, password, fullName, confirmPassword, email, birthday))
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
+            return Result.success(result.body()!!)
         }
         return failure(Exception("Register failed"))
     }
