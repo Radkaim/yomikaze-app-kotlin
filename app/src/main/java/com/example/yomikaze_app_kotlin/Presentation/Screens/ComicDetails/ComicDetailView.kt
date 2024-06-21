@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,12 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -37,6 +40,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -305,7 +309,10 @@ fun ComicDetailsView(
                             when (showDialog) {
                                 1 -> CustomDialog3(onDismiss = { showDialog = null })
                                 2 -> CustomDialog4(onDismiss = { showDialog = null })
-                                3 -> CustomDialog3(onDismiss = { showDialog = null })
+                                3 -> RatingComicDialog(
+                                    onDismiss = { showDialog = null },
+                                    onVote = {})
+
                                 4 -> CustomDialog4(onDismiss = { showDialog = null })
                                 5 -> CustomDialog4(onDismiss = { showDialog = null })
                             }
@@ -725,9 +732,114 @@ fun CustomDialog3(onDismiss: () -> Unit) {
             }
         }
     }
-
-
 }
+
+@Composable
+fun RatingComicDialog(
+    onDismiss: () -> Unit,
+    onVote: () -> Unit
+) {
+    // Remember the state of the stars
+    val starState = remember { mutableStateListOf(false, false, false, false, false) }
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = true
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray.copy(alpha = 0.7f)) // Màu xám với độ mờ
+                .offset(y = (100).dp)
+                .clickable { onDismiss() }
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(137.dp)
+                    .align(Alignment.Center)
+                    .offset(y = (-100).dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(top = 16.dp)
+                    ) {
+                        Text(
+                            text = "Rating Comic",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onError,
+                            textAlign = TextAlign.Center
+
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        // Display stars
+                        starState.forEachIndexed { index, isSelected ->
+                            Icon(
+                                painter = painterResource(id = if (isSelected) R.drawable.ic_star_fill else R.drawable.ic_star),
+                                contentDescription = "Star $index",
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .clickable {
+                                        for (i in 0..index) {
+                                            starState[i] = true
+                                        }
+                                        for (i in index + 1 until starState.size) {
+                                            starState[i] = false
+                                        }
+                                    },
+                                tint = if (isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface
+                            )
+                        }
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+
+                        Button(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(30.dp)
+                                .shadow(4.dp, shape = RoundedCornerShape(8.dp))
+                                .clip(RoundedCornerShape(20.dp)),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = MaterialTheme.colorScheme.onSecondary,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            ),
+                            onClick = {
+                                val selectedStars = starState.count { it }
+                                //viewModel.onVote(selectedStars)
+                                Log.d("RatingComicDialog", "Selected stars: $selectedStars")
+                                onDismiss()
+                            }) {
+                            Text(
+                                text = "Vote",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun CustomDialog4(onDismiss: () -> Unit) {

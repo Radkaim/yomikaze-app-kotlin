@@ -108,7 +108,5 @@ fun ProfileView(
             Text(text = "Go to Login")
 
         }
-
-
     }
 }
