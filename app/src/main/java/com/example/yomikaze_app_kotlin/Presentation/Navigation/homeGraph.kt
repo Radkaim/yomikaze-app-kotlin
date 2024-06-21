@@ -9,7 +9,9 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseVie
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notification.NotificationView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile.EditProfileView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.ProfileView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting.SettingView
 
 fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavController) {
     navigation(
@@ -46,6 +48,14 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
 //            BookcaseView(initialTab = param?.toInt() ?: 0)
 
             }
+        }
+
+        composable("edit_profile_route") {
+            EditProfileView(navController = navController)
+        }
+
+        composable("setting_route") {
+            SettingView(navController = navController)
         }
 
     }

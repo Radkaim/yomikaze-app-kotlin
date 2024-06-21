@@ -92,7 +92,7 @@ fun ProfileView(
             Button(onClick = {
                 navController.navigate("setting_route")
             }) {
-                Text(text = "Go to edit")
+                Text(text = "Go to setting")
             }
             Button (onClick = {
                 profileViewModel.onLogout()
@@ -103,7 +103,7 @@ fun ProfileView(
 
         Button(onClick = {
 
-            navController.navigate("login_route")
+            navController.navigate("auth_graph_route")
         }) {
             Text(text = "Go to Login")
 
