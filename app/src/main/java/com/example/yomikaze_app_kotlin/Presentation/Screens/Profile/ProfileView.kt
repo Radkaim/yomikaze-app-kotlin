@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppThemeSate
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
@@ -27,8 +28,11 @@ import com.example.yomikaze_app_kotlin.ui.AppTheme
 @Composable
 fun ProfileView(
     navController: NavController,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
+    profileViewModel.setNavController(navController)
+
     Scaffold(
         topBar = {
             CustomeAppBar(
@@ -74,25 +78,26 @@ fun ProfileView(
                 Text(text = "Change Theme")
             }
             Button(onClick = {
-
                 navController.navigate("reset_password_route")
             }) {
                 Text(text = "Go to reset")
 
             }
             Button(onClick = {
-
                 navController.navigate("edit_profile_route")
             }) {
                 Text(text = "Go to edit")
 
             }
             Button(onClick = {
-
                 navController.navigate("setting_route")
             }) {
                 Text(text = "Go to edit")
-
+            }
+            Button (onClick = {
+                profileViewModel.onLogout()
+            }) {
+                Text(text = "Go to Logout")
             }
         }
 

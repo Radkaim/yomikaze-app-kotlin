@@ -31,7 +31,6 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,6 +54,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
 import com.example.yomikaze_app_kotlin.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun RegisterView(
@@ -68,7 +69,6 @@ fun RegisterView(
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterContent(
     state: RegisterState,
@@ -100,7 +100,6 @@ fun RegisterContent(
             modifier = androidx.compose.ui.Modifier
                 .fillMaxSize()
                 .offset(y = (-30).dp)
-//                .padding(bottom = 30.dp)
                 .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
@@ -128,7 +127,9 @@ fun RegisterContent(
                     if (selectedDate.after(Calendar.getInstance())) {
                         dateOfBirthError = "Date of birth cannot be in the future"
                     } else {
-                        dateOfBirth = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                        // Định dạng ngày sinh theo kiểu `yyyy-MM-dd`
+                        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        dateOfBirth = sdf.format(selectedDate.time)
                         dateOfBirthError = null // Clear error on successful date selection
                     }
                 }, year, month, day
@@ -136,7 +137,6 @@ fun RegisterContent(
                 datePicker.maxDate = System.currentTimeMillis()
             }
             Column(
-//            Alignment = Alignment.Center,
                 modifier = androidx.compose.ui.Modifier
                     .padding(start = 10.dp, end = 10.dp)
                     .fillMaxSize(),
@@ -148,7 +148,6 @@ fun RegisterContent(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
                     modifier = androidx.compose.ui.Modifier
-//                        .padding(5.dp)
                         .height(200.dp)
                         .width(100.dp),
                     contentScale = ContentScale.Fit
@@ -200,7 +199,6 @@ fun RegisterContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = androidx.compose.ui.Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 0.dp, bottom = 0.dp)
                     )
                 }
                 TextField(
@@ -289,13 +287,16 @@ fun RegisterContent(
                         disabledIndicatorColor = Color.Transparent,
                         errorIndicatorColor = Color.Transparent
                     ),
+
                     isError = state.usernameError != null
+
                 )
                 if (state.dateOfBirthError != null) {
                     Text(
                         text = state.dateOfBirthError ?: "",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
+
                         modifier = androidx.compose.ui.Modifier
                             .align(Alignment.Start)
                     )
@@ -412,7 +413,7 @@ fun RegisterContent(
                             .align(Alignment.Start)
                     )
                 }
-//
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = androidx.compose.ui.Modifier
@@ -454,11 +455,26 @@ fun RegisterContent(
                         .height(40.dp)
                         .width(200.dp),
                     shape = RoundedCornerShape(12.dp),
-                    onClick = {//
+
+                    onClick = {
+                    onClick = {
+                        registerViewModel.onRegister(
+                            username = username,
+                            password = password,
+                            fullName = username,
+                            confirmPassword = confirmPassword,
+                            email = email,
+                            birthday = dateOfBirth,
+                        )
+
                     },
                     )
                 {
                     if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = androidx.compose.ui.Modifier.size(20.dp)
+                        )
+                    } else {
                         Text(
                             text = "Register",
                             color = Color.Black,
@@ -466,6 +482,7 @@ fun RegisterContent(
                                 fontSize = 16.sp,
                             ),
                         )
+
                     } else {
                         CircularProgressIndicator(
                             modifier = androidx.compose.ui.Modifier.size(20.dp)

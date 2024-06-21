@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Register
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -65,12 +66,16 @@ class RegisterViewModel @Inject constructor(
             _state.value = _state.value.copy(isLoading = true)
             val result =
                 registerUC.register(username, password, fullName, confirmPassword, email, birthday)
-            _state.value = _state.value.copy(isLoading = false)
-            result.onFailure { token ->
+            Log.d("RegisterViewModel", "onRegister: $result")
+            Log.d("RegisterViewModel", "onRegister: $username $password $fullName $confirmPassword $email $birthday")
+            result.onSuccess { token ->
                 //handle success
+                _state.value = _state.value.copy(isLoading = false)
+                navController?.navigate("home_route")
             }.onFailure { error ->
+                Log.d("RegisterViewModel", "onRegister: ${error.message}")
+                _state.value = _state.value.copy(isLoading = false)
                 _state.value = _state.value.copy(error = error.message)
-
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -45,13 +46,16 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
             val result = loginUseCase.login(username, password)
+            Log.d("LoginViewModel", "onLogin: $username, $password")
             _state.value = _state.value.copy(isLoading = false)
             result.onSuccess { token ->
                 // Handle success
                 _state.value = _state.value.copy(isLoading = false)
                 navController?.navigate("home_route")
             }.onFailure { error ->
+                _state.value = _state.value.copy(isLoading = false)
                 _state.value = _state.value.copy(error = error.message)
+                Log.d("LoginViewModel", "onLogin: $error")
             }
         }
     }
