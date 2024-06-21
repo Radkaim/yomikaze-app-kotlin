@@ -87,14 +87,6 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
             )
         })
     {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .offset(x = 10.dp)
-                .background(color = MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center,
-
-            ) {
             var username by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
 
@@ -104,7 +96,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
 
             Column(
                 modifier = Modifier
-                    .padding(bottom = 40.dp, start = 10.dp, end = 10.dp)
+                    .background(MaterialTheme.colorScheme.background)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -118,13 +110,6 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                         .width(100.dp),
                     contentScale = ContentScale.Fit
                 )
-
-//                Text(
-//                    text = "LOGIN",
-//                    fontSize = 20.sp,
-//                    fontWeight = FontWeight.SemiBold,
-//                    modifier = Modifier.padding(bottom = 30.dp)
-//                )
 
                 TextField(
                     value = username,
@@ -324,32 +309,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                         )
                     }
                 }
-
-//            Button(
-//                content = {
-//                    Text("Login with Google")
-//
-//                },
-////                Color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-////                    .width(50.dp)
-//                    .height(50.dp),
-//                shape = RoundedCornerShape(24.dp),
-//                onClick = { viewModel.onLogin(email, password)
-//
-//                },
-////        ) {
-//////            if (state.isLoading) {
-//////                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-//////            }
-////        })
-//            )
-
             }
-//
-
-
             state.error?.let {
                 Text(
                     text = it,
@@ -359,5 +319,4 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
             }
         }
     }
-}
 

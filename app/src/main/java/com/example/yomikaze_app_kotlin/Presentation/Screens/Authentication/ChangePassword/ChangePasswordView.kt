@@ -52,7 +52,7 @@ import com.example.yomikaze_app_kotlin.R
 @Composable
 fun ChangePasswordView(
     changePasswordViewModel: ChangePasswordViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
 ) {
     val state by changePasswordViewModel.state.collectAsState()
     changePasswordViewModel.setNavController(navController)
@@ -65,7 +65,7 @@ fun ChangePasswordView(
 fun ChangePasswordContent(
     state: ChangePasswordState,
     changePasswordViewModel: ChangePasswordViewModel,
-    navController: NavController
+    navController: NavController,
 ) {
     Scaffold(
         topBar = {
@@ -174,7 +174,6 @@ fun ChangePasswordContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
 
@@ -234,7 +233,6 @@ fun ChangePasswordContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
 
@@ -269,7 +267,6 @@ fun ChangePasswordContent(
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier
                         .fillMaxWidth()
-//                        .padding(5.dp)
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
@@ -292,7 +289,6 @@ fun ChangePasswordContent(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .align(Alignment.Start)
-//                            .padding(start = 16.dp, top = 1.dp, bottom = 2.dp)
                     )
                 }
                 OutlinedButton(
@@ -300,20 +296,13 @@ fun ChangePasswordContent(
                         .padding(top = 12.dp)
                         .height(40.dp)
                         .width(200.dp),
-//                        .padding(bottom = 10.dp),
                     shape = RoundedCornerShape(12.dp),
-//               elevation = ButtonDefaults.buttonColors(
-//
-//               ),
                     onClick = {
-                        //  navController.navigate("login_route")
                     },
-
-                    )
+                )
                 {
                     if (state.isLoading) {
                         Text(
-
                             text = "SAVE",
                             color = Color.Black,
                             style = TextStyle(
