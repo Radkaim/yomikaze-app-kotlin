@@ -47,7 +47,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -456,7 +455,7 @@ fun RegisterContent(
                         .width(200.dp),
                     shape = RoundedCornerShape(12.dp),
 
-                    onClick = {
+
                     onClick = {
                         registerViewModel.onRegister(
                             username = username,
@@ -466,9 +465,10 @@ fun RegisterContent(
                             email = email,
                             birthday = dateOfBirth,
                         )
+                    }
+                        )
 
-                    },
-                    )
+
                 {
                     if (state.isLoading) {
                         CircularProgressIndicator(
@@ -481,11 +481,6 @@ fun RegisterContent(
                             style = TextStyle(
                                 fontSize = 16.sp,
                             ),
-                        )
-
-                    } else {
-                        CircularProgressIndicator(
-                            modifier = androidx.compose.ui.Modifier.size(20.dp)
                         )
 
                     }
