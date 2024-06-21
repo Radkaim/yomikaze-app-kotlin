@@ -29,7 +29,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareCo
 
 @Composable
 fun BookcaseComicCard(
-    comicId: Int,
+    comicId: Long,
     image: String,
     comicName: String,
     status: String,

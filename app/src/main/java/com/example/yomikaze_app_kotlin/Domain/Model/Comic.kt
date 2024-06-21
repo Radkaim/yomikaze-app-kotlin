@@ -55,8 +55,24 @@ data class ComicResponse(
     val creationTime: String
 )
 
+data class DownloadComic(
+    val comicId: Long,
+
+    val name: String,
+
+    val cover: String,
+
+    val authors: List<String>,
+
+    val publicationDate: String,
+
+    val status: String,
+
+    val totalMbs : Float
+)
+
 data class Comic(
-    val comicId: Int,
+    val comicId: Long,
     val rankingNumber: Int,
     val image: String,
     val comicName: String,

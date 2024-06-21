@@ -594,33 +594,34 @@ fun DescriptionInComicDetailView() {
         }
 
         item {
-            Surface(
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.65f),
-                shape = RoundedCornerShape(20), // Making it oval
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(start = 40.dp, top = 20.dp)
+                    .fillMaxWidth()
+                    .padding(top = 20.dp)
             ) {
-                Box(
+                Button(
                     modifier = Modifier
-                        .width(300.dp)
-                        .height(42.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Start Read",
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
-                        //OutlinedButton
-                    }
+                        .width(250.dp)
+                        .height(40.dp)
+
+                        .shadow(4.dp, shape = RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(20.dp)),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colorScheme.onSecondary,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    onClick = {
+                        //TODO
+                    }) {
+                    Text(
+                        text = "Start Reading",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }

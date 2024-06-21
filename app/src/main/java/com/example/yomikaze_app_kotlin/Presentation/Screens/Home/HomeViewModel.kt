@@ -96,7 +96,7 @@ class HomeViewModel @Inject constructor(
         navController?.navigate("view_chapter_route/$chapterId")
     }
 
-    fun onComicRankingClicked(comicId: Int) {
+    fun onComicRankingClicked(comicId: Long) {
         navController?.navigate("comic_detail_route/$comicId")
     }
 }
