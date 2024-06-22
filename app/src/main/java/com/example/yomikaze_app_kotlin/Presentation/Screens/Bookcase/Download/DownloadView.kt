@@ -19,21 +19,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Domain.Model.DownloadComic
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BookcaseComicCard
 
 @Composable
- fun DownloadView(
+fun DownloadView(
     navController: NavController,
     viewModel: DownloadViewModel = hiltViewModel()
- ){
+) {
     viewModel.setNavController(navController)
 
     val comicsListCardModel = listOf(
         DownloadComic(
             comicId = 1,
             cover = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            name =  "Hunter X Hunter",
+            name = "Hunter X Hunter",
             status = "On Going",
             authors = listOf("Yoshihiro Togashi", "Yoshihiro Togashi1"),
             publicationDate = "1998-03-03",
@@ -42,7 +41,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookcas
         DownloadComic(
             comicId = 1,
             cover = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            name =  "Hunter X Hunter12121",
+            name = "Hunter X Hunter12121",
             status = "On Going",
             authors = listOf("Yoshihiro Togashi", "Yoshihiro Togashi1"),
             publicationDate = "1998-03-03",
@@ -51,7 +50,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookcas
         DownloadComic(
             comicId = 1,
             cover = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            name =  "Hunter X Hunter",
+            name = "Hunter X Hunter",
             status = "On Going",
             authors = listOf("Yoshihiro Togashi", "Yoshihiro Togashi1"),
             publicationDate = "1998-03-03",
@@ -60,7 +59,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookcas
         DownloadComic(
             comicId = 1,
             cover = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            name =  "Hunter X Hunter12121",
+            name = "Hunter X Hunter12121",
             status = "On Going",
             authors = listOf("Yoshihiro Togashi", "Yoshihiro Togashi1"),
             publicationDate = "1998-03-03",
@@ -69,7 +68,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookcas
         DownloadComic(
             comicId = 1,
             cover = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            name =  "Hunter X Hunter",
+            name = "Hunter X Hunter",
             status = "On Going",
             authors = listOf("Yoshihiro Togashi", "Yoshihiro Togashi1"),
             publicationDate = "1998-03-03",
@@ -78,7 +77,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookcas
         DownloadComic(
             comicId = 1,
             cover = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            name =  "Hunter X Hunter12121",
+            name = "Hunter X Hunter12121",
             status = "On Going",
             authors = listOf("Yoshihiro Togashi", "Yoshihiro Togashi1"),
             publicationDate = "1998-03-03",
@@ -102,17 +101,29 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookcas
         DownloadViewContent(comicsListCardModel, navController, viewModel)
     }
 
- }
+}
+
+data class DownloadComic(
+    val comicId: Long,
+    val cover: String,
+    val name: String,
+    val status: String,
+    val authors: List<String>,
+    val publicationDate: String,
+    val totalMbs: Float
+)
 
 @Composable
 fun DownloadViewContent(
     comicsListCardModel: List<DownloadComic>,
     navController: NavController,
     viewModel: DownloadViewModel = hiltViewModel()
-){
+) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp) ,// 8.dp space between each item
-        modifier = Modifier.fillMaxSize().padding(bottom = 60.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),// 8.dp space between each item
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 60.dp)
     ) {
         items(comicsListCardModel) { comic ->
             BookcaseComicCard(
