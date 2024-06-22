@@ -20,13 +20,12 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomeAppBar(
+fun CustomAppBar(
     title: String,
     titleColor: Color = MaterialTheme.colorScheme.primaryContainer,
     titleFontSize: TextUnit = 20.sp,
     titleFontWeight: FontWeight = FontWeight.Medium,
     textAlign: TextAlign = TextAlign.Center,
-    isComicDetails: Boolean = false,
     navigationIcon: @Composable () -> Unit ,
     actions: @Composable RowScope.() -> Unit = {}
 
@@ -34,7 +33,7 @@ fun CustomeAppBar(
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor =
-            if (isComicDetails) MaterialTheme.colorScheme.tertiary else Color.Transparent,
+           MaterialTheme.colorScheme.tertiary,
             titleContentColor = MaterialTheme.colorScheme.primaryContainer,
         ),
         title = {

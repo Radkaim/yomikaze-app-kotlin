@@ -32,7 +32,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPager
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPagerOrientation
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -56,7 +56,7 @@ fun ViewChapter(
     val currentPage = state.currentPage + 1
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "View Chapter ($currentPage / ${images.size})",
                 navigationIcon = {
                     IconButton(onClick = {

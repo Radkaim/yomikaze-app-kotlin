@@ -8,8 +8,6 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs.NetworkDi
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile.EditProfileView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting.SettingView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.RankingView
 
 
@@ -37,17 +35,17 @@ fun NavigationGraph(
 
         // for ranking screen
         composable("ranking_route") {
-            RankingView(initialTab = 0, navController = navController)
+            RankingView(navController = navController)
         }
 
         composable("ranking_route/{param}") { navBackStackEntry ->
             val param = navBackStackEntry.arguments?.getString("param")
             when (param) {
-                "0" -> RankingView(initialTab = 0, navController)
-                "1" -> RankingView(initialTab = 1, navController)
-                "2" -> RankingView(initialTab = 2, navController)
-                "3" -> RankingView(initialTab = 3, navController)
-                else -> RankingView(initialTab = 0, navController)
+                "0" -> RankingView(navController)
+                "1" -> RankingView(navController)
+                "2" -> RankingView(navController)
+                "3" -> RankingView(navController)
+                else -> RankingView(navController)
             }
         }
 
@@ -61,10 +59,10 @@ fun NavigationGraph(
         //view chapter screen
         composable("view_chapter_route/{chapterId}") { navBackStackEntry ->
             val chapterId = navBackStackEntry.arguments?.getString("chapterId")
-            ViewChapter(navController = navController, chapterId = chapterId?.toInt() ?: 0 )
+            ViewChapter(navController = navController, chapterId = chapterId?.toInt() ?: 0)
         }
 
-        composable("wifi_route"){
+        composable("wifi_route") {
             NetworkDisconnectedDialog()
         }
     }

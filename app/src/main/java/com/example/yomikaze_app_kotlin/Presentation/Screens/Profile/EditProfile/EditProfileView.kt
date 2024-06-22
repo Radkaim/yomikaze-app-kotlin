@@ -1,9 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile
 
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
-import android.icu.util.Calendar
-import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -51,9 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordContent
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 
 
@@ -78,7 +72,7 @@ fun EditProfileContent(
 ) {
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "Edit Profile",
                 navigationIcon = {
                     IconButton(onClick = {

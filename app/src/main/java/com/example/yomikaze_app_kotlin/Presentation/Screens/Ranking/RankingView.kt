@@ -18,19 +18,18 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewComment.CommentComicView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewFollow.FollowComicView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewHot.HotComicView
@@ -39,14 +38,17 @@ import com.example.yomikaze_app_kotlin.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun RankingView(initialTab: Int, navController: NavController) {
-    var tabIndex by remember { mutableStateOf(initialTab) }
+fun RankingView(
+    navController: NavController,
+    viewModel: RankingViewModel = hiltViewModel(),
+) {
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
 
     val tabs = listOf("Hot", "Rating", "Comment", "Follow")
 
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "Ranking",
                 navigationIcon = {
                     IconButton(onClick = {
@@ -57,7 +59,6 @@ fun RankingView(initialTab: Int, navController: NavController) {
                             contentDescription = "Back Icon",
                         )
                     }
-
                 },
             )
         })
@@ -65,11 +66,11 @@ fun RankingView(initialTab: Int, navController: NavController) {
 
         Column(modifier = Modifier.fillMaxWidth()) {
             TabRow(
-                selectedTabIndex = tabIndex,
+                selectedTabIndex = selectedTabIndex,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 indicator = { tabPositions ->
                     TabRowDefaults.Indicator(
-                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                        Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f) // Change this to your desired color
                     )
                 }
@@ -78,25 +79,25 @@ fun RankingView(initialTab: Int, navController: NavController) {
                     Tab(text = {
                         Text(
                             text = title,
-                            color = changeColorForRankingTabScreen(tabIndex, index),
+                            color = changeColorForRankingTabScreen(selectedTabIndex, index),
                             fontWeight = FontWeight.Medium
 
                         )
                     },
-                        selected = tabIndex == index,
-                        onClick = { tabIndex = index },
+                        selected = selectedTabIndex == index,
+                        onClick = { viewModel.setSelectedTabIndex(index) },
 
                         icon = {
-                            setIcon(index, tabIndex)
+                            setIcon(index, selectedTabIndex)
                         }
                     )
                 }
             }
-            when (tabIndex) {
+            when (selectedTabIndex) {
                 0 -> HotComicView(navController = navController)
                 1 -> RatingComicView()
                 2 -> CommentComicView()
-                3 -> FollowComicView()
+                3 -> FollowComicView(navController = navController)
             }
         }
     }
@@ -150,7 +151,7 @@ fun setIcon(index: Int, tabIndex: Int) {
 }
 
 @Composable
-fun changeSizeIcon():Modifier {
+fun changeSizeIcon(): Modifier {
     return Modifier
         .width(20.dp)
         .height(20.dp)
@@ -166,5 +167,5 @@ fun changeColorForRankingTabScreen(tabIndex: Int, index: Int): Color {
 @Preview
 @Composable
 fun BookcasePreview() {
-    RankingView(initialTab = 0, navController = rememberNavController())
+    RankingView( navController = rememberNavController())
 }

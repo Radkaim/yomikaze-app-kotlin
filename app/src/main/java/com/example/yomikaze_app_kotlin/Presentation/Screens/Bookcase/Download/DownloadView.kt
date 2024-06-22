@@ -1,16 +1,20 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,7 +85,23 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookcas
             totalMbs = 10.5f,
         ),
     )
-    DownloadViewContent(comicsListCardModel, navController, viewModel)
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
+        modifier = Modifier
+            .padding(
+                top = 20.dp,
+                start = 4.dp,
+                end = 4.dp,
+                //bottom = 80.dp
+            ) // Optional padding for the entire list
+            .background(MaterialTheme.colorScheme.background)
+            .wrapContentSize(Alignment.Center)
+            .fillMaxSize()
+    ) {
+        DownloadViewContent(comicsListCardModel, navController, viewModel)
+    }
+
  }
 
 @Composable
@@ -92,7 +112,7 @@ fun DownloadViewContent(
 ){
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp) ,// 8.dp space between each item
-        modifier = Modifier.fillMaxSize().padding(bottom = 80.dp)
+        modifier = Modifier.fillMaxSize().padding(bottom = 60.dp)
     ) {
         items(comicsListCardModel) { comic ->
             BookcaseComicCard(
@@ -114,9 +134,7 @@ fun DownloadViewContent(
                         shape = MaterialTheme.shapes.small
                     )
                     .clickable {
-                        //navController.navigate("comicDetail/${comic.comicId}")
-                        //historyViewModel.onHistoryComicClicked(comic.comicId)
-                        // TODO change to viewModel.navigateToComicDetail(comic.comicId) if using viewModel
+                        viewModel.onComicDownloadedClick(comic.name, comic.comicId)
                     }
             )
         }

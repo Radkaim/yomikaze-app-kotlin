@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.yomikaze_app_kotlin.Presentation.Navigation.BottomNav.BottomHomeNavItems
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadDetailsView.DownloadDetailView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notification.NotificationView
@@ -22,7 +23,7 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             HomeView(navController = navController)
         }
         composable(BottomHomeNavItems.Bookcase.screen_route) {
-            BookcaseView(initialTab = 0, navController)
+            BookcaseView(navController)
         }
         composable(BottomHomeNavItems.Profile.screen_route) {
             ProfileView(navController, viewModel)
@@ -40,14 +41,21 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             }
             val param = navBackStackEntry.arguments?.getString("param")
             when (param) {
-                "0" -> BookcaseView(initialTab = 0, navController)
-//                "1" -> BookcaseView(initialTab = 1, navController)
-//                "2" -> BookcaseView(initialTab = 2, navController)
-                else -> BookcaseView(initialTab = 0, navController)
-
-//            BookcaseView(initialTab = param?.toInt() ?: 0)
-
+                "0" -> BookcaseView(navController)
+                "1" -> BookcaseView(navController)
+                "2" -> BookcaseView(navController)
+                else -> BookcaseView(navController)
             }
+        }
+
+        composable("download_detail_route/{comicId}/{comicName}") { navBackStackEntry ->
+            val comicId = navBackStackEntry.arguments?.getString("comicId")
+            val comicName = navBackStackEntry.arguments?.getString("comicName")
+            DownloadDetailView(
+                navController = navController,
+                comicId = comicId?.toLong() ?: 0,
+                comicName = comicName ?: ""
+            )
         }
 
         composable("edit_profile_route") {

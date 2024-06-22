@@ -70,7 +70,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-   private fun checkUserToken() {
+    private fun checkUserToken() {
+        appPreference.authToken = "Hung is here"
         val token = appPreference.authToken
         if (token != null) {
             _state.value = _state.value.copy(isUserLoggedIn = true)
@@ -85,7 +86,9 @@ class HomeViewModel @Inject constructor(
      * Todo: Implement navigation functions
      */
     fun onViewMoreHistoryClicked() {
-        navController?.navigate("bookcase_route/0")
+        // remove current screen from backstack
+
+        navController?.navigate("bookcase_route/1")
     }
 
     fun onViewRankingMore() {

@@ -152,7 +152,7 @@ fun HistoryView(
                 top = 15.dp,
                 start = 4.dp,
                 end = 4.dp,
-                bottom = 80.dp
+
             ) // Optional padding for the entire list
             .background(MaterialTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
@@ -214,7 +214,7 @@ fun showListHistories(
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(bottom = 60.dp)
     ) {
         items(comicsListCardModel) { comic ->
             BookcaseComicCard(

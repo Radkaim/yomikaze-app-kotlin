@@ -15,19 +15,16 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.History.HistoryView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryView
@@ -36,16 +33,16 @@ import com.example.yomikaze_app_kotlin.R
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun BookcaseView(
-    initialTab: Int,
-    navController: NavController
+    navController: NavController,
+    viewModel: BookcaseViewModel = hiltViewModel()
 ) {
-    var tabIndex by remember { mutableStateOf(initialTab) }
 
     val tabs = listOf("History", "Library", "Download")
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
 
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "Bookcase",
                 navigationIcon = {},
             )
@@ -54,11 +51,11 @@ fun BookcaseView(
 
         Column(modifier = Modifier.fillMaxWidth()) {
             TabRow(
-                selectedTabIndex = tabIndex,
+                selectedTabIndex = selectedTabIndex,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 indicator = { tabPositions ->
                     TabRowDefaults.Indicator(
-                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                        Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f) // Change this to your desired color
                     )
                 }
@@ -67,21 +64,21 @@ fun BookcaseView(
                     Tab(text = {
                         Text(
                             text = title,
-                            color = changeColor(tabIndex, index),
+                            color = changeColor(selectedTabIndex, index),
                             fontWeight = FontWeight.Medium
 
                         )
                     },
-                        selected = tabIndex == index,
-                        onClick = { tabIndex = index },
+                        selected = selectedTabIndex == index,
+                        onClick = { viewModel.setSelectedTabIndex(index) },
 
                         icon = {
-                            setIcon(index, tabIndex)
+                            setIcon(index, selectedTabIndex)
                         }
                     )
                 }
             }
-            when (tabIndex) {
+            when (selectedTabIndex) {
                 0 -> HistoryView(navController = navController)
                 1 -> LibraryView()
                 2 -> DownloadView(navController = navController)
@@ -136,11 +133,4 @@ fun changeColor(tabIndex: Int, index: Int): Color {
     return if (tabIndex == index) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary.copy(
         alpha = 0.36f
     )
-}
-
-@Preview
-@Composable
-fun BookcasePreview() {
-    val navController = rememberNavController()
-    BookcaseView(initialTab = 0, navController = navController)
 }

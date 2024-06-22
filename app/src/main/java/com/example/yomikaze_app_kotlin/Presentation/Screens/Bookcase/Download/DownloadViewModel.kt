@@ -12,4 +12,8 @@ class DownloadViewModel @Inject constructor() : ViewModel() {
     fun setNavController(navController: NavController) {
         this.navController = navController
     }
+
+    fun onComicDownloadedClick(comicName : String, comicId: Long) {
+        navController?.navigate("download_detail_route/$comicId/$comicName")
+    }
 }
