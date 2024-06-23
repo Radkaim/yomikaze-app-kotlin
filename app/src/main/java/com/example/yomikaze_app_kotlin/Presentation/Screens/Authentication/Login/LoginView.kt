@@ -20,6 +20,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -309,11 +310,13 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                 }
             }
             state.error?.let {
-                Text(
-                    text = it,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(top = 6.dp)
-                )
+                Snackbar {
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
             }
         }
     }

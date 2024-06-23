@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Data.Repository
 
+import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Domain.Model.LoginRequest
@@ -7,8 +8,13 @@ import com.example.yomikaze_app_kotlin.Domain.Model.RegisterRequest
 import com.example.yomikaze_app_kotlin.Domain.Model.TokenResponse
 import com.example.yomikaze_app_kotlin.Domain.Model.UserInfoResponse
 import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
+import com.google.gson.Gson
 import javax.inject.Inject
 import kotlin.Result.Companion.failure
+data class ErrorResponse(
+    val success: Boolean,
+    val message: String
+)
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApiService,
@@ -18,10 +24,25 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun login(username: String, password: String): Result<TokenResponse> {
         val result = api.login(LoginRequest(username, password))
         if (result.isSuccessful) {
-            appPreference.authToken = result.body()?.token
-            return Result.success(result.body()!!)
+            val tokenResponse = result.body()
+            if (tokenResponse?.token != null) {
+                appPreference.authToken = tokenResponse.token
+                return Result.success(tokenResponse)
+            }
         }
-        return failure(Exception("Login failed"))
+
+        val errorResponse = result.errorBody()?.string()
+        if (errorResponse != null) {
+            return try {
+                val error = Gson().fromJson(errorResponse, ErrorResponse::class.java)
+                Log.d("AuthRepositoryImpl", "login: ${error.message}")
+                Result.failure(Exception(error.message))
+            } catch (e: Exception) {
+                Result.failure(Exception("Login failed"))
+            }
+        }
+
+        return Result.failure(Exception("Login failed"))
     }
 
     override suspend fun register(
