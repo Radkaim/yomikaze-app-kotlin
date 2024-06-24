@@ -4,7 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Domain.UseCase.LoginUC
+import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
+import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,10 +43,10 @@ class LoginViewModel @Inject constructor(
         } else {
             _state.value = _state.value.copy(passwordError = null)
         }
-
+        val loginRequest = LoginRequest(username, password)
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
-            val result = loginUseCase.login(username, password)
+            val result = loginUseCase.login(loginRequest)
             Log.d("LoginViewModel", "onLogin: $username, $password")
             _state.value = _state.value.copy(isLoading = false)
             result.onSuccess { token ->

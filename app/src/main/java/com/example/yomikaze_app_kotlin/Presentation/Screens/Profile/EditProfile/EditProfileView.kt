@@ -1,9 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile
 
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
-import android.icu.util.Calendar
-import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -54,9 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordContent
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 
 
@@ -81,7 +76,7 @@ fun EditProfileContent(
 ) {
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "Edit Profile",
                 navigationIcon = {
                     IconButton(onClick = {
@@ -105,28 +100,12 @@ fun EditProfileContent(
         var aboutMeError by remember { mutableStateOf("") }
 
 
-        var passwordVisible by remember { mutableStateOf(false) }
-        val focusManager = LocalFocusManager.current
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .offset(y = (-20).dp)
-//                .padding(bottom = 30.dp)
-                .background(color = MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center
-
-        ) {
-
+            var passwordVisible by remember { mutableStateOf(false) }
 
             Column(
 //            Alignment = Alignment.Center,
                 modifier = Modifier
-                    .pointerInput(Unit) {
-                        detectTapGestures(onTap = {
-                            focusManager.clearFocus()
-                        })
-                    }
+//                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 40.dp)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally

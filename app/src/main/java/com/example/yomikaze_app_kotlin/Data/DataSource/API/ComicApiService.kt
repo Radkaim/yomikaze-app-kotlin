@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.API
 
-import com.example.yomikaze_app_kotlin.Domain.Model.ComicResponseTest
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
 import retrofit2.http.GET
 
 
@@ -13,4 +14,7 @@ interface ComicApiService {
 
     @GET("photos")
     suspend fun getHotComicBannerImages(): List<ComicResponseTest>
+
+    @GET("api/comics")
+    suspend fun getAllComics(): List<ComicResponse>
 }

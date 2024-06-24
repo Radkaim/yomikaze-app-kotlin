@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppThemeSate
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainEvent
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.R
@@ -46,7 +46,7 @@ fun ProfileView(
 
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "Profile",
                 navigationIcon = {},
             )
@@ -124,5 +124,7 @@ fun ProfileView(
                 }
             }
         }
+
+
     }
 }

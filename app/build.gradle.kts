@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id ("kotlin-kapt")
-    id ("dagger.hilt.android.plugin")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 
 }
 
@@ -81,21 +81,21 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     //for navigation
-    implementation ("androidx.compose.ui:ui:1.7.0-beta02")
-    implementation ("androidx.compose.material:material:1.7.0-beta02")
-    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.compose.ui:ui:1.7.0-beta02")
+    implementation("androidx.compose.material:material:1.7.0-beta02")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     //for auto image slider
     implementation("com.google.accompanist:accompanist-pager:0.22.0-rc")
 
     // paper use for shared preferences
-    implementation ("io.github.pilgr:paperdb:2.7.2")
+    implementation("io.github.pilgr:paperdb:2.7.2")
 
     // Retrofit for network requests
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.7.2")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.7.2")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     //hilt for dependency injection
     implementation("com.google.dagger:hilt-android:2.51.1")
@@ -105,7 +105,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Coroutines for asynchronous programming
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     //auto image slider
     implementation("com.google.accompanist:accompanist-pager:0.22.0-rc")
@@ -114,8 +114,8 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 
     //for bottom navigation animation
-   // implementation("com.exyte:animated-navigation-bar:1.0.0")
-   // implementation("androidx.graphics:graphics-shapes:1.0.0-alpha05")
+    // implementation("com.exyte:animated-navigation-bar:1.0.0")
+    // implementation("androidx.graphics:graphics-shapes:1.0.0-alpha05")
     // for lotie animation
     implementation("com.airbnb.android:lottie-compose:4.0.0")
 
@@ -125,6 +125,16 @@ dependencies {
 
     // use for EncryptedSharedPreferences
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    // Room Local DB
+
+    implementation( "androidx.room:room-runtime:2.6.1")
+    implementation( "androidx.room:room-ktx:2.6.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.8")
+    annotationProcessor ("androidx.room:room-compiler:2.6.1")
+    //noinspection KaptUsageInsteadOfKsp
+    kapt ("androidx.room:room-compiler:2.6.1")
+    //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
 }
 kapt {
     correctErrorTypes = true

@@ -45,14 +45,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
@@ -79,7 +78,7 @@ fun ForgotPasswordContent(
 
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "Forgot Password",
                 navigationIcon = {
                     IconButton(onClick = {

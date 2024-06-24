@@ -14,7 +14,7 @@ class HistoryViewModel @Inject constructor() : ViewModel() {
         this.navController = navController
     }
 
-    fun onHistoryComicClicked(chapterId: Int) {
+    fun onHistoryComicClicked(chapterId: Long) {
         navController?.navigate("view_chapter_route/$chapterId")
     }
 }

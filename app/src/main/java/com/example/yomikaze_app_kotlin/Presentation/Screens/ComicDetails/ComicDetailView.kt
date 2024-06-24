@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,12 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -37,6 +40,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -66,7 +70,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.Chapter
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicChapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconicDataComicDetail
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
@@ -107,7 +111,7 @@ fun ComicDetailsView(
 
     // test case list chapter
     val listChapter = listOf(
-        Chapter(
+        ComicChapter(
             chapterIndex = 0,
             title = "Superhero Origins 12Origins Origins12 OriginsOri gins12Ori gins",
             views = 100000000,
@@ -115,7 +119,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 1,
             title = "Superhero Origins12",
             views = 1000,
@@ -123,7 +127,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 2,
             title = "Superhero Superhero Origins 12Origins Origins12 OriginsOri gins12Ori gins",
             views = 1000,
@@ -131,7 +135,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 3,
             title = "Superhero Origins14",
             views = 1000,
@@ -139,7 +143,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 4,
             title = "Superhero Origins15",
             views = 1000,
@@ -147,7 +151,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 5,
             title = "Superhero Origins16",
             views = 1000,
@@ -155,7 +159,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 6,
             title = "Superhero Superhero Origins 12Origins Origins12 OriginsOri gins12Ori gins",
             views = 1000,
@@ -163,7 +167,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 7,
             title = "Superhero Origins18",
             views = 1000,
@@ -171,7 +175,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 8,
             title = "Superhero Origins19",
             views = 1000,
@@ -179,7 +183,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 9,
             title = "Superhero Origins20",
             views = 1000,
@@ -187,7 +191,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 10,
             title = "Superhero Origins21",
             views = 1000,
@@ -305,7 +309,10 @@ fun ComicDetailsView(
                             when (showDialog) {
                                 1 -> CustomDialog3(onDismiss = { showDialog = null })
                                 2 -> CustomDialog4(onDismiss = { showDialog = null })
-                                3 -> CustomDialog3(onDismiss = { showDialog = null })
+                                3 -> RatingComicDialog(
+                                    onDismiss = { showDialog = null },
+                                    onVote = {})
+
                                 4 -> CustomDialog4(onDismiss = { showDialog = null })
                                 5 -> CustomDialog4(onDismiss = { showDialog = null })
                             }
@@ -587,33 +594,34 @@ fun DescriptionInComicDetailView() {
         }
 
         item {
-            Surface(
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.65f),
-                shape = RoundedCornerShape(20), // Making it oval
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(start = 40.dp, top = 20.dp)
+                    .fillMaxWidth()
+                    .padding(top = 20.dp)
             ) {
-                Box(
+                Button(
                     modifier = Modifier
-                        .width(300.dp)
-                        .height(42.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Start Read",
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
-                        //OutlinedButton
-                    }
+                        .width(250.dp)
+                        .height(40.dp)
+
+                        .shadow(4.dp, shape = RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(20.dp)),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colorScheme.onSecondary,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    onClick = {
+                        //TODO
+                    }) {
+                    Text(
+                        text = "Start Reading",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
         }
@@ -627,7 +635,7 @@ fun DescriptionInComicDetailView() {
 @Composable
 fun ListChapterInComicDetailView(
     comicDetailViewModel: ComicDetailViewModel,
-    listChapter: List<Chapter>
+    listChapter: List<ComicChapter>
 ) {
     var isSelected by remember { mutableStateOf(true) }
 
@@ -725,9 +733,114 @@ fun CustomDialog3(onDismiss: () -> Unit) {
             }
         }
     }
-
-
 }
+
+@Composable
+fun RatingComicDialog(
+    onDismiss: () -> Unit,
+    onVote: () -> Unit
+) {
+    // Remember the state of the stars
+    val starState = remember { mutableStateListOf(false, false, false, false, false) }
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = true
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray.copy(alpha = 0.7f)) // Màu xám với độ mờ
+                .offset(y = (100).dp)
+                .clickable { onDismiss() }
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(137.dp)
+                    .align(Alignment.Center)
+                    .offset(y = (-100).dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(top = 16.dp)
+                    ) {
+                        Text(
+                            text = "Rating Comic",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onError,
+                            textAlign = TextAlign.Center
+
+                        )
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        // Display stars
+                        starState.forEachIndexed { index, isSelected ->
+                            Icon(
+                                painter = painterResource(id = if (isSelected) R.drawable.ic_star_fill else R.drawable.ic_star),
+                                contentDescription = "Star $index",
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .clickable {
+                                        for (i in 0..index) {
+                                            starState[i] = true
+                                        }
+                                        for (i in index + 1 until starState.size) {
+                                            starState[i] = false
+                                        }
+                                    },
+                                tint = if (isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface
+                            )
+                        }
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+
+                        Button(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(30.dp)
+                                .shadow(4.dp, shape = RoundedCornerShape(8.dp))
+                                .clip(RoundedCornerShape(20.dp)),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = MaterialTheme.colorScheme.onSecondary,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            ),
+                            onClick = {
+                                val selectedStars = starState.count { it }
+                                //viewModel.onVote(selectedStars)
+                                Log.d("RatingComicDialog", "Selected stars: $selectedStars")
+                                onDismiss()
+                            }) {
+                            Text(
+                                text = "Vote",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun CustomDialog4(onDismiss: () -> Unit) {

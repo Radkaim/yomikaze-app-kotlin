@@ -13,15 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.Download.NormalChapterDownload
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NotificationView() {
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "Notification",
                 navigationIcon = {},
             )
@@ -45,26 +45,24 @@ fun NotificationView() {
 //                    .scale(0.15f)
 //            )
             Column {
-                ChapterCard(
+                NormalChapterDownload(
+                    orderIndex = 1,
                     chapterIndex = 0,
-                    title = "Superhero Origins",
-                    views = 100000,
-                    comments = 1000,
-                    publishedDate = "27/01/2024",
-                    isLocked = false,
-                    onClick = {},
-                    onReportClick = {}
+                    totalMbs = 12f,
+                    isDownloaded = true,
+                    isInSelectionMode = true ,
+                    isSelected = true,
+                    onClicked = {}
                 )
                 Spacer(modifier = Modifier.height(1.dp))
-                ChapterCard(
+                NormalChapterDownload(
+                    orderIndex = 2,
                     chapterIndex = 1,
-                    title = "Superhero Origins12",
-                    views = 1000,
-                    comments = 10,
-                    publishedDate = "27/01/2024",
-                    isLocked = true,
-                    onClick = {},
-                    onReportClick = {}
+                    totalMbs = 12f,
+                    isDownloaded = true,
+                    isInSelectionMode = true,
+                    isSelected = false,
+                    onClicked = {}
                 )
             }
         }

@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,7 +38,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Core.Networks.ConnectionState
 import com.example.yomikaze_app_kotlin.Core.Networks.connectivityState
-import com.example.yomikaze_app_kotlin.Domain.Model.Comic
+import com.example.yomikaze_app_kotlin.Domain.Models.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicItem
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicWeeklyHome

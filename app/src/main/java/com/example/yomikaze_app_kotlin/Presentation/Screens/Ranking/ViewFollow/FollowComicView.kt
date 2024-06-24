@@ -13,11 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.yomikaze_app_kotlin.Domain.Model.Comic
+import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Domain.Models.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 
 @Composable
-fun FollowComicView() {
+fun FollowComicView(navController: NavController) {
 
 
     /**
@@ -202,7 +203,8 @@ fun FollowComicView() {
                     comments = comic.comments,
                     backgroundColor = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.clickable {
-                        //navController.navigate("comicDetail/${comic.comicId}")
+                        navController.navigate("comic_detail_route/${comic.comicId}"){
+                        }
                       //  hotComicViewModel.navigateToComicDetail(comic.comicId)
                         // TODO change to viewModel.navigateToComicDetail(comic.comicId) if using viewModel
                     }

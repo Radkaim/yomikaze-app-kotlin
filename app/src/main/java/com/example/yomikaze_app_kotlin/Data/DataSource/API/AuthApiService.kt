@@ -1,9 +1,9 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.API
 
-import com.example.yomikaze_app_kotlin.Domain.Model.LoginRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.RegisterRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.TokenResponse
-import com.example.yomikaze_app_kotlin.Domain.Model.UserInfoResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.RegisterRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.UserInfoResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

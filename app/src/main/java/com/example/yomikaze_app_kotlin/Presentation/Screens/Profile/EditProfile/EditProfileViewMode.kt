@@ -2,8 +2,6 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Domain.UseCase.ChangePasswordUseCase
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

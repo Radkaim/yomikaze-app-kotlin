@@ -1,9 +1,10 @@
 package com.example.yomikaze_app_kotlin.Core.Module
 
-import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
-import com.example.yomikaze_app_kotlin.Domain.Repository.ComicRepository
-import com.example.yomikaze_app_kotlin.Domain.UseCase.GetHotComicBannerUseCase
-import com.example.yomikaze_app_kotlin.Domain.UseCase.LoginUC
+import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.LogoutUC
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,9 +25,18 @@ object UseCaseModule {
         return LoginUC(authRepository)
     }
 
+    /**
+     * Todo: Provide the logoutUseCase
+     */
     @Provides
     @Singleton
-    fun provideGetHotComicBannerUseCase(comicRepository: ComicRepository): GetHotComicBannerUseCase {
-        return GetHotComicBannerUseCase(comicRepository)
+    fun provideLogoutUseCase(authRepository: AuthRepository): LogoutUC {
+        return LogoutUC(authRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetHotComicBannerUseCase(comicRepository: ComicRepository): GetHotComicBannerUC {
+        return GetHotComicBannerUC(comicRepository)
     }
 }

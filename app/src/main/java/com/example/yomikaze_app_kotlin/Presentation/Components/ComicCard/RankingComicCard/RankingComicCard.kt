@@ -20,7 +20,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareCo
 
 @Composable
 fun RankingComicCard(
-    comicId: Int,
+    comicId: Long,
     rankingNumber: Int,
     image: String,
     comicName: String,

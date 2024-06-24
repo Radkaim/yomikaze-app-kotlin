@@ -26,6 +26,7 @@ private val LightColorScheme = lightColorScheme(
     onSecondaryContainer = Orange900, //02753E
 
     error = Orange600, //B22F24
+    onError = Orange700, //831513
     background = Green100, //F2FFFD
     surface = Orange400, //F28C74
     inverseSurface = Orange800,
