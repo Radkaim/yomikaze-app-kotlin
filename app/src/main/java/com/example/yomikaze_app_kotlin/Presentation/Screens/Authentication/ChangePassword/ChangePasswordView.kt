@@ -3,6 +3,8 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Chan
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +38,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -67,6 +71,13 @@ fun ChangePasswordContent(
     changePasswordViewModel: ChangePasswordViewModel,
     navController: NavController,
 ) {
+    var oldPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
+
     Scaffold(
         topBar = {
             CustomeAppBar(
@@ -89,16 +100,15 @@ fun ChangePasswordContent(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = (-50).dp)
-//                .padding(bottom = 30.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
                 .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
 
         ) {
-            var oldPassword by remember { mutableStateOf("") }
-            var newPassword by remember { mutableStateOf("") }
-            var confirmPassword by remember { mutableStateOf("") }
-            var passwordVisible by remember { mutableStateOf(false) }
-
 
             Column(
 //            Alignment = Alignment.Center,
@@ -153,6 +163,11 @@ fun ChangePasswordContent(
                         .fillMaxWidth()
                         .padding(5.dp)
                         .height(56.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.small
+                        )
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                             shape = RoundedCornerShape(24.dp),
@@ -211,6 +226,11 @@ fun ChangePasswordContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.small
+                        )
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),

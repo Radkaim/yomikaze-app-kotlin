@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs.NetworkDisconnectedDialog
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AboutUs.AboutUsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ForgotPassword.ForgotPasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginView
@@ -64,6 +65,10 @@ fun NavigationGraph(
 
         composable("setting_route") {
             SettingView(navController = navController)
+        }
+
+        composable("aboutUs_route") {
+            AboutUsView(navController = navController)
         }
         // for ranking screen
         composable("ranking_route") {

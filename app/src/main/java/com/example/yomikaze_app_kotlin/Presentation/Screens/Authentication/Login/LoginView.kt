@@ -3,7 +3,9 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Logi
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +40,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -68,6 +72,11 @@ fun LoginView(
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navController: NavController) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    var passwordVisible by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
@@ -87,16 +96,18 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
             )
         })
     {
-            var username by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
 
-            var passwordVisible by remember { mutableStateOf(false) }
 //        state.hung = "hung"
 
 
             Column(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
+                    }
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -137,10 +148,15 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.large
+                        )
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = RoundedCornerShape(20.dp),
                         ),
                     shape = RoundedCornerShape(24.dp),
                     colors = TextFieldDefaults.textFieldColors(
@@ -194,10 +210,16 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.large,
+
+                        )
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = RoundedCornerShape(20.dp),
                         ),
                     shape = RoundedCornerShape(24.dp),
                     colors = TextFieldDefaults.textFieldColors(
