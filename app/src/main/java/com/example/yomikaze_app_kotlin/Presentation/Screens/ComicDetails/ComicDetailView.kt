@@ -70,7 +70,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicChapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconicDataComicDetail
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
@@ -111,7 +111,7 @@ fun ComicDetailsView(
 
     // test case list chapter
     val listChapter = listOf(
-        Chapter(
+        ComicChapter(
             chapterIndex = 0,
             title = "Superhero Origins 12Origins Origins12 OriginsOri gins12Ori gins",
             views = 100000000,
@@ -119,7 +119,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 1,
             title = "Superhero Origins12",
             views = 1000,
@@ -127,7 +127,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 2,
             title = "Superhero Superhero Origins 12Origins Origins12 OriginsOri gins12Ori gins",
             views = 1000,
@@ -135,7 +135,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 3,
             title = "Superhero Origins14",
             views = 1000,
@@ -143,7 +143,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 4,
             title = "Superhero Origins15",
             views = 1000,
@@ -151,7 +151,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 5,
             title = "Superhero Origins16",
             views = 1000,
@@ -159,7 +159,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 6,
             title = "Superhero Superhero Origins 12Origins Origins12 OriginsOri gins12Ori gins",
             views = 1000,
@@ -167,7 +167,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 7,
             title = "Superhero Origins18",
             views = 1000,
@@ -175,7 +175,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 8,
             title = "Superhero Origins19",
             views = 1000,
@@ -183,7 +183,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = false
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 9,
             title = "Superhero Origins20",
             views = 1000,
@@ -191,7 +191,7 @@ fun ComicDetailsView(
             publishedDate = "27/01/2024",
             isLocked = true
         ),
-        Chapter(
+        ComicChapter(
             chapterIndex = 10,
             title = "Superhero Origins21",
             views = 1000,
@@ -635,7 +635,7 @@ fun DescriptionInComicDetailView() {
 @Composable
 fun ListChapterInComicDetailView(
     comicDetailViewModel: ComicDetailViewModel,
-    listChapter: List<Chapter>
+    listChapter: List<ComicChapter>
 ) {
     var isSelected by remember { mutableStateOf(true) }
 

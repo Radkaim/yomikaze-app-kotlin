@@ -2,7 +2,9 @@ package com.example.yomikaze_app_kotlin.Core.Module
 
 import android.content.Context
 import androidx.room.Room
+import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
+import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.PageDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.YomikazeDB
 import dagger.Module
 import dagger.Provides
@@ -32,6 +34,18 @@ object DatabaseModule {
     @Singleton
     fun provideComicDAO(db: YomikazeDB): ComicDao {
         return db.comicDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideChapterDAO(db: YomikazeDB): ChapterDao {
+        return db.chapterDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providePageDAO(db: YomikazeDB): PageDao {
+        return db.pageDao()
     }
 
 }

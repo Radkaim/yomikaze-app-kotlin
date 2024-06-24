@@ -117,16 +117,10 @@ data class ComicResponse(
     @ColumnInfo(name = "comments")
     val comments: Long,
 
-    //for api
-    @SerializedName("creationTime")
-    //for database
-    @ColumnInfo(name = "creationTime")
-    val creationTime: String,
-
     //for database
     @ColumnInfo(name = "totalMbs")
     val totalMbs : Float
-)
+) : BaseModel()
 
 data class Comic(
     val comicId: Long,
@@ -142,16 +136,21 @@ data class Comic(
     val comments: Long
 )
 data class ComicChapter(
-    val chapterId: Int,
-    val rankingNumber: Int,
-    val image: String,
-    val comicName: String,
-    val status: String,
-    val authorName: String,
+    val chapterId: Int? = null,
+    val rankingNumber: Int? = null,
+
+    val chapterIndex : Int,
+    val title: String,
+    val isLocked : Boolean,
+    val image: String? = null,
+    val comicName: String? = null,
+    val status: String? = null,
+    val authorName: String? = null,
     val publishedDate: String,
-    val ratingScore: Float,
-    val follows: Int,
-    val views: Int,
-    val comments: Int
+    val ratingScore: Float? = null,
+    val follows: Int? = null,
+    val views: Long,
+    val comments: Long
 )
+
 
