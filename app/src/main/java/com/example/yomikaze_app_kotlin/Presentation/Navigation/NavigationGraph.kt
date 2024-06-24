@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs.NetworkDisconnectedDialog
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.homeGraph
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AboutUs.AboutUsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ForgotPassword.ForgotPasswordView
@@ -72,17 +73,17 @@ fun NavigationGraph(
         }
         // for ranking screen
         composable("ranking_route") {
-            RankingView(initialTab = 0, navController = navController)
+            RankingView(navController = navController)
         }
 
         composable("ranking_route/{param}") { navBackStackEntry ->
             val param = navBackStackEntry.arguments?.getString("param")
             when (param) {
-                "0" -> RankingView(initialTab = 0, navController)
-                "1" -> RankingView(initialTab = 1, navController)
-                "2" -> RankingView(initialTab = 2, navController)
-                "3" -> RankingView(initialTab = 3, navController)
-                else -> RankingView(initialTab = 0, navController)
+                "0" -> RankingView( navController)
+                "1" -> RankingView( navController)
+                "2" -> RankingView( navController)
+                "3" -> RankingView( navController)
+                else -> RankingView( navController)
             }
         }
 

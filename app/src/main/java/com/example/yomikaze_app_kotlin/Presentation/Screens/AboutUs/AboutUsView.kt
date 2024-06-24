@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.AboutUs
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,9 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.AboutUs.AboutUsItem
 import com.example.yomikaze_app_kotlin.Presentation.Components.AboutUs.AboutUsObject
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AboutUsView(navController: NavController) {
     val listAboutUs = listOf(
@@ -30,7 +32,7 @@ fun AboutUsView(navController: NavController) {
 
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "About Us",
                 navigationIcon = {
                     IconButton(onClick = {
@@ -41,10 +43,11 @@ fun AboutUsView(navController: NavController) {
                             contentDescription = "Back Icon"
                         )
                     }
-                },
+                }
             )
         }
-    ) {
+    )
+    {
         Column(
             modifier = Modifier
                 .fillMaxSize(),

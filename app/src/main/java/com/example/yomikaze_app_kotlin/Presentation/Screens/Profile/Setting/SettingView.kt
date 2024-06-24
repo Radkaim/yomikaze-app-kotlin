@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,11 +39,12 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppThemeSate
 import com.example.yomikaze_app_kotlin.Presentation.Components.SettingProfile.SettingItem
 import com.example.yomikaze_app_kotlin.Presentation.Components.SettingProfile.SettingObject
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainEvent
 import com.example.yomikaze_app_kotlin.R
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SettingView(navController: NavController) {
     val listIconSettingProfile = listOf(
@@ -56,7 +58,7 @@ fun SettingView(navController: NavController) {
     )
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "Setting",
                 navigationIcon = {
                     IconButton(onClick = {

@@ -79,7 +79,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
 
     Scaffold(
         topBar = {
-            CustomeAppBar(
+            CustomAppBar(
                 title = "Login",
                 navigationIcon = {
                     IconButton(onClick = {
