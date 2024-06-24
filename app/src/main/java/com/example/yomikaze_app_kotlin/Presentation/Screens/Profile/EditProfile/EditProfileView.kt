@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -88,21 +92,12 @@ fun EditProfileContent(
             )
         })
     {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .offset(y = (-20).dp)
-//                .padding(bottom = 30.dp)
-                .background(color = MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center
-
-        ) {
-            var username by remember { mutableStateOf("") }
-            var dateOfBirth by remember { mutableStateOf("") }
-            var dateOfBirthError by remember { mutableStateOf<String?>(null) }
-            var password by remember { mutableStateOf("") }
-            var aboutMe by remember { mutableStateOf("") }
-            var aboutMeError by remember { mutableStateOf("") }
+        var username by remember { mutableStateOf("") }
+        var dateOfBirth by remember { mutableStateOf("") }
+        var dateOfBirthError by remember { mutableStateOf<String?>(null) }
+        var password by remember { mutableStateOf("") }
+        var aboutMe by remember { mutableStateOf("") }
+        var aboutMeError by remember { mutableStateOf("") }
 
 
             var passwordVisible by remember { mutableStateOf(false) }
@@ -368,5 +363,4 @@ fun EditProfileContent(
                 }
             }
         }
-    }
 }

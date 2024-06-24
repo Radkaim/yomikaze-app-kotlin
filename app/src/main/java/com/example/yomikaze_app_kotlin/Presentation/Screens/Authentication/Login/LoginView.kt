@@ -3,7 +3,9 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Logi
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,7 +39,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -67,6 +71,11 @@ fun LoginView(
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navController: NavController) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    var passwordVisible by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
@@ -86,19 +95,21 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
             )
         })
     {
-        var username by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
 
-        var passwordVisible by remember { mutableStateOf(false) }
 //        state.hung = "hung"
 
 
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
+                    }
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
             Image(
@@ -133,33 +144,38 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     )
                 },
 
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .height(56.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(24.dp),
-                    ),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                ),
-                isError = state.usernameError != null
-            )
-            if (state.usernameError != null) {
-                Text(
-                    text = state.usernameError ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
-                        .align(Alignment.Start)
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.large
+                        )
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(20.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    isError = state.usernameError != null
                 )
-            }
+                if (state.usernameError != null) {
+                    Text(
+                        text = state.usernameError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                    )
+                }
 
             TextField(
                 value = password,
@@ -181,67 +197,73 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     else
                         painterResource(id = R.drawable.ic_visibility_eye)
 
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            tint = MaterialTheme.colorScheme.onTertiary,
-                            painter = image,
-                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.onTertiary,
+                                painter = image,
+                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            )
+                        }
+                    },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.large,
+
                         )
-                    }
-                },
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .height(56.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(24.dp),
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(20.dp),
+                        ),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
                     ),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                ),
-                isError = state.passwordError != null
-            )
-            if (state.passwordError != null) {
-                Text(
-                    text = state.passwordError ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .align(Alignment.Start)
+                    isError = state.passwordError != null
                 )
-            }
-            Row {
-                Text(
-                    text = "Sign Up",
-                    style = TextStyle(
-                        fontStyle = FontStyle.Italic,
-                    ),
-                    modifier = Modifier
-                        .padding(
-                            top = 3.dp,
-                            start = 0.dp,
-                            end = 200.dp,
-                            bottom = 3.dp
-                        )
-                        .clickable { loginViewModel.navigateToRegister() }
-                )
-                Text(
-                    text = "Forgot Password?",
-                    style = TextStyle(fontStyle = FontStyle.Italic),
-                    modifier = Modifier
-                        .padding(
-                            top = 3.dp,
-                            bottom = 3.dp
-                        )
-                        .clickable { loginViewModel.navigateToForgotPassword() }
-                )
+                if (state.passwordError != null) {
+                    Text(
+                        text = state.passwordError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                    )
+                }
+                Row {
+                    Text(
+                        text = "Sign Up",
+                        style = TextStyle(
+                            fontStyle = FontStyle.Italic,
+                        ),
+                        modifier = Modifier
+                            .padding(
+                                top = 3.dp,
+                                start = 0.dp,
+                                end = 200.dp,
+                                bottom = 3.dp
+                            )
+                            .clickable { loginViewModel.navigateToRegister() }
+                    )
+                    Text(
+                        text = "Forgot Password?",
+                        style = TextStyle(fontStyle = FontStyle.Italic),
+                        modifier = Modifier
+                            .padding(
+                                top = 3.dp,
+                                bottom = 3.dp
+                            )
+                            .clickable { loginViewModel.navigateToForgotPassword() }
+                    )
 
             }
             Column(
@@ -314,7 +336,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                 Text(
                     text = it,
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(10.dp)
+                    modifier = Modifier.padding(top = 6.dp)
                 )
             }
         }

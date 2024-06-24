@@ -51,7 +51,7 @@ class RegisterViewModel @Inject constructor(
         }
 
         updateErrorState(birthday.isBlank(), dateOfBirthError) {
-            _state.value = _state.value.copy(dateOfBirthError = it)
+            _state.value = _state.value.copy(birthdayError = it)
         }
 
         updateErrorState(password.isBlank(), passwordError) {
