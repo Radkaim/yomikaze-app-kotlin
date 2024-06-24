@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Domain.Model.Comic
+import com.example.yomikaze_app_kotlin.Domain.Models.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 
 @Composable

@@ -1,13 +1,13 @@
-package com.example.yomikaze_app_kotlin.Data.Repository
+package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
-import com.example.yomikaze_app_kotlin.Domain.Model.LoginRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.RegisterRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.TokenResponse
-import com.example.yomikaze_app_kotlin.Domain.Model.UserInfoResponse
-import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
+import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.RegisterRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.UserInfoResponse
+import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.google.gson.Gson
 import javax.inject.Inject
 import kotlin.Result.Companion.failure

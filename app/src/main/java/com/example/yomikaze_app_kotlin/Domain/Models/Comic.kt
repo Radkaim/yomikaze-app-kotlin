@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Domain.Model
+package com.example.yomikaze_app_kotlin.Domain.Models
 
 import android.annotation.SuppressLint
 import androidx.annotation.NonNull

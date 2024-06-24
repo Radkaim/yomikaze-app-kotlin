@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Navigation.BottomNav
+package com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav
 
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem

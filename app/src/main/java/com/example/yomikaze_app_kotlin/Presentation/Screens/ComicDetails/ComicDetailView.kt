@@ -70,7 +70,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.example.yomikaze_app_kotlin.Domain.Model.Chapter
+import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconicDataComicDetail
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent

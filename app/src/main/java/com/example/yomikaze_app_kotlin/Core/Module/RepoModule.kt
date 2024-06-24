@@ -3,10 +3,10 @@ package com.example.yomikaze_app_kotlin.Core.Module
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
-import com.example.yomikaze_app_kotlin.Data.Repository.AuthRepositoryImpl
-import com.example.yomikaze_app_kotlin.Data.Repository.ComicRepositoryImpl
-import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
-import com.example.yomikaze_app_kotlin.Domain.Repository.ComicRepository
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.AuthRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ComicRepositoryImpl
+import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

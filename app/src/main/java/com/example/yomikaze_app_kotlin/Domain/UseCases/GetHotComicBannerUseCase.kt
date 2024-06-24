@@ -1,8 +1,8 @@
-package com.example.yomikaze_app_kotlin.Domain.UseCase
+package com.example.yomikaze_app_kotlin.Domain.UseCases
 
 
-import com.example.yomikaze_app_kotlin.Domain.Model.ComicResponseTest
-import com.example.yomikaze_app_kotlin.Domain.Repository.ComicRepository
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import javax.inject.Inject
 
 class GetHotComicBannerUseCase @Inject constructor(

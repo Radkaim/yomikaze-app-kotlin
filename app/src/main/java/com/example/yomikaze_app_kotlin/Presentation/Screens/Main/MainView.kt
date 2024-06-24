@@ -7,9 +7,9 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.TopHomeAppBar
-import com.example.yomikaze_app_kotlin.Presentation.Navigation.BottomNav.ChapterBottomNavBar
-import com.example.yomikaze_app_kotlin.Presentation.Navigation.BottomNav.HomeBottomNavBar
-import com.example.yomikaze_app_kotlin.Presentation.Navigation.NavigationGraph
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.ChapterBottomNavBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.HomeBottomNavBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.NavigationGraph
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable()

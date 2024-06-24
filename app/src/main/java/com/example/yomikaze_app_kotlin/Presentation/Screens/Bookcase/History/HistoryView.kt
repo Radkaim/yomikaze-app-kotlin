@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
-import com.example.yomikaze_app_kotlin.Domain.Model.Comic
+import com.example.yomikaze_app_kotlin.Domain.Models.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BookcaseComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.R

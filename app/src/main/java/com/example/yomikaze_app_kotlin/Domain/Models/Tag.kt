@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Domain.Model
+package com.example.yomikaze_app_kotlin.Domain.Models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

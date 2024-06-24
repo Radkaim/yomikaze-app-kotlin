@@ -1,9 +1,9 @@
-package com.example.yomikaze_app_kotlin.Data.Repository
+package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
-import com.example.yomikaze_app_kotlin.Domain.Model.ComicResponseTest
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
 
-import com.example.yomikaze_app_kotlin.Domain.Repository.ComicRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import javax.inject.Inject
 
 class ComicRepositoryImpl @Inject constructor(

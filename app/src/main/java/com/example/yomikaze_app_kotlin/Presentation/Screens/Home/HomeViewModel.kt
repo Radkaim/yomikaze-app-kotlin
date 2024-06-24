@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
-import com.example.yomikaze_app_kotlin.Domain.UseCase.GetHotComicBannerUseCase
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

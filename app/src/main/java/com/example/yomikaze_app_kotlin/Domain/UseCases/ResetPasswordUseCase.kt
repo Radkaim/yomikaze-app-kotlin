@@ -1,8 +1,8 @@
-package com.example.yomikaze_app_kotlin.Domain.UseCase
+package com.example.yomikaze_app_kotlin.Domain.UseCases
 
 
 
-import com.example.yomikaze_app_kotlin.Domain.Repository.AuthRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import javax.inject.Inject
 
 class ResetPasswordUseCase @Inject constructor(

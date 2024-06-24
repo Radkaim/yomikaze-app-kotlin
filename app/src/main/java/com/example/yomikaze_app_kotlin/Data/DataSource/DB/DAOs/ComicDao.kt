@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.yomikaze_app_kotlin.Domain.Model.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 
 @Dao
 interface ComicDao {

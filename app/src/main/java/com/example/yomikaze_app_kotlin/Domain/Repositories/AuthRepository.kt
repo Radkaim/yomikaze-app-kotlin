@@ -1,8 +1,8 @@
-package com.example.yomikaze_app_kotlin.Domain.Repository
+package com.example.yomikaze_app_kotlin.Domain.Repositories
 
 
-import com.example.yomikaze_app_kotlin.Domain.Model.TokenResponse
-import com.example.yomikaze_app_kotlin.Domain.Model.UserInfoResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.UserInfoResponse
 
 /**
  * AuthRepository is an interface for the AuthRepositoryImpl class.

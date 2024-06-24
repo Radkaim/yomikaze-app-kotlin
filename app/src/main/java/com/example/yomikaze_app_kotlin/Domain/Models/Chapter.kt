@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Domain.Model
+package com.example.yomikaze_app_kotlin.Domain.Models
 
 data class Chapter(
     val chapterIndex: Int,

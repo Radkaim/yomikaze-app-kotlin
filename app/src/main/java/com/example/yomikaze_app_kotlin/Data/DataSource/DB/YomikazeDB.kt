@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.Helpers.Converters
-import com.example.yomikaze_app_kotlin.Domain.Model.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 
 @Database(entities = [ComicResponse::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)

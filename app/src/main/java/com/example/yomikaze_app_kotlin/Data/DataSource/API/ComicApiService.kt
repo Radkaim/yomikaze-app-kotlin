@@ -1,6 +1,6 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.API
 
-import com.example.yomikaze_app_kotlin.Domain.Model.ComicResponseTest
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
 import retrofit2.http.GET
 
 

@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Navigation
+package com.example.yomikaze_app_kotlin.Presentation.Components.Navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
