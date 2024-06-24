@@ -86,238 +86,238 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
             )
         })
     {
-            var username by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
+        var username by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
 
-            var passwordVisible by remember { mutableStateOf(false) }
+        var passwordVisible by remember { mutableStateOf(false) }
 //        state.hung = "hung"
 
 
-            Column(
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo",
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .fillMaxSize(),
+                    .height(200.dp)
+                    .width(100.dp),
+                contentScale = ContentScale.Fit
+            )
+
+            TextField(
+                value = username,
+                onValueChange = { username = it },
+                label = {
+                    Text(
+                        text = "User Name",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                ),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_email),
+                        contentDescription = "",
+                        tint = Color.Unspecified
+                    )
+                },
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .height(56.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(24.dp),
+                    ),
+                shape = RoundedCornerShape(24.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent
+                ),
+                isError = state.usernameError != null
+            )
+            if (state.usernameError != null) {
+                Text(
+                    text = state.usernameError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                )
+            }
+
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                label = {
+                    Text(
+                        text = "Password",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                ),
+                leadingIcon = {
+                    val image = if (passwordVisible)
+                        painterResource(id = R.drawable.ic_eye)
+                    else
+                        painterResource(id = R.drawable.ic_visibility_eye)
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            tint = MaterialTheme.colorScheme.onTertiary,
+                            painter = image,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .height(56.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(24.dp),
+                    ),
+                shape = RoundedCornerShape(24.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent
+                ),
+                isError = state.passwordError != null
+            )
+            if (state.passwordError != null) {
+                Text(
+                    text = state.passwordError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                )
+            }
+            Row {
+                Text(
+                    text = "Sign Up",
+                    style = TextStyle(
+                        fontStyle = FontStyle.Italic,
+                    ),
+                    modifier = Modifier
+                        .padding(
+                            top = 3.dp,
+                            start = 0.dp,
+                            end = 200.dp,
+                            bottom = 3.dp
+                        )
+                        .clickable { loginViewModel.navigateToRegister() }
+                )
+                Text(
+                    text = "Forgot Password?",
+                    style = TextStyle(fontStyle = FontStyle.Italic),
+                    modifier = Modifier
+                        .padding(
+                            top = 3.dp,
+                            bottom = 3.dp
+                        )
+                        .clickable { loginViewModel.navigateToForgotPassword() }
+                )
+
+            }
+            Column(
+                modifier = Modifier.padding(
+                    top = 20.dp,
+                    bottom = 70.dp
+                ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
-
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "Logo",
+                OutlinedButton(
                     modifier = Modifier
-                        .height(200.dp)
-                        .width(100.dp),
-                    contentScale = ContentScale.Fit
-                )
+                        .height(40.dp)
+                        .width(200.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    onClick = { loginViewModel.onLogin(username, password) },
 
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = {
-                        Text(
-                            text = "User Name",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_email),
-                            contentDescription = "",
-                            tint = Color.Unspecified
-                        )
-                    },
-
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .height(56.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-                    isError = state.usernameError != null
-                )
-                if (state.usernameError != null) {
-                    Text(
-                        text = state.usernameError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier
-                            .align(Alignment.Start)
                     )
-                }
-
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = {
-                        Text(
-                            text = "Password",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
+                {
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp)
                         )
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                    ),
-                    leadingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
-
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
-                            )
-                        }
-                    },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .height(56.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-                    isError = state.passwordError != null
-                )
-                if (state.passwordError != null) {
+                    }
                     Text(
-                        text = state.passwordError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier
-                            .align(Alignment.Start)
-                    )
-                }
-                Row {
-                    Text(
-                        text = "Sign Up",
+                        text = "Login",
+                        color = Color.Black,
                         style = TextStyle(
+                            fontSize = 16.sp,
+                        ),
+                    )
+
+                }
+
+                Text(
+                    modifier = Modifier.padding(top = 12.dp),
+                    text = "or",
+                    style = TextStyle(
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp
+                    )
+                )
+                OutlinedButton(
+                    colors = buttonColors(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier
+                        .height(50.dp)
+                        .width(200.dp)
+                        .padding(
+                            top = 10.dp
+                        ),
+                    shape = RoundedCornerShape(12.dp),
+
+                    onClick = { /*TODO*/ },
+
+                    )
+                {
+                    Text(
+                        text = "Login with Google",
+                        color = Color.White,
+                        style = TextStyle(
+                            fontSize = 16.sp,
                             fontStyle = FontStyle.Italic,
                         ),
-                        modifier = Modifier
-                            .padding(
-                                top = 3.dp,
-                                start = 0.dp,
-                                end = 200.dp,
-                                bottom = 3.dp
-                            )
-                            .clickable { loginViewModel.navigateToRegister() }
-                    )
-                    Text(
-                        text = "Forgot Password?",
-                        style = TextStyle(fontStyle = FontStyle.Italic),
-                        modifier = Modifier
-                            .padding(
-                                top = 3.dp,
-                                bottom = 3.dp
-                            )
-                            .clickable { loginViewModel.navigateToForgotPassword() }
-                    )
-
-                }
-                Column(
-                    modifier = Modifier.padding(
-                        top = 20.dp,
-                        bottom = 70.dp
-                    ),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    OutlinedButton(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .width(200.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        onClick = {loginViewModel.onLogin(username, password)},
-
-                        )
-                    {
-                        if (state.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        Text(
-                            text = "Login",
-                            color = Color.Black,
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                            ),
-                        )
-
-                    }
-
-                    Text(
-                        modifier = Modifier.padding(top = 12.dp),
-                        text = "or",
-                        style = TextStyle(
-                            textAlign = TextAlign.Center,
-                            fontSize = 16.sp
-                        )
-                    )
-                    OutlinedButton(
-                        colors = buttonColors(MaterialTheme.colorScheme.surface),
-                        modifier = Modifier
-                            .height(50.dp)
-                            .width(200.dp)
-                            .padding(
-                                top = 10.dp
-                            ),
-                        shape = RoundedCornerShape(12.dp),
-
-                        onClick = { /*TODO*/ },
-
-                        )
-                    {
-                        Text(
-                            text = "Login with Google",
-                            color = Color.White,
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontStyle = FontStyle.Italic,
-                            ),
-                        )
-                    }
-                }
-            }
-            state.error?.let {
-                Snackbar {
-                    Text(
-                        text = it,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(10.dp)
                     )
                 }
             }
         }
+        state.error?.let {
+            Snackbar {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
+        }
     }
+}
 

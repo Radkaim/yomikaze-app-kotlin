@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
+import com.example.yomikaze_app_kotlin.Domain.Models.ErrorResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.RegisterRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
@@ -11,10 +12,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.google.gson.Gson
 import javax.inject.Inject
 import kotlin.Result.Companion.failure
-data class ErrorResponse(
-    val success: Boolean,
-    val message: String
-)
+
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApiService,
