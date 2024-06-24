@@ -21,8 +21,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val appPreference: AppPreference
 ) : AuthRepository {
 
-    override suspend fun login(username: String, password: String): Result<TokenResponse> {
-        val result = api.login(LoginRequest(username, password))
+    override suspend fun login(loginRequest: LoginRequest): Result<TokenResponse> {
+        val result = api.login(LoginRequest(loginRequest.username, loginRequest.password))
         if (result.isSuccessful) {
             val tokenResponse = result.body()
             if (tokenResponse?.token != null) {
@@ -67,6 +67,13 @@ class AuthRepositoryImpl @Inject constructor(
             return Result.success(result.body()!!)
         }
         return failure(Exception("Get user info failed"))
+    }
+
+    override suspend fun logout(){
+        val result = appPreference.authToken?.let { appPreference.deleteUserToken() }
+        if (result != null) {
+            Log.d("AuthRepositoryImpl", "logout: $result")
+        }
     }
 
 }

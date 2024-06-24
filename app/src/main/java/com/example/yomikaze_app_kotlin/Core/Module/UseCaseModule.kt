@@ -4,6 +4,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUseCase
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.LogoutUC
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +23,15 @@ object UseCaseModule {
     @Singleton
     fun provideLoginUseCase(authRepository: AuthRepository): LoginUC {
         return LoginUC(authRepository)
+    }
+
+    /**
+     * Todo: Provide the logoutUseCase
+     */
+    @Provides
+    @Singleton
+    fun provideLogoutUseCase(authRepository: AuthRepository): LogoutUC {
+        return LogoutUC(authRepository)
     }
 
     @Provides
