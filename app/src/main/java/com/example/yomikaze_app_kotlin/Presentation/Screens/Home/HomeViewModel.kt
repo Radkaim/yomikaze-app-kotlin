@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUseCase
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getHotComicBannerUseCase: GetHotComicBannerUseCase,
+    private val getHotComicBannerUseCase: GetHotComicBannerUC,
     private val appPreference: AppPreference,
     application: Application
 ) : ViewModel() {
@@ -71,7 +71,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun checkUserToken() {
-        appPreference.authToken = "Hung is here"
+      //  appPreference.authToken = "Hung is here"
         val token = appPreference.authToken
         if (token != null) {
             _state.value = _state.value.copy(isUserLoggedIn = true)
