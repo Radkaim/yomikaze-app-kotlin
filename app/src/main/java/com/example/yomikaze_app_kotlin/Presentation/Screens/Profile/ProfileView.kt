@@ -78,7 +78,7 @@ fun ProfileView(
                 Spacer(modifier = Modifier.height(32.dp))
                 // Sign In Button
                 Button(
-                    onClick = { /* Handle Sign In */ },
+                    onClick = { profileViewModel.onSignInButtonClicked() },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE57373))
                 ) {
                     Text(text = "Sign In", color = Color.White)

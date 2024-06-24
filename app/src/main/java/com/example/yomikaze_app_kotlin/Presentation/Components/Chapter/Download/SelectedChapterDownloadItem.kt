@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.Download
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SelectedChapterDownloadItem (
+fun SelectedChapterDownloadItem(
     chapterIndexes: List<Int>,
     onDismiss: () -> Unit,
     onDownload: (List<String>) -> Unit
@@ -76,7 +77,7 @@ fun SelectedChapterDownloadItem (
         onClick = {
             val chaptersToDownload =
                 chapterIndexes.filterIndexed { index, _ -> selectedChapters[index] }
-//            onDownload(chaptersToDownload)
+            Log.d("SelectedChapterDownloadItem", "chaptersToDownload: $chaptersToDownload")
             onDismiss()
         }) {
         Text(

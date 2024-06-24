@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Domain.Models.ErrorResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,10 +55,27 @@ class LoginViewModel @Inject constructor(
                 // Handle success
                 _state.value = _state.value.copy(isLoading = false)
                 navController?.navigate("home_route")
-            }.onFailure { error ->
-                _state.value = _state.value.copy(isLoading = false)
-                _state.value = _state.value.copy(error = error.message)
-                Log.d("LoginViewModel", "onLogin: $error")
+            }.onFailure { error->
+                if (error is Exception) {
+                val errorResponse = Gson().fromJson(error.message, ErrorResponse::class.java)
+                    errorResponse.errors?.forEach { (field, messages) ->
+                        messages.forEach { message ->
+
+                          // _state.value = _state.value.copy(error = message)
+                            if (field == "Username") {
+                                _state.value = _state.value.copy(usernameError = message)
+                            }
+                            if (field == "Password") {
+                                _state.value = _state.value.copy(passwordError = message)
+                            }
+
+
+                        }
+                    }
+
+            } else {
+                _state.value = _state.value.copy(error = "Login failed")
+            }
             }
         }
     }

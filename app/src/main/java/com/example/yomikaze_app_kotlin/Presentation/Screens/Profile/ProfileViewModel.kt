@@ -22,6 +22,15 @@ class ProfileViewModel @Inject constructor(
         this.navController = navController
     }
 
+
+    fun onEditProfile() {
+        navController?.navigate("edit_profile_route")
+    }
+
+    fun onSignInButtonClicked() {
+        navController?.navigate("login_route")
+    }
+
     fun onLogout() {
         viewModelScope.launch {
             logoutUC.logout()

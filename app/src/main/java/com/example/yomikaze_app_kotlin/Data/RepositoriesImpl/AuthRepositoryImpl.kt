@@ -33,8 +33,13 @@ class AuthRepositoryImpl @Inject constructor(
         if (errorResponse != null) {
             return try {
                 val error = Gson().fromJson(errorResponse, ErrorResponse::class.java)
-                Log.d("AuthRepositoryImpl", "login: ${error.message}")
-                Result.failure(Exception(error.message))
+                Log.d("AuthRepositoryImpl", "login: ${error.errors}")
+                error.errors?.forEach { (field, messages) ->
+                    messages.forEach { message ->
+                        Log.d("AuthRepositoryImpl", "Field: $field, Error: $message")
+                    }
+                }
+               return error.errors?.let { Result.failure(Exception(Gson().toJson(error))) }!!
             } catch (e: Exception) {
                 Result.failure(Exception("Login failed"))
             }
@@ -42,6 +47,7 @@ class AuthRepositoryImpl @Inject constructor(
 
         return Result.failure(Exception("Login failed"))
     }
+
 
     override suspend fun register(
         username: String,
@@ -51,7 +57,16 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         birthday: String
     ): Result<TokenResponse> {
-        val result = api.register(RegisterRequest(username, password, fullName, confirmPassword, email, birthday))
+        val result = api.register(
+            RegisterRequest(
+                username,
+                password,
+                fullName,
+                confirmPassword,
+                email,
+                birthday
+            )
+        )
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
             return Result.success(result.body()!!)
@@ -67,7 +82,7 @@ class AuthRepositoryImpl @Inject constructor(
         return failure(Exception("Get user info failed"))
     }
 
-    override suspend fun logout(){
+    override suspend fun logout() {
         val result = appPreference.authToken?.let { appPreference.deleteUserToken() }
         if (result != null) {
             Log.d("AuthRepositoryImpl", "logout: $result")
