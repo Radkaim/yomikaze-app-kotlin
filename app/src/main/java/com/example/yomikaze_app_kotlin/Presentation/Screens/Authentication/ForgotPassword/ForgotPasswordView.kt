@@ -3,6 +3,9 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Forg
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +40,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -68,6 +73,9 @@ fun ForgotPasswordContent(
     forgotPasswordViewModel: ForgotPasswordViewModel,
     navController: NavController
 ) {
+    var email by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+
     Scaffold(
         topBar = {
             CustomAppBar(
@@ -90,11 +98,16 @@ fun ForgotPasswordContent(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = (-50).dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
                 .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
 
         ) {
-            var email by remember { mutableStateOf("") }
+
             Column(
                 modifier = Modifier
                     .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 40.dp)
@@ -139,9 +152,14 @@ fun ForgotPasswordContent(
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp)
                         .height(56.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.large
+                        )
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = RoundedCornerShape(20.dp),
                         ),
                     shape = RoundedCornerShape(24.dp),
                     colors = TextFieldDefaults.textFieldColors(

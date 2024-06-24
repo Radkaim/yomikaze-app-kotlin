@@ -3,6 +3,8 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Rese
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +39,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -69,6 +73,13 @@ fun ResetPasswordContent(
     ResetPasswordViewModel: ResetPasswordViewModel,
     navController: NavController
 ) {
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+    var passwordVisible by remember { mutableStateOf(false) }
+    var passwordVisible1 by remember { mutableStateOf(false) }
+
+
     Scaffold(
         topBar = {
             CustomAppBar(
@@ -91,14 +102,16 @@ fun ResetPasswordContent(
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = (-50).dp)
-//                .padding(bottom = 30.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
                 .background(color = MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
 
         ) {
-            var passwordVisible by remember { mutableStateOf(false) }
-            var password by remember { mutableStateOf("") }
-            var confirmPassword by remember { mutableStateOf("") }
+
 
             Column(
 //            Alignment = Alignment.Center,
@@ -153,9 +166,14 @@ fun ResetPasswordContent(
                         .fillMaxWidth()
                         .padding(5.dp)
                         .height(56.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.large
+                        )
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = RoundedCornerShape(20.dp),
                         ),
                     shape = RoundedCornerShape(24.dp),
                     colors = TextFieldDefaults.textFieldColors(
@@ -193,16 +211,16 @@ fun ResetPasswordContent(
                         imeAction = ImeAction.Done // Đặt hành động IME thành Done
                     ),
                     leadingIcon = {
-                        val image = if (passwordVisible)
+                        val image = if (passwordVisible1)
                             painterResource(id = R.drawable.ic_eye)
                         else
                             painterResource(id = R.drawable.ic_visibility_eye)
 
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        IconButton(onClick = { passwordVisible1 = !passwordVisible1 }) {
                             Icon(
                                 tint = MaterialTheme.colorScheme.onTertiary,
                                 painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                                contentDescription = if (passwordVisible1) "Hide password" else "Show password"
                             )
                         }
                     },
@@ -211,9 +229,14 @@ fun ResetPasswordContent(
                         .fillMaxWidth()
 //                        .padding(5.dp)
                         .height(56.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.large
+                        )
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = RoundedCornerShape(20.dp),
                         ),
                     shape = RoundedCornerShape(24.dp),
                     colors = TextFieldDefaults.textFieldColors(

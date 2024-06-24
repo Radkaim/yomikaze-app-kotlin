@@ -55,7 +55,7 @@ fun SettingItem(
 
             Text(
                 text = title,
-                fontWeight = FontWeight.Bold,
+//                fontWeight = FontWeight.Medium,
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -65,7 +65,7 @@ fun SettingItem(
                     painter = painterResource(id = iconEnd),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.65f),
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(16.dp)
                 )
             }
         }
