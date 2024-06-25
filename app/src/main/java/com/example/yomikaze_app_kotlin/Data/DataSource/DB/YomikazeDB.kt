@@ -6,6 +6,7 @@ import androidx.room.TypeConverters
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.PageDao
+import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.UserDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.Helpers.Converters
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
@@ -21,4 +22,5 @@ abstract class YomikazeDB : RoomDatabase() {
     abstract fun comicDao(): ComicDao
     abstract fun chapterDao(): ChapterDao
     abstract fun pageDao(): PageDao
+    abstract fun userDao(): UserDao
 }

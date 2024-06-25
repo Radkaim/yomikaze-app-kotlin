@@ -30,4 +30,23 @@ class AppPreference(context : Context) {
         encryptedPreferences.edit().remove("auth_token").apply()
     }
 
+    // save user id
+    var userId: String?
+        get() = encryptedPreferences.getString("user_id", null)
+        set(value) = encryptedPreferences.edit().putString("user_id", value).apply()
+
+    // delete user id
+    fun deleteUserId() {
+        encryptedPreferences.edit().remove("user_id").apply()
+    }
+
+    // save isUserLoggedIn
+    var isUserLoggedIn: Boolean
+        get() = encryptedPreferences.getBoolean("is_user_logged_in", false)
+        set(value) = encryptedPreferences.edit().putBoolean("is_user_logged_in", value).apply()
+
+    // delete isUserLoggedIn
+    fun deleteIsUserLoggedIn() {
+        encryptedPreferences.edit().remove("is_user_logged_in").apply()
+    }
 }

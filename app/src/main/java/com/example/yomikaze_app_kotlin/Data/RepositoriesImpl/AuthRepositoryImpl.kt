@@ -25,6 +25,7 @@ class AuthRepositoryImpl @Inject constructor(
             val tokenResponse = result.body()
             if (tokenResponse?.token != null) {
                 appPreference.authToken = tokenResponse.token
+                appPreference.isUserLoggedIn = true
                 return Result.success(tokenResponse)
             }
         }
@@ -33,13 +34,13 @@ class AuthRepositoryImpl @Inject constructor(
         if (errorResponse != null) {
             return try {
                 val error = Gson().fromJson(errorResponse, ErrorResponse::class.java)
-                Log.d("AuthRepositoryImpl", "login: ${error.errors}")
+                // Log.d("AuthRepositoryImpl", "login: ${error.errors}")
                 error.errors?.forEach { (field, messages) ->
                     messages.forEach { message ->
-                        Log.d("AuthRepositoryImpl", "Field: $field, Error: $message")
+                        //    Log.d("AuthRepositoryImpl", "Field: $field, Error: $message")
                     }
                 }
-               return error.errors?.let { Result.failure(Exception(Gson().toJson(error))) }!!
+                return error.errors?.let { Result.failure(Exception(Gson().toJson(error))) }!!
             } catch (e: Exception) {
                 Result.failure(Exception("Login failed"))
             }
@@ -83,7 +84,10 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun logout() {
-        val result = appPreference.authToken?.let { appPreference.deleteUserToken() }
+        val result = appPreference.authToken?.let {
+            appPreference.deleteUserToken()
+            appPreference.isUserLoggedIn = false
+        }
         if (result != null) {
             Log.d("AuthRepositoryImpl", "logout: $result")
         }

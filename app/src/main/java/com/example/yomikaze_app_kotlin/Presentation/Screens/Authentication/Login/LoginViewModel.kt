@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,6 +34,7 @@ class LoginViewModel @Inject constructor(
         navController?.navigate("forgot_password_route")
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun onLogin(username: String, password: String) {
         _state.value = _state.value.copy(isLoading = true)
         if (username.isBlank()) {
@@ -60,7 +62,6 @@ class LoginViewModel @Inject constructor(
                 val errorResponse = Gson().fromJson(error.message, ErrorResponse::class.java)
                     errorResponse.errors?.forEach { (field, messages) ->
                         messages.forEach { message ->
-
                           // _state.value = _state.value.copy(error = message)
                             if (field == "Username") {
                                 _state.value = _state.value.copy(usernameError = message)

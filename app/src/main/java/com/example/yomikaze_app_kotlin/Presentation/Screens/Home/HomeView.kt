@@ -36,15 +36,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Core.Networks.ConnectionState
-import com.example.yomikaze_app_kotlin.Core.Networks.connectivityState
 import com.example.yomikaze_app_kotlin.Domain.Models.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicItem
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicWeeklyHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
-import com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs.NetworkDisconnectedDialog
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoDataAvailable
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangle
 import com.example.yomikaze_app_kotlin.R
 
@@ -53,18 +53,17 @@ import com.example.yomikaze_app_kotlin.R
 fun HomeView(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
-
     ) {
     val state by homeViewModel.state.collectAsState()
 
     homeViewModel.setNavController(navController)
 
-    // This will cause re-composition on every network state change
-    val connection by connectivityState()
-    val isConnected = connection === ConnectionState.Available
+//    // This will cause re-composition on every network state change
+//    val connection by connectivityState()
+//    val isConnected = connection === ConnectionState.Available
 
 
-    if (isConnected) {
+    if (CheckNetwork()) {
         // Show UI when connectivity is available
         HomeContent(state, homeViewModel, navController)
     } else {
@@ -74,19 +73,13 @@ fun HomeView(
     }
 }
 
-@Composable
-fun NoDataAvailable() {
-    Text(
-        text = "No data available",
-        color = MaterialTheme.colorScheme.onPrimary,
-    )
-}
 
 @Composable
 fun HomeContent(
     state: HomeState,
     viewModel: HomeViewModel,
-    navController: NavController
+    navController: NavController,
+
 ) {
     val comics = getListComicForRanking() // test data
     val comic = getListCardComicHistory()
@@ -103,8 +96,8 @@ fun HomeContent(
         item {
             showAutoSlider(state = state, images = state.images)
         }
-
-        if (state.isUserLoggedIn) {
+        Log.d("HomeView", "State images: ${viewModel.checkUserIsLogin()}")
+        if (viewModel.checkUserIsLogin()) {
             item {
                 showHistory(navController, viewModel)
             }

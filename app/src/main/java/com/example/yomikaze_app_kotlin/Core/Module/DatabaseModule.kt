@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.PageDao
+import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.UserDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.YomikazeDB
 import dagger.Module
 import dagger.Provides
@@ -46,6 +47,12 @@ object DatabaseModule {
     @Singleton
     fun providePageDAO(db: YomikazeDB): PageDao {
         return db.pageDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDAO(db: YomikazeDB): UserDao {
+        return db.userDao()
     }
 
 }

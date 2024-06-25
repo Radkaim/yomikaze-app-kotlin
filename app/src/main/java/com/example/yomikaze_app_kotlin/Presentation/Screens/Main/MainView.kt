@@ -6,10 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.TopHomeAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.ChapterBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.HomeBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.NavigationGraph
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.TopHomeAppBar
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable()
@@ -21,7 +21,15 @@ fun MainView(viewModel: MainViewModel) {
     Scaffold(
         topBar = {
             when (currentDestination?.route) {
-                "home_route" -> TopHomeAppBar()
+                "home_route" -> TopHomeAppBar(
+                    navigationIcon = {},
+                    actions = {},
+                    isProfile = false,
+                    onLogoClicked = {},
+                    onSearchClicked = {},
+                    onSettingClicked = {}
+                )
+
 //                 "notification_route", "profile_route" -> CustomeAppBar(
 //                    title = getNameOfRoute(currentDestination?.route.toString()),
 //                    navigationIcon = {},

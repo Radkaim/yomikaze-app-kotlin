@@ -1,9 +1,9 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar
 
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -23,13 +23,23 @@ import com.example.yomikaze_app_kotlin.R
 
 
 @Composable
-fun TopHomeAppBar() {
+fun TopHomeAppBar(
+     navigationIcon: @Composable () -> Unit,
+     actions: @Composable RowScope.() -> Unit,
+     isProfile: Boolean = false,
+     onLogoClicked: () -> Unit = {},
+     onSearchClicked: () -> Unit = {},
+     onSettingClicked: () -> Unit = {}
+
+) {
     TopAppBar(
         title = {},
         backgroundColor = MaterialTheme.colorScheme.tertiary,
         navigationIcon = {
             IconButton(onClick = {
-                Log.d("TopHomeAppBar", "Navigation Icon Clicked")
+                if (isProfile) {
+                    onLogoClicked()
+                }
             })
             {
                 Box(
@@ -48,11 +58,21 @@ fun TopHomeAppBar() {
             }
         },
         actions = {
-            IconButton(onClick = { /* Do something */ }) {
-                Icon(Icons.Filled.Search, contentDescription = "Search")
+            if (isProfile) {
+                IconButton(onClick = { onSettingClicked() }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_setting),
+                        contentDescription = "Setting"
+                    )
+                }
+
+            }
+            else{
+                IconButton(onClick = { onSearchClicked() }) {
+                    Icon(Icons.Filled.Search, contentDescription = "Search")
+                }
             }
         }
-
     )
 }
 

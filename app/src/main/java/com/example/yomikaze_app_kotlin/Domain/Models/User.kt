@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Domain.Models
 
+import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
 
 
@@ -77,39 +78,88 @@ data class ChangePasswordRequest(
 /**
  * User Info
  */
+
 data class UserInfoResponse(
+
     @SerializedName("success")
     val success: Boolean,
 
     @SerializedName("message")
     val message: String,
 
+    //for api
     @SerializedName("data")
+    //for database
+    @ColumnInfo(name = "user_data")
     val data: UserData
 )
 
 data class UserData(
-    @SerializedName("data")
-    val data: User,
+    //for api
+    @SerializedName("user")
+    //for database
+    @ColumnInfo(name = "user")
+    val user: User,
 
+    //for api
     @SerializedName("claims")
+    //for database
+    @ColumnInfo(name = "claims")
     val claims: UserClaims
+)
+data class DataUser(
+    //for api
+    @SerializedName("user")
+    //for database
+    @ColumnInfo(name = "user")
+    val user: User
 )
 
 data class User(
+    //for api
     @SerializedName("id")
-    val id: Int,
+    //for database
+    @ColumnInfo(name = "id")
+    val id: Long,
 
-    @SerializedName("username")
+    //for api
+    @SerializedName("userName")
+    //for database
+    @ColumnInfo(name = "username")
     val username: String,
+
+    //for api
+    @SerializedName("email")
+    //for database
+    @ColumnInfo(name = "email")
+    val email: String,
+
+    //for api
+    @SerializedName("isAdmin")
+    //for database
+    @ColumnInfo(name = "isAdmin")
+    val isAdmin: Boolean,
+)
+data class UserClaims(
+
+    @SerializedName("jti")
+    val jti: String,
+
+    @SerializedName("iat")
+    val iat: String,
+
+    @SerializedName("sub")
+    val sub: String,
+
+    @SerializedName("name")
+    val name: String,
 
     @SerializedName("email")
     val email: String,
 
-    @SerializedName("isAdmin")
-    val isAdmin: Boolean,
-)
-data class UserClaims(
+    @SerializedName("sid")
+    val sid: String,
+
     @SerializedName("roles")
-    val role : String
+    val roles: String
 )

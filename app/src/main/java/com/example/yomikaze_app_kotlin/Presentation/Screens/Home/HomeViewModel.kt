@@ -18,8 +18,10 @@ class HomeViewModel @Inject constructor(
     private val appPreference: AppPreference,
     application: Application
 ) : ViewModel() {
+
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> get() = _state
+
     private var navController: NavController? = null
 
 
@@ -29,7 +31,7 @@ class HomeViewModel @Inject constructor(
 //            onAvailable = {
         viewModelScope.launch {
             fetchImages()
-            checkUserToken()
+            checkUserIsLogin()
         }
 //            },
 //            onLost = {
@@ -48,6 +50,7 @@ class HomeViewModel @Inject constructor(
 //            }
 //        )
 //    }
+
 
 
     // for HomeView use
@@ -70,16 +73,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun checkUserToken() {
-      //  appPreference.authToken = "Hung is here"
-        val token = appPreference.authToken
-        if (token != null) {
-            _state.value = _state.value.copy(isUserLoggedIn = true)
-            //test get user Info here
-            //getUserInfo(token)
-        } else {
-            _state.value = _state.value.copy(isUserLoggedIn = false)
-        }
+    /**
+     * Todo: Implement check user is login
+     */
+    fun checkUserIsLogin(): Boolean {
+        return appPreference.isUserLoggedIn
     }
 
     /**

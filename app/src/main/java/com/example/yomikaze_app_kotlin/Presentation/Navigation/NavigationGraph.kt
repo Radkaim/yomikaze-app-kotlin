@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.yomikaze_app_kotlin.Presentation.Components.Dialogs.NetworkDisconnectedDialog
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.homeGraph
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AboutUs.AboutUsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordView
