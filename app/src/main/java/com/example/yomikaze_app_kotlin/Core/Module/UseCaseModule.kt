@@ -6,6 +6,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.SearchComicUC
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,5 +49,11 @@ object UseCaseModule {
     @Singleton
     fun provideGetHotComicBannerUseCase(comicRepository: ComicRepository): GetHotComicBannerUC {
         return GetHotComicBannerUC(comicRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchComicUseCase(comicRepository: ComicRepository): SearchComicUC {
+        return SearchComicUC(comicRepository)
     }
 }

@@ -3,12 +3,15 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Notification
 import android.annotation.SuppressLint
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.Download.SelectedChapterDownloadItem
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun NotificationView() {
+fun NotificationView(
+    viewModel: NotificationViewModel = hiltViewModel()
+) {
     Scaffold(
         topBar = {
             CustomAppBar(
