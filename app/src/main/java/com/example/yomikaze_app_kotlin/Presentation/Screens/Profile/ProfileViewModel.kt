@@ -1,7 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -37,10 +36,6 @@ class ProfileViewModel @Inject constructor(
         return appPreference.isUserLoggedIn
     }
 
-    fun onEditProfile() {
-        navController?.navigate("edit_profile_route")
-    }
-
     fun onSettingCLicked() {
         navController?.navigate("setting_route")
     }
@@ -68,21 +63,4 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun onLogout() {
-        viewModelScope.launch {
-            logoutUC.logout()
-            if (appPreference.authToken == null) {
-                navController?.navigate("home_route") {
-                    popUpTo("profile_route") {
-                        inclusive = true
-                    }
-                    Toast.makeText(
-                        navController?.context,
-                        "Logout successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-    }
 }

@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.BottomHomeNavItems
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadDetailsView.DownloadDetailView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
@@ -63,7 +64,11 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
         }
 
         composable("setting_route") {
-            SettingView(navController = navController)
+            SettingView(navController = navController, viewModel = viewModel)
+        }
+
+        composable("change_password_route") {
+           ChangePasswordView(navController = navController)
         }
 
     }

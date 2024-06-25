@@ -109,9 +109,16 @@ fun ProfileContent(
             Spacer(modifier = Modifier.height(16.dp))
             // Guest Text
             state.username?.let { it1 -> Text(text = it1, fontWeight = FontWeight.Bold, fontSize = 24.sp) }
-            Spacer(modifier = Modifier.height(4.dp))
+
             // Subtitle Text
-            state.userRole?.let { it1 -> Text(text = it1, color = Color.Red) }
+            state.userRole?.let { it1 ->
+                Text(
+                    text = it1,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                ) }
+
             Spacer(modifier = Modifier.height(32.dp))
 
 
@@ -128,45 +135,6 @@ fun ProfileContent(
                 }
             }
 
-//
-//            Button(
-//                onClick =
-//                {
-//                    val currentTheme = viewModel.stateApp
-//                    val newTheme = when (currentTheme.theme) {
-//                        AppTheme.DARK -> AppTheme.LIGHT
-//                        AppTheme.LIGHT -> AppTheme.DARK
-//                        AppTheme.DEFAULT -> AppTheme.DARK
-//
-//                        else -> {
-//                            AppTheme.DEFAULT
-//                        }
-//                    }
-//                    AppThemeSate.resetTheme()
-//                    AppThemeSate.setTheme(newTheme)
-//                    viewModel.onEvent(MainEvent.ThemeChange(newTheme))
-//                },
-//            ) {
-//                Text(text = "Change Theme")
-//            }
-//
-//            Button(onClick = {
-//                navController.navigate("setting_route")
-//            }) {
-//                Text(text = "Go to setting")
-//            }
-//
-//            Button(onClick = {
-//                navController.navigate("aboutUs_route")
-//            }) {
-//                Text(text = "Go to aboutUs_route")
-//            }
-//
-//            Button(onClick = {
-//                profileViewModel.onLogout()
-//            }) {
-//                Text(text = "Go to Logout")
-//            }
         }
     }
 }

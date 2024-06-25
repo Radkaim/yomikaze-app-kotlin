@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.yomikaze_app_kotlin.Core.AppThemeSate
 import com.example.yomikaze_app_kotlin.ui.AppTheme
-
 class MainViewModel: ViewModel() {
 
     var stateApp by mutableStateOf(MainState())

@@ -9,7 +9,8 @@ val red = Color(0xffFF0000)
 val white = Color(0xffFFFFFF)
 val OrangeSplash = Color(0xffE38B6C)
 val GreenSplash = Color(0xff65F6D1)
-val yellow = Color(0xffD4AF37)
+val coinColor = Color(0xffD4AF37)
+val switchTrackColor = Color(0xffFBB69F)
 
 //Green
 val Green100 = Color(0xffF2FFFD)
