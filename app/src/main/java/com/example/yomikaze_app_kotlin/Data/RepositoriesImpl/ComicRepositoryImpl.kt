@@ -31,4 +31,40 @@ class ComicRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun getComicByViewRanking(token: String): Result<BaseResponse<ComicResponse>> {
+        return try {
+            val response = api.getComicByViewRanking("Bearer $token")
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getComicByCommentsRanking(token: String): Result<BaseResponse<ComicResponse>> {
+        return try {
+            val response = api.getComicByCommentsRanking("Bearer $token")
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getComicByFollowRanking(token: String): Result<BaseResponse<ComicResponse>> {
+        return try {
+            val response = api.getComicByFollowRanking("Bearer $token")
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getComicByRatingRanking(token: String): Result<BaseResponse<ComicResponse>> {
+        return try {
+            val response = api.getComicByRatingRanking("Bearer $token")
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

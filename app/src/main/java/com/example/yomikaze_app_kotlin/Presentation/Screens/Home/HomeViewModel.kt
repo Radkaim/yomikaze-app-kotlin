@@ -81,7 +81,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            Log.d("NotificationViewModel", "searchComic: $token")
             val result = searchComicUC.searchComic(token, comicNameQuery)
 
             result.fold(

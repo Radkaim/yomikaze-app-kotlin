@@ -28,4 +28,36 @@ interface ComicApiService {
         @Query("OrderBy") orderByTotalViews: String = "TotalViews",
         @Query("OrderBy") orderByName: String = "Name",
     ): BaseResponse<ComicResponse>
+
+    /**
+     * TODO: use for get comic in ranking screen
+     */
+
+    //for hot ranking
+    @GET("comics")
+    suspend fun getComicByViewRanking(
+        @Header("Authorization") token: String,
+        @Query("OrderBy") orderByTotalViews: String = "TotalViews",
+    ): BaseResponse<ComicResponse>
+
+    //for comments ranking
+    @GET("comics")
+    suspend fun getComicByCommentsRanking(
+        @Header("Authorization") token: String,
+        @Query("OrderBy") orderByTotalViews: String = "TotalCommentsDesc",
+    ): BaseResponse<ComicResponse>
+
+    //for follow ranking
+    @GET("comics")
+    suspend fun getComicByFollowRanking(
+        @Header("Authorization") token: String,
+        @Query("OrderBy") orderByTotalViews: String = "TotalFollowsDesc",
+    ): BaseResponse<ComicResponse>
+
+    //for rating ranking
+    @GET("comics")
+    suspend fun getComicByRatingRanking(
+        @Header("Authorization") token: String,
+        @Query("OrderBy") orderByTotalViews: String = "AverageRatingDesc",
+    ): BaseResponse<ComicResponse>
 }
