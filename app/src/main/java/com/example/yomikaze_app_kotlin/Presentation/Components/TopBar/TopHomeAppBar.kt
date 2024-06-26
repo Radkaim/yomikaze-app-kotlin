@@ -23,7 +23,7 @@ import com.example.yomikaze_app_kotlin.R
 
 
 @Composable
-fun TopHomeAppBar(
+fun DefaultTopAppBar(
      navigationIcon: @Composable () -> Unit,
      actions: @Composable RowScope.() -> Unit,
      isProfile: Boolean = false,

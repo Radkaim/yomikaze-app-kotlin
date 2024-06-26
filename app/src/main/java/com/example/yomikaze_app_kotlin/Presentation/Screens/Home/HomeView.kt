@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 //import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
 import CardComicHistoryHome
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,8 +20,10 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -46,15 +49,22 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetw
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoDataAvailable
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangle
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.DefaultTopAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.SearchTopAppBar
 import com.example.yomikaze_app_kotlin.R
 
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeView(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
-    ) {
+) {
     val state by homeViewModel.state.collectAsState()
+    val searchWidgetState by homeViewModel.searchWidgetState
+    val searchTextState by homeViewModel.searchTextState
+
 
     homeViewModel.setNavController(navController)
 
@@ -62,17 +72,70 @@ fun HomeView(
 //    val connection by connectivityState()
 //    val isConnected = connection === ConnectionState.Available
 
-
-    if (CheckNetwork()) {
-        // Show UI when connectivity is available
-        HomeContent(state, homeViewModel, navController)
-    } else {
-        // Show UI for No Internet Connectivity
-        NetworkDisconnectedDialog()
-        NoDataAvailable()
+    Scaffold(
+        topBar = {
+            MainHomeAppBar(
+                searchWidgetState = searchWidgetState,
+                searchTextState = searchTextState,
+                onTextChange = { homeViewModel.updateSearchText(newValue = it) },
+                onCloseClicked = {
+                    homeViewModel.updateSearchText(newValue = "")
+                    homeViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
+                },
+                onSearchClicked = {
+                    Log.d("HomeView", "Search text: $searchTextState")
+                },
+                onSearchTriggered = { homeViewModel.updateSearchWidgetState(SearchWidgetState.OPEN) }
+            )
+        }
+    )
+    {
+        if (CheckNetwork()) {
+            // Show UI when connectivity is available
+            HomeContent(state, homeViewModel, navController)
+        } else {
+            // Show UI for No Internet Connectivity
+            NetworkDisconnectedDialog()
+            NoDataAvailable()
+        }
     }
 }
 
+@Composable
+fun MainHomeAppBar(
+    searchWidgetState: SearchWidgetState,
+    searchTextState: String,
+    onTextChange: (String) -> Unit,
+    onCloseClicked: () -> Unit = {},
+    onSearchClicked: () -> Unit = {},
+    onSearchTriggered: () -> Unit
+) {
+    when (searchWidgetState) {
+        SearchWidgetState.CLOSE -> {
+            // Show search widget
+            DefaultTopAppBar(
+                navigationIcon = {},
+                actions = {},
+                isProfile = false,
+                onLogoClicked = {},
+                onSearchClicked = { onSearchTriggered() },
+                onSettingClicked = {}
+            )
+        }
+
+        SearchWidgetState.OPEN -> {
+            // Show normal app bar
+            SearchTopAppBar(
+                searchText = searchTextState,
+                onTextChange = onTextChange,
+                onCLoseClicked = { onCloseClicked() },
+                onSearchClicked = { onSearchClicked() }
+            )
+        }
+    }
+
+
+}
 
 @Composable
 fun HomeContent(
@@ -80,13 +143,14 @@ fun HomeContent(
     viewModel: HomeViewModel,
     navController: NavController,
 
-) {
+    ) {
     val comics = getListComicForRanking() // test data
     val comic = getListCardComicHistory()
     val comicCard = getListCardComicWeekly()
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(bottom = 55.dp)
             .background(MaterialTheme.colorScheme.background),
         contentPadding = PaddingValues(0.dp),
@@ -113,7 +177,7 @@ fun HomeContent(
     }
 }
 
-fun getListComicForRanking(): List< Comic > {
+fun getListComicForRanking(): List<Comic> {
     val comics = listOf(
         Comic(
             comicId = 1,
@@ -227,7 +291,9 @@ fun showAutoSlider(state: HomeState, images: List<String>) {
     if (state.isLoading) {
         ComponentRectangle()
     } else if (state.images.isNotEmpty() && !state.isLoading) {
+
         Autoslider(images = state.images)
+
     }
 }
 
@@ -250,14 +316,16 @@ fun showHistory(navController: NavController, viewModel: HomeViewModel) {
             )
             Text(
                 text = "History",
-                modifier = Modifier.padding(top = 5.dp, start = 5.dp)
+                modifier = Modifier.padding(top = 5.dp, start = 5.dp),
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
             Spacer(modifier = Modifier.weight(1f))
             Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
                 Text(
                     text = "More",
                     modifier = Modifier.padding(top = 8.dp, end = 5.dp),
-                    fontSize = 10.sp
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_next),
@@ -266,7 +334,8 @@ fun showHistory(navController: NavController, viewModel: HomeViewModel) {
                         .padding(top = 10.dp, end = 8.dp)
                         .width(8.dp)
                         .height(8.dp)
-                        .clickable { viewModel.onViewMoreHistoryClicked() }
+                        .clickable { viewModel.onViewMoreHistoryClicked() },
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
 
                 )
 
@@ -320,14 +389,16 @@ fun showRanking(viewModel: HomeViewModel) {
             )
             Text(
                 text = "Ranking",
-                modifier = Modifier.padding(top = 5.dp, start = 5.dp)
+                modifier = Modifier.padding(top = 5.dp, start = 5.dp),
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
             Spacer(modifier = Modifier.weight(1f))
             Row() {
                 Text(
                     text = "More",
                     modifier = Modifier.padding(top = 8.dp, end = 5.dp),
-                    fontSize = 10.sp
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_next),
@@ -336,7 +407,8 @@ fun showRanking(viewModel: HomeViewModel) {
                         .padding(top = 10.dp, end = 8.dp)
                         .width(8.dp)
                         .height(8.dp)
-                        .clickable { viewModel.onViewRankingMore() }
+                        .clickable { viewModel.onViewRankingMore() },
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
 
@@ -367,8 +439,10 @@ fun showTabRow() {
             ItemRankingTabHome(
                 tabName = tabName,
                 isSelected = index == selectedTabIndex,
-                onClick = { setSelectedTabIndex(index)
-                Log.d("HomeView", "Selected tab index: $index") },
+                onClick = {
+                    setSelectedTabIndex(index)
+                    Log.d("HomeView", "Selected tab index: $index")
+                },
                 modifier = Modifier
             )
         }
@@ -433,7 +507,8 @@ fun showWeekly(state: HomeState, navController: NavController) {
             )
             Text(
                 text = "Weekly",
-                modifier = Modifier.padding(top = 5.dp, start = 5.dp)
+                modifier = Modifier.padding(top = 5.dp, start = 5.dp),
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -460,9 +535,9 @@ fun showWeeklyCardComic() {
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 10.dp, end = 8.dp),
-      horizontalArrangement = Arrangement.spacedBy(12.dp), // Reduced horizontal spacing
+        horizontalArrangement = Arrangement.spacedBy(12.dp), // Reduced horizontal spacing
         verticalAlignment = Alignment.CenterVertically,
-        ) {
+    ) {
 
         comics.forEach { comic ->
             CardComicWeeklyHome(
@@ -474,8 +549,6 @@ fun showWeeklyCardComic() {
     }
 
 }
-
-
 
 
 @Composable

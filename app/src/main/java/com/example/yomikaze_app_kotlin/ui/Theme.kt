@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = Green300,
-    onPrimary = Green400,
+    onPrimary = Green500,
     secondary = Orange300,
     onSecondary = Orange400,
     tertiary = Color.White,
@@ -20,9 +20,9 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Orange500, //E05C48
     primaryContainer = Green900, //00260F
     secondary = Green300, //89F8DC
-    onSecondary = Green400, //1FC488
+    onSecondary = Green500, //1FC488 -> Green500
 
-    secondaryContainer = Green500, //0B9D5F
+    secondaryContainer = Green600, //0B9D5F -> Green600
     onSecondaryContainer = Orange900, //02753E
 
     error = Orange600, //B22F24

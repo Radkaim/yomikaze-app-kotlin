@@ -1,6 +1,11 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 
+enum class SearchWidgetState {
+    OPEN,
+    CLOSE
+}
+
 data class HomeState(
     val isLoading: Boolean = true,
     val images: List<String> = emptyList(),

@@ -1,6 +1,8 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 import android.app.Application
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -25,32 +27,31 @@ class HomeViewModel @Inject constructor(
     private var navController: NavController? = null
 
 
+    //for search widget
+    private val _searchWidgetState: MutableState<SearchWidgetState> =
+        mutableStateOf(value = SearchWidgetState.CLOSE)
+    val searchWidgetState: MutableState<SearchWidgetState> get() = _searchWidgetState
+
+    private val _searchTextState: MutableState<String> = mutableStateOf(value = "")
+     val searchTextState: MutableState<String> get() = _searchTextState
+
+
+
+
+
     init {
-//        _state.value = _state.value.copy(isNetworkAvailable = true)
-//        networkMonitor.registerCallback(
-//            onAvailable = {
         viewModelScope.launch {
             fetchImages()
             checkUserIsLogin()
         }
-//            },
-//            onLost = {
-        // Xử lý khi mất kết nối nếu cần
-//                networkAvailable()
-//            }
-//        )
     }
-//    fun networkAvailable(){
-//        networkMonitor.registerCallback(
-//            onAvailable = {
-//                _state.value = _state.value.copy(isNetworkAvailable = true)
-//            },
-//            onLost = {
-//                    _state.value = _state.value.copy(isNetworkAvailable = false)
-//            }
-//        )
-//    }
+    fun  updateSearchWidgetState(newState: SearchWidgetState) {
+        _searchWidgetState.value = newState
+    }
 
+    fun updateSearchText(newValue: String) {
+        _searchTextState.value = newValue
+    }
 
 
     // for HomeView use

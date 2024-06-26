@@ -33,7 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
-import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.TopHomeAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.DefaultTopAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.R
 
@@ -52,7 +52,7 @@ fun ProfileView(
 
     Scaffold(
         topBar = {
-            TopHomeAppBar( navigationIcon = {},
+            DefaultTopAppBar( navigationIcon = {},
                 actions = {},
                 isProfile = true,
                 onLogoClicked = {},
