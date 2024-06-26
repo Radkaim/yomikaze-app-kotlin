@@ -10,10 +10,7 @@ import retrofit2.http.Query
 
 //Data class for the response from the API
 // inherit from comic class
-
-
 interface ComicApiService {
-
     @GET("photos")
     suspend fun getHotComicBannerImages(): List<ComicResponseTest>
 

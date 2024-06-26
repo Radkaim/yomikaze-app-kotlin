@@ -18,7 +18,7 @@ fun CheckNetwork() : Boolean {
 }
 
 @Composable
-fun NoDataAvailable() {
+fun NoNetworkAvailable() {
     LottieAnimationComponent(
         animationFileName = R.raw.not_found, // Replace with your animation file name
         loop = true,
@@ -27,4 +27,10 @@ fun NoDataAvailable() {
             .fillMaxWidth()
             .scale(1.15f)
     )
+}
+
+@Composable
+fun UnNetworkScreen(){
+    NetworkDisconnectedDialog()
+    NoNetworkAvailable()
 }

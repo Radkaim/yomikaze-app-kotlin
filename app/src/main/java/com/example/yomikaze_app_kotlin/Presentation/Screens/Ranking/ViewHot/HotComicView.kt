@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 
 @Composable
 fun HotComicView(
@@ -27,9 +29,14 @@ fun HotComicView(
     val state by hotComicViewModel.state.collectAsState()
     //set navController for viewModel
     hotComicViewModel.setNavController(navController)
-    hotComicViewModel.getComicByViewRanking()
 
-    HotComicViewContent(hotComicViewModel = hotComicViewModel, state = state)
+    if (CheckNetwork()) {
+        hotComicViewModel.getComicByViewRanking()
+        HotComicViewContent(hotComicViewModel = hotComicViewModel, state = state)
+    } else {
+        UnNetworkScreen()
+    }
+
 
 }
 

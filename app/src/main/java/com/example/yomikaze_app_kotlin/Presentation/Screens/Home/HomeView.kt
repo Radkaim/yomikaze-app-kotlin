@@ -49,8 +49,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Ranking
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.NormalComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
-import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
-import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoDataAvailable
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangle
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.DefaultTopAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.SearchTopAppBar
@@ -67,8 +66,6 @@ fun HomeView(
     val state by homeViewModel.state.collectAsState()
     val searchWidgetState by homeViewModel.searchWidgetState
     val searchTextState by homeViewModel.searchTextState
-
-
 
     homeViewModel.setNavController(navController)
 
@@ -102,8 +99,7 @@ fun HomeView(
             HomeContent(state, homeViewModel, navController, searchWidgetState = searchWidgetState)
         } else {
             // Show UI for No Internet Connectivity
-            NetworkDisconnectedDialog()
-            NoDataAvailable()
+            UnNetworkScreen()
         }
     }
 }
@@ -349,7 +345,7 @@ fun showAutoSlider(state: HomeState, images: List<String>) {
             ComponentRectangle()
         } else if (state.images.isNotEmpty() && !state.isLoading) {
 
-            Autoslider(images = state.images)
+            Autoslider(images = images)
         }
     }
 }
@@ -570,18 +566,9 @@ fun showWeekly(state: HomeState, navController: NavController) {
                 modifier = Modifier.padding(top = 5.dp, start = 5.dp),
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
-            Spacer(modifier = Modifier.weight(1f))
+           // Spacer(modifier = Modifier.weight(1f))
         }
-        if (state.isLoading) {
-            Text(
-                text = "Loading...",
-                modifier = Modifier.padding(9.dp)
-            )
-        } else if (state.images.isNotEmpty()) {
-            Autoslider(images = state.images)
-        } else {
-            Text("No images available")
-        }
+        showAutoSlider(state = state, images = state.images)
     }
     showWeeklyCardComic()
     showWeeklyCardComic()
