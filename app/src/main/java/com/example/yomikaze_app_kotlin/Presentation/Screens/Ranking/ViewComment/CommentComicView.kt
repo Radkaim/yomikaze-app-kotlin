@@ -31,7 +31,7 @@ fun CommentComicView(
     commentComicViewModel.setNavController(navController)
 
     if (CheckNetwork()) {
-        commentComicViewModel.getComicByFollowRanking()
+        commentComicViewModel.getComicByCommentRanking()
         CommentComicViewContent(commentViewModel = commentComicViewModel, state = state)
     } else {
         UnNetworkScreen()

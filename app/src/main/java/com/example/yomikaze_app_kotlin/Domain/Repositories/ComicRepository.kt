@@ -16,21 +16,25 @@ interface ComicRepository {
 
     suspend fun getComicByViewRanking(
         token: String,
+        orderByTotalViews: String,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>>
 
     suspend fun getComicByCommentsRanking(
         token: String,
+        orderByTotalComments: String,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>>
 
     suspend fun getComicByFollowRanking(
         token: String,
+        orderByTotalFollows: String,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>>
 
     suspend fun getComicByRatingRanking(
         token: String,
+        orderByTotalRatings: String,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>>
 }

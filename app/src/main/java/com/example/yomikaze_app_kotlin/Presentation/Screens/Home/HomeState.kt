@@ -12,5 +12,6 @@ data class HomeState(
     val isLoading: Boolean = true,
     val images: List<String> = emptyList(),
     val error: String? = null,
-    var searchResult: List<ComicResponse> = emptyList()
+    var searchResult: List<ComicResponse> = emptyList(),
+    var listRankingComics: List<ComicResponse> = emptyList()
 )

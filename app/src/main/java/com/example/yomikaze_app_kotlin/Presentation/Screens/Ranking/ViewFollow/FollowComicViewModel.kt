@@ -38,7 +38,7 @@ class FollowComicViewModel @Inject constructor(
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = getComicByFollowRankingUC.getComicByFollowRanking(token)
+            val result = getComicByFollowRankingUC.getComicByFollowRanking(token, "TotalFollowsDesc")
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results

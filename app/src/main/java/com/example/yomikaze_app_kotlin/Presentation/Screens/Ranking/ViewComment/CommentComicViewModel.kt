@@ -34,11 +34,11 @@ class CommentComicViewModel @Inject constructor(
         navController?.navigate("comic_detail_route/$comicId")
     }
 
-    fun getComicByFollowRanking() {
+    fun getComicByCommentRanking() {
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = getComicByCommentsRankingUC.getComicByCommentsRanking(token)
+            val result = getComicByCommentsRankingUC.getComicByCommentsRanking(token, "TotalCommentsDesc")
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results

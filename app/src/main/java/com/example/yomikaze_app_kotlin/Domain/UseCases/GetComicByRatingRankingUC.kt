@@ -10,8 +10,9 @@ class GetComicByRatingRankingUC @Inject constructor(
 ) {
     suspend fun getComicByRatingRanking(
         token: String,
+        orderByAverageRatings: String,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>> {
-        return comicRepository.getComicByRatingRanking(token)
+        return comicRepository.getComicByRatingRanking(token, orderByAverageRatings, size)
     }
 }

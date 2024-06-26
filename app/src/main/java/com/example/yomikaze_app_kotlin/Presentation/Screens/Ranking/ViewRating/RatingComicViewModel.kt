@@ -39,7 +39,7 @@ class RatingComicViewModel @Inject constructor(
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = getComicByRatingRankingUC.getComicByRatingRanking(token)
+            val result = getComicByRatingRankingUC.getComicByRatingRanking(token, "AverageRatingDesc")
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results

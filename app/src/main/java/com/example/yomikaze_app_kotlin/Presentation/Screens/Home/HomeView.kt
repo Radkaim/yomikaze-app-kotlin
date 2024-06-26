@@ -193,7 +193,7 @@ fun HomeContent(
                     start = 4.dp,
                     end = 4.dp,
                     bottom = 4.dp
-                ) ,// Optional padding for the entire list,
+                ),// Optional padding for the entire list,
             verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
             items(state.searchResult) { comic ->
@@ -221,7 +221,7 @@ fun HomeContent(
             }
 
             item {
-                showRanking(viewModel = homeViewModel)
+                showRanking(homeViewModel = homeViewModel, state = state)
             }
 
             item {
@@ -424,7 +424,7 @@ fun showHistoryCardComic() {
 
 
 @Composable
-fun showRanking(viewModel: HomeViewModel) {
+fun showRanking(homeViewModel: HomeViewModel, state: HomeState) {
     Spacer(modifier = Modifier.height(10.dp))
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -461,7 +461,7 @@ fun showRanking(viewModel: HomeViewModel) {
                         .padding(top = 10.dp, end = 8.dp)
                         .width(8.dp)
                         .height(8.dp)
-                        .clickable { viewModel.onViewRankingMore() },
+                        .clickable { homeViewModel.onViewRankingMore() },
                     tint = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
@@ -472,14 +472,17 @@ fun showRanking(viewModel: HomeViewModel) {
         val listTabs = listOf("Hot", "Rating", "Comment", "Follow") //-> for future implementation
         // create a comics list mutable state
 
-        showTabRow()
-        showRankingComicCard(viewModel = viewModel)
+        showTabRow(homeViewModel = homeViewModel, state = state)
+        showRankingComicCard(homeViewModel = homeViewModel, state = state)
 
     }
 }
 
 @Composable
-fun showTabRow() {
+fun showTabRow(
+    homeViewModel: HomeViewModel,
+    state: HomeState
+) {
     // Duy trì trạng thái của tab được chọn
     val (selectedTabIndex, setSelectedTabIndex) = remember { mutableStateOf(0) }
 
@@ -496,6 +499,7 @@ fun showTabRow() {
                 onClick = {
                     setSelectedTabIndex(index)
                     Log.d("HomeView", "Selected tab index: $index")
+                    tabSelected(index, homeViewModel, state)
                 },
                 modifier = Modifier
             )
@@ -503,10 +507,35 @@ fun showTabRow() {
     }
 }
 
+fun tabSelected(tabIndex: Int, homeViewModel: HomeViewModel, state: HomeState) {
+    val size = 3
+    when (tabIndex) {
+        0 -> {
+            // Hot
+            homeViewModel.getComicByViewRanking(size)
+        }
+
+        1 -> {
+            // Rating
+            homeViewModel.getComicByRatingRanking(size)
+        }
+
+        2 -> {
+            // Comment
+            homeViewModel.getComicByCommentRanking(size)
+        }
+
+        3 -> {
+            // Follow
+            homeViewModel.getComicByFollowRanking(size)
+        }
+    }
+}
+
 
 @Composable
-fun showRankingComicCard(viewModel: HomeViewModel) {
-    val comics = getListComicForRanking()
+fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
+    //val comics = getListComicForRanking()
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp), // 15.dp space between each card
         modifier = Modifier
@@ -519,22 +548,22 @@ fun showRankingComicCard(viewModel: HomeViewModel) {
             .background(MaterialTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
     ) {
-        comics.forEach { comic ->
+        state.listRankingComics.forEachIndexed { index, comic ->
             RankingComicCard(
                 comicId = comic.comicId,
-                rankingNumber = comic.rankingNumber,
-                image = comic.image,
-                comicName = comic.comicName,
+                rankingNumber = index + 1,
+                image = APIConfig.imageAPIURL.toString() + comic.cover,
+                comicName = comic.name,
                 status = comic.status,
-                authorNames = comic.authorNames,
-                publishedDate = comic.publishedDate,
-                ratingScore = comic.ratingScore,
+                authorNames = comic.authors,
+                publishedDate = comic.publicationDate,
+                ratingScore = comic.rating,
                 follows = comic.follows,
                 views = comic.views,
                 comments = comic.comments,
                 modifier = Modifier
                     .fillMaxWidth() // Make sure each card takes the full width
-                    .clickable { viewModel.onComicRankingClicked(comic.comicId) }
+                    .clickable { homeViewModel.onComicRankingClicked(comic.comicId) }
             )
             // Add space between each card
         }
@@ -567,7 +596,7 @@ fun showWeekly(state: HomeState, navController: NavController) {
                 modifier = Modifier.padding(top = 5.dp, start = 5.dp),
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
-           // Spacer(modifier = Modifier.weight(1f))
+            // Spacer(modifier = Modifier.weight(1f))
         }
         showAutoSlider(state = state, images = state.images)
     }

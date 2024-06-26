@@ -34,10 +34,11 @@ class ComicRepositoryImpl @Inject constructor(
 
     override suspend fun getComicByViewRanking(
         token: String,
+        orderByTotalViews: String,
         size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
-            val response = api.getComicByViewRanking("Bearer $token")
+            val response = api.getComicByViewRanking("Bearer $token", orderByTotalViews, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -46,10 +47,12 @@ class ComicRepositoryImpl @Inject constructor(
 
     override suspend fun getComicByCommentsRanking(
         token: String,
+        orderByTotalComments: String,
         size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
-            val response = api.getComicByCommentsRanking("Bearer $token")
+            val response =
+                api.getComicByCommentsRanking("Bearer $token", orderByTotalComments, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -58,10 +61,11 @@ class ComicRepositoryImpl @Inject constructor(
 
     override suspend fun getComicByFollowRanking(
         token: String,
+        orderByTotalFollows: String,
         size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
-            val response = api.getComicByFollowRanking("Bearer $token")
+            val response = api.getComicByFollowRanking("Bearer $token", orderByTotalFollows, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -70,10 +74,11 @@ class ComicRepositoryImpl @Inject constructor(
 
     override suspend fun getComicByRatingRanking(
         token: String,
+        orderByTotalRatings: String,
         size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
-            val response = api.getComicByRatingRanking("Bearer $token")
+            val response = api.getComicByRatingRanking("Bearer $token", orderByTotalRatings, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

@@ -39,7 +39,7 @@ class HotComicViewModel @Inject constructor(
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = getComicByViewRankingUC.getComicByViewRanking(token)
+            val result = getComicByViewRankingUC.getComicByViewRanking(token, "TotalViewsDesc")
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
