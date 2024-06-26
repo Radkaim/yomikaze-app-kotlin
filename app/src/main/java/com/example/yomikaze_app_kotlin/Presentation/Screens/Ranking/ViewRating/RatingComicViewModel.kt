@@ -17,7 +17,7 @@ class RatingComicViewModel @Inject constructor(
     appPreference: AppPreference,
     private val getComicByRatingRankingUC: GetComicByRatingRankingUC
 
-) :ViewModel() {
+) : ViewModel() {
     private val _state = MutableStateFlow(RatingComicState())
     val state: StateFlow<RatingComicState> get() = _state
 
@@ -26,11 +26,16 @@ class RatingComicViewModel @Inject constructor(
     private val appPreference = appPreference
 
     //set navController
-    fun setNavController(navController: NavController){
+    fun setNavController(navController: NavController) {
         this.navController = navController
     }
 
-    fun getComicByRatingRanking(){
+    //navigate to comic detail
+    fun navigateToComicDetail(comicId: Long) {
+        navController?.navigate("comic_detail_route/$comicId")
+    }
+
+    fun getComicByRatingRanking() {
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -48,8 +53,5 @@ class RatingComicViewModel @Inject constructor(
             Log.d("NotificationViewModel", "searchComic: $result")
         }
     }
-    //navigate to comic detail
-    fun navigateToComicDetail(comicId: Long){
-        navController?.navigate("comic_detail_route/$comicId")
-    }
+
 }
