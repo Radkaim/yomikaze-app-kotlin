@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 fun TagComponent(
     status: String,
     textSize: TextUnit = 12.sp,
-    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceTint.copy(0.65f),
     textColor: Color = MaterialTheme.colorScheme.onSurface,
 
 ) {

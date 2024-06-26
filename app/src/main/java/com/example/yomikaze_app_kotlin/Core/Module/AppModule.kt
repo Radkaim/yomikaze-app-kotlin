@@ -28,7 +28,7 @@ object AppModule {
     /**
      * Todo: Provide the Retrofit
      */
-    private const val ApiUrlTest = "https://yomikaze.org/api/"
+    private const val ApiUrlTest = "https://jsonplaceholder.typicode.com/"
     private const val ApiUrl = "https://yomikaze.org/api/"
     @Provides
     @Singleton

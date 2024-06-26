@@ -19,7 +19,6 @@ class MainViewModel: ViewModel() {
             }
         }
     }
-
 }
 
 sealed class MainEvent {

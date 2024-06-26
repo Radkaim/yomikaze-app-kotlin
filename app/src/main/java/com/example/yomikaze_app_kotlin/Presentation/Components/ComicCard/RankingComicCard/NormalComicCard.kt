@@ -126,10 +126,10 @@ fun NormalComicCard(
                     ) {
                         Text(
                             text = cutComicName(comicName),
-
                             style = MaterialTheme.typography.bodyLarge,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                         Box(
                             // contentAlignment = Alignment.Center,
@@ -148,6 +148,7 @@ fun NormalComicCard(
                             style = MaterialTheme.typography.bodyMedium,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                         Text(
                             text = authorName,
@@ -155,6 +156,7 @@ fun NormalComicCard(
                                 fontStyle = FontStyle.Italic,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 11.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             ),
                         )
                     }
@@ -183,6 +185,7 @@ fun NormalComicCard(
                                 fontStyle = FontStyle.Italic,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 10.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                         )
                         //Follows, Views, Comments
