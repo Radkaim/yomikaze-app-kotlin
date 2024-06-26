@@ -24,11 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewComment.CommentComicView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewFollow.FollowComicView
@@ -95,8 +93,8 @@ fun RankingView(
             }
             when (selectedTabIndex) {
                 0 -> HotComicView(navController = navController)
-                1 -> RatingComicView()
-                2 -> CommentComicView()
+                1 -> RatingComicView(navController = navController)
+                2 -> CommentComicView(navController = navController)
                 3 -> FollowComicView(navController = navController)
             }
         }
@@ -162,10 +160,4 @@ fun changeColorForRankingTabScreen(tabIndex: Int, index: Int): Color {
     return if (tabIndex == index) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary.copy(
         alpha = 0.36f
     )
-}
-
-@Preview
-@Composable
-fun BookcasePreview() {
-    RankingView( navController = rememberNavController())
 }

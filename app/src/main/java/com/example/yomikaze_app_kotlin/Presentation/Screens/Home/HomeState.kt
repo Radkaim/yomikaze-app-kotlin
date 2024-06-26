@@ -1,6 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
-import com.example.yomikaze_app_kotlin.Domain.Models.Comic
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 
 
 enum class SearchWidgetState {
@@ -13,5 +13,5 @@ data class HomeState(
     val images: List<String> = emptyList(),
     val error: String? = null,
     val isNetworkAvailable : Boolean = true,
-    val searchResult: List<Comic> = emptyList()
+    var searchResult: List<ComicResponse> = emptyList()
 )

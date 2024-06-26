@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -25,7 +26,7 @@ fun RankingComicCard(
     image: String,
     comicName: String,
     status: String,
-    authorName: String,
+    authorNames: List<String>,
     publishedDate: String,
     ratingScore: Float,
     follows: Long,
@@ -33,6 +34,7 @@ fun RankingComicCard(
     comments: Long,
     backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
     modifier: Modifier,
+    onClicked: () -> Unit? = { }
 ) {
 
     // TODO: Implement RankingComicCard
@@ -46,7 +48,8 @@ fun RankingComicCard(
                 shape = MaterialTheme.shapes.small
             )
             .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small)
-            .then(modifier),
+            .then(modifier)
+            .then(Modifier.clickable { onClicked() }),
 
         color = backgroundColor,
 
@@ -74,7 +77,7 @@ fun RankingComicCard(
                     image = image,
                     comicName = comicName,
                     status = status,
-                    authorName = authorName,
+                    authorNames = authorNames,
                     publishedDate = publishedDate,
                     ratingScore = ratingScore,
                     follows = follows,
@@ -82,7 +85,8 @@ fun RankingComicCard(
                     comments = comments,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(119.dp)
+                        .height(119.dp),
+                    onClicked = { onClicked() }
                 )
             }
         }

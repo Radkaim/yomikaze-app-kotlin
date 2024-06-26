@@ -12,7 +12,6 @@ import retrofit2.http.Query
 // inherit from comic class
 
 
-
 interface ComicApiService {
 
     @GET("photos")
@@ -21,9 +20,11 @@ interface ComicApiService {
     @GET("comics")
     suspend fun getAllComics(): List<ComicResponse>
 
-    @GET("comics/search")
+    @GET("comics")
     suspend fun searchComicByName(
         @Header("Authorization") token: String,
         @Query("Name") name: String,
+        @Query("OrderBy") orderByTotalViews: String = "TotalViews",
+        @Query("OrderBy") orderByName: String = "Name",
     ): BaseResponse<ComicResponse>
 }

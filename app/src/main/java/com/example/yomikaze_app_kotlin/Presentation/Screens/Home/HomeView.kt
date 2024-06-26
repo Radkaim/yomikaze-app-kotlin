@@ -5,6 +5,7 @@ import CardComicHistoryHome
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,16 +34,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Domain.Models.Comic
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicItem
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicWeeklyHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.NormalComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
@@ -81,9 +85,12 @@ fun HomeView(
                 onCloseClicked = {
                     homeViewModel.updateSearchText(newValue = "")
                     homeViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
+                    state.searchResult = emptyList()
                 },
                 onSearchClicked = {
                     Log.d("HomeView", "Search text: $searchTextState")
+                    homeViewModel.searchComic(searchTextState)
+
                 },
                 onSearchTriggered = { homeViewModel.updateSearchWidgetState(SearchWidgetState.OPEN) }
             )
@@ -102,10 +109,33 @@ fun HomeView(
 }
 
 @Composable
-fun SearchResultItem(comic: Comic) {
-    Box(modifier = Modifier.padding(8.dp)) {
-        Text(text = comic.comicName)
-    }
+fun SearchResultItem(
+    homeViewModel: HomeViewModel,
+    comic: ComicResponse
+) {
+    NormalComicCard(
+        comicId = comic.comicId,
+        image = "https://yomikaze.org" + comic.cover,
+        comicName = comic.name,
+        status = comic.status,
+        authorNames = comic.authors,
+        publishedDate = comic.publicationDate,
+        ratingScore = comic.rating,
+        follows = comic.follows,
+        views = comic.views,
+        comments = comic.comments,
+        isSearch = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(119.dp)
+            .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
+                shape = MaterialTheme.shapes.small
+            ),
+        onClicked = { homeViewModel.onComicSearchClicked(comic.comicId) }
+    )
 }
 
 
@@ -146,7 +176,7 @@ fun MainHomeAppBar(
 @Composable
 fun HomeContent(
     state: HomeState,
-    viewModel: HomeViewModel,
+    homeViewModel: HomeViewModel,
     navController: NavController,
     searchWidgetState: SearchWidgetState,
 
@@ -156,9 +186,21 @@ fun HomeContent(
     val comicCard = getListCardComicWeekly()
 
     if (searchWidgetState == SearchWidgetState.OPEN) {
-        LazyColumn() {
+        LazyColumn(
+            modifier = Modifier
+                .padding(top = 70.dp)
+                .wrapContentSize(Alignment.Center)
+                .background(MaterialTheme.colorScheme.background)
+                .padding(
+                    top = 15.dp,
+                    start = 4.dp,
+                    end = 4.dp,
+                    bottom = 4.dp
+                ) ,// Optional padding for the entire list,
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
             items(state.searchResult) { comic ->
-                SearchResultItem(comic = comic)
+                SearchResultItem(comic = comic, homeViewModel = homeViewModel)
             }
         }
     } else {
@@ -174,15 +216,15 @@ fun HomeContent(
             item {
                 showAutoSlider(state = state, images = state.images)
             }
-            Log.d("HomeView", "State images: ${viewModel.checkUserIsLogin()}")
-            if (viewModel.checkUserIsLogin()) {
+            Log.d("HomeView", "State images: ${homeViewModel.checkUserIsLogin()}")
+            if (homeViewModel.checkUserIsLogin()) {
                 item {
-                    showHistory(navController, viewModel)
+                    showHistory(navController, homeViewModel)
                 }
             }
 
             item {
-                showRanking(viewModel = viewModel)
+                showRanking(viewModel = homeViewModel)
             }
 
             item {
@@ -202,7 +244,7 @@ fun getListComicForRanking(): List<Comic> {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -215,7 +257,7 @@ fun getListComicForRanking(): List<Comic> {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -228,7 +270,7 @@ fun getListComicForRanking(): List<Comic> {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -372,7 +414,6 @@ fun showHistoryCardComic() {
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-
         comics.forEach { comic ->
             CardComicHistoryHome(
                 image = comic.image,
@@ -488,7 +529,7 @@ fun showRankingComicCard(viewModel: HomeViewModel) {
                 image = comic.image,
                 comicName = comic.comicName,
                 status = comic.status,
-                authorName = comic.authorName,
+                authorNames = comic.authorNames,
                 publishedDate = comic.publishedDate,
                 ratingScore = comic.ratingScore,
                 follows = comic.follows,

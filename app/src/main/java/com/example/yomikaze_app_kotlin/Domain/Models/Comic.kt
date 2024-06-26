@@ -94,28 +94,34 @@ data class ComicResponse(
 //    val tags: List<Tag> = emptyList(),
 
     //for api
-    @SerializedName("rating")
+    @SerializedName("averageRating")
     //for database
     @ColumnInfo(name = "rating")
     val rating: Float,
 
     //for api
-    @SerializedName("views")
+    @SerializedName("totalViews")
     //for database
     @ColumnInfo(name = "views")
     val views: Long,
 
     //for api
-    @SerializedName("follows")
+    @SerializedName("totalFollows")
     //for database
     @ColumnInfo(name = "follows")
     val follows: Long,
 
     //for api
-    @SerializedName("comments")
+    @SerializedName("totalComments")
     //for database
     @ColumnInfo(name = "comments")
     val comments: Long,
+
+    //for api
+    @SerializedName("totalChapters")
+    //for database
+    @ColumnInfo(name = "totalChapters")
+    val totalChapters: Int,
 
     //for database
     @ColumnInfo(name = "totalMbs")
@@ -128,7 +134,7 @@ data class Comic(
     val image: String,
     val comicName: String,
     val status: String,
-    val authorName: String,
+    val authorNames: List<String>,
     val publishedDate: String,
     val ratingScore: Float,
     val follows: Long,

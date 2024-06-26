@@ -33,7 +33,7 @@ fun BookcaseComicCard(
     image: String,
     comicName: String,
     status: String,
-    authorName: String,
+    authorNames: List<String>,
     publishedDate: String,
 //    ratingScore: Float,
 //    follows: Int,
@@ -62,7 +62,9 @@ fun BookcaseComicCard(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(15.dp),
-            modifier = Modifier.fillMaxWidth().padding(start = 20.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp)
         ) {
             // Comic Image
             AsyncImage(
@@ -110,7 +112,7 @@ fun BookcaseComicCard(
                         fontWeight = FontWeight.Medium,
                     )
                     Text(
-                        text = authorName,
+                        text = cutAuthorName(processAuthorName(authorNames)),
                         style = TextStyle(
                             fontStyle = FontStyle.Italic,
                             fontWeight = FontWeight.Light,
@@ -182,5 +184,18 @@ private fun cutComicName(comicName: String): String {
         comicName.substring(0, 18) + "..."
     } else {
         comicName
+    }
+}
+
+private fun processAuthorName(authorNames: List<String>): String {
+    return authorNames.joinToString(", ")
+}
+
+private fun cutAuthorName(authorName: String): String {
+    val authorNameLength = authorName.length
+    return if (authorNameLength > 18) {
+        authorName.substring(0, 18) + "..."
+    } else {
+        authorName
     }
 }

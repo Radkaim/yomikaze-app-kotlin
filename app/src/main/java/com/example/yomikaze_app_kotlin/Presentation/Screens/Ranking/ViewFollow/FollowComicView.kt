@@ -1,7 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewFollow
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -20,10 +19,10 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Ranking
 @Composable
 fun FollowComicView(navController: NavController) {
 
-
-    /**
-     * Test Normal comic for library
-     */
+//
+//    /**
+//     * Test Normal comic for library
+//     */
 //    Column(
 //        verticalArrangement = Arrangement.spacedBy(15.dp), // 8.dp space between each card
 //        modifier = Modifier
@@ -43,13 +42,13 @@ fun FollowComicView(navController: NavController) {
 //            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
 //            comicName = "Hunter X Hunter",
 //            status = "On Going",
-//            authorName = "Yoshihiro Togashi",
+//            authorNames = listOf("as",""),
 //            publishedDate = "1998-03-03",
 //            ratingScore = 9.5f,
 //            follows = 100,
 //            views = 100,
 //            comments = 100,
-//            isDeleted = true,
+//            isDeleted = false,
 //            modifier = Modifier
 //                .fillMaxWidth()
 //                .height(119.dp)
@@ -65,7 +64,7 @@ fun FollowComicView(navController: NavController) {
 //            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
 //            comicName = "Hunter X Hunter67677667",
 //            status = "On Going",
-//            authorName = "Yoshihiro Togashi",
+//            authorNames = listOf("as",""),
 //            publishedDate = "1998-03-03",
 //            ratingScore = 9.5f,
 //            follows = 100,
@@ -81,7 +80,7 @@ fun FollowComicView(navController: NavController) {
 //                ),
 //        )
 //    }
-
+//
     //create listOf comics
     val comicsListCardModel = listOf(
         Comic(
@@ -90,7 +89,7 @@ fun FollowComicView(navController: NavController) {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 8000000000,
@@ -103,7 +102,7 @@ fun FollowComicView(navController: NavController) {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -116,55 +115,59 @@ fun FollowComicView(navController: NavController) {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
             views = 100,
             comments = 10
-        ),  Comic(
+        ),
+        Comic(
             comicId = 4,
             rankingNumber = 4,
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
             views = 100,
             comments = 10
-        ),  Comic(
+        ),
+        Comic(
             comicId = 5,
             rankingNumber = 5,
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
             views = 100,
             comments = 10
-        ),  Comic(
+        ),
+        Comic(
             comicId = 6,
             rankingNumber = 6,
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
             views = 100,
             comments = 10
-        ),  Comic(
+        ),
+        Comic(
             comicId = 7,
             rankingNumber = 7,
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -195,18 +198,16 @@ fun FollowComicView(navController: NavController) {
                     image = comic.image,
                     comicName = comic.comicName,
                     status = comic.status,
-                    authorName = comic.authorName,
+                    authorNames = comic.authorNames,
                     publishedDate = comic.publishedDate,
                     ratingScore = comic.ratingScore,
                     follows = comic.follows,
                     views = comic.views,
                     comments = comic.comments,
                     backgroundColor = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.clickable {
-                        navController.navigate("comic_detail_route/${comic.comicId}"){
-                        }
-                      //  hotComicViewModel.navigateToComicDetail(comic.comicId)
-                        // TODO change to viewModel.navigateToComicDetail(comic.comicId) if using viewModel
+                    modifier = Modifier,
+                    onClicked = {
+                        navController.navigate("comic_detail_route/${comic.comicId}")
                     }
                 )
             }

@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,9 @@ import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconAndNumbers
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.R
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 @Composable
 fun NormalComicCard(
@@ -41,7 +45,7 @@ fun NormalComicCard(
     image: String,
     comicName: String,
     status: String,
-    authorName: String,
+    authorNames: List<String>,
     publishedDate: String,
     ratingScore: Float,
     follows: Long,
@@ -49,7 +53,9 @@ fun NormalComicCard(
     comments: Long,
     backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
     isDeleted: Boolean = false,
+    isSearch: Boolean = false,
     modifier: Modifier,
+    onClicked: () -> Unit? = {}
 ) {
 
     Surface(
@@ -57,19 +63,24 @@ fun NormalComicCard(
             if (isDeleted) {
                 Modifier
                     .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small)
-                    .clickable { }
+                    .clickable {
+                        onClicked()
+                    }
 
             } else {
                 Modifier
             }),
         color = backgroundColor,
     ) {
-
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .offset(x = (-1).dp)
+                .clickable {
+                    Log.d("NormalComicCard", "Clicked")
+                    onClicked()
+                }
         ) {
             if (isDeleted) {
                 Box(
@@ -94,9 +105,10 @@ fun NormalComicCard(
                 }
 
             }
+            val rowSpaceBy = if (isSearch) 45 else 15
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(15.dp)
+                horizontalArrangement = Arrangement.spacedBy(rowSpaceBy.dp)
             ) {
                 //Comic Image
                 AsyncImage(
@@ -105,6 +117,7 @@ fun NormalComicCard(
                         .memoryCachePolicy(CachePolicy.ENABLED)
                         .build(),
                     placeholder = painterResource(R.drawable.placeholder),
+                    error = painterResource(R.drawable.placeholder),
                     contentDescription = "Comic Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -118,7 +131,13 @@ fun NormalComicCard(
                         .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small)
                 )
 
-                Column {
+                Column(
+                    modifier = if (isSearch) {
+                        Modifier.offset(x = (-20).dp)
+                    } else {
+                        Modifier
+                    }
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -151,7 +170,7 @@ fun NormalComicCard(
                             color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                         Text(
-                            text = authorName,
+                            text = cutAuthorName(processAuthorName(authorNames)),
                             style = TextStyle(
                                 fontStyle = FontStyle.Italic,
                                 fontWeight = FontWeight.Light,
@@ -180,7 +199,7 @@ fun NormalComicCard(
                         modifier = Modifier.padding(top = 10.dp)
                     ) {
                         Text(
-                            text = "Published Date: $publishedDate",
+                            text = "Published Date: " + changeDateTimeFormat(publishedDate),
                             style = TextStyle(
                                 fontStyle = FontStyle.Italic,
                                 fontWeight = FontWeight.Light,
@@ -189,10 +208,13 @@ fun NormalComicCard(
                             )
                         )
                         //Follows, Views, Comments
+                        val offSetX = if (isSearch) (20) else 0
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.offset(y = (-6).dp)
+                            modifier = Modifier.offset(x = offSetX.dp, y = (-6).dp)
+
                         )
                         {
                             //Follows
@@ -230,14 +252,10 @@ fun NormalComicCard(
                                 iconHeight = 12,
                                 numberSize = 10
                             )
-
-
                         }
                     }
                 }
-
             }
-
         }
     }
 }
@@ -248,5 +266,35 @@ private fun cutComicName(comicName: String): String {
         comicName.substring(0, 18) + "..."
     } else {
         comicName
+    }
+}
+
+private fun processAuthorName(authorNames: List<String>): String {
+    return authorNames.joinToString(", ")
+}
+
+private fun cutAuthorName(authorName: String): String {
+    val authorNameLength = authorName.length
+    return if (authorNameLength > 18) {
+        authorName.substring(0, 18) + "..."
+    } else {
+        authorName
+    }
+}
+
+// change Date time format
+fun changeDateTimeFormat(dateTime: String): String {
+    // Định dạng đầu vào
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    // Định dạng đầu ra
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    return try {
+        // Kiểm tra và phân tích chuỗi ngày giờ
+        val parsedDateTime = LocalDateTime.parse(dateTime, inputFormatter)
+        // Chuyển đổi đối tượng LocalDateTime thành chuỗi ngày theo định dạng đầu ra
+        parsedDateTime.format(outputFormatter)
+    } catch (e: DateTimeParseException) {
+        // Nếu định dạng không đúng, trả về chuỗi gốc
+        dateTime
     }
 }

@@ -1,7 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewComment
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -13,11 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Domain.Models.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 
 @Composable
-fun CommentComicView() {
+fun CommentComicView(
+    navController: NavController
+) {
     //create listOf comics
     val comicsListCardModel = listOf(
         Comic(
@@ -26,7 +28,7 @@ fun CommentComicView() {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 8000000000,
@@ -39,7 +41,7 @@ fun CommentComicView() {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -52,7 +54,7 @@ fun CommentComicView() {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -64,7 +66,7 @@ fun CommentComicView() {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -76,7 +78,7 @@ fun CommentComicView() {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -88,7 +90,7 @@ fun CommentComicView() {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -100,7 +102,7 @@ fun CommentComicView() {
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicName = "Hunter X Hunter12323",
             status = "On Going",
-            authorName = "Yoshihiro Togashi",
+            authorNames = listOf("Yoshihiro Togashi", "hung"),
             publishedDate = "1998-03-03",
             ratingScore = 9.5f,
             follows = 100,
@@ -131,17 +133,16 @@ fun CommentComicView() {
                     image = comic.image,
                     comicName = comic.comicName,
                     status = comic.status,
-                    authorName = comic.authorName,
+                    authorNames = comic.authorNames,
                     publishedDate = comic.publishedDate,
                     ratingScore = comic.ratingScore,
                     follows = comic.follows,
                     views = comic.views,
                     comments = comic.comments,
                     backgroundColor = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.clickable {
-                        //navController.navigate("comicDetail/${comic.comicId}")
-                       // hotComicViewModel.navigateToComicDetail(comic.comicId)
-                        // TODO change to viewModel.navigateToComicDetail(comic.comicId) if using viewModel
+                    modifier = Modifier,
+                    onClicked = {
+                        navController.navigate("comic_detail_route/${comic.comicId}")
                     }
                 )
             }

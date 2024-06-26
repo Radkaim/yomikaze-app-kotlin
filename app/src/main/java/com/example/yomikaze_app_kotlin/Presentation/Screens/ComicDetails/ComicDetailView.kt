@@ -80,7 +80,7 @@ import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun ComicDetailsView(
-    comicId: Int,
+    comicId: Long,
     navController: NavController,
     comicDetailViewModel: ComicDetailViewModel = hiltViewModel()
 ) {

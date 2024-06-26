@@ -131,7 +131,7 @@ fun DownloadViewContent(
                 image = comic.cover,
                 comicName = comic.name,
                 status = comic.status,
-                authorName = comic.authors.toString(),
+                authorNames = comic.authors,
                 isDownloaded = true,
                 totalMbs = comic.totalMbs,
                 publishedDate = comic.publicationDate,
