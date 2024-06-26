@@ -19,6 +19,7 @@ private val LightColorScheme = lightColorScheme(
     primary = Green500, //0B9D5F
     onPrimary = Orange500, //E05C48
     primaryContainer = Green900, //00260F
+    inversePrimary = Green700, //02753E
     secondary = Green300, //89F8DC
     onSecondary = Green500, //1FC488 -> Green500
 

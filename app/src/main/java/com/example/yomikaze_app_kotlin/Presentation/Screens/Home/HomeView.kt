@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -33,12 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.yomikaze_app_kotlin.Domain.Models.Comic
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicItem
@@ -64,6 +63,7 @@ fun HomeView(
     val state by homeViewModel.state.collectAsState()
     val searchWidgetState by homeViewModel.searchWidgetState
     val searchTextState by homeViewModel.searchTextState
+
 
 
     homeViewModel.setNavController(navController)
@@ -92,7 +92,7 @@ fun HomeView(
     {
         if (CheckNetwork()) {
             // Show UI when connectivity is available
-            HomeContent(state, homeViewModel, navController)
+            HomeContent(state, homeViewModel, navController, searchWidgetState = searchWidgetState)
         } else {
             // Show UI for No Internet Connectivity
             NetworkDisconnectedDialog()
@@ -100,6 +100,14 @@ fun HomeView(
         }
     }
 }
+
+@Composable
+fun SearchResultItem(comic: Comic) {
+    Box(modifier = Modifier.padding(8.dp)) {
+        Text(text = comic.comicName)
+    }
+}
+
 
 @Composable
 fun MainHomeAppBar(
@@ -133,8 +141,6 @@ fun MainHomeAppBar(
             )
         }
     }
-
-
 }
 
 @Composable
@@ -142,40 +148,51 @@ fun HomeContent(
     state: HomeState,
     viewModel: HomeViewModel,
     navController: NavController,
+    searchWidgetState: SearchWidgetState,
 
     ) {
     val comics = getListComicForRanking() // test data
     val comic = getListCardComicHistory()
     val comicCard = getListCardComicWeekly()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 55.dp)
-            .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(0.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    )
-    {
-        item {
-            showAutoSlider(state = state, images = state.images)
-        }
-        Log.d("HomeView", "State images: ${viewModel.checkUserIsLogin()}")
-        if (viewModel.checkUserIsLogin()) {
-            item {
-                showHistory(navController, viewModel)
+    if (searchWidgetState == SearchWidgetState.OPEN) {
+        LazyColumn() {
+            items(state.searchResult) { comic ->
+                SearchResultItem(comic = comic)
             }
         }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 55.dp)
+                .background(MaterialTheme.colorScheme.background),
+            contentPadding = PaddingValues(0.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        )
+        {
+            item {
+                showAutoSlider(state = state, images = state.images)
+            }
+            Log.d("HomeView", "State images: ${viewModel.checkUserIsLogin()}")
+            if (viewModel.checkUserIsLogin()) {
+                item {
+                    showHistory(navController, viewModel)
+                }
+            }
 
-        item {
-            showRanking(viewModel = viewModel)
-        }
+            item {
+                showRanking(viewModel = viewModel)
+            }
 
-        item {
-            showWeekly(state = state, navController = navController)
+            item {
+                showWeekly(state = state, navController = navController)
+            }
+
         }
     }
 }
+
 
 fun getListComicForRanking(): List<Comic> {
     val comics = listOf(
@@ -221,9 +238,6 @@ fun getListComicForRanking(): List<Comic> {
     )
     return comics
 }
-
-//@Composable
-
 
 fun getListCardComicHistory(): List<CardComicItem> {
     val comics = listOf(
@@ -288,20 +302,23 @@ fun getListCardComicWeekly(): List<CardComicItem> {
 
 @Composable
 fun showAutoSlider(state: HomeState, images: List<String>) {
-    if (state.isLoading) {
-        ComponentRectangle()
-    } else if (state.images.isNotEmpty() && !state.isLoading) {
+    Box(modifier = Modifier.padding(top = 60.dp)) {
+        if (state.isLoading) {
+            ComponentRectangle()
+        } else if (state.images.isNotEmpty() && !state.isLoading) {
 
-        Autoslider(images = state.images)
-
+            Autoslider(images = state.images)
+        }
     }
 }
 
 @Composable
 fun showHistory(navController: NavController, viewModel: HomeViewModel) {
     Column(
-//        verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp)
     ) {
         Row(
             modifier = Modifier
@@ -352,7 +369,6 @@ fun showHistoryCardComic() {
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 9.dp, end = 5.dp, bottom = 8.dp, top = 10.dp),
-//            .background(color = MaterialTheme.colorScheme.tertiary),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -493,6 +509,9 @@ fun showWeekly(state: HomeState, navController: NavController) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp)
     ) {
         Row(
             modifier = Modifier
@@ -567,11 +586,4 @@ fun RowWithThreeItems(list: List<String>) {
 
         }
     }
-}
-
-@Preview
-@Composable
-fun HomeViewPreview() {
-    val navController = rememberNavController()
-//    HomeView(navController = navController)
 }

@@ -24,12 +24,12 @@ import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun DefaultTopAppBar(
-     navigationIcon: @Composable () -> Unit,
-     actions: @Composable RowScope.() -> Unit,
-     isProfile: Boolean = false,
-     onLogoClicked: () -> Unit = {},
-     onSearchClicked: () -> Unit = {},
-     onSettingClicked: () -> Unit = {}
+    navigationIcon: @Composable () -> Unit,
+    actions: @Composable RowScope.() -> Unit,
+    isProfile: Boolean = false,
+    onLogoClicked: () -> Unit = {},
+    onSearchClicked: () -> Unit = {},
+    onSettingClicked: () -> Unit = {}
 
 ) {
     TopAppBar(
@@ -66,10 +66,14 @@ fun DefaultTopAppBar(
                     )
                 }
 
-            }
-            else{
+            } else {
                 IconButton(onClick = { onSearchClicked() }) {
-                    Icon(Icons.Filled.Search, contentDescription = "Search")
+                    Icon(
+                        Icons.Filled.Search,
+                        contentDescription = "Search",
+                        tint = MaterialTheme.colorScheme.primaryContainer
+                    )
+
                 }
             }
         }
