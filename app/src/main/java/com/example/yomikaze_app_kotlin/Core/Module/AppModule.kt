@@ -12,6 +12,21 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 
+enum class API(private val url: String) {
+    TEST("https://jsonplaceholder.typicode.com/"),
+    PRODUCTION("https://yomikaze.org/api/"),
+    COVER_IMAGE("https://yomikaze.org");
+
+    //toString
+    override fun toString(): String {
+        return url
+    }
+}
+object APIConfig {
+    var retrofitAPIURL:API = API.PRODUCTION
+    var imageAPIURL: API = API.COVER_IMAGE
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -25,16 +40,23 @@ object AppModule {
         return AppPreference(application)
     }
 
+    @Provides
+    @Singleton
+    fun provideApiUrl(): API {
+        return API.PRODUCTION
+    }
+
     /**
      * Todo: Provide the Retrofit
      */
     private const val ApiUrlTest = "https://jsonplaceholder.typicode.com/"
     private const val ApiUrl = "https://yomikaze.org/api/"
+
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(apiUrl: API): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiUrl) // Change this to your base URL
+            .baseUrl(APIConfig.retrofitAPIURL.toString()) // Change this to your base URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

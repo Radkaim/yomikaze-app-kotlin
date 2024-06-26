@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.Comic
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
@@ -111,7 +112,7 @@ fun SearchResultItem(
 ) {
     NormalComicCard(
         comicId = comic.comicId,
-        image = "https://yomikaze.org" + comic.cover,
+        image = APIConfig.imageAPIURL.toString() + comic.cover,
         comicName = comic.name,
         status = comic.status,
         authorNames = comic.authors,

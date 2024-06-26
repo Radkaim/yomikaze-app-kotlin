@@ -70,7 +70,11 @@ fun RankingComicCard(
                     .fillMaxWidth()
                     .offset(x = (2).dp)
             ) {
-                RankingNumberCircle(rankingNumber)
+                Box(
+                    modifier = Modifier.padding(start = 10.dp)
+                ) {
+                    RankingNumberCircle(rankingNumber)
+                }
 
                 NormalComicCard(
                     comicId = comicId,
@@ -85,7 +89,8 @@ fun RankingComicCard(
                     comments = comments,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(119.dp),
+                        .height(119.dp)
+                        .padding(end = 15.dp),
                     onClicked = { onClicked() }
                 )
             }

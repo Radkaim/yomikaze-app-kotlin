@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
@@ -23,8 +24,9 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetwork
 @Composable
 fun HotComicView(
     hotComicViewModel: HotComicViewModel = hiltViewModel(),
-    navController: NavController
-) {
+    navController: NavController,
+
+    ) {
 
     val state by hotComicViewModel.state.collectAsState()
     //set navController for viewModel
@@ -43,7 +45,7 @@ fun HotComicView(
 @Composable
 fun HotComicViewContent(
     hotComicViewModel: HotComicViewModel,
-    state: HotComicState
+    state: HotComicState,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
@@ -64,7 +66,7 @@ fun HotComicViewContent(
                 RankingComicCard(
                     comicId = comic.comicId,
                     rankingNumber = index + 1,
-                    image = comic.cover,
+                    image = APIConfig.imageAPIURL.toString() + comic.cover,
                     comicName = comic.name,
                     status = comic.status,
                     authorNames = comic.authors,
