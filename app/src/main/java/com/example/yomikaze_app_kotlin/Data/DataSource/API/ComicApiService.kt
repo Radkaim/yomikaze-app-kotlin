@@ -20,6 +20,7 @@ interface ComicApiService {
     @GET("comics")
     suspend fun getAllComics(): List<ComicResponse>
 
+    //use for search comic by name at home screen
     @GET("comics")
     suspend fun searchComicByName(
         @Header("Authorization") token: String,
