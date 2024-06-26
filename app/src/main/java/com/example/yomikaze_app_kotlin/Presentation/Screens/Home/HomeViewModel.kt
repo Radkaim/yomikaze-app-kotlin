@@ -1,7 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByCommentsRankingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByFollowRankingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByRatingRankingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByViewRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.SearchComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +25,10 @@ class HomeViewModel @Inject constructor(
     private val getHotComicBannerUseCase: GetHotComicBannerUC,
     private val appPreference: AppPreference,
     private val searchComicUC: SearchComicUC,
-    application: Application
+    private val getComicByRatingRankingUC: GetComicByRatingRankingUC,
+    private val getComicByCommentsRankingUC: GetComicByCommentsRankingUC,
+    private val getComicByFollowRankingUC: GetComicByFollowRankingUC,
+    private val getComicByViewRankingUC: GetComicByViewRankingUC,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
@@ -42,7 +48,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fetchImages()
+
             checkUserIsLogin()
         }
     }
@@ -61,20 +67,24 @@ class HomeViewModel @Inject constructor(
         this.navController = navController
     }
 
-    fun fetchImages() {
-        viewModelScope.launch {
-            val result = getHotComicBannerUseCase.getHotComicBannerImages()
-            result.onSuccess { images ->
-                //get list string from images
-                val imageList = images.map { it.thumbnailUrl }
-                //get 5 images api 5000 images testcase
-                _state.value = _state.value.copy(images = imageList.take(5), isLoading = false)
-            }.onFailure {
-                _state.value = _state.value.copy(isLoading = true, error = it.message)
-            }
+//    fun fetchImages() {
+//        viewModelScope.launch {
+//            val result = getHotComicBannerUseCase.getHotComicBannerImages()
+//            result.onSuccess { images ->
+//                //get list string from images
+//                val imageList = images.map { it.thumbnailUrl }
+//                //get 5 images api 5000 images testcase
+//                _state.value = _state.value.copy(images = imageList.take(5), isLoading = false)
+//            }.onFailure {
+//                _state.value = _state.value.copy(isLoading = true, error = it.message)
+//            }
+//
+//        }
+//    }
 
-        }
-    }
+
+
+
 
     @SuppressLint("SuspiciousIndentation")
     fun searchComic(comicNameQuery: String) {

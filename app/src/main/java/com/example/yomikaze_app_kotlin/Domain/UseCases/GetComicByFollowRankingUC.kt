@@ -8,7 +8,10 @@ import javax.inject.Inject
 class GetComicByFollowRankingUC @Inject constructor(
     private val comicRepository: ComicRepository
 ) {
-    suspend fun getComicByFollowRanking(token: String): Result<BaseResponse<ComicResponse>> {
+    suspend fun getComicByFollowRanking(
+        token: String,
+        size: Int? = null
+    ): Result<BaseResponse<ComicResponse>> {
         return comicRepository.getComicByFollowRanking(token)
     }
 }

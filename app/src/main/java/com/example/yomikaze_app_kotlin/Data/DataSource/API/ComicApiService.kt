@@ -35,6 +35,7 @@ interface ComicApiService {
     suspend fun getComicByViewRanking(
         @Header("Authorization") token: String,
         @Query("OrderBy") orderByTotalViews: String = "TotalViews",
+        @Query("Size") size: Int? = null,
     ): BaseResponse<ComicResponse>
 
     //for comments ranking
@@ -42,6 +43,7 @@ interface ComicApiService {
     suspend fun getComicByCommentsRanking(
         @Header("Authorization") token: String,
         @Query("OrderBy") orderByTotalViews: String = "TotalCommentsDesc",
+        @Query("Size") size: Int? = null,
     ): BaseResponse<ComicResponse>
 
     //for follow ranking
@@ -49,6 +51,7 @@ interface ComicApiService {
     suspend fun getComicByFollowRanking(
         @Header("Authorization") token: String,
         @Query("OrderBy") orderByTotalViews: String = "TotalFollowsDesc",
+        @Query("Size") size: Int? = null,
     ): BaseResponse<ComicResponse>
 
     //for rating ranking
@@ -56,5 +59,6 @@ interface ComicApiService {
     suspend fun getComicByRatingRanking(
         @Header("Authorization") token: String,
         @Query("OrderBy") orderByTotalViews: String = "AverageRatingDesc",
+        @Query("Size") size: Int? = null,
     ): BaseResponse<ComicResponse>
 }
