@@ -39,6 +39,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -70,8 +71,11 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicChapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.processNameByComma
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconicDataComicDetail
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
@@ -84,10 +88,35 @@ fun ComicDetailsView(
     navController: NavController,
     comicDetailViewModel: ComicDetailViewModel = hiltViewModel()
 ) {
+
+    val state by comicDetailViewModel.state.collectAsState()
+
+
+    //set navController for viewModel
+    comicDetailViewModel.setNavController(navController)
+    comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+
+    ComicDetailContent(
+        navController = navController,
+        comicDetailViewModel = comicDetailViewModel,
+        state = state
+    )
+
+}
+
+
+/**
+ * TODO: Implement ComicDetailContent
+ */
+@Composable
+fun ComicDetailContent(
+    navController: NavController,
+    comicDetailViewModel: ComicDetailViewModel,
+    state: ComicDetailState
+) {
     /**
      * for menu option
      */
-
     var showPopupMenu by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf<Int?>(null) }
     val backgroundColor = MaterialTheme.colorScheme.background
@@ -95,11 +124,6 @@ fun ComicDetailsView(
     // for tab layout description and list chapter
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Description", "Chapter")
-
-
-    //set navController for viewModel
-    comicDetailViewModel.setNavController(navController)
-
 
     val listTitlesOfComicMenuOption = listOf(
         MenuOptions("Add to Library", "add_to_library_dialog_route", R.drawable.ic_library),
@@ -213,11 +237,12 @@ fun ComicDetailsView(
             // banner image
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fblackandyellowotakugamers.com%2Fwp-content%2Fuploads%2F2017%2F06%2Fhunterxhunter-banner.jpeg&f=1&nofb=1&ipt=85a60baa54649349c7996f33d41149db477897d3f60ed278433f1fa527c81f47&ipo=images")
+                    .data(APIConfig.imageAPIURL.toString() + state.comicResponse?.banner)
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 placeholder = painterResource(R.drawable.placeholder_430_184),
-                contentDescription = "Comic Image",
+                error = painterResource(R.drawable.placeholder_430_184),
+                contentDescription = "Comic Banner Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -339,11 +364,12 @@ fun ComicDetailsView(
                         // main image
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images")
+                                .data(APIConfig.imageAPIURL.toString() + state.comicResponse?.cover)
                                 .memoryCachePolicy(CachePolicy.ENABLED)
                                 .build(),
                             placeholder = painterResource(R.drawable.placeholder),
-                            contentDescription = "Comic Image",
+                            error = painterResource(R.drawable.placeholder),
+                            contentDescription = "Comic Cover Image",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .width(78.dp)
@@ -369,7 +395,7 @@ fun ComicDetailsView(
                                 .padding(bottom = 40.dp)
                         ) {
                             Text(
-                                text = "Hunter x Hunter",
+                                text = state.comicResponse?.name ?: "Comic Name",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 maxLines = 2,
@@ -378,29 +404,36 @@ fun ComicDetailsView(
                                 modifier = Modifier.width(200.dp)
                             )
                             Text(
-                                text = "Hunter",
+                                text = processNameByComma(
+                                    state.comicResponse?.aliases ?: listOf("")
+                                ),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Normal
                             )
                             Text(
-                                text = "Author: Yoshihiro Togashi",
+                                text = "Author: ${
+                                    processNameByComma(
+                                        state.comicResponse?.authors ?: listOf(
+                                            ""
+                                        )
+                                    )
+                                }",
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Normal
                             )
                             Spacer(modifier = Modifier.height(1.dp))
                             Text(
-                                text = "Publish Date: 25/05/2023",
+                                text = "Publish Date: ${changeDateTimeFormat(state.comicResponse?.publicationDate ?: "")}",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal
                             )
-                            TagComponent(status = "On Going")
+                            TagComponent(status = state.comicResponse?.status ?: "")
                         }
                     }
                 }
             }
         }
     }
-
 
     Box(
         modifier = Modifier
@@ -437,7 +470,7 @@ fun ComicDetailsView(
                 IconicDataComicDetail(
                     icon = R.drawable.ic_eye,
                     iconColor = MaterialTheme.colorScheme.surface,
-                    number = 900000,
+                    number = state.comicResponse?.views ?: 0,
                     numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     title = "Views",
                     iconWidth = 26,
@@ -446,7 +479,7 @@ fun ComicDetailsView(
                 IconicDataComicDetail(
                     icon = R.drawable.ic_following,
                     iconColor = MaterialTheme.colorScheme.surface,
-                    number = 90,
+                    number = state.comicResponse?.follows ?: 0,
                     numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     title = "Following",
                     iconWidth = 12,
@@ -455,7 +488,7 @@ fun ComicDetailsView(
                 IconicDataComicDetail(
                     icon = R.drawable.ic_star_fill,
                     iconColor = MaterialTheme.colorScheme.surface,
-                    numberRating = 4.9f,
+                    numberRating = state.comicResponse?.averageRating ?: 0f,
                     numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     title = "Rating",
                     iconWidth = 20,
@@ -464,7 +497,7 @@ fun ComicDetailsView(
                 IconicDataComicDetail(
                     icon = R.drawable.ic_comment,
                     iconColor = MaterialTheme.colorScheme.surface,
-                    number = 1000000,
+                    number = state.comicResponse?.comments ?: 0,
                     numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     title = "Comments",
                     iconWidth = 20,
@@ -509,7 +542,7 @@ fun ComicDetailsView(
                 }
             }
             when (tabIndex) {
-                0 -> DescriptionInComicDetailView()
+                0 -> DescriptionInComicDetailView(state = state)
                 1 -> ListChapterInComicDetailView(
                     comicDetailViewModel = comicDetailViewModel,
                     listChapter = listChapter
@@ -525,28 +558,17 @@ fun ComicDetailsView(
  */
 
 @Composable
-fun DescriptionInComicDetailView() {
-    val textLength = 200
+fun DescriptionInComicDetailView(
+    state: ComicDetailState
+) {
+    val textLength = state.comicResponse?.description?.length ?: 50
     var isExpanded by remember { mutableStateOf(false) }
-    val text =
-        "Hunter x Hunter is a Japanese manga series written and illustrated by Yoshihiro Togashi." +
-                " It has been serialized in Weekly Shōnen Jump magazine since March 3, 1998," +
-                " although the manga has frequently gone on extended" +
-                " hiatuses  October 2018, 380 chapters have been collected since 2006. As of October 2018, 380 chapters have been collected into 36 volumes by Shueisha. The story focuses on a young boy named Gon Freecss who discovers that his father, who he was told was dead, is actually alive and a legendary Hunter."
-    val shortText = if (isExpanded) text else text.take(textLength)
+    val text = state.comicResponse?.description
+
+    val shortText = if (isExpanded) text else text?.take(textLength)
 
     //for tag genre
-    val listTag = listOf(
-        "Action",
-        "Adventure",
-        "Fantasy",
-        "Shounen",
-        "Super Power",
-        "Supernatural",
-        "Mystery",
-        "Drama",
-        "Psychological"
-    )
+    val listTag = state.listTagGenres ?: emptyList()
 
     LazyColumn(
         modifier = Modifier
@@ -561,23 +583,29 @@ fun DescriptionInComicDetailView() {
                     //  .padding(8.dp)
                     .clickable { isExpanded = !isExpanded }
             ) {
-                Text(
-                    text = if (isExpanded) text else shortText,
-                )
-                if (!isExpanded && shortText.length <= textLength)
+                (if (isExpanded) text else shortText)?.let {
                     Text(
-                        text = "...more",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.offset(x = 100.dp, y = 95.dp)
+                        text = it,
                     )
-                else if (isExpanded && text.length > 50) {
-                    Text(
-                        text = "less",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(top = 10.dp)
-                    )
+                }
+                if (shortText != null) {
+                    if (!isExpanded && shortText.length <= textLength)
+                        Text(
+                            text = "...more",
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.offset(x = 100.dp, y = 95.dp)
+                        )
+                    else if (text != null) {
+                        if (isExpanded && text.length > 50) {
+                            Text(
+                                text = "less",
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(top = 10.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -588,7 +616,7 @@ fun DescriptionInComicDetailView() {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(listTag) { tag ->
-                    TagComponent(status = tag)
+                    TagComponent(status = tag.name)
                 }
             }
         }
@@ -625,10 +653,7 @@ fun DescriptionInComicDetailView() {
                 }
             }
         }
-
-
     }
-
 }
 
 

@@ -79,7 +79,7 @@ data class ComicResponse(
     //for database
     @TypeConverters(Converters::class)
     @ColumnInfo(name = "authors")
-    val authors: List<String> ,
+    val authors: List<String>,
 
     //for api
     @SerializedName("status")
@@ -87,17 +87,18 @@ data class ComicResponse(
     @ColumnInfo(name = "status")
     val status: String,
 
-//    //for api
-//    @SerializedName("tags")
-//    //for database
-//    @ColumnInfo(name = "tags")
-//    val tags: List<Tag> = emptyList(),
+    //for api
+    @SerializedName("tags")
+    //for database
+    @TypeConverters(Converters::class)
+    @ColumnInfo(name = "tags")
+    val tags: List<Tag>,
 
     //for api
     @SerializedName("averageRating")
     //for database
     @ColumnInfo(name = "rating")
-    val rating: Float,
+    val averageRating: Float,
 
     //for api
     @SerializedName("totalViews")

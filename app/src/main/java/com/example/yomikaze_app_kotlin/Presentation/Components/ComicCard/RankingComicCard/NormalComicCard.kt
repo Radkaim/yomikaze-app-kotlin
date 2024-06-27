@@ -170,7 +170,7 @@ fun NormalComicCard(
                             color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                         Text(
-                            text = cutAuthorName(processAuthorName(authorNames)),
+                            text = cutAuthorName(processNameByComma(authorNames)),
                             style = TextStyle(
                                 fontStyle = FontStyle.Italic,
                                 fontWeight = FontWeight.Light,
@@ -269,8 +269,8 @@ private fun cutComicName(comicName: String): String {
     }
 }
 
-private fun processAuthorName(authorNames: List<String>): String {
-    return authorNames.joinToString(", ")
+fun processNameByComma(strings: List<String>): String {
+    return strings.joinToString(", ")
 }
 
 private fun cutAuthorName(authorName: String): String {

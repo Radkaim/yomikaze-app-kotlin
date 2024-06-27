@@ -6,6 +6,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByCommentsRanking
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByFollowRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByRatingRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByViewRankingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
@@ -102,6 +103,15 @@ object UseCaseModule {
     @Singleton
     fun provideGetComicByFollowRankingUseCase(comicRepository: ComicRepository): GetComicByFollowRankingUC {
         return GetComicByFollowRankingUC(comicRepository)
+    }
+
+    /**
+     * Todo: Provide the GetComicDetailsFromApiUC
+     */
+    @Provides
+    @Singleton
+    fun provideGetComicDetailsFromApiUC(comicRepository: ComicRepository): GetComicDetailsFromApiUC {
+        return GetComicDetailsFromApiUC(comicRepository)
     }
 
 }

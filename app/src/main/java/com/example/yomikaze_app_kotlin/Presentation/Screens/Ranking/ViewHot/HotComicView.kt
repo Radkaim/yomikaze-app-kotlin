@@ -71,7 +71,7 @@ fun HotComicViewContent(
                     status = comic.status,
                     authorNames = comic.authors,
                     publishedDate = comic.publicationDate,
-                    ratingScore = comic.rating,
+                    ratingScore = comic.averageRating,
                     follows = comic.follows,
                     views = comic.views,
                     comments = comic.comments,

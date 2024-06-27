@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
-import com.example.yomikaze_app_kotlin.Domain.Models.Comic
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
 import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicItem
@@ -98,6 +97,7 @@ fun HomeView(
         if (CheckNetwork()) {
             // Show UI when connectivity is available
             HomeContent(state, homeViewModel, navController, searchWidgetState = searchWidgetState)
+            homeViewModel.getComicByViewRanking(3)
         } else {
             // Show UI for No Internet Connectivity
             UnNetworkScreen()
@@ -117,7 +117,7 @@ fun SearchResultItem(
         status = comic.status,
         authorNames = comic.authors,
         publishedDate = comic.publicationDate,
-        ratingScore = comic.rating,
+        ratingScore = comic.averageRating,
         follows = comic.follows,
         views = comic.views,
         comments = comic.comments,
@@ -178,10 +178,6 @@ fun HomeContent(
     searchWidgetState: SearchWidgetState,
 
     ) {
-    val comics = getListComicForRanking() // test data
-    val comic = getListCardComicHistory()
-    val comicCard = getListCardComicWeekly()
-
     if (searchWidgetState == SearchWidgetState.OPEN) {
         LazyColumn(
             modifier = Modifier
@@ -233,50 +229,6 @@ fun HomeContent(
 }
 
 
-fun getListComicForRanking(): List<Comic> {
-    val comics = listOf(
-        Comic(
-            comicId = 1,
-            rankingNumber = 1,
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicName = "Hunter X Hunter",
-            status = "On Going",
-            authorNames = listOf("Yoshihiro Togashi", "hung"),
-            publishedDate = "1998-03-03",
-            ratingScore = 9.5f,
-            follows = 100,
-            views = 100,
-            comments = 100
-        ),
-        Comic(
-            comicId = 2,
-            rankingNumber = 2,
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicName = "Hunter X Hunter12323",
-            status = "On Going",
-            authorNames = listOf("Yoshihiro Togashi", "hung"),
-            publishedDate = "1998-03-03",
-            ratingScore = 9.5f,
-            follows = 100,
-            views = 100,
-            comments = 10
-        ),
-        Comic(
-            comicId = 3,
-            rankingNumber = 3,
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f",
-            comicName = "Hunter X Hunter12323",
-            status = "On Going",
-            authorNames = listOf("Yoshihiro Togashi", "hung"),
-            publishedDate = "1998-03-03",
-            ratingScore = 9.5f,
-            follows = 100,
-            views = 100,
-            comments = 10
-        )
-    )
-    return comics
-}
 
 fun getListCardComicHistory(): List<CardComicItem> {
     val comics = listOf(
@@ -535,7 +487,6 @@ fun tabSelected(tabIndex: Int, homeViewModel: HomeViewModel, state: HomeState) {
 
 @Composable
 fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
-    //val comics = getListComicForRanking()
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp), // 15.dp space between each card
         modifier = Modifier
@@ -557,13 +508,12 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
                 status = comic.status,
                 authorNames = comic.authors,
                 publishedDate = comic.publicationDate,
-                ratingScore = comic.rating,
+                ratingScore = comic.averageRating,
                 follows = comic.follows,
                 views = comic.views,
                 comments = comic.comments,
-                modifier = Modifier
-                    .fillMaxWidth() // Make sure each card takes the full width
-                    .clickable { homeViewModel.onComicRankingClicked(comic.comicId) }
+                modifier = Modifier.fillMaxWidth(), // Make sure each card takes the full width
+                onClicked = { homeViewModel.onComicRankingClicked(comic.comicId) }
             )
             // Add space between each card
         }
@@ -572,7 +522,6 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
 
 @Composable
 fun showWeekly(state: HomeState, navController: NavController) {
-//    Spacer(modifier = Modifier.height(10.dp))
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

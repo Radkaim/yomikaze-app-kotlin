@@ -11,6 +11,10 @@ import javax.inject.Inject
 class ComicRepositoryImpl @Inject constructor(
     private val api: ComicApiService
 ) : ComicRepository {
+
+    /**
+     * TODO: Implement the function to get hot comic banner images
+     */
     override suspend fun getHotComicBannerImages(): Result<List<ComicResponseTest>> {
         return try {
             val response = api.getHotComicBannerImages()
@@ -20,6 +24,9 @@ class ComicRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * TODO: Implement the function to search comic by name
+     */
     override suspend fun searchComic(
         token: String,
         comicNameQuery: String,
@@ -32,6 +39,9 @@ class ComicRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * TODO: Implement the function to get comic by view ranking
+     */
     override suspend fun getComicByViewRanking(
         token: String,
         orderByTotalViews: String,
@@ -45,6 +55,9 @@ class ComicRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * TODO: Implement the function to get comic by comments ranking
+     */
     override suspend fun getComicByCommentsRanking(
         token: String,
         orderByTotalComments: String,
@@ -59,6 +72,9 @@ class ComicRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * TODO: Implement the function to get comic by follow ranking
+     */
     override suspend fun getComicByFollowRanking(
         token: String,
         orderByTotalFollows: String,
@@ -72,6 +88,9 @@ class ComicRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * TODO: Implement the function to get comic by rating ranking
+     */
     override suspend fun getComicByRatingRanking(
         token: String,
         orderByTotalRatings: String,
@@ -79,6 +98,21 @@ class ComicRepositoryImpl @Inject constructor(
     ): Result<BaseResponse<ComicResponse>> {
         return try {
             val response = api.getComicByRatingRanking("Bearer $token", orderByTotalRatings, size)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * TODO: Implement the function to get comic details by comic id
+     */
+    override suspend fun getComicDetailsFromApi(
+        token: String,
+        comicId: Long,
+    ): Result<ComicResponse> {
+        return try {
+            val response = api.getComicDetailsFromAPI("Bearer $token", comicId)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

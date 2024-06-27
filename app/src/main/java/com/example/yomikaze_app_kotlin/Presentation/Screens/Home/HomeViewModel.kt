@@ -48,7 +48,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getComicByViewRanking(3)
             checkUserIsLogin()
         }
     }
