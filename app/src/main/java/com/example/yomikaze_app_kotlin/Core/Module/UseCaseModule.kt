@@ -2,6 +2,8 @@ package com.example.yomikaze_app_kotlin.Core.Module
 
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
+import com.example.yomikaze_app_kotlin.Domain.UseCases.DownloadUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByCommentsRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByFollowRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByRatingRankingUC
@@ -114,4 +116,16 @@ object UseCaseModule {
         return GetComicDetailsFromApiUC(comicRepository)
     }
 
+
+    /**
+     * Todo: Provide the DownloadDBUC
+     */
+    @Provides
+    @Singleton
+    fun provideDownloadDBUC(
+        comicRepository: ComicRepository,
+        imageRepository: ImageRepository
+    ): DownloadUC {
+        return DownloadUC(comicRepository, imageRepository)
+    }
 }

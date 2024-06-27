@@ -66,5 +66,6 @@ data class Chapter(
 
     //for database
     @ColumnInfo(name = "isLocked")
-    val isLocked: Boolean
-) : BaseModel()
+    val isLocked: Boolean,
+
+    )

@@ -11,20 +11,21 @@ import com.google.gson.annotations.SerializedName
 
 data class ComicResponseTest(
     @SerializedName("albumId")
-    val albumId : Int,
+    val albumId: Int,
 
     @SerializedName("id")
-    val id : Int,
+    val id: Int,
 
     @SerializedName("title")
-    val title : String,
+    val title: String,
 
     @SerializedName("url")
-    val url : String,
+    val url: String,
 
     @SerializedName("thumbnailUrl")
-    val thumbnailUrl : String,
+    val thumbnailUrl: String,
 )
+
 @Entity(tableName = "comics")
 data class ComicResponse(
 
@@ -126,8 +127,8 @@ data class ComicResponse(
 
     //for database
     @ColumnInfo(name = "totalMbs")
-    val totalMbs : Float
-) : BaseModel()
+    val totalMbs: Float,
+)
 
 data class Comic(
     val comicId: Long,
@@ -142,13 +143,14 @@ data class Comic(
     val views: Long,
     val comments: Long
 )
+
 data class ComicChapter(
     val chapterId: Int? = null,
     val rankingNumber: Int? = null,
 
-    val chapterIndex : Int,
+    val chapterIndex: Int,
     val title: String,
-    val isLocked : Boolean,
+    val isLocked: Boolean,
     val image: String? = null,
     val comicName: String? = null,
     val status: String? = null,

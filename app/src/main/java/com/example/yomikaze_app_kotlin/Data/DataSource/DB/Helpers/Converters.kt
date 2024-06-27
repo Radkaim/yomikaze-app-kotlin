@@ -2,8 +2,6 @@ package com.example.yomikaze_app_kotlin.Data.DataSource.DB.Helpers
 
 import androidx.room.TypeConverter
 import com.example.yomikaze_app_kotlin.Domain.Models.Tag
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 
 class Converters {
@@ -17,25 +15,36 @@ class Converters {
         return value?.split(",")?.map { it.trim() }
     }
 
+//    @TypeConverter
+//    fun fromTagList(tags: List<Tag>?): String? {
+//        return if (tags == null) {
+//            null
+//        } else {
+//            Gson().toJson(tags)
+//        }
+//    }
+//
+//    @TypeConverter
+//    fun toTagList(tagsString: String?): List<Tag>? {
+//        return if (tagsString == null) {
+//            null
+//        } else {
+//            val listType = object : TypeToken<List<Tag>>() {}.type
+//            Gson().fromJson(tagsString, listType)
+//        }
+//    }
+
     @TypeConverter
     fun fromTagList(tags: List<Tag>?): String? {
-        return if (tags == null) {
-            null
-        } else {
-            Gson().toJson(tags)
-        }
+        return tags?.joinToString(",") { it.tagId.toString() }
     }
 
     @TypeConverter
-    fun toTagList(tagsString: String?): List<Tag>? {
-        return if (tagsString == null) {
-            null
-        } else {
-            val listType = object : TypeToken<List<Tag>>() {}.type
-            Gson().fromJson(tagsString, listType)
+    fun toTagList(tags: String?): List<Tag>? {
+        return tags?.split(",")?.map {
+            Tag(it.toLong(), "", "", "", "")
         }
     }
-
 //    @TypeConverter
 //    fun fromTagList(value: List<Tag>?): String? {
 //        val gson = Gson()

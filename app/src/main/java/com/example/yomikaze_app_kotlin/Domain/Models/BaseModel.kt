@@ -9,11 +9,16 @@ open class BaseModel {
     @SerializedName("creationDate")
     //for database
     @ColumnInfo(name = "creationDate")
-    var creationDate: String = ""
+    open var creationDate: String = ""
 
     //for api
     @SerializedName("lastModified")
     //for database
     @ColumnInfo(name = "lastModified")
-    var lastModified: String = ""
+    open var lastModified: String = ""
+
+    constructor(creationDate: String, lastModified: String) {
+        this.creationDate = creationDate
+        this.lastModified = lastModified
+    }
 }

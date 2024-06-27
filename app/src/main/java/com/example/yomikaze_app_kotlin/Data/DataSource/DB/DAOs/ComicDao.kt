@@ -10,14 +10,14 @@ import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 @Dao
 interface ComicDao {
     @Query("SELECT * FROM comics")
-    fun getAllComicsDownloaded(): List<ComicResponse>
+    fun getAllComicsDownloadedDB(): List<ComicResponse>
 
     @Query("SELECT * FROM comics WHERE id = :comicId")
-    fun getComicById(comicId: Long): ComicResponse
+    fun getComicByIdDB(comicId: Long): ComicResponse
 
     //insert comic
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertComic(comic: ComicResponse)
+    suspend fun insertComicDB( comic: ComicResponse)
 
     // update total mbs of comic
     @Query("UPDATE comics SET totalMbs = :totalsMbs WHERE id = :comicId")
@@ -25,5 +25,5 @@ interface ComicDao {
 
     //delete comic
     @Delete
-    suspend fun deleteComic(comic: ComicResponse)
+    suspend fun deleteComicDB(comic: ComicResponse)
 }

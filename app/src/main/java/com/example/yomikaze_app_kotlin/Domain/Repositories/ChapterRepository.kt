@@ -4,5 +4,5 @@ import android.content.Context
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 
 interface ChapterRepository {
-    suspend fun downloadChapter(chapter: Chapter,context: Context)
+    suspend fun downloadPagesOfChapter(chapter: Chapter, context: Context)
 }

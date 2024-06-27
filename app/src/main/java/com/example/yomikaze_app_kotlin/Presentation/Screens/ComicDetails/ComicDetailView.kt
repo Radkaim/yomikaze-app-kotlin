@@ -83,7 +83,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.Menu
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
-fun ComicDetailsView(
+ fun ComicDetailsView(
     comicId: Long,
     navController: NavController,
     comicDetailViewModel: ComicDetailViewModel = hiltViewModel()
@@ -95,6 +95,7 @@ fun ComicDetailsView(
     //set navController for viewModel
     comicDetailViewModel.setNavController(navController)
     comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+    //comicDetailViewModel.downloadComic(state.comicResponse ?: return)
 
     ComicDetailContent(
         navController = navController,
@@ -235,9 +236,10 @@ fun ComicDetailContent(
                 .fillMaxSize()
         ) {
             // banner image
+            ///data/user/0/com.example.yomikaze_app_kotlin/files/image_1719475024110.jpg
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(APIConfig.imageAPIURL.toString() + state.comicResponse?.banner)
+                    .data("APIConfig.imageAPIURL.toString() + state.comicResponse?.banner")
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 placeholder = painterResource(R.drawable.placeholder_430_184),

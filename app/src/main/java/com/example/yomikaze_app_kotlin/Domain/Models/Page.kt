@@ -16,7 +16,7 @@ import com.google.gson.annotations.SerializedName
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class Page (
+data class Page(
     //for api
     @SerializedName("id")
     //for database
@@ -47,4 +47,4 @@ data class Page (
     //for database
     @ColumnInfo(name = "imageLocalPath")
     val imageLocalPath: String?,
-): BaseModel()
+)

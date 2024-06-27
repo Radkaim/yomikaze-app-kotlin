@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Domain.Repositories
 
+import android.content.Context
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
@@ -60,4 +61,18 @@ interface ComicRepository {
         token: String,
         comicId: Long,
     ): Result<ComicResponse>
+
+
+    /**
+     * TODO: use for download comic and add to database
+     */
+    suspend fun insertComicDB(
+        comic: ComicResponse,
+        context: Context
+    )
+
+    /**
+     * TODO: use for get all comic downloaded in database
+     */
+    suspend fun getAllComicsDownloadedDB(): Result<List<ComicResponse>>
 }

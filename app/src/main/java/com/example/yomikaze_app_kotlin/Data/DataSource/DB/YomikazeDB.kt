@@ -14,7 +14,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.Page
 
 @Database(
     entities = [ComicResponse::class, Chapter::class, Page::class],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

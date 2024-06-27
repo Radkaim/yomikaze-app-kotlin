@@ -4,14 +4,16 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
+import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.PageDao
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.AuthRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ChapterRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ComicRepositoryImpl
-import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.PageRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ImageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import dagger.Module
 import dagger.Provides
@@ -42,8 +44,10 @@ object RepoModule {
     @Singleton
     fun provideComicRepository(
         api: ComicApiService,
+        comicDao: ComicDao,
+        imageRepository: ImageRepository
     ): ComicRepository {
-        return ComicRepositoryImpl(api)
+        return ComicRepositoryImpl(api, comicDao, imageRepository)
     }
 
     /**
@@ -54,7 +58,7 @@ object RepoModule {
     fun provideChapterRepository(
         chapterDao: ChapterDao,
         pageDao: PageDao,
-        imageRepository: PageRepository,
+        imageRepository: ImageRepository,
         pageRepository: PageRepository
     ): ChapterRepository {
         return ChapterRepositoryImpl(chapterDao, pageDao, imageRepository, pageRepository)
@@ -66,8 +70,8 @@ object RepoModule {
      */
     @Provides
     @Singleton
-    fun provideImageRepository(): PageRepository {
-        return PageRepositoryImpl()
+    fun provideImageRepository(): ImageRepository {
+        return ImageRepositoryImpl()
     }
 
 }
