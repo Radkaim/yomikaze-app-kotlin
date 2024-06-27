@@ -30,7 +30,7 @@ class ChapterRepositoryImpl @Inject constructor(
 
                 var localPath: String? = null
                 when (imageResult) {
-                    is ImageRepositoryImpl.DownloadResult.Success -> {
+                    is DownloadResult.Success -> {
                         localPath = imageRepository.returnImageLocalPath(
                             imageResult.imageData,
                             context
@@ -38,7 +38,7 @@ class ChapterRepositoryImpl @Inject constructor(
                         totalSize += imageResult.imageData.size.toLong()
                     }
 
-                    is ImageRepositoryImpl.DownloadResult.Failure -> {
+                    is DownloadResult.Failure -> {
                         // Xử lý khi tải ảnh thất bại
                         Log.e(
                             "PageRepositoryImpl",

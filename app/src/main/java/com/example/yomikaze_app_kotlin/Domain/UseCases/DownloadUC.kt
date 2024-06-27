@@ -1,7 +1,7 @@
 package com.example.yomikaze_app_kotlin.Domain.UseCases
 
 import android.content.Context
-import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ImageRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.DownloadResult
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
@@ -24,7 +24,7 @@ class DownloadUC @Inject constructor(
         return comicRepository.getAllComicsDownloadedDB()
     }
 
-    suspend fun testDownloadComic(url: String): ImageRepositoryImpl.DownloadResult {
+    suspend fun testDownloadComic(url: String): DownloadResult {
         return imageRepository.downloadImageFromApi(url)
     }
     suspend fun testReturnImageLocalPath(image: ByteArray, context: Context): String {

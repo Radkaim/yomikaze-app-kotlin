@@ -9,7 +9,10 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
-
+sealed class DownloadResult {
+    data class Success(val imageData: ByteArray) : DownloadResult()
+    object Failure : DownloadResult()
+}
 class ImageRepositoryImpl @Inject constructor(
 
 ) : ImageRepository {
@@ -23,10 +26,7 @@ class ImageRepositoryImpl @Inject constructor(
         return file.absolutePath
     }
 
-    sealed class DownloadResult {
-        data class Success(val imageData: ByteArray) : DownloadResult()
-        object Failure : DownloadResult()
-    }
+
 
     override suspend fun downloadImageFromApi(imageUrl: String): DownloadResult {
         var connection: HttpURLConnection? = null

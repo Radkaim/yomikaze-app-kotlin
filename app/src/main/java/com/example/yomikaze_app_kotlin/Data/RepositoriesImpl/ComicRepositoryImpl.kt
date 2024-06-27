@@ -138,22 +138,22 @@ class ComicRepositoryImpl @Inject constructor(
             var bannerLocalPath: String? = null
 
             when (coverResult) {
-                is ImageRepositoryImpl.DownloadResult.Success -> {
+                is DownloadResult.Success -> {
                     coverLocalPath = imageRepository.returnImageLocalPath(coverResult.imageData, context)
                     Log.d("ComicRepositoryImpl", "insertComicDB: Cover local path = $coverLocalPath")
                 }
-                ImageRepositoryImpl.DownloadResult.Failure -> {
+                DownloadResult.Failure -> {
                     // Xử lý khi tải ảnh bìa thất bại
                     Log.e("ComicRepositoryImpl", "Failed to download cover image")
                     // Có thể hiển thị thông báo cho người dùng hoặc xử lý theo cách khác tùy vào yêu cầu của ứng dụng
                 }
             }
             when (bannerResult) {
-                is ImageRepositoryImpl.DownloadResult.Success -> {
+                is DownloadResult.Success -> {
                     bannerLocalPath = imageRepository.returnImageLocalPath(bannerResult.imageData, context)
                     Log.d("ComicRepositoryImpl", "insertComicDB: Banner local path = $bannerLocalPath")
                 }
-                ImageRepositoryImpl.DownloadResult.Failure -> {
+                DownloadResult.Failure -> {
                     // Xử lý khi tải ảnh banner thất bại
                     Log.e("ComicRepositoryImpl", "Failed to download banner image")
                     // Có thể hiển thị thông báo cho người dùng hoặc xử lý theo cách khác tùy vào yêu cầu của ứng dụng
