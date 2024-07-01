@@ -8,8 +8,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.DownloadUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicDetailsFromApiUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.RatingComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +24,9 @@ import javax.inject.Inject
 class ComicDetailViewModel @Inject constructor(
     private val getComicDetailsFromApiUC: GetComicDetailsFromApiUC,
     appPreference: AppPreference,
-     @ApplicationContext private val context: Context,
-    private val downloadUC: DownloadUC
+    @ApplicationContext private val context: Context,
+    private val downloadUC: DownloadUC,
+    private val ratingComicUC: RatingComicUC
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -43,8 +46,7 @@ class ComicDetailViewModel @Inject constructor(
         navController?.navigate("view_chapter_route/$chapterId")
     }
 
-
-     fun getComicDetailsFromApi(comicId: Long) {
+    fun getComicDetailsFromApi(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -59,7 +61,7 @@ class ComicDetailViewModel @Inject constructor(
                         listTagGenres = comicDetailResponse.tags,
                         isLoading = false,
                     )
-                  //  comic = comicDetailResponse
+                    //  comic = comicDetailResponse
                     downloadComic(comicDetailResponse)
                     Log.d("ComicDetailsViewModel", "ComicDetailsViewLocal: $comic")
                 },
@@ -89,6 +91,25 @@ class ComicDetailViewModel @Inject constructor(
 //            Log.e("ComicDetailViewModelDownload", "downloadComic1: $resultAfter")
 //            val resultAfter2 = downloadUC.testReturnImageLocalPath(result2, context)
 //            Log.e("ComicDetailViewModelDownload", "downloadComic2: $resultAfter2")
+        }
+    }
+
+    /**
+     * Todo: Implement rating comic in comic detail view
+     */
+    fun rateComic(comicId: Long, rating: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val ratingRequest = RatingRequest(rating)
+
+            val result = ratingComicUC.ratingComic(token, comicId, ratingRequest)
+            Log.d("Rating", "rateComic: ${result.code()}")
+            if (result.code() == 200) {
+                _state.value = _state.value.copy(isRatingComicSuccess = true)
+            } else {
+                Log.e("Rating", "rateComic: $result")
+            }
         }
     }
 }

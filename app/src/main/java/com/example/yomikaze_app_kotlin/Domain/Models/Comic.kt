@@ -162,4 +162,7 @@ data class ComicChapter(
     val comments: Long
 )
 
-
+data class RatingRequest(
+    @SerializedName("rating")
+    val rating: Int
+)

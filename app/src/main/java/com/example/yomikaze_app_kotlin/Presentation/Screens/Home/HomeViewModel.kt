@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByCommentsRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByFollowRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByRatingRankingUC
@@ -66,6 +67,10 @@ class HomeViewModel @Inject constructor(
         this.navController = navController
     }
 
+    fun updateSearchResult(newSearchResult: List<ComicResponse>) {
+        _state.value = _state.value.copy(searchResult = mutableStateOf(newSearchResult))
+    }
+
 //    fun fetchImages() {
 //        viewModelScope.launch {
 //            val result = getHotComicBannerUseCase.getHotComicBannerImages()
@@ -94,7 +99,8 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(listRankingComics = results)
+                    //_state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
+                    _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -116,7 +122,8 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(listRankingComics = results)
+                  //  _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
+                    _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -139,7 +146,8 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(listRankingComics = results)
+                  //  _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
+                    _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -161,7 +169,8 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(listRankingComics = results)
+                 //   _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
+                    _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -183,7 +192,8 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(searchResult = results)
+                    _state.value.searchResult.value = results
+
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi

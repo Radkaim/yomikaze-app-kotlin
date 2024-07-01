@@ -8,4 +8,5 @@ data class ComicDetailState(
     // val listComicChapters: List<ComicChapter>? = emptyList()
     val listTagGenres: List<Tag>? = emptyList(),
     val isLoading: Boolean = true,
+    val isRatingComicSuccess: Boolean = false // Đổi thành Boolean thay vì MutableState<Boolean>
 )

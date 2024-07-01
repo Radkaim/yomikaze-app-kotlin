@@ -13,6 +13,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.SearchComicUC
 import dagger.Module
 import dagger.Provides
@@ -127,5 +128,14 @@ object UseCaseModule {
         imageRepository: ImageRepository
     ): DownloadUC {
         return DownloadUC(comicRepository, imageRepository)
+    }
+
+    /**
+     * Todo: Provide the RatingComicUC
+     */
+    @Provides
+    @Singleton
+    fun provideRatingComicUC(comicRepository: ComicRepository): RatingComicUC {
+        return RatingComicUC(comicRepository)
     }
 }

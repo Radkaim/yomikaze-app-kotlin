@@ -82,7 +82,7 @@ fun HomeView(
                 onCloseClicked = {
                     homeViewModel.updateSearchText(newValue = "")
                     homeViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
-                    state.searchResult = emptyList()
+                    homeViewModel.updateSearchResult(newSearchResult = emptyList()) // Cập nhật searchResult
                 },
                 onSearchClicked = {
                     Log.d("HomeView", "Search text: $searchTextState")
@@ -192,7 +192,7 @@ fun HomeContent(
                 ),// Optional padding for the entire list,
             verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
-            items(state.searchResult) { comic ->
+            items(state.searchResult.value) { comic ->
                 SearchResultItem(comic = comic, homeViewModel = homeViewModel)
             }
         }
@@ -499,7 +499,7 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
             .background(MaterialTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
     ) {
-        state.listRankingComics.forEachIndexed { index, comic ->
+        state.listRankingComics.value.forEachIndexed { index, comic ->
             RankingComicCard(
                 comicId = comic.comicId,
                 rankingNumber = index + 1,

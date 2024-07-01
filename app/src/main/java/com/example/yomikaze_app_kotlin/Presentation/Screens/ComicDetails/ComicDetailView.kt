@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
 import android.util.Log
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -56,6 +57,8 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -83,7 +86,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.Menu
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
- fun ComicDetailsView(
+fun ComicDetailsView(
     comicId: Long,
     navController: NavController,
     comicDetailViewModel: ComicDetailViewModel = hiltViewModel()
@@ -92,12 +95,14 @@ import com.example.yomikaze_app_kotlin.R
     val state by comicDetailViewModel.state.collectAsState()
 
 
+
     //set navController for viewModel
     comicDetailViewModel.setNavController(navController)
     comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
     //comicDetailViewModel.downloadComic(state.comicResponse ?: return)
 
     ComicDetailContent(
+        comicId = comicId,
         navController = navController,
         comicDetailViewModel = comicDetailViewModel,
         state = state
@@ -111,6 +116,7 @@ import com.example.yomikaze_app_kotlin.R
  */
 @Composable
 fun ComicDetailContent(
+    comicId: Long,
     navController: NavController,
     comicDetailViewModel: ComicDetailViewModel,
     state: ComicDetailState
@@ -319,7 +325,7 @@ fun ComicDetailContent(
                                         Text(
                                             text = menuOptions.title,
                                             color = MaterialTheme.colorScheme.inverseSurface,
-                                            fontSize = 16.sp,
+                                            fontSize = 14.sp,
                                             fontWeight = FontWeight.Normal
                                         )
                                     }
@@ -334,11 +340,14 @@ fun ComicDetailContent(
                         }
                         if (showDialog != null) {
                             when (showDialog) {
-                                1 -> CustomDialog3(onDismiss = { showDialog = null })
+                                1 -> AddToLibraryDialog(onDismiss = { showDialog = null })
                                 2 -> CustomDialog4(onDismiss = { showDialog = null })
                                 3 -> RatingComicDialog(
+                                    comicId = comicId,
                                     onDismiss = { showDialog = null },
-                                    onVote = {})
+                                    state = state,
+                                    comicDetailViewModel = comicDetailViewModel
+                                )
 
                                 4 -> CustomDialog4(onDismiss = { showDialog = null })
                                 5 -> CustomDialog4(onDismiss = { showDialog = null })
@@ -723,7 +732,20 @@ fun changeColorForTabComicDetail(tabIndex: Int, index: Int): Color {
  */
 
 @Composable
-fun CustomDialog3(onDismiss: () -> Unit) {
+fun AddToLibraryDialog(onDismiss: () -> Unit) {
+    val categories = listOf(
+        "Category 1",
+        "Category 2",
+        "Category 3",
+        "Category 4",
+        "Category 5",
+        "Category 6",
+        "Category 7"
+    )
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
+    var selectedCategories by remember { mutableStateOf(listOf<String>()) }
+
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -734,25 +756,65 @@ fun CustomDialog3(onDismiss: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Gray.copy(alpha = 0.7f)) // Màu xám với độ mờ
-                .offset(y = (100).dp)
+                .background(Color.Gray.copy(alpha = 0.7f))
                 .clickable { onDismiss() }
         ) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    Text(text = "Dialog 1")
+                    Text(text = "Select Categories", style = MaterialTheme.typography.bodySmall)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = onDismiss) {
-                        Text("OK")
+                    LazyColumn {
+                        items(categories) { category ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        selectedCategories =
+                                            if (selectedCategories.contains(category)) {
+                                                selectedCategories - category
+                                            } else {
+                                                selectedCategories + category
+                                            }
+                                    }
+                                    .padding(8.dp)
+                            ) {
+                                CircleCheckbox(
+                                    checked = selectedCategories.contains(category),
+                                    onCheckedChange = { checked ->
+                                        selectedCategories = if (checked) {
+                                            selectedCategories + category
+                                        } else {
+                                            selectedCategories - category
+                                        }
+                                    }
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = category)
+                            }
+                        }
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            //viewModel.addToLibrary(selectedCategories)
+                            Log.d("AddToLibraryDialog", "Selected categories: $selectedCategories")
+                            onDismiss()
+                        }
+                    ) {
+                        Text("Add to Library")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
                     Button(onClick = onDismiss) {
                         Text("Cancel")
                     }
@@ -762,14 +824,51 @@ fun CustomDialog3(onDismiss: () -> Unit) {
     }
 }
 
+// Custom CircleCheckbox Composable
+@Composable
+fun CircleCheckbox(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Canvas(
+        modifier = modifier
+            .size(24.dp)
+            .clickable { onCheckedChange(!checked) }
+    ) {
+        val color = if (checked) Color.Red else Color.Gray
+        val path = Path().apply {
+            moveTo(size.width / 2, size.height / 5)
+            cubicTo(
+                size.width / 7, 0f,
+                0f, size.height / 2.5f,
+                size.width / 2, size.height
+            )
+            cubicTo(
+                size.width, size.height / 2.5f,
+                size.width - size.width / 7, 0f,
+                size.width / 2, size.height / 5
+            )
+            close()
+        }
+        drawPath(
+            path = path,
+            color = color,
+            style = if (checked) Fill else Stroke(width = 2.dp.toPx())
+        )
+    }
+}
+
 @Composable
 fun RatingComicDialog(
-    onDismiss: () -> Unit,
-    onVote: () -> Unit
+    comicId: Long,
+    state: ComicDetailState,
+    comicDetailViewModel: ComicDetailViewModel,
+    onDismiss: () -> Unit
 ) {
+    Log.d("RatingComicDialog", "RatingComicDialog: $comicId")
     // Remember the state of the stars
     val starState = remember { mutableStateListOf(false, false, false, false, false) }
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -850,9 +949,15 @@ fun RatingComicDialog(
                             ),
                             onClick = {
                                 val selectedStars = starState.count { it }
-                                //viewModel.onVote(selectedStars)
+                                comicDetailViewModel.rateComic(comicId, selectedStars)
                                 Log.d("RatingComicDialog", "Selected stars: $selectedStars")
-                                onDismiss()
+                                if(state.isRatingComicSuccess){
+                                        onDismiss()
+                                }
+                                else{
+                                    onDismiss()
+                                }
+//
                             }) {
                             Text(
                                 text = "Vote",

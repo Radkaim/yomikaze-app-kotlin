@@ -3,8 +3,12 @@ package com.example.yomikaze_app_kotlin.Data.DataSource.API
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
+import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
+import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -76,4 +80,14 @@ interface ComicApiService {
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,
     ): ComicResponse
+
+    /**
+     * TODO: use for rating a comic
+     */
+    @PUT("comics/{key}/rate")
+    suspend fun rateComic(
+        @Header("Authorization") token: String,
+        @Path("key") comicId: Long,
+        @Body body: RatingRequest
+    ): Response<Unit>
 }

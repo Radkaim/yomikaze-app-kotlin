@@ -8,8 +8,10 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
+import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
+import retrofit2.Response
 import javax.inject.Inject
 
 class ComicRepositoryImpl @Inject constructor(
@@ -139,9 +141,14 @@ class ComicRepositoryImpl @Inject constructor(
 
             when (coverResult) {
                 is DownloadResult.Success -> {
-                    coverLocalPath = imageRepository.returnImageLocalPath(coverResult.imageData, context)
-                    Log.d("ComicRepositoryImpl", "insertComicDB: Cover local path = $coverLocalPath")
+                    coverLocalPath =
+                        imageRepository.returnImageLocalPath(coverResult.imageData, context)
+                    Log.d(
+                        "ComicRepositoryImpl",
+                        "insertComicDB: Cover local path = $coverLocalPath"
+                    )
                 }
+
                 DownloadResult.Failure -> {
                     // Xử lý khi tải ảnh bìa thất bại
                     Log.e("ComicRepositoryImpl", "Failed to download cover image")
@@ -150,9 +157,14 @@ class ComicRepositoryImpl @Inject constructor(
             }
             when (bannerResult) {
                 is DownloadResult.Success -> {
-                    bannerLocalPath = imageRepository.returnImageLocalPath(bannerResult.imageData, context)
-                    Log.d("ComicRepositoryImpl", "insertComicDB: Banner local path = $bannerLocalPath")
+                    bannerLocalPath =
+                        imageRepository.returnImageLocalPath(bannerResult.imageData, context)
+                    Log.d(
+                        "ComicRepositoryImpl",
+                        "insertComicDB: Banner local path = $bannerLocalPath"
+                    )
                 }
+
                 DownloadResult.Failure -> {
                     // Xử lý khi tải ảnh banner thất bại
                     Log.e("ComicRepositoryImpl", "Failed to download banner image")
@@ -190,17 +202,53 @@ class ComicRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             throw e
         }
-}
+    }
 
-/**
- * TODO: Implement the function to get all comic downloaded in database
- */
-override suspend fun getAllComicsDownloadedDB(): Result<List<ComicResponse>> {
-    return try {
-        val response = comicDao.getAllComicsDownloadedDB()
-        Result.success(response)
-    } catch (e: Exception) {
-        Result.failure(e)
+    /**
+     * TODO: Implement the function to get all comic downloaded in database
+     */
+    override suspend fun getAllComicsDownloadedDB(): Result<List<ComicResponse>> {
+        return try {
+            val response = comicDao.getAllComicsDownloadedDB()
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * TODO: Implement the function to rate a comic
+     *
+     */
+    override suspend fun rateComic(
+        token: String,
+        comicId: Long,
+        rating: RatingRequest
+    ): Response<Unit> {
+        // check status code of response
+        val response = api.rateComic("Bearer $token", comicId, rating)
+        if (response.isSuccessful) {
+           Result.success(Unit)
+        } else {
+            val httpCode = response.code()
+            when (httpCode) {
+                400 -> {
+                    // Xử lý lỗi 400 (Bad Request)
+                    Log.e("ComicRepositoryImpl", "Bad Request")
+                }
+
+                401 -> {
+                    // Xử lý lỗi 401 (Unauthorized)
+                    Log.e("ComicRepositoryImpl", "Unauthorized")
+                }
+                // Xử lý các mã lỗi khác
+                else -> {
+                    // Xử lý mặc định cho các mã lỗi khác
+                }
+            }
+            Result.failure(Exception("Failed to rate comic"))
+        }
+        return response
     }
 }
-}
+

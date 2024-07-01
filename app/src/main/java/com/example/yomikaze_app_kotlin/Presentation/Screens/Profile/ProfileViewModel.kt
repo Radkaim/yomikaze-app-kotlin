@@ -54,7 +54,7 @@ class ProfileViewModel @Inject constructor(
                     _state.value = _state.value.copy(userInfo = userInfoResponse)
                     _state.value = _state.value.copy(userRole = userInfoResponse.data.claims.roles)
                     _state.value =
-                        _state.value.copy(username = userInfoResponse.data.user.username)
+                        _state.value.copy(username = userInfoResponse.data.user.name)
                     Log.d("ProfileViewModel", "getUserInfo: $userInfoResponse")
                 }.onFailure { error ->
                     Log.d("ProfileViewModel", "getUserInfo: $error")
