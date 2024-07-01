@@ -239,13 +239,13 @@ fun ComicDetailContent(
             ///data/user/0/com.example.yomikaze_app_kotlin/files/image_1719475024110.jpg
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("APIConfig.imageAPIURL.toString() + state.comicResponse?.banner")
+                    .data(APIConfig.imageAPIURL.toString() + state.comicResponse?.banner)
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 placeholder = painterResource(R.drawable.placeholder_430_184),
                 error = painterResource(R.drawable.placeholder_430_184),
                 contentDescription = "Comic Banner Image",
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(184.dp)

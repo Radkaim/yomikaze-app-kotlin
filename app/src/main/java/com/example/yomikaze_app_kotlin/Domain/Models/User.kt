@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
 
 
-
 /**
  * Login
  */
@@ -14,7 +13,10 @@ data class LoginRequest(
     val username: String,
 
     @SerializedName("password")
-    val password: String
+    val password: String,
+
+    @SerializedName("twoFactorCode")
+    val twoFactorCode: String? = null // Thêm trường tùy chọn
 )
 
 /**
@@ -107,6 +109,7 @@ data class UserData(
     @ColumnInfo(name = "claims")
     val claims: UserClaims
 )
+
 data class DataUser(
     //for api
     @SerializedName("user")
@@ -123,23 +126,30 @@ data class User(
     val id: Long,
 
     //for api
-    @SerializedName("userName")
+    @SerializedName("ame")
     //for database
-    @ColumnInfo(name = "username")
-    val username: String,
+    @ColumnInfo(name = "name")
+    val name: String,
 
     //for api
-    @SerializedName("email")
+    @SerializedName("balance")
     //for database
-    @ColumnInfo(name = "email")
-    val email: String,
+    @ColumnInfo(name = "balance")
+    val balance: Int,
 
-    //for api
-    @SerializedName("isAdmin")
-    //for database
-    @ColumnInfo(name = "isAdmin")
-    val isAdmin: Boolean,
+//    //for api
+//    @SerializedName("email")
+//    //for database
+//    @ColumnInfo(name = "email")
+//    val email: String,
+//
+//    //for api
+//    @SerializedName("isAdmin")
+//    //for database
+//    @ColumnInfo(name = "isAdmin")
+//    val isAdmin: Boolean,
 )
+
 data class UserClaims(
 
     @SerializedName("jti")
@@ -147,6 +157,9 @@ data class UserClaims(
 
     @SerializedName("iat")
     val iat: String,
+
+    @SerializedName("exp")
+    val exp: String,
 
     @SerializedName("sub")
     val sub: String,

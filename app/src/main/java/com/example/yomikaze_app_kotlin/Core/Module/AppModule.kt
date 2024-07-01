@@ -14,8 +14,8 @@ import javax.inject.Singleton
 
 enum class API(private val url: String) {
     TEST("https://jsonplaceholder.typicode.com/"),
-    PRODUCTION("https://yomikaze.org/api/"),
-    COVER_IMAGE("https://yomikaze.org");
+    PRODUCTION("https://api.yomikaze.org/"),
+    COVER_IMAGE("https://i.yomikaze.org");
 
     //toString
     override fun toString(): String {

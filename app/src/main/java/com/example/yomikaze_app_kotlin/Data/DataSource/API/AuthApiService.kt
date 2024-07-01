@@ -16,10 +16,10 @@ import retrofit2.http.POST
  * The interface is used by Retrofit to generate the implementation of the API endpoints.
  */
 interface AuthApiService {
-    @POST("authentication/signin")
+    @POST("authentication/login")
     suspend fun login(@Body loginRequest: LoginRequest): Response<TokenResponse>
 
-    @POST("authentication/signup")
+    @POST("authentication/register")
     suspend fun register(@Body registerRequest: RegisterRequest): Response<TokenResponse>
 
 //    @POST("authentication/forgotPassword")

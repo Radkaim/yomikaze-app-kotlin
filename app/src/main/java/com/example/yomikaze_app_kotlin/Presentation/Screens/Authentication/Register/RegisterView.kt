@@ -32,7 +32,6 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -276,8 +275,8 @@ fun RegisterContent(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-//                        .padding(5.dp)
-//                        .height(58.dp)
+                       // .padding(5.dp)
+                        .height(58.dp)
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
@@ -296,19 +295,20 @@ fun RegisterContent(
                             text = "Date Of Birth",
                             color = MaterialTheme.colorScheme.primary,
                             fontSize = 12.sp,
-                            modifier = Modifier.padding(start = 16.dp)
+                            modifier = Modifier.padding(start = 50.dp)
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.ic_dateofbirth),
                             contentDescription = "",
-                            tint = Color.Unspecified
+                            tint = Color.Unspecified,
+                            modifier = Modifier.padding(start = 16.dp)
                         )
                     }
                     Text(
                         text = birthday,
                         color = MaterialTheme.colorScheme.primary,
                         fontSize = 12.sp,
-                        modifier = Modifier.padding(start = 16.dp)
+                        modifier = Modifier.padding(start = 26.dp)
                     )
                 }
                 if (birthdayError != null) {
@@ -409,6 +409,7 @@ fun RegisterContent(
                     },
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxWidth()
+                        .padding(top = 20.dp)
                         .height(56.dp)
                         .border(
                             width = 1.dp,
