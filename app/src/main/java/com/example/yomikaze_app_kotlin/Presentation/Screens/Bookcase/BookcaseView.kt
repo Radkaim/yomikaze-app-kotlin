@@ -80,7 +80,7 @@ fun BookcaseView(
             }
             when (selectedTabIndex) {
                 0 -> HistoryView(navController = navController)
-                1 -> LibraryView()
+                1 -> LibraryView(navController = navController)
                 2 -> DownloadView(navController = navController)
             }
         }

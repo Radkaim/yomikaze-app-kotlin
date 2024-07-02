@@ -1,11 +1,15 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Notification
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.Download.SelectedChapterDownloadItem
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.CategoryCard
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -60,13 +64,31 @@ fun NotificationView(
 //            }
 //        }
 
-        val chapterIndexes = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-        SelectedChapterDownloadItem(
-            chapterIndexes = chapterIndexes,
-            onDismiss = {},
-            onDownload = {}
+//        val chapterIndexes = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+//        SelectedChapterDownloadItem(
+//            chapterIndexes = chapterIndexes,
+//            onDismiss = {},
+//            onDownload = {}
+//        )
+
+        CategoryCard(
+            image = "https://i.imgur.com/2ZQ2YbN.jpg",
+            name = "Default Default Default Default Default asas dsdasd",
+            totalComics = 10,
+            onClick = {},
+            onOptionsClick = {},
+            onEditClick = {},
+            onDeleteClick = {}
         )
-
-
+        Spacer(modifier = Modifier.height(10.dp))
+        CategoryCard(
+            image = "https://i.imgur.com/2ZQ2YbN.jpg",
+            name = "Default Default Default Default Default asas dsdasd",
+            totalComics = 10,
+            onClick = {},
+            onOptionsClick = {},
+            onEditClick = {},
+            onDeleteClick = {}
+        )
     }
 }
