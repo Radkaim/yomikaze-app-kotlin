@@ -70,6 +70,7 @@ class AuthRepositoryImpl @Inject constructor(
         )
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
+            appPreference.isUserLoggedIn = true
             return Result.success(result.body()!!)
         }
         return failure(Exception("Register failed"))

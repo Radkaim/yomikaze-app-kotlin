@@ -4,15 +4,16 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.widget.DatePicker
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,13 +44,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -132,386 +133,338 @@ fun RegisterContent(
                     }
                 },
             )
-        })
+        },
+    )
     {
 
-        Box(
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .fillMaxWidth()
+//                .offset(y = (-60).dp)
+//
+//                .pointerInput(Unit) {
+//                    detectTapGestures(onTap = {
+//                        focusManager.clearFocus()
+//                    })
+//                }
+//                .background(color = MaterialTheme.colorScheme.error),
+//            contentAlignment = Alignment.Center
+//        ) {
 
-            modifier = androidx.compose.ui.Modifier
+        Column(
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.background)
                 .fillMaxSize()
-                .offset(y = (-30).dp)
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    })
-                }
-                .background(color = MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center
+                .offset(y = (-60).dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .offset(y = (20).dp)
+                    .height(200.dp)
+                    .width(100.dp),
+                contentScale = ContentScale.Fit
+            )
 
-            Column(
-                modifier = androidx.compose.ui.Modifier
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                label = {
+                    Text(
+                        text = "Email",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                ),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_email),
+                        contentDescription = "",
+                        tint = Color.Unspecified
+                    )
+                },
+                modifier = Modifier
                     .padding(start = 10.dp, end = 10.dp)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "Logo",
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        shape = MaterialTheme.shapes.large
+                    )
+                    .background(
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(20.dp),
+                    ),
+                shape = RoundedCornerShape(24.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colorScheme.surfaceTint,
+                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                ),
+                // isError = state.emailError != null
+            )
+            if (state.emailError != null) {
+                Text(
+                    text = state.emailError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = androidx.compose.ui.Modifier
-                        .height(200.dp)
-                        .width(100.dp),
-                    contentScale = ContentScale.Fit
+                        .align(Alignment.Start)
                 )
-
-                TextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = {
-                        Text(
-                            text = "Email",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_email),
-                            contentDescription = "",
-                            tint = Color.Unspecified
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large
-                        )
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(20.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-                    isError = state.emailError != null
-                )
-                if (state.emailError != null) {
+            }
+            TextField(
+                value = username,
+                onValueChange = { username = it },
+                label = {
                     Text(
-                        text = state.emailError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = androidx.compose.ui.Modifier
-                            .align(Alignment.Start)
+                        text = "User Name",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary
                     )
-                }
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = {
-                        Text(
-                            text = "User Name",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
 
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                ),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_personal),
+                        contentDescription = "",
+                        tint = Color.Unspecified
+                    )
+                },
+                modifier = Modifier
+                    .padding(start = 10.dp, end = 10.dp)
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        shape = MaterialTheme.shapes.large
+                    )
+                    .background(
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(20.dp),
                     ),
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_personal),
-                            contentDescription = "",
-                            tint = Color.Unspecified
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large
-                        )
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(20.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-                    isError = state.usernameError != null
+                shape = RoundedCornerShape(24.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colorScheme.surfaceTint,
+                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                ),
+                //   isError = state.usernameError != null
+            )
+            if (state.usernameError != null) {
+                Text(
+                    text = state.usernameError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = androidx.compose.ui.Modifier
+                        .align(Alignment.Start)
                 )
-                if (state.usernameError != null) {
-                    Text(
-                        text = state.usernameError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = androidx.compose.ui.Modifier
-                            .align(Alignment.Start)
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp)
+                    .height(58.dp)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        shape = MaterialTheme.shapes.large
                     )
-                }
-                Box(
+                    .background(
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(24.dp)
+                    )
+                    .clickable { datePickerDialog.show() },
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                val offsetYValue = if (birthday.isEmpty()) 0.dp else (-15).dp
+                Text(
+                    text = "Date Of Birth",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 12.sp,
                     modifier = Modifier
-                        .fillMaxWidth()
-                       // .padding(5.dp)
-                        .height(58.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large
-                        )
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp)
-                        )
-                        .clickable { datePickerDialog.show() },
-                    contentAlignment = Alignment.CenterStart,
-                ) {
+                        .offset(y = offsetYValue)
+                        .padding(start = 50.dp)
+                )
 
-                    if (birthday.isEmpty()) {
-                        Text(
-                            text = "Date Of Birth",
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 12.sp,
-                            modifier = Modifier.padding(start = 50.dp)
-                        )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_dateofbirth),
+                    contentDescription = "",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+                Text(
+                    text = birthday,
+                    color = MaterialTheme.colorScheme.surfaceTint,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 50.dp, top = 5.dp)
+                )
+            }
+            if (birthdayError != null) {
+                Text(
+                    text = birthdayError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                label = {
+                    Text(
+                        text = "Password",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                ),
+                leadingIcon = {
+                    val image = if (passwordVisible)
+                        painterResource(id = R.drawable.ic_eye)
+                    else
+                        painterResource(id = R.drawable.ic_visibility_eye)
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_dateofbirth),
-                            contentDescription = "",
-                            tint = Color.Unspecified,
-                            modifier = Modifier.padding(start = 16.dp)
+                            tint = MaterialTheme.colorScheme.onTertiary,
+                            painter = image,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
                         )
                     }
+                },
+                modifier = androidx.compose.ui.Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 10.dp, end = 10.dp)
+                    .height(56.dp)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        shape = MaterialTheme.shapes.large
+                    )
+                    .background(
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(20.dp),
+                    ),
+                shape = RoundedCornerShape(24.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colorScheme.surfaceTint,
+                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                ),
+                //isError = state.usernameError != null
+            )
+            if (state.passwordError != null) {
+                Text(
+                    text = state.passwordError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = androidx.compose.ui.Modifier
+                        .align(Alignment.Start)
+                )
+            }
+
+            TextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = {
                     Text(
-                        text = birthday,
-                        color = MaterialTheme.colorScheme.primary,
+                        text = "Confirm Password",
                         fontSize = 12.sp,
-                        modifier = Modifier.padding(start = 26.dp)
+                        color = MaterialTheme.colorScheme.primary
                     )
-                }
-                if (birthdayError != null) {
-                    Text(
-                        text = birthdayError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                ),
+                leadingIcon = {
+                    val image = if (passwordVisible1)
+                        painterResource(id = R.drawable.ic_eye)
+                    else
+                        painterResource(id = R.drawable.ic_visibility_eye)
+
+                    IconButton(onClick = { passwordVisible1 = !passwordVisible1 }) {
+                        Icon(
+                            tint = MaterialTheme.colorScheme.onTertiary,
+                            painter = image,
+                            contentDescription = if (passwordVisible1) "Hide password" else "Show password"
+                        )
+                    }
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp)
+                    .height(56.dp)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        shape = MaterialTheme.shapes.large
                     )
-                }
-
-//                TextField(
-//                    value = birthday,
-//                    onValueChange = { birthday = it },
-//                    label = {
-//                        Text(
-//                            text = "Date Of Birth",
-//                            fontSize = 12.sp,
-//                            color = MaterialTheme.colorScheme.primary
-//                        )
-//                    },
-//                    maxLines = 1,
-//                    keyboardOptions = KeyboardOptions.Default.copy(
-//                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-//                    ),
-//                    leadingIcon = {
-//                        IconButton(onClick = { datePickerDialog.show()}) {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.ic_dateofbirth),
-//                                contentDescription = "",
-//                                tint = Color.Unspecified
-//                            )
-//                        }
-//                    },
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(56.dp)
-//                        .border(
-//                            width = 1.dp,
-//                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-//                            shape = MaterialTheme.shapes.large
-//                        )
-//                        .background(
-//                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-//                            shape = RoundedCornerShape(20.dp),
-//                        ),
-//                        //.clickable { datePickerDialog.show() },
-//                    shape = RoundedCornerShape(24.dp),
-//                    colors = TextFieldDefaults.textFieldColors(
-//                        backgroundColor = Color.Transparent,
-//                        focusedIndicatorColor = Color.Transparent,
-//                        unfocusedIndicatorColor = Color.Transparent,
-//                        disabledIndicatorColor = Color.Transparent,
-//                        errorIndicatorColor = Color.Transparent
-//                    ),
-//
-//                    isError = state.usernameError != null
-//
-//                )
-//                if (state.birthdayError != null) {
-//                    Text(
-//                        text = state.birthdayError ?: "",
-//                        color = MaterialTheme.colorScheme.error,
-//                        style = MaterialTheme.typography.bodySmall,
-//
-//                        modifier = androidx.compose.ui.Modifier
-//                            .align(Alignment.Start)
-//                    )
-//                }
-
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = {
-                        Text(
-                            text = "Password",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                    .background(
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(20.dp),
                     ),
-                    leadingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
-
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
-                            )
-                        }
-                    },
-                    modifier = androidx.compose.ui.Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.dp)
-                        .height(56.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large
-                        )
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(20.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-                    isError = state.usernameError != null
+                shape = RoundedCornerShape(24.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colorScheme.surfaceTint,
+                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                ),
+                //  isError = state.passwordError != null
+            )
+            if (state.confirmPasswordError != null) {
+                Text(
+                    text = state.passwordError ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .align(Alignment.Start)
                 )
-                if (state.passwordError != null) {
-                    Text(
-                        text = state.passwordError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = androidx.compose.ui.Modifier
-                            .align(Alignment.Start)
-                    )
-                }
+            }
 
-                TextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    label = {
-                        Text(
-                            text = "Confirm Password",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                    ),
-                    leadingIcon = {
-                        val image = if (passwordVisible1)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
-
-                        IconButton(onClick = { passwordVisible1 = !passwordVisible1 }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible1) "Hide password" else "Show password"
-                            )
-                        }
-                    },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = androidx.compose.ui.Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large
-                        )
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(20.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-                    isError = state.passwordError != null
-                )
-                if (state.confirmPasswordError != null) {
-                    Text(
-                        text = state.passwordError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = androidx.compose.ui.Modifier
-                            .align(Alignment.Start)
-                    )
-                }
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = androidx.compose.ui.Modifier
-                        .padding(end = 3.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                //  .padding(end = 3.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                    //  .align(Alignment.CenterHorizontally)
+                    // .padding(end = 5.dp)
                 ) {
                     Checkbox(
                         checked = checked,
                         onCheckedChange = { checked = it },
-                        modifier = androidx.compose.ui.Modifier
-                            .padding(end = 5.dp)
-                            .align(Alignment.CenterVertically)
+                        modifier = Modifier.offset(x = (-40).dp, y = (-12).dp)
 
                     )
                     Text(
@@ -519,68 +472,73 @@ fun RegisterContent(
                         style = TextStyle(
                             fontStyle = FontStyle.Italic,
                         ),
-                        modifier = androidx.compose.ui.Modifier
+                        modifier = Modifier
                             .padding(
                                 top = 3.dp,
                                 end = 150.dp,
                             )
-                    )
-                    Text(
-                        text = "Sign In?",
-                        style = TextStyle(fontStyle = FontStyle.Italic),
-                        modifier = androidx.compose.ui.Modifier
-                            .padding(
-                                top = 3.dp,
-                                bottom = 3.dp
-                            )
-                            .clickable { registerViewModel.navigateToRegister() }
-
+                            .clickable { checked = !checked }
                     )
                 }
-                OutlinedButton(
-                    modifier = androidx.compose.ui.Modifier
-                        .height(40.dp)
-                        .width(200.dp),
-                    shape = RoundedCornerShape(12.dp),
 
-
-                    onClick = {
-                        registerViewModel.onRegister(
-                            username = username,
-                            password = password,
-                            fullName = username,
-                            confirmPassword = confirmPassword,
-                            email = email,
-                            birthday = birthday,
+                Text(
+                    text = "Sign In?",
+                    style = TextStyle(fontStyle = FontStyle.Italic),
+                    modifier = Modifier
+                        .padding(
+                            bottom = 20.dp
                         )
-                    }
-                        )
+                        .offset(x = (30).dp)
+                        .clickable { registerViewModel.navigateToRegister() }
 
+                )
+            }
 
-                {
-                    if (state.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = androidx.compose.ui.Modifier.size(20.dp)
-                        )
-                    } else {
-                        Text(
-                            text = "Register",
-                            color = Color.Black,
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                            ),
-                        )
+            OutlinedButton(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(250.dp),
+                shape = RoundedCornerShape(8.dp),
+                onClick = {
+                    registerViewModel.onRegister(
+                        username = username,
+                        password = password,
+                        fullName = username,
+                        confirmPassword = confirmPassword,
+                        email = email,
+                        birthday = birthday,
+                    )
+                },
+                border = BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.36f)
+                ),
+            ) {
+                if (state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp)
+                    )
+                } else {
+                    Text(
+                        text = "Register",
+                        color = Color.Black,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                        ),
+                        fontWeight = FontWeight.Medium
+                    )
 
-                    }
                 }
             }
         }
-        state.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                modifier = androidx.compose.ui.Modifier.padding(top = 6.dp)
-            )
-        }
+    }
+    state.error?.let {
+        Text(
+            text = it,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(top = 6.dp)
+        )
     }
 }
+//}
+
