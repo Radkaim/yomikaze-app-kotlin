@@ -30,6 +30,7 @@ private val LightColorScheme = lightColorScheme(
     onError = Orange700, //831513
     background = Green100, //F2FFFD
     surface = Orange400, //F28C74
+
     inverseSurface = Orange800,
     inverseOnSurface = switchTrackColor,
     surfaceTint = Green800,
@@ -37,6 +38,7 @@ private val LightColorScheme = lightColorScheme(
     onBackground = GrayA07, //D9D9D9
     tertiary = Color.White, //FFFFFF
     onTertiary = Color.Black,
+
 
     outline = OrangeSplash, //E38B6C
     outlineVariant = GreenSplash, //65F6D1

@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -159,13 +160,13 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     ),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
+                    textColor = MaterialTheme.colorScheme.surfaceTint,
+                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
+                    cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
                 ),
-                isError = state.usernameError != null
+                //   isError = state.usernameError != null
             )
             if (state.usernameError != null) {
                 Text(
@@ -212,7 +213,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(start = 10.dp, end = 10.dp)
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
@@ -226,13 +227,13 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     ),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
+                    textColor = MaterialTheme.colorScheme.surfaceTint,
+                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
+                    cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
                 ),
-                isError = state.passwordError != null
+                //  isError = state.passwordError != null
             )
             if (state.passwordError != null) {
                 Text(
@@ -287,8 +288,11 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                         .height(40.dp)
                         .width(200.dp),
                     shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.36f)
+                    ),
                     onClick = { loginViewModel.onLogin(username, password) },
-
                     )
                 {
                     if (state.isLoading) {
@@ -298,7 +302,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     }
                     Text(
                         text = "Login",
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = TextStyle(
                             fontSize = 16.sp,
                         ),
@@ -323,7 +327,6 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                             top = 10.dp
                         ),
                     shape = RoundedCornerShape(12.dp),
-
                     onClick = { /*TODO*/ },
 
                     )
