@@ -80,23 +80,23 @@ data class ChangePasswordRequest(
 /**
  * User Info
  */
+//
+//data class UserInfoResponse(
+//
+//    @SerializedName("success")
+//    val success: Boolean,
+//
+//    @SerializedName("message")
+//    val message: String,
+//
+//    //for api
+//    @SerializedName("data")
+//    //for database
+//    @ColumnInfo(name = "user_data")
+//    val data: UserData
+//)
 
 data class UserInfoResponse(
-
-    @SerializedName("success")
-    val success: Boolean,
-
-    @SerializedName("message")
-    val message: String,
-
-    //for api
-    @SerializedName("data")
-    //for database
-    @ColumnInfo(name = "user_data")
-    val data: UserData
-)
-
-data class UserData(
     //for api
     @SerializedName("user")
     //for database
@@ -126,7 +126,7 @@ data class User(
     val id: Long,
 
     //for api
-    @SerializedName("ame")
+    @SerializedName("name")
     //for database
     @ColumnInfo(name = "name")
     val name: String,
