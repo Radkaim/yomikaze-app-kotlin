@@ -1,7 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 
 //import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicRow
-import CardComicHistoryHome
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
@@ -43,8 +42,9 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
-import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicItem
-import com.example.yomikaze_app_kotlin.Presentation.Components.CardComic.CardComicWeeklyHome
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.CardComicHistoryHome
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.CardComicItem
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.CardComicWeeklyHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.NormalComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
@@ -233,34 +233,40 @@ fun HomeContent(
 fun getListCardComicHistory(): List<CardComicItem> {
     val comics = listOf(
         CardComicItem(
-            comicName = "Comic 1",
+            comicName = "Hunter X Hunter",
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicAuth = "auth",
-            comicChapter = "Chapter 1"
+            comicChapter = "Chapter 1: The Adventure Begins",
+            averageRatingNumber = 4.5f
         ),
         CardComicItem(
             comicName = "Comic 2",
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicAuth = "auth",
-            comicChapter = "Chapter 2"
+            comicChapter = "Chapter 2",
+            averageRatingNumber = 4.5f
         ),
         CardComicItem(
             comicName = "Comic 3",
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicAuth = "auth",
-            comicChapter = "Chapter 3"
+            comicChapter = "Chapter 3",
+            averageRatingNumber = 4.5f
         ),
         CardComicItem(
             comicName = "Comic 3",
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicAuth = "auth",
-            comicChapter = "Chapter 3"
+            comicChapter = "Chapter 3",
+            averageRatingNumber = 4.5f
+
         ),
         CardComicItem(
             comicName = "Comic 3",
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicAuth = "auth",
-            comicChapter = "Chapter 3"
+            comicChapter = "Chapter 3",
+            averageRatingNumber = 4.5f
         )
     )
 
@@ -273,19 +279,22 @@ fun getListCardComicWeekly(): List<CardComicItem> {
             comicName = "Comic 1",
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicAuth = "auth",
-            comicChapter = "Chapter 1"
+            comicChapter = "Chapter 1",
+            averageRatingNumber = 4.5f
         ),
         CardComicItem(
             comicName = "Comic 2",
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicAuth = "auth",
-            comicChapter = "Chapter 2"
+            comicChapter = "Chapter 2",
+            averageRatingNumber = 4.5f
         ),
         CardComicItem(
             comicName = "Comic 3",
             image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
             comicAuth = "auth",
-            comicChapter = "Chapter 3"
+            comicChapter = "Chapter 3",
+            averageRatingNumber = 4.5f
         )
     )
     return comicCard
@@ -367,7 +376,8 @@ fun showHistoryCardComic() {
             CardComicHistoryHome(
                 image = comic.image,
                 comicName = comic.comicName,
-                comicChapter = comic.comicChapter
+                comicChapter = comic.comicChapter,
+                averageRatingNumber = comic.averageRatingNumber
             )
         }
     }

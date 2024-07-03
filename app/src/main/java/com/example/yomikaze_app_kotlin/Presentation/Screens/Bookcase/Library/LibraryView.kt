@@ -1,8 +1,10 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -64,6 +66,13 @@ fun LibraryContent(
             },
             onSearchClicked = { onSearchClicked() }
         )
+
+        Box(){
+            LazyRow(){
+
+            }
+        }
+
     }
 
 }
