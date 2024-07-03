@@ -4,11 +4,16 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity(
     tableName = "chapters",
+    indices = [
+        Index(value = ["number"], unique = true),
+        Index(value = ["comicId"]) // Thêm chỉ mục cho cột comicId
+    ],
     foreignKeys = [ForeignKey(
         entity = ComicResponse::class,
         parentColumns = ["id"],
@@ -20,7 +25,6 @@ data class Chapter(
     //for api
     @SerializedName("id")
     //for database
-    @NonNull
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = false)
     val chapterId: Long,
@@ -29,32 +33,39 @@ data class Chapter(
     @SerializedName("ComicId")
     //for database
     @ColumnInfo(name = "comicId")
+    @NonNull
     val comicId: Long,
 
     //for api
-    @SerializedName("index")
+    @SerializedName("number")
     //for database
-    @ColumnInfo(name = "chapterIndex")
+    @ColumnInfo(name = "number")
     @NonNull
-    val chapterIndex: Int,
+    val number: Int,
 
     //for api
-    @SerializedName("title")
+    @SerializedName("name")
     //for database
-    @ColumnInfo(name = "title")
-    val title: String,
+    @ColumnInfo(name = "name")
+    val name: String,
 
     //for api
-    @SerializedName("totalViews")
+    @SerializedName("views")
     //for database
-    @ColumnInfo(name = "totalViews")
-    val totalViews: Long,
+    @ColumnInfo(name = "views")
+    val views: Long,
 
     //for api
-    @SerializedName("totalComments")
+    @SerializedName("comments")
     //for database
-    @ColumnInfo(name = "totalComments")
-    val totalComments: Long,
+    @ColumnInfo(name = "comments")
+    val comments: Long,
+
+    //for api
+    @SerializedName("creationTime")
+    //for database
+    @ColumnInfo(name = "creationTime")
+    val creationTime: String,
 
     //for database
     @ColumnInfo(name = "size")

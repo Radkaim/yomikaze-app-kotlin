@@ -34,7 +34,7 @@ import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun ChapterCard(
-    chapterIndex: Int,
+    chapterNumber: Int,
     title: String,
     views: Long,
     comments: Long,
@@ -96,7 +96,7 @@ fun ChapterCard(
                         ) {
                             Row() {
                                 Text(
-                                    text = "Chapter $chapterIndex: $title",
+                                    text = "Chapter $chapterNumber: $title",
                                     fontSize = 13.sp,
                                     style = MaterialTheme.typography.titleLarge,
                                     color = changeColorWhenLocked(

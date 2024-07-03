@@ -4,6 +4,7 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
@@ -11,10 +12,14 @@ import com.google.gson.annotations.SerializedName
     tableName = "pages",
     foreignKeys = [ForeignKey(
         entity = Chapter::class,
-        parentColumns = ["id"],
-        childColumns = ["chapterId"],
+        parentColumns = ["number"],
+        childColumns = ["number"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [
+        Index(value = ["number"]),
+        Index(value = ["comicId"]) // Thêm chỉ mục cho cột comicId
+    ]
 )
 data class Page(
     //for api
@@ -26,25 +31,43 @@ data class Page(
     val id: Long,
 
     //for api
-    @SerializedName("chapterId")
+    @SerializedName("comicId")
     //for database
-    @ColumnInfo(name = "chapterId")
+    @ColumnInfo(name = "comicId")
+    val comicId: Long,
+
+    //for api
+    @SerializedName("number")
+    //for database
+    @ColumnInfo(name = "number")
     @NonNull
-    val chapterId: Long,
+    val number: Int,
 
     //for api
-    @SerializedName("index")
+    @SerializedName("name")
     //for database
-    @ColumnInfo(name = "pageIndex")
-    val pageIndex: Int,
+    @ColumnInfo(name = "name")
+    val name: String,
+
+//    //for api
+//    @SerializedName("index")
+//    //for database
+//    @ColumnInfo(name = "pageIndex")
+//    val pageIndex: Int,
 
     //for api
-    @SerializedName("image")
+    @SerializedName("pages")
     //for database
-    @ColumnInfo(name = "imageApiUrl")
-    val imageApiUrl: String,
+    @ColumnInfo(name = "pages")
+    val pages: List<String>,
+
+    //for api
+    @SerializedName("creationTime")
+    //for database
+    @ColumnInfo(name = "creationTime")
+    val creationTime: String,
 
     //for database
     @ColumnInfo(name = "imageLocalPath")
-    val imageLocalPath: String?,
+    val imageLocalPaths: List<String>?,
 )

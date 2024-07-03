@@ -555,7 +555,8 @@ fun ComicDetailContent(
                 0 -> DescriptionInComicDetailView(state = state)
                 1 -> ListChapterInComicDetailView(
                     comicDetailViewModel = comicDetailViewModel,
-                    listChapter = listChapter
+                    comicId = comicId
+                    //  listChapter = listChapter
                 )
             }
         }
@@ -592,17 +593,28 @@ fun DescriptionInComicDetailView(
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalAlignment = Alignment.Start
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-
+                    val maxLine: Int = if (isExpanded) 25 else 3
+                    Text(
+                        text = description ?: "Description",
+                        maxLines = maxLine,
+                        //  overflow = TextOverflow,
+                    )
+                    if (isExpanded) {
+                        Text(
+                            text = "Less",
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 14.sp,
+                        )
+                    } else {
+                        Text(
+                            text = "More",
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 14.sp,
+                        )
+                    }
                 }
-                val maxLine: Int = if (isExpanded) 25 else 3
-                Text(
-                    text = description ?: "Description",
-                    maxLines = maxLine,
-                    //  overflow = TextOverflow,
-                )
-                Text(text = "More")
 
             }
         }
@@ -657,9 +669,12 @@ fun DescriptionInComicDetailView(
 @Composable
 fun ListChapterInComicDetailView(
     comicDetailViewModel: ComicDetailViewModel,
-    listChapter: List<ComicChapter>
+    comicId: Long
 ) {
+    Log.d("ListChapterInComicDetailView", "ListChapterInComicDetailView: $comicId")
+    comicDetailViewModel.getListChapterByComicId(comicId = comicId)
     var isSelected by remember { mutableStateOf(true) }
+    val listChapter = comicDetailViewModel.state.value.listChapters.value
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -691,13 +706,13 @@ fun ListChapterInComicDetailView(
     ) {
         items(listChapter) { chapter ->
             ChapterCard(
-                chapterIndex = chapter.chapterIndex,
-                title = chapter.title,
+                chapterNumber = chapter.number,
+                title = chapter.name,
                 views = chapter.views,
                 comments = chapter.comments,
-                publishedDate = chapter.publishedDate,
+                publishedDate = chapter.creationTime,
                 isLocked = chapter.isLocked,
-                onClick = { comicDetailViewModel.navigateToViewChapter(chapter.chapterIndex) }) {
+                onClick = { comicDetailViewModel.navigateToViewChapter(chapter.number) }) {
 
             }
         }

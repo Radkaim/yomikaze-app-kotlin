@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Core.Module
 
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.DownloadUC
@@ -10,6 +11,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByRatingRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByViewRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginWithGoogleUC
@@ -147,5 +149,14 @@ object UseCaseModule {
     @Singleton
     fun provideRatingComicUC(comicRepository: ComicRepository): RatingComicUC {
         return RatingComicUC(comicRepository)
+    }
+
+    /**
+     * Todo: Provide the GetListChaptersByComicIdUC
+     */
+    @Provides
+    @Singleton
+    fun provideGetListChaptersByComicIdUC(chapterRepository: ChapterRepository): GetListChaptersByComicIdUC {
+        return GetListChaptersByComicIdUC(chapterRepository)
     }
 }

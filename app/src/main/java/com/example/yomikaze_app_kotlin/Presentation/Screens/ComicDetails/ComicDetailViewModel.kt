@@ -11,6 +11,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.DownloadUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicDetailsFromApiUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.RatingComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -26,7 +27,8 @@ class ComicDetailViewModel @Inject constructor(
     appPreference: AppPreference,
     @ApplicationContext private val context: Context,
     private val downloadUC: DownloadUC,
-    private val ratingComicUC: RatingComicUC
+    private val ratingComicUC: RatingComicUC,
+    private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -110,6 +112,28 @@ class ComicDetailViewModel @Inject constructor(
             } else {
                 Log.e("Rating", "rateComic: $result")
             }
+        }
+    }
+
+    /**
+     * Todo: Implement get list chapter by comic id in comic detail view
+     */
+    fun getListChapterByComicId(comicId: Long) {
+        Log.d("ComicDetailViewModel", "getListChapterByComicId1: $comicId")
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("ComicDetailViewModel", "getListChapterByComicId2: $comicId")
+            val result = getListChaptersByComicIdUC.getListChapters(comicId)
+            Log.d("ComicDetailViewModel", "getListChapterByComicId: $result")
+            result.fold(
+                onSuccess = { listChapter ->
+                    // Xử lý kết quả thành công
+                    _state.value.listChapters.value = listChapter
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicDetailViewModel", "getListChapterByComicId: $exception")
+                }
+            )
         }
     }
 }

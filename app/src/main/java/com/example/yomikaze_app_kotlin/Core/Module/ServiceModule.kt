@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Core.Module
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.PageApiService
 import dagger.Module
 import dagger.Provides
@@ -48,5 +49,14 @@ object ServiceModule {
     @Singleton
     fun providePageApiService(retrofit: Retrofit): PageApiService {
         return retrofit.create(PageApiService::class.java)
+    }
+
+    /**
+     * Todo: Provide the LibraryApiService
+     */
+    @Provides
+    @Singleton
+    fun provideLibraryApiService(retrofit: Retrofit): LibraryApiService {
+        return retrofit.create(LibraryApiService::class.java)
     }
 }

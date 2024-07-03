@@ -3,14 +3,14 @@ package com.example.yomikaze_app_kotlin.Domain.Models
 import com.google.gson.annotations.SerializedName
 
 data class BaseResponse<T>(
-    @SerializedName("current_page")
+    @SerializedName("currentPage")
     val currentPage: Int,
-    @SerializedName("page_size")
+    @SerializedName("pageSize")
     val pageSize: Int,
-    @SerializedName("row_count")
-    val rowCount: Int,
-    @SerializedName("page_count")
-    val pageCount: Int,
+    @SerializedName("totals")
+    val totals: Int,
+    @SerializedName("totalPages")
+    val totalPages: Int,
     @SerializedName("results")
     val results: List<T>
 )

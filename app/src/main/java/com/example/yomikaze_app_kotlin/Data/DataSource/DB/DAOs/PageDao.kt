@@ -9,8 +9,8 @@ import com.example.yomikaze_app_kotlin.Domain.Models.Page
 
 @Dao
 interface PageDao {
-    @Query("SELECT * FROM pages WHERE chapterId = :chapterId")
-     fun getImagesByChapter(chapterId: String): List<Page>
+    @Query("SELECT * FROM pages WHERE number = :number")
+     fun getImagesByChapter(number: Int): List<Page>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
      fun insertImage(page: Page)
