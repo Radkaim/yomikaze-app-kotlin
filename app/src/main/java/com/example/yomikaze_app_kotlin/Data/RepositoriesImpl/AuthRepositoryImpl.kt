@@ -16,7 +16,7 @@ import kotlin.Result.Companion.failure
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApiService,
-    private val appPreference: AppPreference
+    private val appPreference: AppPreference,
 ) : AuthRepository {
 
     override suspend fun login(loginRequest: LoginRequest): Result<TokenResponse> {

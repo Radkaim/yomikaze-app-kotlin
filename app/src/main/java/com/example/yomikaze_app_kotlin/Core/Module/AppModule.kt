@@ -22,8 +22,9 @@ enum class API(private val url: String) {
         return url
     }
 }
+
 object APIConfig {
-    var retrofitAPIURL:API = API.PRODUCTION
+    var retrofitAPIURL: API = API.PRODUCTION
     var imageAPIURL: API = API.COVER_IMAGE
 }
 
@@ -49,9 +50,6 @@ object AppModule {
     /**
      * Todo: Provide the Retrofit
      */
-    private const val ApiUrlTest = "https://jsonplaceholder.typicode.com/"
-    private const val ApiUrl = "https://yomikaze.org/api/"
-
     @Provides
     @Singleton
     fun provideRetrofit(apiUrl: API): Retrofit {
@@ -69,10 +67,5 @@ object AppModule {
     fun provideNavController(application: Application): NavController {
         return NavController(application)
     }
-
-    /**
-     * Todo: Provide the RoomDatabase
-     */
-
 
 }

@@ -8,6 +8,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.UserInfoResponse
 /**
  * AuthRepository is an interface for the AuthRepositoryImpl class.
  */
+
 interface AuthRepository {
     suspend fun login(loginRequest : LoginRequest): Result<TokenResponse>
     suspend fun register(
@@ -25,4 +26,5 @@ interface AuthRepository {
     suspend fun getUserInfo(token: String): Result<UserInfoResponse>
 
     suspend fun logout()
+
 }

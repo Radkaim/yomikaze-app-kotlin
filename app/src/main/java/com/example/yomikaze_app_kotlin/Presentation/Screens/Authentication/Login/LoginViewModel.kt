@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Domain.Models.ErrorResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
+import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,20 +18,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUC
+    private val loginUseCase: LoginUC,
+    private val repository: AuthRepository,
 ) : ViewModel() {
+
     private val _state = MutableStateFlow(LoginState())
-    private var navController: NavController? = null
     val state: StateFlow<LoginState> get() = _state
+
+
+    private var navController: NavController? = null
 
     fun setNavController(navController: NavController) {
         this.navController = navController
     }
+
     fun navigateToRegister() {
         navController?.navigate("register_route")
     }
 
-  fun navigateToForgotPassword() {
+    fun navigateToForgotPassword() {
         navController?.navigate("forgot_password_route")
     }
 
@@ -57,12 +63,12 @@ class LoginViewModel @Inject constructor(
                 // Handle success
                 _state.value = _state.value.copy(isLoading = false)
                 navController?.navigate("home_route")
-            }.onFailure { error->
+            }.onFailure { error ->
                 if (error is Exception) {
-                val errorResponse = Gson().fromJson(error.message, ErrorResponse::class.java)
+                    val errorResponse = Gson().fromJson(error.message, ErrorResponse::class.java)
                     errorResponse.errors?.forEach { (field, messages) ->
                         messages.forEach { message ->
-                          // _state.value = _state.value.copy(error = message)
+                            // _state.value = _state.value.copy(error = message)
                             if (field == "Username") {
                                 _state.value = _state.value.copy(usernameError = message)
                             }
@@ -74,9 +80,9 @@ class LoginViewModel @Inject constructor(
                         }
                     }
 
-            } else {
-                _state.value = _state.value.copy(error = "Login failed")
-            }
+                } else {
+                    _state.value = _state.value.copy(error = "Login failed")
+                }
             }
         }
     }

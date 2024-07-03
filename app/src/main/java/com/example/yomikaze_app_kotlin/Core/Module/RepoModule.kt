@@ -32,10 +32,11 @@ object RepoModule {
     @Singleton
     fun provideAuthRepository(
         api: AuthApiService,
-        appPreference: AppPreference
+        appPreference: AppPreference,
     ): AuthRepository {
         return AuthRepositoryImpl(api, appPreference)
     }
+
 
     /**
      * Todo: Provide the ComicRepository

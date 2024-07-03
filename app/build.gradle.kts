@@ -17,8 +17,8 @@ android {
 
         }
         applicationId = "com.example.yomikaze_app_kotlin"
-        minSdk = 31
-        targetSdk = 33
+        minSdk = 34
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -119,8 +119,17 @@ dependencies {
     // for lotie animation
     implementation("com.airbnb.android:lottie-compose:4.0.0")
 
-    //
-    //implementation("com.google.android.gms:play-services-wallet:19.4.0") //
+    //Google Play Services
+    //implementation("com.google.android.gms:play-services-wallet:19.4.0")
+
+    //for google sign in
+    implementation ("androidx.credentials:credentials:1.2.2")
+    // optional - needed for credentials support from play services, for devices running
+    // Android 13 and below.
+    implementation( "androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
+
 
 
     // use for EncryptedSharedPreferences

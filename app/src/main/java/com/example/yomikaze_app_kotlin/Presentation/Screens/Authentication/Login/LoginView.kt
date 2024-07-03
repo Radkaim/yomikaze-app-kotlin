@@ -1,6 +1,9 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 
 import android.annotation.SuppressLint
+import android.credentials.GetCredentialException
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,16 +35,19 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -52,22 +58,36 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import kotlinx.coroutines.launch
+import java.security.MessageDigest
+import java.util.UUID
 
 
 @Composable
 fun LoginView(
     loginViewModel: LoginViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    loginState: MutableState<Boolean>? = null
 ) {
     val state by loginViewModel.state.collectAsState()
+
+
     loginViewModel.setNavController(navController)
+
+
 
     LoginContent(state, loginViewModel, navController)
 }
+
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
 @Composable
@@ -77,6 +97,62 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
 
     var passwordVisible by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+    val coroutineScope = rememberCoroutineScope()
+
+
+    val context = LocalContext.current
+    val onCLick: () -> Unit = {
+        val credentialManager = CredentialManager.create(context)
+
+        val rawNonce = UUID.randomUUID().toString()
+        val byte = rawNonce.toByteArray()
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(byte)
+        val hashedNonce = digest.fold("") { str, it -> str + "%02x".format(it) }
+
+        val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(context.getString(R.string.gcp_id))
+            //.setAutoSelectEnabled(true)
+            .setNonce(hashedNonce)
+            .build()
+
+        val request: GetCredentialRequest = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        coroutineScope.launch {
+            try {
+                val result = credentialManager.getCredential(
+                    request = request,
+                    context = context
+                )
+                val credential1 = result.credential
+                val credential = result.credential
+
+                val googleIdTokenCredential = GoogleIdTokenCredential
+                    .createFrom(credential.data)
+
+                val googleIdToken = googleIdTokenCredential.idToken
+                Log.d("GoogleIdToken", googleIdToken ?: "null")
+
+                Log.d("GoogleIdToken", googleIdToken ?: "null")
+
+                Toast.makeText(context, "You are signed in!", Toast.LENGTH_SHORT).show()
+            } catch (e: GetCredentialException) {
+                //   Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                Log.e("CredentialException", "No credentials available: ${e.message}")
+            } catch (e: GoogleIdTokenParsingException) {
+                Log.e("TokenParsingException", "Failed to sign in: ${e.message}")
+                Toast.makeText(context, "Failed to sign in!", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Log.e("GeneralException", "An error occurred: ${e.message}")
+                Toast.makeText(context, "An error occurred: ${e.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
 
     Scaffold(
         topBar = {
@@ -96,9 +172,6 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
             )
         })
     {
-
-//        state.hung = "hung"
-
 
         Column(
             modifier = Modifier
@@ -293,7 +366,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                         MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.36f)
                     ),
                     onClick = { loginViewModel.onLogin(username, password) },
-                    )
+                )
                 {
                     if (state.isLoading) {
                         CircularProgressIndicator(
@@ -327,7 +400,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                             top = 10.dp
                         ),
                     shape = RoundedCornerShape(12.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = { onCLick() },
 
                     )
                 {
@@ -353,4 +426,5 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
         }
     }
 }
+
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
@@ -25,10 +27,11 @@ import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
 import dagger.hilt.android.AndroidEntryPoint
 import io.paperdb.Paper
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-
+    private val loginViewModel: LoginViewModel by viewModels()
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         Paper.init(this) // use paperdb show paper.init should be called before any other method
@@ -40,7 +43,6 @@ class MainActivity : ComponentActivity() {
      //   window.navigationBarColor = Color.White.toArgb()
 
         val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
-
 
         setContent {
 
@@ -59,6 +61,7 @@ class MainActivity : ComponentActivity() {
                     Paper.init(navController.context.applicationContext)
                     NavHost(navController, startDestination = "splash_route") {
                         composable("splash_route") {
+
                             SplashScreen(navController)
                             // After a delay or when app is ready, navigate to main content
                             // navController.navigate("main_content_route")
@@ -92,6 +95,7 @@ fun checkAndChangeStatusBarColor(theme: AppTheme, windowInsetsController: Window
         windowInsetsController.isAppearanceLightStatusBars = false // Điều này sẽ đặt biểu tượng status bar màu sáng trên nền tối
     }
 }
+
 
 
 @Preview(showBackground = true)

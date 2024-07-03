@@ -6,11 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AboutUs.AboutUsView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ForgotPassword.ForgotPasswordView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Register.RegisterView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ResetPassword.ResetPasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
@@ -71,27 +66,6 @@ fun NavigationGraph(
 
         composable("wifi_route") {
             NetworkDisconnectedDialog()
-        }
-        // for login screen
-        composable("login_route") {
-            LoginView(navController = navController)
-        }
-
-        //for register screen
-        composable("register_route") {
-            RegisterView(navController = navController)
-        }
-        //for forgot password screen
-        composable("forgot_password_route") {
-            ForgotPasswordView(navController = navController) }
-
-        composable("reset_password_route") {
-            ResetPasswordView(navController = navController)
-        }
-
-        // for change password screen
-        composable("change_password_route") {
-            ChangePasswordView(navController = navController)
         }
 
         composable("edit_profile_route") {
