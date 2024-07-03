@@ -127,18 +127,21 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     request = request,
                     context = context
                 )
-                val credential1 = result.credential
+
                 val credential = result.credential
 
                 val googleIdTokenCredential = GoogleIdTokenCredential
                     .createFrom(credential.data)
 
                 val googleIdToken = googleIdTokenCredential.idToken
-                Log.d("GoogleIdToken", googleIdToken ?: "null")
+                Log.d("LoginViewModel", googleIdToken)
 
-                Log.d("GoogleIdToken", googleIdToken ?: "null")
+                if(googleIdToken != null){
+                    loginViewModel.onGoogleLogin(googleIdToken)
+                }
+                //  Toast.makeText(context, "You are signed in!", Toast.LENGTH_SHORT).show(
 
-                Toast.makeText(context, "You are signed in!", Toast.LENGTH_SHORT).show()
+
             } catch (e: GetCredentialException) {
                 //   Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
                 Log.e("CredentialException", "No credentials available: ${e.message}")
@@ -151,7 +154,10 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     .show()
             }
         }
+
     }
+
+//    Toast.makeText(context, "You are signed in!", Toast.LENGTH_SHORT).show()
 
 
     Scaffold(

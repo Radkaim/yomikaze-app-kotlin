@@ -18,7 +18,6 @@ class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApiService,
     private val appPreference: AppPreference,
 ) : AuthRepository {
-
     override suspend fun login(loginRequest: LoginRequest): Result<TokenResponse> {
         val result = api.login(LoginRequest(loginRequest.username, loginRequest.password))
         if (result.isSuccessful) {
@@ -49,6 +48,35 @@ class AuthRepositoryImpl @Inject constructor(
         return Result.failure(Exception("Login failed"))
     }
 
+
+    override suspend fun loginWithGoogle(token: TokenResponse): Result<TokenResponse> {
+        val result = api.loginWithGoogle(token)
+        if (result.isSuccessful) {
+            val tokenResponse = result.body()
+            if (tokenResponse?.token != null) {
+                appPreference.authToken = tokenResponse.token
+                appPreference.isUserLoggedIn = true
+                return Result.success(tokenResponse)
+            }
+        }
+        val errorResponse = result.errorBody()?.string()
+        if (errorResponse != null) {
+            return try {
+                val error = Gson().fromJson(errorResponse, ErrorResponse::class.java)
+                // Log.d("AuthRepositoryImpl", "login: ${error.errors}")
+                error.errors?.forEach { (field, messages) ->
+                    messages.forEach { message ->
+                        //    Log.d("AuthRepositoryImpl", "Field: $field, Error: $message")
+                    }
+                }
+                return error.errors?.let { Result.failure(Exception(Gson().toJson(error))) }!!
+            } catch (e: Exception) {
+                Result.failure(Exception("Login  failed"))
+            }
+        }
+
+        return Result.failure(Exception("Login failed"))
+    }
 
     override suspend fun register(
         username: String,

@@ -104,8 +104,8 @@ fun CardComicHistoryHome(
                 Text(
                     text = comicChapter,
                     fontSize = 12.sp,
-                    maxLines = 1,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(start = 3.dp, top = 2.dp)
                 )

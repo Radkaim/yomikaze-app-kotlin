@@ -23,6 +23,8 @@ interface AuthRepository {
 //    suspend fun resetPassword(password: String, confirmPassword: String): Result<TokenResponse>
 //    suspend fun changePassword(oldPassword: String, newPassword: String, confirmPassword: String): Result<TokenResponse>
 
+    suspend fun loginWithGoogle(token: TokenResponse): Result<TokenResponse>
+
     suspend fun getUserInfo(token: String): Result<UserInfoResponse>
 
     suspend fun logout()

@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Domain.Models.ErrorResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginWithGoogleUC
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUC,
+    private val loginWithGoogleUC: LoginWithGoogleUC,
     private val repository: AuthRepository,
 ) : ViewModel() {
 
@@ -83,6 +86,20 @@ class LoginViewModel @Inject constructor(
                 } else {
                     _state.value = _state.value.copy(error = "Login failed")
                 }
+            }
+        }
+    }
+
+    fun onGoogleLogin(token: String) {
+        viewModelScope.launch {
+            Log.d("LoginViewModel", "onGoogleLogin1: $token")
+            val result = loginWithGoogleUC.loginWithGoogle(TokenResponse(token))
+            result.onSuccess { token ->
+                // Handle success
+                navController?.navigate("home_route")
+            }.onFailure { error ->
+                Log.d("LoginViewModel", "onGoogleLogin: $error")
+                _state.value = _state.value.copy(error = "Login with Google failed")
             }
         }
     }

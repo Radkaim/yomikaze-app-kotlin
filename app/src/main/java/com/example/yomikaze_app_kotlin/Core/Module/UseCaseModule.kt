@@ -12,6 +12,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LogoutUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.SearchComicUC
@@ -33,6 +34,15 @@ object UseCaseModule {
     @Singleton
     fun provideLoginUseCase(authRepository: AuthRepository): LoginUC {
         return LoginUC(authRepository)
+    }
+
+    /**
+     * Todo: Provide the LoginWithGoogleUseCase
+     */
+    @Provides
+    @Singleton
+    fun provideLoginWithGoogleUseCase(authRepository: AuthRepository): LoginWithGoogleUC {
+        return LoginWithGoogleUC(authRepository)
     }
 
     /**

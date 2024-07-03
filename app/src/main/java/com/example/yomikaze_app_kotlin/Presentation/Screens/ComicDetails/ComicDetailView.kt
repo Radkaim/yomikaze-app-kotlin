@@ -95,7 +95,6 @@ fun ComicDetailsView(
     val state by comicDetailViewModel.state.collectAsState()
 
 
-
     //set navController for viewModel
     comicDetailViewModel.setNavController(navController)
     comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
@@ -251,11 +250,11 @@ fun ComicDetailContent(
                 placeholder = painterResource(R.drawable.placeholder_430_184),
                 error = painterResource(R.drawable.placeholder_430_184),
                 contentDescription = "Comic Banner Image",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(184.dp)
-                    .blur(5.dp)
+                    .blur(10.dp),
             )
         }
 
@@ -572,11 +571,8 @@ fun ComicDetailContent(
 fun DescriptionInComicDetailView(
     state: ComicDetailState
 ) {
-    val textLength = state.comicResponse?.description?.length ?: 50
     var isExpanded by remember { mutableStateOf(false) }
-    val text = state.comicResponse?.description
-
-    val shortText = if (isExpanded) text else text?.take(textLength)
+    val description = state.comicResponse?.description
 
     //for tag genre
     val listTag = state.listTagGenres ?: emptyList()
@@ -586,38 +582,28 @@ fun DescriptionInComicDetailView(
             .fillMaxSize()
             .padding(top = 20.dp)
     ) {
-
+//TODO: Description
         item {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    //  .padding(8.dp)
+                    .padding(start = 8.dp)
                     .clickable { isExpanded = !isExpanded }
             ) {
-                (if (isExpanded) text else shortText)?.let {
-                    Text(
-                        text = it,
-                    )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+
                 }
-                if (shortText != null) {
-                    if (!isExpanded && shortText.length <= textLength)
-                        Text(
-                            text = "...more",
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.offset(x = 100.dp, y = 95.dp)
-                        )
-                    else if (text != null) {
-                        if (isExpanded && text.length > 50) {
-                            Text(
-                                text = "less",
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(top = 10.dp)
-                            )
-                        }
-                    }
-                }
+                val maxLine: Int = if (isExpanded) 25 else 3
+                Text(
+                    text = description ?: "Description",
+                    maxLines = maxLine,
+                    //  overflow = TextOverflow,
+                )
+                Text(text = "More")
+
             }
         }
 
@@ -951,10 +937,9 @@ fun RatingComicDialog(
                                 val selectedStars = starState.count { it }
                                 comicDetailViewModel.rateComic(comicId, selectedStars)
                                 Log.d("RatingComicDialog", "Selected stars: $selectedStars")
-                                if(state.isRatingComicSuccess){
-                                        onDismiss()
-                                }
-                                else{
+                                if (state.isRatingComicSuccess) {
+                                    onDismiss()
+                                } else {
                                     onDismiss()
                                 }
 //
