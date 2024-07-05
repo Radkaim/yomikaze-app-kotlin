@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconAndNumbers
 import com.example.yomikaze_app_kotlin.R
 
@@ -186,7 +187,7 @@ fun ChapterCard(
 
                                 //Published Date
                                 Text(
-                                    text = "Published date: $publishedDate",
+                                    text = "Published date: ${changeDateTimeFormat(publishedDate)}",
                                     fontSize = 10.sp,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Light,

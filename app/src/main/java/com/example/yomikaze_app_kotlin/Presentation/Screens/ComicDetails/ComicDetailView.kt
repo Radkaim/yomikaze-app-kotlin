@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -239,6 +240,8 @@ fun ComicDetailContent(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.onSurface)
+
         ) {
             // banner image
             ///data/user/0/com.example.yomikaze_app_kotlin/files/image_1719475024110.jpg
@@ -253,7 +256,7 @@ fun ComicDetailContent(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(184.dp)
+                    .height(194.dp) //bug background
                     .blur(10.dp),
             )
         }
@@ -406,18 +409,21 @@ fun ComicDetailContent(
                         ) {
                             Text(
                                 text = state.comicResponse?.name ?: "Comic Name",
-                                fontSize = 15.sp,
+                                fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                maxLines = 2,
+                                maxLines = 4,
                                 overflow = TextOverflow.Ellipsis,
                                 lineHeight = 15.sp,
-                                modifier = Modifier.width(200.dp)
+                                modifier = Modifier.width(250.dp)
                             )
                             Text(
                                 text = processNameByComma(
                                     state.comicResponse?.aliases ?: listOf("")
                                 ),
                                 fontSize = 11.sp,
+                                maxLines = 1,
+                                lineHeight = 15.sp,
+                                overflow = TextOverflow.Ellipsis,
                                 fontWeight = FontWeight.Normal
                             )
                             Text(
@@ -429,13 +435,15 @@ fun ComicDetailContent(
                                     )
                                 }",
                                 fontSize = 13.sp,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Medium
                             )
                             Spacer(modifier = Modifier.height(1.dp))
                             Text(
                                 text = "Publish Date: ${changeDateTimeFormat(state.comicResponse?.publicationDate ?: "")}",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Normal
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Normal,
+                                fontStyle = FontStyle.Italic
+
                             )
                             TagComponent(status = state.comicResponse?.status ?: "")
                         }
@@ -447,9 +455,10 @@ fun ComicDetailContent(
 
     Box(
         modifier = Modifier
-            .padding(top = 160.dp)
+            .padding(top = 170.dp)
+            //.background(MaterialTheme.colorScheme.onSurface)
             .drawWithCache {
-                val shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+              //  val shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                 val path = Path().apply {
                     addRoundRect(
                         RoundRect(
@@ -468,7 +477,8 @@ fun ComicDetailContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 8.dp, top = 20.dp),
+                //.offset(y = (20).dp)
+                .padding(start = 8.dp, top = 6.dp),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -713,7 +723,6 @@ fun ListChapterInComicDetailView(
                 publishedDate = chapter.creationTime,
                 isLocked = chapter.isLocked,
                 onClick = { comicDetailViewModel.navigateToViewChapter(chapter.number) }) {
-
             }
         }
     }

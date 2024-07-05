@@ -35,7 +35,7 @@ import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconAndNumbers
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.R
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
@@ -285,16 +285,27 @@ private fun cutAuthorName(authorName: String): String {
 // change Date time format
 fun changeDateTimeFormat(dateTime: String): String {
     // Định dạng đầu vào
-    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    val inputFormatterDefault = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSXXX")
+    val inputFormatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX")
+
+
+
     // Định dạng đầu ra
-    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+
     return try {
-        // Kiểm tra và phân tích chuỗi ngày giờ
-        val parsedDateTime = LocalDateTime.parse(dateTime, inputFormatter)
+        // Kiểm tra và phân tích chuỗi ngày giờ theo định dạng 1
+        val parsedDateTime1 = ZonedDateTime.parse(dateTime, inputFormatter1)
         // Chuyển đổi đối tượng LocalDateTime thành chuỗi ngày theo định dạng đầu ra
-        parsedDateTime.format(outputFormatter)
-    } catch (e: DateTimeParseException) {
-        // Nếu định dạng không đúng, trả về chuỗi gốc
-        dateTime
+        parsedDateTime1.format(outputFormatter)
+    } catch (e1: DateTimeParseException) {
+        try {
+            // Nếu định dạng 1 không đúng, thử định dạng mặc định
+            val parsedDateTimeDefault = ZonedDateTime.parse(dateTime, inputFormatterDefault)
+            parsedDateTimeDefault.format(outputFormatter)
+        } catch (e2: DateTimeParseException) {
+            // Nếu cả hai định dạng không đúng, trả về chuỗi gốc
+            dateTime
+        }
     }
 }
