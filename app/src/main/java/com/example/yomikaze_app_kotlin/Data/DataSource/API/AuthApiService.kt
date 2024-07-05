@@ -19,7 +19,7 @@ interface AuthApiService {
     @POST("authentication/login")
     suspend fun login(@Body loginRequest: LoginRequest): Response<TokenResponse>
 
-    @POST("authentication/login/external/google/token")
+    @POST("authentication/login/external/google")
     suspend fun loginWithGoogle(@Body token: TokenResponse): Response<TokenResponse>
 
     @POST("authentication/register")

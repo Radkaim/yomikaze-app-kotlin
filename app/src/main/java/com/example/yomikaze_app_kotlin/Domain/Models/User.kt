@@ -102,12 +102,6 @@ data class UserInfoResponse(
     //for database
     @ColumnInfo(name = "user")
     val user: User,
-
-    //for api
-    @SerializedName("claims")
-    //for database
-    @ColumnInfo(name = "claims")
-    val claims: UserClaims
 )
 
 data class DataUser(

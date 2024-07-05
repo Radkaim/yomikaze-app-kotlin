@@ -97,7 +97,7 @@ fun HomeView(
         if (CheckNetwork()) {
             // Show UI when connectivity is available
             HomeContent(state, homeViewModel, navController, searchWidgetState = searchWidgetState)
-            homeViewModel.getComicByViewRanking(3)
+            homeViewModel.getComicByViewRanking(1, 3)
         } else {
             // Show UI for No Internet Connectivity
             UnNetworkScreen()
@@ -227,7 +227,6 @@ fun HomeContent(
         }
     }
 }
-
 
 
 fun getListCardComicHistory(): List<CardComicItem> {
@@ -471,10 +470,11 @@ fun showTabRow(
 
 fun tabSelected(tabIndex: Int, homeViewModel: HomeViewModel, state: HomeState) {
     val size = 3
+    val page = 1
     when (tabIndex) {
         0 -> {
             // Hot
-            homeViewModel.getComicByViewRanking(size)
+            homeViewModel.getComicByViewRanking(page, size)
         }
 
         1 -> {

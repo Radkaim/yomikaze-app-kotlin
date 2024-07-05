@@ -53,10 +53,11 @@ class ComicRepositoryImpl @Inject constructor(
     override suspend fun getComicByViewRanking(
         token: String,
         orderByTotalViews: String,
+        page: Int?,
         size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
-            val response = api.getComicByViewRanking("Bearer $token", orderByTotalViews, size)
+            val response = api.getComicByViewRanking(token, orderByTotalViews, page, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -228,7 +229,7 @@ class ComicRepositoryImpl @Inject constructor(
         // check status code of response
         val response = api.rateComic("Bearer $token", comicId, rating)
         if (response.isSuccessful) {
-           Result.success(Unit)
+            Result.success(Unit)
         } else {
             val httpCode = response.code()
             when (httpCode) {

@@ -39,6 +39,7 @@ interface ComicApiService {
     suspend fun getComicByViewRanking(
         @Header("Authorization") token: String,
         @Query("OrderBy") orderByTotalViews: String,
+        @Query("Page") page: Int? = null,
         @Query("Size") size: Int? = null,
     ): BaseResponse<ComicResponse>
 

@@ -94,7 +94,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = getComicByFollowRankingUC.getComicByFollowRanking(token, "TotalFollowsDesc", size)
+            val result =
+                getComicByFollowRankingUC.getComicByFollowRanking(token, "TotalFollowsDesc", size)
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
@@ -117,12 +118,16 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = getComicByCommentsRankingUC.getComicByCommentsRanking(token, "TotalCommentsDesc", size)
+            val result = getComicByCommentsRankingUC.getComicByCommentsRanking(
+                token,
+                "TotalCommentsDesc",
+                size
+            )
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                  //  _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
+                    //  _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
                     _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->
@@ -136,17 +141,18 @@ class HomeViewModel @Inject constructor(
     /**
      * Todo: Implement getComicByViewRanking
      */
-    fun getComicByViewRanking(size: Int) {
+    fun getComicByViewRanking(page: Int, size: Int) {
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = getComicByViewRankingUC.getComicByViewRanking(token, "TotalViewsDesc", size)
+            val result =
+                getComicByViewRankingUC.getComicByViewRanking(token, "TotalViewsDesc", page, size)
 
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                  //  _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
+                    //  _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
                     _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->
@@ -164,12 +170,13 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = getComicByRatingRankingUC.getComicByRatingRanking(token, "AverageRatingDesc", size)
+            val result =
+                getComicByRatingRankingUC.getComicByRatingRanking(token, "AverageRatingDesc", size)
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                 //   _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
+                    //   _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
                     _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->

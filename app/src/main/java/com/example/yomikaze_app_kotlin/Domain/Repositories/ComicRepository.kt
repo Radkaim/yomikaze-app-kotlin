@@ -26,6 +26,7 @@ interface ComicRepository {
     suspend fun getComicByViewRanking(
         token: String,
         orderByTotalViews: String,
+        page: Int? = null,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>>
 

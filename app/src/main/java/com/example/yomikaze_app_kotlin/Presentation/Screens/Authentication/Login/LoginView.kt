@@ -1,7 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login
 
 import android.annotation.SuppressLint
-import android.credentials.GetCredentialException
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -140,11 +139,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     loginViewModel.onGoogleLogin(googleIdToken)
                 }
                 //  Toast.makeText(context, "You are signed in!", Toast.LENGTH_SHORT).show(
-
-
-            } catch (e: GetCredentialException) {
-                //   Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
-                Log.e("CredentialException", "No credentials available: ${e.message}")
+                
             } catch (e: GoogleIdTokenParsingException) {
                 Log.e("TokenParsingException", "Failed to sign in: ${e.message}")
                 Toast.makeText(context, "Failed to sign in!", Toast.LENGTH_SHORT).show()
