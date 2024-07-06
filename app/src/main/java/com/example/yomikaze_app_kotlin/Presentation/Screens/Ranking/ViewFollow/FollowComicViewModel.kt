@@ -34,22 +34,52 @@ class FollowComicViewModel @Inject constructor(
         navController?.navigate("comic_detail_route/$comicId")
     }
 
-    fun getComicByFollowRanking(){
+
+    // Reset state
+    private fun resetState() {
+        _state.value = FollowComicState()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        // Reset page and size if needed
+        resetState()
+    }
+
+    fun getComicByFollowRanking(page: Int? = 1){
         viewModelScope.launch {
-            val token =
-                if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = getComicByFollowRankingUC.getComicByFollowRanking(token, "TotalFollowsDesc")
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+
+            val size = _state.value.size
+
+            val currentPage = _state.value.currentPage.value
+            val totalPages = _state.value.totalPages.value
+
+            if (currentPage >= totalPages && totalPages != 0) return@launch
+
+            val result =
+                getComicByFollowRankingUC.getComicByFollowRanking(
+                    token = token,
+                    orderByTotalFollows = "TotalFollowsDesc",
+                    page = page,
+                    size = size
+                )
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(listComicByFollowRanking = results)
+                    _state.value = _state.value.copy(
+                        listComicByFollowRanking = state.value.listComicByFollowRanking + results,
+                    )
+                    _state.value.currentPage.value = baseResponse.currentPage
+                    _state.value.totalPages.value = baseResponse.totalPages
+
                 },
                 onFailure = { exception ->
-                    // Xử lý lỗi
+                    // Xử lý kết quả thất bại
+                    Log.e("FollowComicViewModel", exception.message.toString())
                 }
             )
-            Log.d("NotificationViewModel", "searchComic: $result")
         }
     }
 

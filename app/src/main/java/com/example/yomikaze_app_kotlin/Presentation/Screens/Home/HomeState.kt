@@ -12,6 +12,7 @@ enum class SearchWidgetState {
 
 data class HomeState(
     val isLoading: Boolean = true,
+    val isLoadingRanking: Boolean = false,
     val images: List<String> = emptyList(),
     val error: String? = null,
   //  var searchResult: List<ComicResponse> = emptyList(), =>

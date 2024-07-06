@@ -90,106 +90,138 @@ class HomeViewModel @Inject constructor(
     /**
      * Todo: Implement getComicByFollowRanking
      */
-    fun getComicByFollowRanking(size: Int) {
+    fun getComicByFollowRanking(page: Int, size: Int) {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result =
-                getComicByFollowRankingUC.getComicByFollowRanking(token, "TotalFollowsDesc", size)
+                getComicByFollowRankingUC.getComicByFollowRanking(
+                    token = token,
+                    orderByTotalFollows = "TotalFollowsDesc",
+                    page = page,
+                    size = size
+                )
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(listRankingComics = (results))
-//                    _state.value.listRankingComics.value = results
+                    _state.value = _state.value.copy(
+                        listRankingComics = results,
+                        isLoadingRanking = false
+                    )
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isLoadingRanking = true)
                 }
             )
-            Log.d("NotificationViewModel", "searchComic: $result")
+
         }
     }
 
     /**
-     * Todo: Implement getComicByCommentRanking
+     * Todo: Implement get Comic for Comment Ranking Tab
      */
-    fun getComicByCommentRanking(size: Int) {
+    fun getComicByCommentRanking(page: Int, size: Int) {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = getComicByCommentsRankingUC.getComicByCommentsRanking(
-                token,
-                "TotalCommentsDesc",
-                size
+                token = token,
+                orderByTotalComments = "TotalCommentsDesc",
+                page = page,
+                size = size
             )
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(listRankingComics = results)
-                  //  _state.value.listRankingComics.value = results
+                    _state.value = _state.value.copy(
+                        listRankingComics = results,
+                        isLoadingRanking = false
+                    )
+
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isLoadingRanking = true)
                 }
             )
-            Log.d("NotificationViewModel", "searchComic: $result")
         }
     }
 
     /**
-     * Todo: Implement getComicByViewRanking
+     * Todo: Implement get Comic for View Ranking Tab
      */
     fun getComicByViewRanking(page: Int, size: Int) {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result =
-                getComicByViewRankingUC.getComicByViewRanking(token, "TotalViewsDesc", page, size)
+                getComicByViewRankingUC.getComicByViewRanking(
+                    token = token,
+                    orderByTotalViews = "TotalViewsDesc",
+                    page = page,
+                    size = size
+                )
 
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                      _state.value = _state.value.copy(listRankingComics = (results))
-                    Log.d("HomeViewModel", "ComicsView: $result")
-//                    _state.value.listRankingComics.value = results
+                    _state.value = _state.value.copy(
+                        listRankingComics = results,
+                        isLoadingRanking = false
+                    )
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isLoadingRanking = true)
                 }
             )
-            Log.d("NotificationViewModel", "searchComic: $result")
         }
     }
 
     /**
-     * Todo: Implement getComicByRatingRanking
+     * Todo: Implement get Comic for Rating Ranking Tab
      */
-    fun getComicByRatingRanking(size: Int) {
+    fun getComicByRatingRanking(page: Int, size: Int) {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result =
-                getComicByRatingRankingUC.getComicByRatingRanking(token, "AverageRatingDesc", size)
+                getComicByRatingRankingUC.getComicByRatingRanking(
+                    token = token,
+                    orderByAverageRatings = "AverageRatingDesc",
+                    page = page,
+                    size = size
+                )
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                       _state.value = _state.value.copy(listRankingComics = (results))
-//                    _state.value.listRankingComics.value = results
-                    Log.d("HomeViewModel", "ComicsRating: $result")
+                    _state.value = _state.value.copy(
+                        listRankingComics = results,
+                        isLoadingRanking = false
+                    )
+                    Log.d("HomeViewModel", "getComicByRatingRanking: $results")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isLoadingRanking = true)
                 }
             )
-            Log.d("NotificationViewModel", "searchComic: $result")
         }
     }
 
 
+    /**
+     * Todo: Implement searchComic
+     */
     @SuppressLint("SuspiciousIndentation")
     fun searchComic(comicNameQuery: String) {
         viewModelScope.launch {
@@ -228,7 +260,7 @@ class HomeViewModel @Inject constructor(
         navController?.navigate("bookcase_route/1")
     }
 
-    fun onViewRankingMore(tabIndex :Int) {
+    fun onViewRankingMore(tabIndex: Int) {
         navController?.navigate("ranking_route/$tabIndex")
     }
 

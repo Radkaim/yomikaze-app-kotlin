@@ -11,8 +11,9 @@ class GetComicByFollowRankingUC @Inject constructor(
     suspend fun getComicByFollowRanking(
         token: String,
         orderByTotalFollows: String,
+        page: Int? = null,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>> {
-        return comicRepository.getComicByFollowRanking(token, orderByTotalFollows, size)
+        return comicRepository.getComicByFollowRanking(token, orderByTotalFollows, page, size)
     }
 }

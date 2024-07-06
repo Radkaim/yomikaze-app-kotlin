@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 
 data class HotComicState(
-    val isLoading: MutableState<Boolean> = mutableStateOf(false),
     val error: String? = null,
     var listComicByViewRanking: List<ComicResponse> = emptyList(),
     val currentPage: MutableState<Int> = mutableStateOf(0),

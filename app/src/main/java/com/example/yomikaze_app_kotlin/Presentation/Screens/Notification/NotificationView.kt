@@ -90,5 +90,7 @@ fun NotificationView(
             onEditClick = {},
             onDeleteClick = {}
         )
+
+
     }
 }

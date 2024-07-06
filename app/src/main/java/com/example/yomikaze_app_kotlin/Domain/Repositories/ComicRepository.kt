@@ -36,6 +36,7 @@ interface ComicRepository {
     suspend fun getComicByCommentsRanking(
         token: String,
         orderByTotalComments: String,
+        page: Int? = null,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>>
 
@@ -45,6 +46,7 @@ interface ComicRepository {
     suspend fun getComicByFollowRanking(
         token: String,
         orderByTotalFollows: String,
+        page: Int? = null,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>>
 
@@ -54,6 +56,7 @@ interface ComicRepository {
     suspend fun getComicByRatingRanking(
         token: String,
         orderByTotalRatings: String,
+        page: Int? = null,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>>
 

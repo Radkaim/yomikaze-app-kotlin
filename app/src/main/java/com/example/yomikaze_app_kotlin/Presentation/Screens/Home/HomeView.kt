@@ -52,6 +52,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Ranking
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangle
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.RankingComicShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.DefaultTopAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.SearchTopAppBar
 import com.example.yomikaze_app_kotlin.R
@@ -438,12 +439,16 @@ fun showRanking(homeViewModel: HomeViewModel, state: HomeState) {
         val listTabs = listOf("Hot", "Rating", "Comment", "Follow") //-> for future implementation
         // create a comics list mutable state
 
-        showTabRow(homeViewModel = homeViewModel, state = state, selectedTabIndex, setSelectedTabIndex)
+        showTabRow(
+            homeViewModel = homeViewModel,
+            state = state,
+            selectedTabIndex,
+            setSelectedTabIndex
+        )
         showRankingComicCard(homeViewModel = homeViewModel, state = state)
 
     }
 }
-
 
 
 @Composable
@@ -492,17 +497,17 @@ fun tabSelected(tabIndex: Int, homeViewModel: HomeViewModel, state: HomeState) {
 
         1 -> {
             // Rating
-            homeViewModel.getComicByRatingRanking(size)
+            homeViewModel.getComicByRatingRanking(page, size)
         }
 
         2 -> {
             // Comment
-            homeViewModel.getComicByCommentRanking(size)
+            homeViewModel.getComicByCommentRanking(page, size)
         }
 
         3 -> {
             // Follow
-            homeViewModel.getComicByFollowRanking(size)
+            homeViewModel.getComicByFollowRanking(page, size)
         }
     }
 }
@@ -522,6 +527,13 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
             .background(MaterialTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
     ) {
+        if (state.isLoadingRanking) {
+            // show 3 shimmer loading cards
+            val list = listOf(1, 2, 3)
+            repeat(list.size) {
+                RankingComicShimmerLoading()
+            }
+        }
         state.listRankingComics.forEachIndexed { index, comic ->
             RankingComicCard(
                 comicId = comic.comicId,
@@ -540,6 +552,7 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
             )
             // Add space between each card
         }
+
     }
 }
 

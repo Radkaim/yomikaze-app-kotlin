@@ -70,11 +70,12 @@ class ComicRepositoryImpl @Inject constructor(
     override suspend fun getComicByCommentsRanking(
         token: String,
         orderByTotalComments: String,
+        page: Int?,
         size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
             val response =
-                api.getComicByCommentsRanking("Bearer $token", orderByTotalComments, size)
+                api.getComicByCommentsRanking("Bearer $token", orderByTotalComments, page, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -87,10 +88,12 @@ class ComicRepositoryImpl @Inject constructor(
     override suspend fun getComicByFollowRanking(
         token: String,
         orderByTotalFollows: String,
+        page: Int?,
         size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
-            val response = api.getComicByFollowRanking("Bearer $token", orderByTotalFollows, size)
+            val response =
+                api.getComicByFollowRanking("Bearer $token", orderByTotalFollows, page, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -103,10 +106,12 @@ class ComicRepositoryImpl @Inject constructor(
     override suspend fun getComicByRatingRanking(
         token: String,
         orderByTotalRatings: String,
+        page: Int?,
         size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
-            val response = api.getComicByRatingRanking("Bearer $token", orderByTotalRatings, size)
+            val response =
+                api.getComicByRatingRanking("Bearer $token", orderByTotalRatings, page, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

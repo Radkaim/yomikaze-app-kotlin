@@ -41,7 +41,6 @@ class HotComicViewModel @Inject constructor(
         _state.value = HotComicState()
     }
 
-
     override fun onCleared() {
         super.onCleared()
         // Reset page and size if needed
@@ -76,8 +75,10 @@ class HotComicViewModel @Inject constructor(
                     )
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
+
                 },
                 onFailure = { exception ->
+                    // Xử lý kết quả thất bại
                    Log.e("HotComicViewModel", exception.message.toString())
                 }
             )

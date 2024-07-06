@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -105,7 +106,7 @@ fun ViewChapter(
             // Scroll View
             // Comic Image
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 state = scrollState
 
@@ -179,7 +180,7 @@ fun ViewChapterFlipPager(
 
     FlipPager(
         state = pagerState,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         orientation = orientation,
     ) { page ->
         Box(

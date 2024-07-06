@@ -11,8 +11,9 @@ class GetComicByCommentsRankingUC @Inject constructor(
     suspend fun getComicByCommentsRanking(
         token: String,
         orderByTotalComments: String,
+        page: Int? = null,
         size: Int? = null
     ): Result<BaseResponse<ComicResponse>> {
-        return comicRepository.getComicByCommentsRanking(token, orderByTotalComments, size)
+        return comicRepository.getComicByCommentsRanking(token, orderByTotalComments, page, size)
     }
 }

@@ -50,6 +50,7 @@ interface ComicApiService {
     suspend fun getComicByCommentsRanking(
         @Header("Authorization") token: String,
         @Query("OrderBy") orderByTotalComments: String,
+        @Query("Page") page: Int? = null,
         @Query("Size") size: Int? = null,
     ): BaseResponse<ComicResponse>
 
@@ -60,6 +61,7 @@ interface ComicApiService {
     suspend fun getComicByFollowRanking(
         @Header("Authorization") token: String,
         @Query("OrderBy") orderByTotalFollows: String,
+        @Query("Page") page: Int? = null,
         @Query("Size") size: Int? = null,
     ): BaseResponse<ComicResponse>
 
@@ -70,6 +72,7 @@ interface ComicApiService {
     suspend fun getComicByRatingRanking(
         @Header("Authorization") token: String,
         @Query("OrderBy") orderByAverageRatings: String,
+        @Query("Page") page: Int? = null,
         @Query("Size") size: Int?,
     ): BaseResponse<ComicResponse>
 
