@@ -1,6 +1,5 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -78,7 +78,6 @@ fun NormalComicCard(
                 .fillMaxWidth()
                 .offset(x = (-1).dp)
                 .clickable {
-                    Log.d("NormalComicCard", "Clicked")
                     onClicked()
                 }
         ) {
@@ -110,26 +109,50 @@ fun NormalComicCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(rowSpaceBy.dp)
             ) {
-                //Comic Image
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(image)
-                        .memoryCachePolicy(CachePolicy.ENABLED)
-                        .build(),
-                    placeholder = painterResource(R.drawable.placeholder),
-                    error = painterResource(R.drawable.placeholder),
-                    contentDescription = "Comic Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(62.dp)
-                        .height(80.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.small
-                        )
-                        .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small)
-                )
+                if (isSearch) {
+                    //Comic Image
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(image)
+                            .memoryCachePolicy(CachePolicy.ENABLED)
+                            .build(),
+                        placeholder = painterResource(R.drawable.placeholder),
+                        error = painterResource(R.drawable.placeholder),
+                        contentDescription = "Comic Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(80.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                shape = RoundedCornerShape(100.dp)
+                            )
+                            .shadow(elevation = 4.dp, shape = RoundedCornerShape(100.dp))
+                    )
+                }else
+                {
+                    //Comic Image
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(image)
+                            .memoryCachePolicy(CachePolicy.ENABLED)
+                            .build(),
+                        placeholder = painterResource(R.drawable.placeholder),
+                        error = painterResource(R.drawable.placeholder),
+                        contentDescription = "Comic Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .width(62.dp)
+                            .height(80.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                shape = MaterialTheme.shapes.small
+                            )
+                            .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small)
+                    )
+                }
 
                 Column(
                     modifier = if (isSearch) {
@@ -273,7 +296,7 @@ fun processNameByComma(strings: List<String>): String {
     return strings.joinToString(", ")
 }
 
-private fun cutAuthorName(authorName: String): String {
+ fun cutAuthorName(authorName: String): String {
     val authorNameLength = authorName.length
     return if (authorNameLength > 18) {
         authorName.substring(0, 18) + "..."
@@ -284,28 +307,26 @@ private fun cutAuthorName(authorName: String): String {
 
 // change Date time format
 fun changeDateTimeFormat(dateTime: String): String {
-    // Định dạng đầu vào
-    val inputFormatterDefault = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSXXX")
-    val inputFormatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX")
-
-
+    // Danh sách các định dạng đầu vào
+    val inputFormatters = listOf(
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSXXX"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX"),
+        DateTimeFormatter.ISO_DATE_TIME // định dạng ISO 8601
+    )
 
     // Định dạng đầu ra
     val outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
-    return try {
-        // Kiểm tra và phân tích chuỗi ngày giờ theo định dạng 1
-        val parsedDateTime1 = ZonedDateTime.parse(dateTime, inputFormatter1)
-        // Chuyển đổi đối tượng LocalDateTime thành chuỗi ngày theo định dạng đầu ra
-        parsedDateTime1.format(outputFormatter)
-    } catch (e1: DateTimeParseException) {
+    // Thử phân tích chuỗi ngày giờ theo từng định dạng trong danh sách
+    for (inputFormatter in inputFormatters) {
         try {
-            // Nếu định dạng 1 không đúng, thử định dạng mặc định
-            val parsedDateTimeDefault = ZonedDateTime.parse(dateTime, inputFormatterDefault)
-            parsedDateTimeDefault.format(outputFormatter)
-        } catch (e2: DateTimeParseException) {
-            // Nếu cả hai định dạng không đúng, trả về chuỗi gốc
-            dateTime
+            val parsedDateTime = ZonedDateTime.parse(dateTime, inputFormatter)
+            return parsedDateTime.format(outputFormatter)
+        } catch (e: DateTimeParseException) {
+            // Bỏ qua và thử định dạng tiếp theo
         }
     }
+
+    // Nếu không có định dạng nào thành công, trả về chuỗi gốc
+    return dateTime
 }

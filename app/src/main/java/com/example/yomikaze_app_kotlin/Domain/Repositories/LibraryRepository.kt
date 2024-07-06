@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Domain.Repositories
 
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 
 interface LibraryRepository {
 
@@ -11,7 +12,7 @@ interface LibraryRepository {
     suspend fun searchComicInLibraries(
         token: String,
         name: String,
-    ): Result<BaseResponse<ComicResponse>>
+    ): Result<BaseResponse<LibraryEntry>>
 
 
     /**

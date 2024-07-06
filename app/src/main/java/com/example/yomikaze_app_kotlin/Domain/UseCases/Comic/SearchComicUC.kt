@@ -11,7 +11,8 @@ class SearchComicUC @Inject constructor(
     suspend fun searchComic(
         token: String,
         comicNameQuery: String,
+        size: Int? = null
     ): Result<BaseResponse<ComicResponse>> {
-        return comicRepository.searchComic(token, comicNameQuery)
+        return comicRepository.searchComic(token, comicNameQuery, size)
     }
 }

@@ -17,7 +17,8 @@ interface ComicRepository {
      */
     suspend fun searchComic(
         token: String,
-        comicNameQuery: String
+        comicNameQuery: String,
+        size: Int? = null
     ): Result<BaseResponse<ComicResponse>>
 
     /**

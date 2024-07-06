@@ -16,6 +16,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByRatingR
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByViewRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetHotComicBannerUC
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -91,7 +92,7 @@ class HomeViewModel @Inject constructor(
      * Todo: Implement getComicByFollowRanking
      */
     fun getComicByFollowRanking(page: Int, size: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -124,7 +125,7 @@ class HomeViewModel @Inject constructor(
      * Todo: Implement get Comic for Comment Ranking Tab
      */
     fun getComicByCommentRanking(page: Int, size: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -156,7 +157,7 @@ class HomeViewModel @Inject constructor(
      * Todo: Implement get Comic for View Ranking Tab
      */
     fun getComicByViewRanking(page: Int, size: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -189,7 +190,7 @@ class HomeViewModel @Inject constructor(
      * Todo: Implement get Comic for Rating Ranking Tab
      */
     fun getComicByRatingRanking(page: Int, size: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -224,20 +225,24 @@ class HomeViewModel @Inject constructor(
      */
     @SuppressLint("SuspiciousIndentation")
     fun searchComic(comicNameQuery: String) {
-        viewModelScope.launch {
+        _state.value = _state.value.copy(isSearchLoading = true)
+        viewModelScope.launch(Dispatchers.IO) {
+            val size = 4
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = searchComicUC.searchComic(token, comicNameQuery)
+            val result = searchComicUC.searchComic(token, comicNameQuery,size)
 
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
                     _state.value.searchResult.value = results
+                    _state.value = _state.value.copy(isSearchLoading = false)
 
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isSearchLoading = true)
                 }
             )
 
@@ -274,5 +279,10 @@ class HomeViewModel @Inject constructor(
 
     fun onComicSearchClicked(comicId: Long) {
         navController?.navigate("comic_detail_route/$comicId")
+    }
+
+    fun onAdvanceSearchClicked(searchText: String) {
+        Log.d("HomeViewModel", "onAdvanceSearchClicked: $searchText")
+        //navController?.navigate("advance_search_route/$searchText")
     }
 }

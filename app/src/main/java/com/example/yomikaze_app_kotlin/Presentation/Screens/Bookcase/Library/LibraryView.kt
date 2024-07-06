@@ -1,10 +1,10 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -12,6 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
+import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BasicComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.SearchTopAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.SearchWidgetState
 
@@ -33,7 +36,11 @@ fun LibraryView(
         onSearchTriggered = { /*TODO*/ },
         navController = navController,
         state = state,
-        libraryViewModel = libraryViewModel
+        libraryViewModel = libraryViewModel,
+        onSearchClicked = {
+            libraryViewModel.searchComic(comicNameQuery = searchTextState)
+        }
+
     )
 
 }
@@ -51,28 +58,50 @@ fun LibraryContent(
     libraryViewModel: LibraryViewModel
 ) {
     // Show normal app bar
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 15.dp)
     ) {
-        SearchTopAppBar(
-            searchText = searchTextState,
-            onTextChange = onTextChange,
-            onCLoseClicked = {
-                libraryViewModel.updateSearchText(newValue = "")
-                libraryViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
-                libraryViewModel.updateSearchResult(newSearchResult = emptyList()) // Cập nhật searchResult
-            },
-            onSearchClicked = { onSearchClicked() }
-        )
-
-        Box(){
-            LazyRow(){
-
-            }
+        item {
+            SearchTopAppBar(
+                searchText = searchTextState,
+                onTextChange = onTextChange,
+                onCLoseClicked = {
+                    libraryViewModel.updateSearchText(newValue = "")
+                    libraryViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
+                    libraryViewModel.updateSearchResult(newSearchResult = emptyList()) // Cập nhật searchResult
+                },
+                onSearchClicked = { onSearchClicked() }
+            )
         }
 
-    }
+        items(state.searchResult.value) { comic ->
+            LazyRow() {
+                item {
+                    if (comic != null){
+                        SearchResultItem(
+                            libraryViewModel = libraryViewModel,
+                            comic = comic
+                        )
+                    }
 
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SearchResultItem(
+    libraryViewModel: LibraryViewModel,
+    comic: LibraryEntry
+) {
+    BasicComicCard(
+        comicName = comic.libraryEntry.name,
+        image = APIConfig.imageAPIURL.toString() + comic.libraryEntry.cover,
+        isLibrarySearchComicCard = true,
+        authorName = comic.libraryEntry.authors,
+        onClick = { libraryViewModel.onNavigateComicDetail(comic.libraryEntry.comicId) }
+    )
 }

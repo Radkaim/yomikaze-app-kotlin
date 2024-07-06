@@ -38,9 +38,10 @@ class ComicRepositoryImpl @Inject constructor(
     override suspend fun searchComic(
         token: String,
         comicNameQuery: String,
+        size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
-            val response = api.searchComicByName("Bearer $token", comicNameQuery)
+            val response = api.searchComicByName("Bearer $token", comicNameQuery, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -57,7 +58,7 @@ class ComicRepositoryImpl @Inject constructor(
         size: Int?
     ): Result<BaseResponse<ComicResponse>> {
         return try {
-            val response = api.getComicByViewRanking(token, orderByTotalViews, page, size)
+            val response = api.getComicByViewRanking("Bearer $token", orderByTotalViews, page, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

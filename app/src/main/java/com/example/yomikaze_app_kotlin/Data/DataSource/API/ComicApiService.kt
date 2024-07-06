@@ -27,8 +27,9 @@ interface ComicApiService {
     suspend fun searchComicByName(
         @Header("Authorization") token: String,
         @Query("Name") name: String,
-        @Query("OrderBy") orderByTotalViews: String = "TotalViews",
-        @Query("OrderBy") orderByName: String = "Name",
+        @Query("Size") size: Int? = null,
+        @Query("OrderBy") orderByTotalViews: String? = "TotalViews",
+        @Query("OrderBy") orderByName : String? = "Name",
     ): BaseResponse<ComicResponse>
 
     /**

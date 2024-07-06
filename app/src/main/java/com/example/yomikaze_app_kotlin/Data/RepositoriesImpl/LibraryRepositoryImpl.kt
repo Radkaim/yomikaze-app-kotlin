@@ -1,8 +1,10 @@
 package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 
+import android.util.Log
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryApiService
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
 import javax.inject.Inject
 
@@ -16,9 +18,10 @@ class LibraryRepositoryImpl @Inject constructor(
     override suspend fun searchComicInLibraries(
         token: String,
         name: String
-    ): Result<BaseResponse<ComicResponse>> {
+    ): Result<BaseResponse<LibraryEntry>> {
         return try {
             val response = api.searchComicInLibraries("Bearer $token", name)
+            Log.d("LibraryRepositoryImpl", "searchComicInLibraries: $response")
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

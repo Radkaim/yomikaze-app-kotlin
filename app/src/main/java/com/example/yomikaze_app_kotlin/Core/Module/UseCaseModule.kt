@@ -4,22 +4,24 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.DownloadUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetListChaptersByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByRatingRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByViewRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetHotComicBannerUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetListChaptersByComicIdUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.SearchInLibraryUC
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -169,5 +171,14 @@ object UseCaseModule {
     @Singleton
     fun provideGetPagesByChapterNumberOfComicUC(pageRepository: PageRepository): GetPagesByChapterNumberOfComicUC {
         return GetPagesByChapterNumberOfComicUC(pageRepository)
+    }
+
+    /**
+     * Todo: Provide the search comic in Library
+     */
+    @Provides
+    @Singleton
+    fun provideSearchComicInLibraryUC(libraryRepository: LibraryRepository): SearchInLibraryUC {
+        return SearchInLibraryUC(libraryRepository)
     }
 }

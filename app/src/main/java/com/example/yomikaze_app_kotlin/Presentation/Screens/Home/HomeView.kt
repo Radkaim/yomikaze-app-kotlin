@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,7 +44,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.CardComicHistoryHome
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BasicComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.CardComicItem
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.CardComicWeeklyHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
@@ -98,43 +99,23 @@ fun HomeView(
     {
         if (CheckNetwork()) {
             // Show UI when connectivity is available
-            HomeContent(state, homeViewModel, navController, searchWidgetState = searchWidgetState)
+            HomeContent(
+                state,
+                homeViewModel,
+                navController,
+                searchWidgetState = searchWidgetState,
+                searchTextState = searchTextState,
+                onCloseClicked= {
+                    homeViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
+                }
+
+            )
 //            homeViewModel.getComicByViewRanking(1, 3)
         } else {
             // Show UI for No Internet Connectivity
             UnNetworkScreen()
         }
     }
-}
-
-@Composable
-fun SearchResultItem(
-    homeViewModel: HomeViewModel,
-    comic: ComicResponse
-) {
-    NormalComicCard(
-        comicId = comic.comicId,
-        image = APIConfig.imageAPIURL.toString() + comic.cover,
-        comicName = comic.name,
-        status = comic.status,
-        authorNames = comic.authors,
-        publishedDate = comic.publicationDate,
-        ratingScore = comic.averageRating,
-        follows = comic.follows,
-        views = comic.views,
-        comments = comic.comments,
-        isSearch = true,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(119.dp)
-            .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
-                shape = MaterialTheme.shapes.small
-            ),
-        onClicked = { homeViewModel.onComicSearchClicked(comic.comicId) }
-    )
 }
 
 
@@ -162,12 +143,18 @@ fun MainHomeAppBar(
 
         SearchWidgetState.OPEN -> {
             // Show normal app bar
-            SearchTopAppBar(
-                searchText = searchTextState,
-                onTextChange = onTextChange,
-                onCLoseClicked = { onCloseClicked() },
-                onSearchClicked = { onSearchClicked() }
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 15.dp)
+            ) {
+                SearchTopAppBar(
+                    searchText = searchTextState,
+                    onTextChange = onTextChange,
+                    onCLoseClicked = { onCloseClicked() },
+                    onSearchClicked = { onSearchClicked() }
+                )
+            }
         }
     }
 }
@@ -178,6 +165,8 @@ fun HomeContent(
     homeViewModel: HomeViewModel,
     navController: NavController,
     searchWidgetState: SearchWidgetState,
+    searchTextState: String,
+    onCloseClicked: () -> Unit = {},
 
     ) {
     if (searchWidgetState == SearchWidgetState.OPEN) {
@@ -193,9 +182,32 @@ fun HomeContent(
                     bottom = 4.dp
                 ),// Optional padding for the entire list,
             verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             items(state.searchResult.value) { comic ->
                 SearchResultItem(comic = comic, homeViewModel = homeViewModel)
+            }
+
+            item {
+                if (state.isSearchLoading) {
+                    repeat(2) {
+                        RankingComicShimmerLoading()
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+            }
+            item {
+                if (state.searchResult.value.isNotEmpty()) {
+                    Text(
+                        text = "Show More",
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .clickable { homeViewModel.onAdvanceSearchClicked(searchTextState) },
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     } else {
@@ -228,6 +240,36 @@ fun HomeContent(
 
         }
     }
+}
+
+@Composable
+private fun SearchResultItem(
+    homeViewModel: HomeViewModel,
+    comic: ComicResponse
+) {
+    NormalComicCard(
+        comicId = comic.comicId,
+        image = APIConfig.imageAPIURL.toString() + comic.cover,
+        comicName = comic.name,
+        status = comic.status,
+        authorNames = comic.authors,
+        publishedDate = comic.publicationDate,
+        ratingScore = comic.averageRating,
+        follows = comic.follows,
+        views = comic.views,
+        comments = comic.comments,
+        isSearch = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(119.dp)
+            .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
+                shape = MaterialTheme.shapes.small
+            ),
+        onClicked = { homeViewModel.onComicSearchClicked(comic.comicId) }
+    )
 }
 
 
@@ -374,11 +416,12 @@ fun showHistoryCardComic() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         comics.forEach { comic ->
-            CardComicHistoryHome(
+            BasicComicCard(
                 image = comic.image,
                 comicName = comic.comicName,
                 comicChapter = comic.comicChapter,
-                averageRatingNumber = comic.averageRatingNumber
+                onClick = { /*TODO*/ },
+                // averageRatingNumber = comic.averageRatingNumber
             )
         }
     }
