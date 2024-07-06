@@ -10,6 +10,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile.EditProfileView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting.SettingView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.RankingView
 
 
@@ -41,13 +42,13 @@ fun NavigationGraph(
         }
 
         composable("ranking_route/{param}") { navBackStackEntry ->
-            val param = navBackStackEntry.arguments?.getString("param")
+            val param = navBackStackEntry.arguments?.getString("param")?.toInt()
             when (param) {
-                "0" -> RankingView(navController)
-                "1" -> RankingView(navController)
-                "2" -> RankingView(navController)
-                "3" -> RankingView(navController)
-                else -> RankingView(navController)
+                0 -> RankingView(param, navController)
+                1 -> RankingView(param, navController)
+                2 -> RankingView(param, navController)
+                3 -> RankingView(param, navController)
+                else -> RankingView(param, navController)
             }
         }
 
@@ -72,6 +73,10 @@ fun NavigationGraph(
             EditProfileView(navController = navController)
         }
 
+        composable("setting_route") {
+            SettingView(navController = navController, viewModel = viewModel)
+        }
+
         composable("aboutUs_route") {
             AboutUsView(navController = navController)
         }
@@ -80,27 +85,12 @@ fun NavigationGraph(
             RankingView(navController = navController)
         }
 
-        composable("ranking_route/{param}") { navBackStackEntry ->
-            val param = navBackStackEntry.arguments?.getString("param")
-            when (param) {
-                "0" -> RankingView( navController)
-                "1" -> RankingView( navController)
-                "2" -> RankingView( navController)
-                "3" -> RankingView( navController)
-                else -> RankingView( navController)
-            }
-        }
-
-
         //view chapter screen
         composable("view_chapter_route/{chapterId}") { navBackStackEntry ->
             val chapterId = navBackStackEntry.arguments?.getString("chapterId")
-            ViewChapter(navController = navController, chapterId = chapterId?.toInt() ?: 0 )
+            ViewChapter(navController = navController, chapterId = chapterId?.toInt() ?: 0)
         }
 
-        composable("wifi_route"){
-            NetworkDisconnectedDialog()
-        }
     }
 }
 

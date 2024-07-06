@@ -100,8 +100,8 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    //_state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
-                    _state.value.listRankingComics.value = results
+                    _state.value = _state.value.copy(listRankingComics = (results))
+//                    _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -127,8 +127,8 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    //  _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
-                    _state.value.listRankingComics.value = results
+                    _state.value = _state.value.copy(listRankingComics = results)
+                  //  _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -152,8 +152,9 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    //  _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
-                    _state.value.listRankingComics.value = results
+                      _state.value = _state.value.copy(listRankingComics = (results))
+                    Log.d("HomeViewModel", "ComicsView: $result")
+//                    _state.value.listRankingComics.value = results
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -176,8 +177,9 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-                    //   _state.value = _state.value.copy(listRankingComics = mutableStateOf(results))
-                    _state.value.listRankingComics.value = results
+                       _state.value = _state.value.copy(listRankingComics = (results))
+//                    _state.value.listRankingComics.value = results
+                    Log.d("HomeViewModel", "ComicsRating: $result")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -226,8 +228,8 @@ class HomeViewModel @Inject constructor(
         navController?.navigate("bookcase_route/1")
     }
 
-    fun onViewRankingMore() {
-        navController?.navigate("ranking_route/0")
+    fun onViewRankingMore(tabIndex :Int) {
+        navController?.navigate("ranking_route/$tabIndex")
     }
 
     fun onHistoryComicClicked(chapterId: Int) {

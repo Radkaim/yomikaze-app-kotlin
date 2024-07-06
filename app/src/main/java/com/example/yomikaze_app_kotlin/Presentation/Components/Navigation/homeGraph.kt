@@ -5,15 +5,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.BottomHomeNavItems
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword.ChangePasswordView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadDetailsView.DownloadDetailView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notification.NotificationView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile.EditProfileView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.ProfileView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting.SettingView
 
 fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavController) {
     navigation(
@@ -57,18 +54,6 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
                 comicId = comicId?.toLong() ?: 0,
                 comicName = comicName ?: ""
             )
-        }
-
-        composable("edit_profile_route") {
-            EditProfileView(navController = navController)
-        }
-
-        composable("setting_route") {
-            SettingView(navController = navController, viewModel = viewModel)
-        }
-
-        composable("change_password_route") {
-           ChangePasswordView(navController = navController)
         }
 
     }

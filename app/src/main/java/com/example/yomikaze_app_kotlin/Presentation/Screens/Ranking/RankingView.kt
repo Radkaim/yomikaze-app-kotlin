@@ -37,10 +37,15 @@ import com.example.yomikaze_app_kotlin.R
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun RankingView(
+    index: Int? = 0,
     navController: NavController,
     viewModel: RankingViewModel = hiltViewModel(),
 ) {
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
+
+    if (index != selectedTabIndex && index != null) {
+        viewModel.setSelectedTabIndex(index)
+    }
 
     val tabs = listOf("Hot", "Rating", "Comment", "Follow")
 

@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -97,7 +98,7 @@ fun HomeView(
         if (CheckNetwork()) {
             // Show UI when connectivity is available
             HomeContent(state, homeViewModel, navController, searchWidgetState = searchWidgetState)
-            homeViewModel.getComicByViewRanking(1, 3)
+//            homeViewModel.getComicByViewRanking(1, 3)
         } else {
             // Show UI for No Internet Connectivity
             UnNetworkScreen()
@@ -386,6 +387,10 @@ fun showHistoryCardComic() {
 
 @Composable
 fun showRanking(homeViewModel: HomeViewModel, state: HomeState) {
+
+    // Duy trì trạng thái của tab được chọn
+    val (selectedTabIndex, setSelectedTabIndex) = remember { mutableStateOf(0) }
+
     Spacer(modifier = Modifier.height(10.dp))
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -422,7 +427,7 @@ fun showRanking(homeViewModel: HomeViewModel, state: HomeState) {
                         .padding(top = 10.dp, end = 8.dp)
                         .width(8.dp)
                         .height(8.dp)
-                        .clickable { homeViewModel.onViewRankingMore() },
+                        .clickable { homeViewModel.onViewRankingMore(selectedTabIndex) },
                     tint = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
@@ -433,22 +438,29 @@ fun showRanking(homeViewModel: HomeViewModel, state: HomeState) {
         val listTabs = listOf("Hot", "Rating", "Comment", "Follow") //-> for future implementation
         // create a comics list mutable state
 
-        showTabRow(homeViewModel = homeViewModel, state = state)
+        showTabRow(homeViewModel = homeViewModel, state = state, selectedTabIndex, setSelectedTabIndex)
         showRankingComicCard(homeViewModel = homeViewModel, state = state)
 
     }
 }
 
+
+
 @Composable
 fun showTabRow(
     homeViewModel: HomeViewModel,
-    state: HomeState
+    state: HomeState,
+    selectedTabIndex: Int,
+    setSelectedTabIndex: (Int) -> Unit
 ) {
-    // Duy trì trạng thái của tab được chọn
-    val (selectedTabIndex, setSelectedTabIndex) = remember { mutableStateOf(0) }
+
 
     // Các tên tab và các hành động tương ứng
     val tabs = listOf("Hot", "Rating", "Comment", "Follow")
+
+    LaunchedEffect(Unit) {
+        homeViewModel.getComicByViewRanking(1, 3)
+    }
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -467,6 +479,7 @@ fun showTabRow(
         }
     }
 }
+
 
 fun tabSelected(tabIndex: Int, homeViewModel: HomeViewModel, state: HomeState) {
     val size = 3
@@ -509,7 +522,7 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
             .background(MaterialTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
     ) {
-        state.listRankingComics.value.forEachIndexed { index, comic ->
+        state.listRankingComics.forEachIndexed { index, comic ->
             RankingComicCard(
                 comicId = comic.comicId,
                 rankingNumber = index + 1,
