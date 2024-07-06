@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class LibraryViewModel @Inject constructor() : ViewModel() {
+class LibraryViewModel @Inject constructor(
+
+) : ViewModel() {
 
     private val _state = MutableStateFlow(LibraryState())
     val state: StateFlow<LibraryState> get() = _state
@@ -43,6 +45,28 @@ class LibraryViewModel @Inject constructor() : ViewModel() {
     fun updateSearchText(newValue: String) {
         _searchTextState.value = newValue
     }
+
+//    @SuppressLint("SuspiciousIndentation")
+//    fun searchComic(comicNameQuery: String) {
+//        viewModelScope.launch {
+//            val token =
+//                if (appPreference.authToken == null) "" else appPreference.authToken!!
+//            val result = searchComicUC.searchComic(token, comicNameQuery)
+//
+//            result.fold(
+//                onSuccess = { baseResponse ->
+//                    val results = baseResponse.results
+//                    // Xử lý kết quả thành công
+//                    _state.value.searchResult.value = results
+//
+//                },
+//                onFailure = { exception ->
+//                    // Xử lý lỗi
+//                }
+//            )
+//            Log.d("NotificationViewModel", "searchComic: $result")
+//        }
+//    }
 
 
 }

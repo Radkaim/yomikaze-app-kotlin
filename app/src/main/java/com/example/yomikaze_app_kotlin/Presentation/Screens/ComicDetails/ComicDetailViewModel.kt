@@ -10,9 +10,9 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.DownloadUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicDetailsFromApiUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetListChaptersByComicIdUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.RatingComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

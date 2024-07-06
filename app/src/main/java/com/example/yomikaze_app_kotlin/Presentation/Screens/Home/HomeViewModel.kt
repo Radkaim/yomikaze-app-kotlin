@@ -9,12 +9,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByCommentsRankingUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByFollowRankingUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByRatingRankingUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByViewRankingUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.SearchComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByRatingRankingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByViewRankingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetHotComicBannerUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -240,7 +240,7 @@ class HomeViewModel @Inject constructor(
                     // Xử lý lỗi
                 }
             )
-            Log.d("NotificationViewModel", "searchComic: $result")
+
         }
     }
 

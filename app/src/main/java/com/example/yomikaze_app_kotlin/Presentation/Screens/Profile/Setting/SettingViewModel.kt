@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Core.AppThemeSate
-import com.example.yomikaze_app_kotlin.Domain.UseCases.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainEvent
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.ui.AppTheme

@@ -27,7 +27,7 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             ProfileView(navController, viewModel)
         }
         composable(BottomHomeNavItems.Notification.screen_route) {
-            NotificationView()
+            NotificationView(navController = navController)
         }
 
         // for history tab in bookcase screen

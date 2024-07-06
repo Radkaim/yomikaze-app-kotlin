@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Domain.UseCases
+package com.example.yomikaze_app_kotlin.Domain.UseCases.Comic
 
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository

@@ -9,8 +9,8 @@ import com.example.yomikaze_app_kotlin.Domain.Models.ErrorResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
-import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginWithGoogleUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
