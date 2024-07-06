@@ -458,7 +458,7 @@ fun ComicDetailContent(
             .padding(top = 170.dp)
             //.background(MaterialTheme.colorScheme.onSurface)
             .drawWithCache {
-              //  val shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                //  val shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                 val path = Path().apply {
                     addRoundRect(
                         RoundRect(
@@ -684,7 +684,7 @@ fun ListChapterInComicDetailView(
     Log.d("ListChapterInComicDetailView", "ListChapterInComicDetailView: $comicId")
     comicDetailViewModel.getListChapterByComicId(comicId = comicId)
     var isSelected by remember { mutableStateOf(true) }
-    val listChapter = comicDetailViewModel.state.value.listChapters.value
+    val listChapter = comicDetailViewModel.state.value.listChapters
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -692,7 +692,7 @@ fun ListChapterInComicDetailView(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Total Chapter: ${listChapter.size}",
+            text = "Total Chapter: ${listChapter?.size}",
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onPrimary,
@@ -714,15 +714,22 @@ fun ListChapterInComicDetailView(
             .offset(x = (-4).dp),
         verticalArrangement = Arrangement.spacedBy(1.5.dp) // 8.dp space between each item
     ) {
-        items(listChapter) { chapter ->
-            ChapterCard(
-                chapterNumber = chapter.number,
-                title = chapter.name,
-                views = chapter.views,
-                comments = chapter.comments,
-                publishedDate = chapter.creationTime,
-                isLocked = chapter.isLocked,
-                onClick = { comicDetailViewModel.navigateToViewChapter(chapter.number) }) {
+        listChapter?.let { // means if listChapter is not null
+            items(it) { chapter ->
+                ChapterCard(
+                    chapterNumber = chapter.number,
+                    title = chapter.name,
+                    views = chapter.views,
+                    comments = chapter.comments,
+                    publishedDate = chapter.creationTime,
+                    isLocked = chapter.isLocked,
+                    onClick = {
+                        comicDetailViewModel.navigateToViewChapter(
+                            comicId,
+                            chapter.number
+                        )
+                    }) {
+                }
             }
         }
     }

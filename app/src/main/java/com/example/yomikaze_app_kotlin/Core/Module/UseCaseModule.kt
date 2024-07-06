@@ -4,6 +4,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.DownloadUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByCommentsRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByFollowRankingUC
@@ -12,6 +13,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicByViewRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetHotComicBannerUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetListChaptersByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.LoginWithGoogleUC
@@ -158,5 +160,14 @@ object UseCaseModule {
     @Singleton
     fun provideGetListChaptersByComicIdUC(chapterRepository: ChapterRepository): GetListChaptersByComicIdUC {
         return GetListChaptersByComicIdUC(chapterRepository)
+    }
+
+    /**
+     * Todo: Provide the GetPagesByChapterNumberOfComic
+     */
+    @Provides
+    @Singleton
+    fun provideGetPagesByChapterNumberOfComicUC(pageRepository: PageRepository): GetPagesByChapterNumberOfComicUC {
+        return GetPagesByChapterNumberOfComicUC(pageRepository)
     }
 }

@@ -10,8 +10,8 @@ interface PageApiService {
     /**
      * TODO: Implement get list pages of Chapter of a Comic
      */
-    @GET("comic/{comicId}/chapter/{chapterNumber}")
-    fun getPagesByChapterNumberOfComic(
+    @GET("comics/{comicId}/chapters/{chapterNumber}")
+    suspend fun getPagesByChapterNumberOfComic(
         @Path("comicId") comicId: Long,
         @Path("chapterNumber") chapterNumber: Int
     ) : Response<Page>

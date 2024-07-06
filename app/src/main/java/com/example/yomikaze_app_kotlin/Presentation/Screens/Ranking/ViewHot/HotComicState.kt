@@ -12,5 +12,4 @@ data class HotComicState(
     val totalPages: MutableState<Int> = mutableStateOf(0),
     val page: Int = 1,
     val size: Int = 7,
-
 )

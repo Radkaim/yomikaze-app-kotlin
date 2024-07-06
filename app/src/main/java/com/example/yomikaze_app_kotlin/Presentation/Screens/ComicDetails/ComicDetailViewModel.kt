@@ -44,8 +44,8 @@ class ComicDetailViewModel @Inject constructor(
     }
 
     //navigate to view chapter
-    fun navigateToViewChapter(chapterId: Int) {
-        navController?.navigate("view_chapter_route/$chapterId")
+    fun navigateToViewChapter(comicId: Long,chapterId: Int) {
+        navController?.navigate("view_chapter_route/$comicId/$chapterId")
     }
 
     fun getComicDetailsFromApi(comicId: Long) {
@@ -106,7 +106,6 @@ class ComicDetailViewModel @Inject constructor(
             val ratingRequest = RatingRequest(rating)
 
             val result = ratingComicUC.ratingComic(token, comicId, ratingRequest)
-            Log.d("Rating", "rateComic: ${result.code()}")
             if (result.code() == 200) {
                 _state.value = _state.value.copy(isRatingComicSuccess = true)
             } else {
@@ -119,15 +118,16 @@ class ComicDetailViewModel @Inject constructor(
      * Todo: Implement get list chapter by comic id in comic detail view
      */
     fun getListChapterByComicId(comicId: Long) {
-        Log.d("ComicDetailViewModel", "getListChapterByComicId1: $comicId")
+
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("ComicDetailViewModel", "getListChapterByComicId2: $comicId")
             val result = getListChaptersByComicIdUC.getListChapters(comicId)
-            Log.d("ComicDetailViewModel", "getListChapterByComicId: $result")
             result.fold(
                 onSuccess = { listChapter ->
                     // Xử lý kết quả thành công
-                    _state.value.listChapters.value = listChapter
+                    //_state.value.listChapters.value = listChapter
+                    _state.value = _state.value.copy(
+                        listChapters = listChapter
+                    )
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi

@@ -79,21 +79,21 @@ object RepoModule {
         chapterDao: ChapterDao,
         pageDao: PageDao,
         imageRepository: ImageRepository,
-        pageRepository: PageRepository,
+//        pageRepository: PageRepository,
         pageApiService: PageApiService
     ): PageRepository {
         return PageRepositoryImpl(
             chapterDao,
             pageDao,
             imageRepository,
-            pageRepository,
+//            pageRepository,
             pageApiService
         )
     }
 
 
     /**
-     * Todo: Provide the PageRepository
+     * Todo: Provide the ImageRepository
      */
     @Provides
     @Singleton

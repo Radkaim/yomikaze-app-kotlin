@@ -37,58 +37,50 @@ class HotComicViewModel @Inject constructor(
 
 
     // Reset state
-    fun resetState() {
+    private fun resetState() {
         _state.value = HotComicState()
     }
 
 
-    fun getComicByViewRanking(page: Int? = null) {
-        var finalPage = page ?: 1
+    override fun onCleared() {
+        super.onCleared()
+        // Reset page and size if needed
+        resetState()
+    }
 
+
+    fun getComicByViewRanking(page: Int? = 1) {
         viewModelScope.launch {
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-            // val page = _state.value.page
 
             val size = _state.value.size
 
             val currentPage = _state.value.currentPage.value
             val totalPages = _state.value.totalPages.value
-            Log.d("HotComicViewModel", "current page1: $currentPage")
-            Log.d("HotComicViewModel", "total page1: $totalPages")
+
             if (currentPage >= totalPages && totalPages != 0) return@launch
 
-
             val result =
-                getComicByViewRankingUC.getComicByViewRanking(token, "TotalViewsDesc", finalPage, size)
+                getComicByViewRankingUC.getComicByViewRanking(
+                    token = token,
+                    orderByTotalViews = "TotalViewsDesc",
+                    page = page,
+                    size = size
+                )
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
-
                     _state.value = _state.value.copy(
                         listComicByViewRanking = state.value.listComicByViewRanking + results,
-//                        currentPage = baseResponse.currentPage,
-//                       totalPages = baseResponse.totalPages
                     )
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
-                    Log.d("HotComicViewModel", "current page2: ${state.value.currentPage}")
-                    Log.d("HotComicViewModel", "total page2: ${state.value.totalPages}")
-
-
-                    Log.d("HotComicViewModel", "list comic: ${_state.value.listComicByViewRanking.size}")
                 },
                 onFailure = { exception ->
-                    // Xử lý lỗi
+                   Log.e("HotComicViewModel", exception.message.toString())
                 }
             )
         }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        // Reset page and size if needed
-        _state.value = HotComicState()
-    }
-
 }

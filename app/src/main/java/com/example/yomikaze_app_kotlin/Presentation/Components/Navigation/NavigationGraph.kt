@@ -60,9 +60,15 @@ fun NavigationGraph(
         }
 
         //view chapter screen
-        composable("view_chapter_route/{chapterId}") { navBackStackEntry ->
-            val chapterId = navBackStackEntry.arguments?.getString("chapterId")
-            ViewChapter(navController = navController, chapterId = chapterId?.toInt() ?: 0)
+        composable("view_chapter_route/{comicId}/{chapterNumber}") { navBackStackEntry ->
+            val comicId = navBackStackEntry.arguments?.getString("comicId")
+            val chapterNumber = navBackStackEntry.arguments?.getString("chapterNumber")
+
+            ViewChapter(
+                comicId = comicId?.toLong()!!,
+                chapterNumber = chapterNumber?.toInt() ?: 0,
+                navController = navController
+            )
         }
 
         composable("wifi_route") {
@@ -83,12 +89,6 @@ fun NavigationGraph(
         // for ranking screen
         composable("ranking_route") {
             RankingView(navController = navController)
-        }
-
-        //view chapter screen
-        composable("view_chapter_route/{chapterId}") { navBackStackEntry ->
-            val chapterId = navBackStackEntry.arguments?.getString("chapterId")
-            ViewChapter(navController = navController, chapterId = chapterId?.toInt() ?: 0)
         }
 
     }

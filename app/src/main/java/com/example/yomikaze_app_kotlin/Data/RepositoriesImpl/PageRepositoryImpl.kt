@@ -9,22 +9,28 @@ import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Models.Page
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 class PageRepositoryImpl @Inject constructor(
     private val chapterDao: ChapterDao,
     private val pageDao: PageDao,
     private val imageRepository: ImageRepository,
-    private val pageRepository: PageRepository,
+    //  private val pageRepository: PageRepository,
     private val api: PageApiService,
 ) : PageRepository {
 
+    @Inject
+    lateinit var pageRepository: PageRepository
     override suspend fun getPagesByChapterNumberOfComic(
         comicId: Long,
         chapterIndex: Int
     ): Result<Page> {
         return try {
             val response = api.getPagesByChapterNumberOfComic(comicId, chapterIndex)
+            Log.d("PageRepositoryImpl", "getPagesByChapterNumberOfComic: $response")
+
             if (response.isSuccessful) {
                 val page = response.body()
                 if (page != null) {
@@ -33,16 +39,22 @@ class PageRepositoryImpl @Inject constructor(
                     Result.failure(Throwable("No pages found"))
                 }
             } else {
-                Result.failure(Throwable("API call failed: ${response.errorBody()?.string()}"))
+                Result.failure(Throwable("API call failed: ${response.code()} ${response.message()}"))
             }
+        } catch (e: IOException) {
+            Result.failure(e)
+        } catch (e: HttpException) {
+            Result.failure(e)
         } catch (e: Exception) {
             Result.failure(e)
         }
+
     }
 
     override suspend fun downloadPagesOfChapter(comicId: Long, chapter: Chapter, context: Context) {
         try {
             // Lấy danh sách các trang ảnh của chương
+
             val result = pageRepository.getPagesByChapterNumberOfComic(comicId, chapter.number)
             if (result.isSuccess) {
                 val pages = result.getOrThrow() // Lấy đối tượng Page
@@ -50,7 +62,8 @@ class PageRepositoryImpl @Inject constructor(
                 var totalSize = 0L
 
                 for ((index, pageUrl) in pages.pages.withIndex()) {
-                    val imageResult = imageRepository.downloadImageFromApi(pageUrl) // Tải hình ảnh từ URL
+                    val imageResult =
+                        imageRepository.downloadImageFromApi(pageUrl) // Tải hình ảnh từ URL
 
                     var localPath: String? = null
                     when (imageResult) {

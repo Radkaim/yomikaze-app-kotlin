@@ -166,7 +166,7 @@ fun HotComicViewContent(
             .collectLatest { lastVisibleItemIndex ->
                 if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByViewRanking.size) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
-                        Toast.makeText(context, "End of list", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "No Comic More", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
