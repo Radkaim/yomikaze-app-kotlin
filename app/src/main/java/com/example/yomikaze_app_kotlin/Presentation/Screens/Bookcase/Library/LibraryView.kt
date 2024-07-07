@@ -1,18 +1,27 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,7 +31,11 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BasicComicCard
-import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentBasicRectangle
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
+import com.example.yomikaze_app_kotlin.Presentation.Components.NotSignIn.NotSignIn
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.BasicComicCardShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.SearchTopAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.SearchWidgetState
 
@@ -37,22 +50,32 @@ fun LibraryView(
 
     libraryViewModel.setNavController(navController)
 
-    LibraryContent(
-        searchWidgetState = searchWidgetState,
-        searchTextState = searchTextState,
-        onTextChange = { libraryViewModel.updateSearchText(newValue = it) },
-        onSearchTriggered = { /*TODO*/ },
-        navController = navController,
-        state = state,
-        libraryViewModel = libraryViewModel,
-        onSearchClicked = {
-            libraryViewModel.searchComic(comicNameQuery = searchTextState)
+    if (CheckNetwork()) {
+        if (libraryViewModel.checkUserIsLogin()) {
+            LibraryContent(
+                searchWidgetState = searchWidgetState,
+                searchTextState = searchTextState,
+                onTextChange = { libraryViewModel.updateSearchText(newValue = it) },
+                onSearchTriggered = { /*TODO*/ },
+                navController = navController,
+                state = state,
+                libraryViewModel = libraryViewModel,
+                onSearchClicked = {
+                    libraryViewModel.searchComic(comicNameQuery = searchTextState)
+                }
+            )
+        } else {
+            NotSignIn(navController = navController)
         }
 
-    )
+    } else {
+        UnNetworkScreen()
+    }
+
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LibraryContent(
     searchWidgetState: SearchWidgetState,
@@ -65,13 +88,25 @@ fun LibraryContent(
     state: LibraryState,
     libraryViewModel: LibraryViewModel
 ) {
-    // Show normal app bar
+
+    //get all category
+    LaunchedEffect(Unit) { // should be called only once
+        libraryViewModel.getAllCategory()
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .wrapContentSize(Alignment.Center)
+            .background(MaterialTheme.colorScheme.background)
             .padding(top = 15.dp)
+            .padding(bottom = 60.dp) // for show all content
     ) {
-        item {
+
+        //TODO Search widget
+        stickyHeader {
             SearchTopAppBar(
                 searchText = searchTextState,
                 onTextChange = onTextChange,
@@ -85,10 +120,11 @@ fun LibraryContent(
             )
         }
 
+        //TODO Search result
         item {
-            if (state.totalResults != 0) {
+            if (state.totalSearchResults != 0) {
                 Text(
-                    text = "Results: " + state.totalResults.toString(),
+                    text = "Results: " + state.totalSearchResults.toString(),
                     color = MaterialTheme.colorScheme.inverseSurface,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -99,16 +135,14 @@ fun LibraryContent(
                 modifier = Modifier.padding(start = 10.dp, top = 20.dp, end = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                if (state.isSearchLoading) {
-                    item {
+
+                items(state.searchResult.value) { comic ->
+                    if (state.isSearchLoading) {
                         repeat(2) {
-                            ComponentBasicRectangle()
+                            BasicComicCardShimmerLoading()
                             Spacer(modifier = Modifier.width(20.dp))
                         }
                     }
-                }
-
-                items(state.searchResult.value) { comic ->
                     SearchResultItem(
                         libraryViewModel = libraryViewModel,
                         comic = comic
@@ -116,8 +150,55 @@ fun LibraryContent(
                 }
             }
         }
+
+        //TODO total categories
+        item {
+            Row {
+                Text(
+                    text = "Personal Categories: " + state.totalCategoryResults.toString(),
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+                )
+
+                //TODO Create Category
+
+
+            }
+
+        }
+
+
+        //TODO Category list
+        items(state.categoryList) { category ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+                    .padding(start = 10.dp, top = 20.dp, end = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                if (state.isCategoryLoading) {
+                    repeat(3) {
+                        NormalComicCardShimmerLoading()
+                    }
+                }
+                CategoryCard(
+                    categoryId = category.id,
+                    name = category.name,
+                    // totalComics = category.totalComics,
+                    image = APIConfig.imageAPIURL.toString() + state.imageCoverOfCate,
+                    onClick = { libraryViewModel.onNavigateCategoryDetail(category.id) },
+                    onOptionsClick = { /*TODO*/ },
+                    onEditClick = { /*TODO*/ },
+                    onDeleteClick = { /*TODO*/ },
+                )
+            }
+        }
     }
 }
+
 
 @Composable
 private fun SearchResultItem(

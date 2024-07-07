@@ -9,7 +9,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
-import com.example.yomikaze_app_kotlin.Domain.UseCases.SearchInLibraryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.SearchWidgetState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,14 +22,14 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val searchInLibraryUC: SearchInLibraryUC,
-    appPreference: AppPreference,
+    private val getLibraryCategoryUC: GetLibraryCategoryUC,
+    private val appPreference: AppPreference,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LibraryState())
     val state: StateFlow<LibraryState> get() = _state
 
     private var navController: NavController? = null
-    private val appPreference = appPreference
 
     //for search widget
     private val _searchWidgetState: MutableState<SearchWidgetState> =
@@ -56,7 +57,7 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun updateTotalResults(newValue: Int) {
-        _state.value = _state.value.copy(totalResults = newValue)
+        _state.value = _state.value.copy(totalSearchResults = newValue)
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -75,7 +76,7 @@ class LibraryViewModel @Inject constructor(
                     val results = baseResponse.results
 
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(totalResults = baseResponse.totals)
+                    _state.value = _state.value.copy(totalSearchResults = baseResponse.totals)
                     _state.value.searchResult.value = results
                     _state.value = _state.value.copy(isSearchLoading = false)
                 },
@@ -88,8 +89,51 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Todo: Implement get all Category
+     */
+    fun getAllCategory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isCategoryLoading = true)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+
+            val result = getLibraryCategoryUC.getLibraryCategory(token)
+
+            result.fold(
+                onSuccess = { baseResponse ->
+
+                    val results = baseResponse.results
+
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(totalCategoryResults = baseResponse.totals)
+                    _state.value = _state.value.copy(categoryList = results)
+                    _state.value = _state.value.copy(isCategoryLoading = false)
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    _state.value = _state.value.copy(isCategoryLoading = false)
+                    Log.d("LibraryViewModel", "searchComic: $exception")
+                }
+            )
+        }
+    }
+
+    /**
+     * Todo: Implement check user is login
+     */
+    fun checkUserIsLogin(): Boolean {
+        return appPreference.isUserLoggedIn
+    }
+
+
     fun onNavigateComicDetail(comicId: Long) {
         navController?.navigate("comic_detail_route/$comicId")
+    }
+
+    fun onNavigateCategoryDetail(categoryId: Long) {
+    Log.d("LibraryViewModel", "onNavigateCategoryDetail: $categoryId")
+    // navController?.navigate("category_detail_route/$categoryId")
     }
 
 }

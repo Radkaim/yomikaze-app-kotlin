@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Domain.UseCases
+package com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library
 
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry

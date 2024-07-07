@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,9 +31,10 @@ import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun CategoryCard(
+    categoryId: Long,
     image: String,
     name: String,
-    totalComics: Int,
+    totalComics: Int? = 0,
     onClick: () -> Unit,
     onOptionsClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -47,6 +49,7 @@ fun CategoryCard(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                 shape = MaterialTheme.shapes.small
             )
+            .clickable { onClick() }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -85,7 +88,7 @@ fun CategoryCard(
             ) {
                 Text(
                     text = name,
-                    fontSize = 18.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     overflow = TextOverflow.Ellipsis,

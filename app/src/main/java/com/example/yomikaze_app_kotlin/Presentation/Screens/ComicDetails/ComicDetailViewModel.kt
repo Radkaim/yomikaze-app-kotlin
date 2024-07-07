@@ -9,9 +9,9 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
-import com.example.yomikaze_app_kotlin.Domain.UseCases.DownloadUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicDetailsFromApiUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetListChaptersByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ComicDetailViewModel @Inject constructor(
     private val getComicDetailsFromApiUC: GetComicDetailsFromApiUC,
-    appPreference: AppPreference,
+    private  val appPreference: AppPreference,
     @ApplicationContext private val context: Context,
     private val downloadUC: DownloadUC,
     private val ratingComicUC: RatingComicUC,
@@ -32,7 +32,6 @@ class ComicDetailViewModel @Inject constructor(
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
-    private val appPreference = appPreference
     private var comic: ComicResponse? = null
 
     private val _state = MutableStateFlow(ComicDetailState())

@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Domain.UseCases
+package com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download
 
 import android.content.Context
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.DownloadResult

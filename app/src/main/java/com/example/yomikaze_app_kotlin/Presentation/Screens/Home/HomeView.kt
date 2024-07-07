@@ -53,7 +53,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Ranking
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangle
-import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.RankingComicShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.DefaultTopAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.SearchTopAppBar
 import com.example.yomikaze_app_kotlin.R
@@ -213,7 +213,7 @@ fun HomeContent(
             item {
                 if (state.isSearchLoading) {
                     repeat(2) {
-                        RankingComicShimmerLoading()
+                        NormalComicCardShimmerLoading()
                         Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
@@ -595,7 +595,7 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
             // show 3 shimmer loading cards
             val list = listOf(1, 2, 3)
             repeat(list.size) {
-                RankingComicShimmerLoading()
+                NormalComicCardShimmerLoading()
             }
         }
         state.listRankingComics.forEachIndexed { index, comic ->

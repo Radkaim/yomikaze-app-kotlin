@@ -51,7 +51,7 @@ fun ComponentRectangle() {
     )
 }
 @Composable
-fun ComponentBasicRectangle() {
+fun BasicComicCardShimmerLoading() {
     Box(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(8.dp))
@@ -76,7 +76,7 @@ fun ComponentRectangleLineLong() {
 
 // rectangle shape with line medium
 @Composable
-fun RankingComicShimmerLoading() {
+fun NormalComicCardShimmerLoading() {
     Box(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(8.dp))

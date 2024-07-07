@@ -18,6 +18,7 @@ interface LibraryApiService {
         @Query("OrderBy") nameDesc: String = "NameDesc",
     ): BaseResponse<LibraryEntry>
 
+
     /**
      * TODO: Implement the function to get list comic in library by category name
      * -- view category detail
