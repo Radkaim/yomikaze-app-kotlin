@@ -57,27 +57,30 @@ class LibraryViewModel @Inject constructor(
 
     @SuppressLint("SuspiciousIndentation")
     fun searchComic(comicNameQuery: String) {
-        Log.d("LibraryViewModel", "searchComic: $comicNameQuery")
+        _state.value.searchResult.value = emptyList() // for clear search result for search again
+        _state.value = _state.value.copy(isSearchLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            Log.d("LibraryViewModel", "searchComic: $token")
+
             val result = searchInLibraryUC.searchComic(token, comicNameQuery)
 
             result.fold(
                 onSuccess = { baseResponse ->
-                    val results = baseResponse.results
-                    Log.d("LibraryViewModel", "searchComic: $results")
-                    // Xử lý kết quả thành công
-                    _state.value.searchResult.value = results
 
+                    val results = baseResponse.results
+
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(totalResults = baseResponse.totals)
+                    _state.value.searchResult.value = results
+                    _state.value = _state.value.copy(isSearchLoading = false)
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isSearchLoading = false)
                     Log.d("LibraryViewModel", "searchComic: $exception")
                 }
             )
-           // Log.d("LibraryViewModel", "searchComic: $result")
         }
     }
 

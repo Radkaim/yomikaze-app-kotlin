@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -46,6 +47,17 @@ fun ComponentRectangle() {
             .background(color = Color.LightGray)
             .height(200.dp)
             .fillMaxWidth()
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+@Composable
+fun ComponentBasicRectangle() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .height(170.dp) // Adjusted height for better visual balance
+            .width(90.dp)
             .shimmerLoadingAnimation() // <--- Here.
     )
 }

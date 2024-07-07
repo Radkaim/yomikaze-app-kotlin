@@ -478,8 +478,7 @@ fun showRanking(homeViewModel: HomeViewModel, state: HomeState) {
 
         }
 
-        //lazyRow
-        val listTabs = listOf("Hot", "Rating", "Comment", "Follow") //-> for future implementation
+
         // create a comics list mutable state
 
         showTabRow(

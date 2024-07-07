@@ -1,20 +1,28 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BasicComicCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentBasicRectangle
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.SearchTopAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.SearchWidgetState
 
@@ -76,16 +84,35 @@ fun LibraryContent(
             )
         }
 
-        items(state.searchResult.value) { comic ->
-            LazyRow() {
-                item {
-                    if (comic != null){
-                        SearchResultItem(
-                            libraryViewModel = libraryViewModel,
-                            comic = comic
-                        )
+        item {
+            if (state.totalResults != 0) {
+                Text(
+                    text = "Results: " + state.totalResults.toString(),
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+                )
+            }
+            LazyRow(
+                modifier = Modifier.padding(start = 10.dp, top = 20.dp, end = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                if (state.isSearchLoading) {
+                    item {
+                        repeat(2) {
+                            ComponentBasicRectangle()
+                            Spacer(modifier = Modifier.width(20.dp))
+                        }
                     }
 
+                }
+
+                items(state.searchResult.value) { comic ->
+                    SearchResultItem(
+                        libraryViewModel = libraryViewModel,
+                        comic = comic
+                    )
                 }
             }
         }

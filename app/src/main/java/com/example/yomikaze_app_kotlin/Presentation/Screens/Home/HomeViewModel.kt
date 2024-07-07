@@ -225,6 +225,7 @@ class HomeViewModel @Inject constructor(
      */
     @SuppressLint("SuspiciousIndentation")
     fun searchComic(comicNameQuery: String) {
+        _state.value.searchResult.value = emptyList() // for clear search result for search again
         _state.value = _state.value.copy(isSearchLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
             val size = 4
