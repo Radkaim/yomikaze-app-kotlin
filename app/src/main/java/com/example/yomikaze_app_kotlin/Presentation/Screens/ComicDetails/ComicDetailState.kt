@@ -11,5 +11,5 @@ data class ComicDetailState(
     //val listChapters: MutableState<List<Chapter>> = mutableStateOf(emptyList()), =>
     val listChapters: List<Chapter>? = emptyList(),
     val isLoading: Boolean = true,
-    val isRatingComicSuccess: Boolean = false // Đổi thành Boolean thay vì MutableState<Boolean>
+    val isRatingComicSuccess: Boolean = true // Đổi thành Boolean thay vì MutableState<Boolean>
 )

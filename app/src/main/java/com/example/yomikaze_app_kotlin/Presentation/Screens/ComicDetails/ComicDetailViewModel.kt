@@ -100,7 +100,7 @@ class ComicDetailViewModel @Inject constructor(
      */
     fun rateComic(comicId: Long, rating: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-
+            _state.value = _state.value.copy(isRatingComicSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val ratingRequest = RatingRequest(rating)
 
@@ -108,6 +108,7 @@ class ComicDetailViewModel @Inject constructor(
             if (result.code() == 200) {
                 _state.value = _state.value.copy(isRatingComicSuccess = true)
             } else {
+                _state.value = _state.value.copy(isRatingComicSuccess = false)
                 Log.e("Rating", "rateComic: $result")
             }
         }

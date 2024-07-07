@@ -193,6 +193,7 @@ class ComicRepositoryImpl @Inject constructor(
                         authors = comic.authors,
                         status = comic.status,
                         tags = comic.tags,
+                        totalRatings = comic.totalRatings,
                         averageRating = comic.averageRating,
                         views = comic.views,
                         follows = comic.follows,

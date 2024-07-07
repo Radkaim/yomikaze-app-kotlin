@@ -96,6 +96,12 @@ data class ComicResponse(
     val tags: List<Tag>,
 
     //for api
+    @SerializedName("totalRatings")
+    //for database
+    @ColumnInfo(name = "totalRatings")
+    val totalRatings: Int,
+
+    //for api
     @SerializedName("averageRating")
     //for database
     @ColumnInfo(name = "rating")

@@ -40,6 +40,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -98,7 +99,13 @@ fun ComicDetailsView(
 
     //set navController for viewModel
     comicDetailViewModel.setNavController(navController)
-    comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+    LaunchedEffect(Unit){
+        comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+    }
+    LaunchedEffect(key1 = state.isRatingComicSuccess) {
+       comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+    }
+   // comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
     //comicDetailViewModel.downloadComic(state.comicResponse ?: return)
 
     ComicDetailContent(
