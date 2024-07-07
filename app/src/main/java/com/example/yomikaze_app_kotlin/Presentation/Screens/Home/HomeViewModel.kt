@@ -71,6 +71,10 @@ class HomeViewModel @Inject constructor(
     fun updateSearchResult(newSearchResult: List<ComicResponse>) {
         _state.value = _state.value.copy(searchResult = mutableStateOf(newSearchResult))
     }
+    fun updateTotalResults(newValue: Int) {
+        _state.value = _state.value.copy(totalResults = newValue)
+    }
+
 
 //    fun fetchImages() {
 //        viewModelScope.launch {
@@ -237,6 +241,7 @@ class HomeViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(totalResults = baseResponse.totals)
                     _state.value.searchResult.value = results
                     _state.value = _state.value.copy(isSearchLoading = false)
 

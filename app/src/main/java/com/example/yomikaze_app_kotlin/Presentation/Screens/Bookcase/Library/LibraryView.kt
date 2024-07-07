@@ -79,6 +79,7 @@ fun LibraryContent(
                     libraryViewModel.updateSearchText(newValue = "")
                     libraryViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
                     libraryViewModel.updateSearchResult(newSearchResult = emptyList()) // Cập nhật searchResult
+                    libraryViewModel.updateTotalResults(0)
                 },
                 onSearchClicked = { onSearchClicked() }
             )
@@ -105,7 +106,6 @@ fun LibraryContent(
                             Spacer(modifier = Modifier.width(20.dp))
                         }
                     }
-
                 }
 
                 items(state.searchResult.value) { comic ->

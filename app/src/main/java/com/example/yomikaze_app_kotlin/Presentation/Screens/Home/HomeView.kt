@@ -86,6 +86,7 @@ fun HomeView(
                     homeViewModel.updateSearchText(newValue = "")
                     homeViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
                     homeViewModel.updateSearchResult(newSearchResult = emptyList()) // Cập nhật searchResult
+                    homeViewModel.updateTotalResults(0)
                 },
                 onSearchClicked = {
                     Log.d("HomeView", "Search text: $searchTextState")
@@ -170,13 +171,14 @@ fun HomeContent(
 
     ) {
     if (searchWidgetState == SearchWidgetState.OPEN) {
+
         LazyColumn(
             modifier = Modifier
                 .padding(top = 70.dp)
                 .wrapContentSize(Alignment.Center)
                 .background(MaterialTheme.colorScheme.background)
                 .padding(
-                    top = 15.dp,
+                    top = 10.dp,
                     start = 4.dp,
                     end = 4.dp,
                     bottom = 4.dp
@@ -184,7 +186,27 @@ fun HomeContent(
             verticalArrangement = Arrangement.spacedBy(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            item {
+                if (state.totalResults != 0) {
+                    Column (
+                        modifier = Modifier.fillMaxWidth(),
+                    ){
+                        Text(
+                            text = "Results: " + state.totalResults.toString(),
+                            color = MaterialTheme.colorScheme.inverseSurface,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .align(Alignment.Start)
+                                .padding(bottom = 10.dp)
+                        )
+                    }
+
+                }
+            }
+
             items(state.searchResult.value) { comic ->
+              //  Spacer(modifier = Modifier.height(10.dp))
                 SearchResultItem(comic = comic, homeViewModel = homeViewModel)
             }
 

@@ -18,6 +18,7 @@ data class HomeState(
   //  var searchResult: List<ComicResponse> = emptyList(), =>
     val searchResult: MutableState<List<ComicResponse>> = mutableStateOf(emptyList()),
     val isSearchLoading : Boolean = false,
+    val totalResults: Int? = 0,
     val listRankingComics: List<ComicResponse> = emptyList()
     //val listRankingComics: MutableState<List<ComicResponse>> = mutableStateOf(emptyList()),
 )

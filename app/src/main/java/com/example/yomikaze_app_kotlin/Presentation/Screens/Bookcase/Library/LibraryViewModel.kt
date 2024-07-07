@@ -55,6 +55,10 @@ class LibraryViewModel @Inject constructor(
         _searchTextState.value = newValue
     }
 
+    fun updateTotalResults(newValue: Int) {
+        _state.value = _state.value.copy(totalResults = newValue)
+    }
+
     @SuppressLint("SuspiciousIndentation")
     fun searchComic(comicNameQuery: String) {
         _state.value.searchResult.value = emptyList() // for clear search result for search again
