@@ -33,7 +33,7 @@ private val LightColorScheme = lightColorScheme(
     background = Green100, //F2FFFD
     surface = Orange400, //F28C74
 
-    inverseSurface = Orange800,
+    inverseSurface = Orange800, //550A0A
     inverseOnSurface = switchTrackColor,
     surfaceTint = Green800,
     onSurface = Orange100, //FFF7F2

@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.CreateLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.SearchWidgetState
@@ -22,8 +24,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val searchInLibraryUC: SearchInLibraryUC,
-    private val getLibraryCategoryUC: GetLibraryCategoryUC,
     private val appPreference: AppPreference,
+    private val getLibraryCategoryUC: GetLibraryCategoryUC,
+    private val createLibraryCategoryUC: CreateLibraryCategoryUC
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LibraryState())
@@ -120,6 +123,34 @@ class LibraryViewModel @Inject constructor(
     }
 
     /**
+     * Todo: Implement add new category
+     */
+    fun addNewCategory(categoryName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isCreateCategorySuccess = false)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+             Log.d("LibraryViewModel", "Create category: $categoryName")
+            val result = createLibraryCategoryUC.createLibraryCategory(
+                token,
+                LibraryCategoryRequest(categoryName)
+            )
+
+            result.fold(
+                onSuccess = {
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(isCreateCategorySuccess = true)
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    _state.value = _state.value.copy(isCreateCategorySuccess = true)
+                    Log.d("LibraryViewModel", "CreateCategory: $exception")
+                }
+            )
+        }
+    }
+
+    /**
      * Todo: Implement check user is login
      */
     fun checkUserIsLogin(): Boolean {
@@ -132,8 +163,8 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun onNavigateCategoryDetail(categoryId: Long) {
-    Log.d("LibraryViewModel", "onNavigateCategoryDetail: $categoryId")
-    // navController?.navigate("category_detail_route/$categoryId")
+        Log.d("LibraryViewModel", "onNavigateCategoryDetail: $categoryId")
+        // navController?.navigate("category_detail_route/$categoryId")
     }
 
 }

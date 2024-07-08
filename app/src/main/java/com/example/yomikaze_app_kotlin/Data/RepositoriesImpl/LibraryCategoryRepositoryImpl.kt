@@ -8,7 +8,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryReposi
 import javax.inject.Inject
 
 class LibraryCategoryRepositoryImpl @Inject constructor(
-    private val libraryCategoryApiService: LibraryCategoryApiService
+    private val api: LibraryCategoryApiService
 ) : LibraryCategoryRepository {
 
     /**
@@ -18,7 +18,7 @@ class LibraryCategoryRepositoryImpl @Inject constructor(
         token: String,
         libraryCategoryRequest: LibraryCategoryRequest
     ): Result<LibraryCategoryResponse> {
-        return libraryCategoryApiService.createCategory("Bearer $token", libraryCategoryRequest)
+        return api.createCategory("Bearer $token", libraryCategoryRequest)
     }
 
     /**
@@ -26,7 +26,7 @@ class LibraryCategoryRepositoryImpl @Inject constructor(
      */
     override suspend fun getCategories(token: String): Result<BaseResponse<LibraryCategoryResponse>> {
         return try {
-            val response = libraryCategoryApiService.getCategories("Bearer $token")
+            val response = api.getCategories("Bearer $token")
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

@@ -215,7 +215,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     Icon(
                         painter = painterResource(id = R.drawable.ic_email),
                         contentDescription = "",
-                        tint = Color.Unspecified
+                        tint = MaterialTheme.colorScheme.primaryContainer
                     )
                 },
 
@@ -278,7 +278,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
 
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
-                            tint = MaterialTheme.colorScheme.onTertiary,
+                            tint = MaterialTheme.colorScheme.primaryContainer,
                             painter = image,
                             contentDescription = if (passwordVisible) "Hide password" else "Show password"
                         )

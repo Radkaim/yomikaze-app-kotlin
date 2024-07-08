@@ -77,7 +77,6 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
-import com.example.yomikaze_app_kotlin.Domain.Models.ComicChapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.processNameByComma
@@ -146,99 +145,6 @@ fun ComicDetailContent(
         MenuOptions("Report", "report_dialog_route", R.drawable.ic_report),
         MenuOptions("Share", "share_dialog_route", R.drawable.ic_share),
     )
-
-    // test case list chapter
-    val listChapter = listOf(
-        ComicChapter(
-            chapterIndex = 0,
-            title = "Superhero Origins 12Origins Origins12 OriginsOri gins12Ori gins",
-            views = 100000000,
-            comments = 100000000,
-            publishedDate = "27/01/2024",
-            isLocked = true
-        ),
-        ComicChapter(
-            chapterIndex = 1,
-            title = "Superhero Origins12",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = false
-        ),
-        ComicChapter(
-            chapterIndex = 2,
-            title = "Superhero Superhero Origins 12Origins Origins12 OriginsOri gins12Ori gins",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = true
-        ),
-        ComicChapter(
-            chapterIndex = 3,
-            title = "Superhero Origins14",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = false
-        ),
-        ComicChapter(
-            chapterIndex = 4,
-            title = "Superhero Origins15",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = false
-        ),
-        ComicChapter(
-            chapterIndex = 5,
-            title = "Superhero Origins16",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = true
-        ),
-        ComicChapter(
-            chapterIndex = 6,
-            title = "Superhero Superhero Origins 12Origins Origins12 OriginsOri gins12Ori gins",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = false
-        ),
-        ComicChapter(
-            chapterIndex = 7,
-            title = "Superhero Origins18",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = true
-        ),
-        ComicChapter(
-            chapterIndex = 8,
-            title = "Superhero Origins19",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = false
-        ),
-        ComicChapter(
-            chapterIndex = 9,
-            title = "Superhero Origins20",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = true
-        ),
-        ComicChapter(
-            chapterIndex = 10,
-            title = "Superhero Origins21",
-            views = 1000,
-            comments = 10,
-            publishedDate = "27/01/2024",
-            isLocked = false
-        ),
-    )
-
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -890,7 +796,6 @@ fun RatingComicDialog(
     comicDetailViewModel: ComicDetailViewModel,
     onDismiss: () -> Unit
 ) {
-    Log.d("RatingComicDialog", "RatingComicDialog: $comicId")
     // Remember the state of the stars
     val starState = remember { mutableStateListOf(false, false, false, false, false) }
     Dialog(

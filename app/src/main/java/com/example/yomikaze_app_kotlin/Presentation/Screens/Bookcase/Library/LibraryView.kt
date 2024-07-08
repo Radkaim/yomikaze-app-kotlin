@@ -9,20 +9,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +38,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BasicComicCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.CreateCategoryDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.NotSignIn.NotSignIn
@@ -38,6 +46,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEff
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.SearchTopAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.SearchWidgetState
+import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun LibraryView(
@@ -91,6 +100,9 @@ fun LibraryContent(
 
     //get all category
     LaunchedEffect(Unit) { // should be called only once
+        libraryViewModel.getAllCategory()
+    }
+    LaunchedEffect(key1 = state.isCreateCategorySuccess) {
         libraryViewModel.getAllCategory()
     }
 
@@ -153,7 +165,12 @@ fun LibraryContent(
 
         //TODO total categories
         item {
-            Row {
+            var showPopupMenu by remember { mutableStateOf(false) }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
                     text = "Personal Categories: " + state.totalCategoryResults.toString(),
                     color = MaterialTheme.colorScheme.inverseSurface,
@@ -164,19 +181,35 @@ fun LibraryContent(
 
                 //TODO Create Category
 
-
+                IconButton(
+                    content = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_create_to_library),
+                            contentDescription = "Delete Icon",
+                            tint = MaterialTheme.colorScheme.inverseSurface,
+                            modifier = Modifier
+                                .width(20.dp)
+                                .height(20.dp)
+                        )
+                    },
+                    onClick = {
+                        showPopupMenu = true
+                    })
             }
-
+            when {
+                showPopupMenu -> CreateCategoryDialog(
+                    libraryViewModel = libraryViewModel,
+                    onDismiss = { showPopupMenu = false }
+                )
+            }
         }
-
 
         //TODO Category list
         items(state.categoryList) { category ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-                    .padding(start = 10.dp, top = 20.dp, end = 10.dp),
+                    .padding(start = 10.dp, top = 10.dp, end = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (state.isCategoryLoading) {

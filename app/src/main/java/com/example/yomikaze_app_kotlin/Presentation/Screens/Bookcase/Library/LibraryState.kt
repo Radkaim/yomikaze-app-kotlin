@@ -17,6 +17,8 @@ data class LibraryState(
     val totalCategoryResults: Int? = 0,
     val isCategoryLoading: Boolean = false,
 
-    val imageCoverOfCate: String = "",
+    //create category
+    val isCreateCategorySuccess: Boolean = true,
 
-    )
+    val imageCoverOfCate: String = "",
+)

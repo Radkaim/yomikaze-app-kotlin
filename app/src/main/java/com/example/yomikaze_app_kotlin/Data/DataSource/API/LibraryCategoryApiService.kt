@@ -6,12 +6,13 @@ import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 
 interface LibraryCategoryApiService {
     /**
      * TODO: Implement the function to create  a category in library
      */
-    @GET("library/categories")
+    @POST("library/categories")
     suspend fun createCategory(
         @Header("Authorization") token: String,
         @Body libraryCategoryRequest: LibraryCategoryRequest,
