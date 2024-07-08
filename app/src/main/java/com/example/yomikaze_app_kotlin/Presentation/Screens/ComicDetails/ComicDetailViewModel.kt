@@ -10,6 +10,7 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
@@ -28,7 +29,8 @@ class ComicDetailViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val downloadUC: DownloadUC,
     private val ratingComicUC: RatingComicUC,
-    private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC
+    private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC,
+    private val getLibraryCategoryUC: GetLibraryCategoryUC
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -115,10 +117,40 @@ class ComicDetailViewModel @Inject constructor(
     }
 
     /**
+     * Todo: Implement get all Category
+     */
+    fun getAllCategory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isCategoryLoading = true)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+
+            val result = getLibraryCategoryUC.getLibraryCategory(token)
+
+            result.fold(
+                onSuccess = { baseResponse ->
+
+                    val results = baseResponse.results
+
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(totalCategoryResults = baseResponse.totals)
+                    _state.value = _state.value.copy(categoryList = results)
+                    _state.value = _state.value.copy(isCategoryLoading = false)
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    _state.value = _state.value.copy(isCategoryLoading = false)
+                    Log.d("LibraryViewModel", "Get All Categories: $exception")
+                }
+            )
+        }
+    }
+
+
+    /**
      * Todo: Implement get list chapter by comic id in comic detail view
      */
     fun getListChapterByComicId(comicId: Long) {
-
         viewModelScope.launch(Dispatchers.IO) {
             val result = getListChaptersByComicIdUC.getListChapters(comicId)
             result.fold(

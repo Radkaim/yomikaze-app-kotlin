@@ -106,4 +106,13 @@ interface ComicApiService {
         @Path("key") comicId: Long,
         @Body body: RatingRequest
     ): Response<Unit>
+
+    /**
+     * TODO: use for follow a comic
+     */
+    @PUT("comics/{key}/follow")
+    suspend fun followComic(
+        @Header("Authorization") token: String,
+        @Path("key") comicId : Long,
+    ): Response<Unit>
 }

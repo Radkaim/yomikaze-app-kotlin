@@ -99,13 +99,13 @@ fun ComicDetailsView(
 
     //set navController for viewModel
     comicDetailViewModel.setNavController(navController)
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
     }
     LaunchedEffect(key1 = state.isRatingComicSuccess) {
-       comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+        comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
     }
-   // comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+    // comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
     //comicDetailViewModel.downloadComic(state.comicResponse ?: return)
 
     ComicDetailContent(
@@ -256,7 +256,12 @@ fun ComicDetailContent(
                         }
                         if (showDialog != null) {
                             when (showDialog) {
-                                1 -> AddToLibraryDialog(onDismiss = { showDialog = null })
+                                1 -> AddToLibraryDialog(
+                                    comicId = comicId,
+                                    comicDetailViewModel = comicDetailViewModel,
+                                    state = state,
+                                    onDismiss = { showDialog = null })
+
                                 2 -> CustomDialog4(onDismiss = { showDialog = null })
                                 3 -> RatingComicDialog(
                                     comicId = comicId,
@@ -596,7 +601,9 @@ fun ListChapterInComicDetailView(
     comicId: Long
 ) {
     Log.d("ListChapterInComicDetailView", "ListChapterInComicDetailView: $comicId")
-    comicDetailViewModel.getListChapterByComicId(comicId = comicId)
+    LaunchedEffect(Unit) {
+        comicDetailViewModel.getListChapterByComicId(comicId = comicId)
+    }
     var isSelected by remember { mutableStateOf(true) }
     val listChapter = comicDetailViewModel.state.value.listChapters
 
@@ -663,18 +670,20 @@ fun changeColorForTabComicDetail(tabIndex: Int, index: Int): Color {
  */
 
 @Composable
-fun AddToLibraryDialog(onDismiss: () -> Unit) {
-    val categories = listOf(
-        "Category 1",
-        "Category 2",
-        "Category 3",
-        "Category 4",
-        "Category 5",
-        "Category 6",
-        "Category 7"
-    )
+fun AddToLibraryDialog(
+    comicId: Long,
+    comicDetailViewModel: ComicDetailViewModel,
+    state: ComicDetailState,
+    onDismiss: () -> Unit
+) {
+    LaunchedEffect(Unit) {
+        comicDetailViewModel.getAllCategory()
+    }
+
+    //val categories = state.categoryList.map { it.name }
+    val categories = state.categoryList
     var selectedCategory by remember { mutableStateOf<String?>(null) }
-    var selectedCategories by remember { mutableStateOf(listOf<String>()) }
+    var selectedCategories by remember { mutableStateOf(listOf<Long>()) }
 
 
     Dialog(
@@ -702,52 +711,127 @@ fun AddToLibraryDialog(onDismiss: () -> Unit) {
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    Text(text = "Select Categories", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        text = "Please select the category you want to save!",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    Text(
+                        text = "Totals: ${state.totalCategoryResults}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(top = 5.dp)
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
-                    LazyColumn {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(160.dp)
+                        // .background(MaterialTheme.colorScheme.onSurface)
+                    ) {
                         items(categories) { category ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
                                         selectedCategories =
-                                            if (selectedCategories.contains(category)) {
-                                                selectedCategories - category
+                                            if (selectedCategories.contains(category.id)) {
+                                                selectedCategories - category.id
                                             } else {
-                                                selectedCategories + category
+                                                selectedCategories + category.id
                                             }
                                     }
                                     .padding(8.dp)
                             ) {
-                                CircleCheckbox(
-                                    checked = selectedCategories.contains(category),
-                                    onCheckedChange = { checked ->
-                                        selectedCategories = if (checked) {
-                                            selectedCategories + category
-                                        } else {
-                                            selectedCategories - category
-                                        }
+                                val colorSelected =
+                                    if (selectedCategories.contains(category.id)) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.onBackground
                                     }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_add_library),
+                                        contentDescription = null,
+                                        tint = colorSelected,
+                                        modifier = Modifier
+                                            .width(17.dp)
+                                            .height(17.dp),
+                                    )
+                                    Text(
+                                        text = category.name,
+                                        color = colorSelected,
+                                        fontSize = 14.sp,
+                                    )
+                                }
+                                val icon = if (selectedCategories.contains(category.id)) {
+                                    R.drawable.ic_choose_circle_fill
+                                } else {
+                                    R.drawable.ic_choose_circle_tick
+                                }
+                                Icon(
+                                    painter = painterResource(id = icon),
+                                    contentDescription = null,
+                                    tint = colorSelected,
+                                    modifier = Modifier
+                                        .width(17.dp)
+                                        .height(17.dp),
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = category)
                             }
                         }
+
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp),
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_plus),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier
+                                .offset(y = 10.dp)
+                                .width(15.dp)
+                                .height(15.dp),
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = "Create new personal category",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.W500,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(top = 10.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                     Button(
                         onClick = {
                             //viewModel.addToLibrary(selectedCategories)
                             Log.d("AddToLibraryDialog", "Selected categories: $selectedCategories")
                             onDismiss()
-                        }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f),
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                        shape = MaterialTheme.shapes.medium
                     ) {
-                        Text("Add to Library")
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text(
+                            text = "Add to Library",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
             }
@@ -757,17 +841,19 @@ fun AddToLibraryDialog(onDismiss: () -> Unit) {
 
 // Custom CircleCheckbox Composable
 @Composable
-fun CircleCheckbox(
+fun HeartCheckBoxIcon(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val color =
+        if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
     Canvas(
         modifier = modifier
             .size(24.dp)
             .clickable { onCheckedChange(!checked) }
     ) {
-        val color = if (checked) Color.Red else Color.Gray
+        val color = color
         val path = Path().apply {
             moveTo(size.width / 2, size.height / 5)
             cubicTo(
@@ -883,7 +969,11 @@ fun RatingComicDialog(
                                 comicDetailViewModel.rateComic(comicId, selectedStars)
                                 Log.d("RatingComicDialog", "Selected stars: $selectedStars")
                                 if (state.isRatingComicSuccess) {
-                                    Toast.makeText(context, "Rating successfully", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "Rating successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     onDismiss()
                                 } else {
                                     onDismiss()
