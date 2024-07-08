@@ -12,6 +12,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.CreateLibraryCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.DeleteCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
@@ -31,6 +32,7 @@ class LibraryViewModel @Inject constructor(
     private val getLibraryCategoryUC: GetLibraryCategoryUC,
     private val createLibraryCategoryUC: CreateLibraryCategoryUC,
     private val updateCateNameUC: UpdateCateNameUC,
+    private val deleteCategoryUC: DeleteCategoryUC
 ) : ViewModel(), StatefulViewModel<LibraryState> {
 
     private val _state = MutableStateFlow(LibraryState())
@@ -40,6 +42,7 @@ class LibraryViewModel @Inject constructor(
     override val state: StateFlow<LibraryState> get() = _state
 
     override val isUpdateSuccess: Boolean = _state.value.isUpdateCategoryNameSuccess
+    override val isDeleteSuccess: Boolean = _state.value.isDeleteCategorySuccess
 
 
     //for search widget
@@ -169,14 +172,32 @@ class LibraryViewModel @Inject constructor(
             val listPathRequest = listOf(
                 PathRequest(value, "/name", "replace")
             )
-            val result =
+            val response =
                 updateCateNameUC.updateCateName(token, key, listPathRequest)
 
-            if (result.code() == 200) {
+            if (response.code() == 204) {
                 _state.value = _state.value.copy(isUpdateCategoryNameSuccess = true)
             } else {
                 _state.value = _state.value.copy(isUpdateCategoryNameSuccess = false)
-                Log.e("LibraryViewModel", "updateCategory: $result")
+                Log.e("LibraryViewModel", "updateCategory: $response")
+            }
+        }
+    }
+
+    /**
+     * Todo: Implement delete category of StatefulViewModel
+     */
+    override fun delete(key: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isDeleteCategorySuccess = false)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val response = deleteCategoryUC.deleteCategory(token, key)
+            if (response.code() == 204) {
+                _state.value = _state.value.copy(isDeleteCategorySuccess = true)
+            } else {
+                _state.value = _state.value.copy(isDeleteCategorySuccess = false)
+                Log.e("LibraryViewModel", "deleteCategory: $response")
             }
         }
     }

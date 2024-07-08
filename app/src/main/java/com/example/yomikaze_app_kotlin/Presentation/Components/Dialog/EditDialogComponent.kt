@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Dialog
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -47,8 +49,8 @@ import com.example.yomikaze_app_kotlin.R
 @Composable
 fun <T, VM> EditDialogComponent(
     key: Long,
-    title: String,
-    value: String,
+    title: String, // title of dialog
+    value: String, //name
     viewModel: VM,
     onDismiss: () -> Unit
 ) where VM : ViewModel, VM : StatefulViewModel<T> {
@@ -92,7 +94,9 @@ fun <T, VM> EditDialogComponent(
                         text = title,
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.inverseSurface,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(start = 40.dp)
                     )
 //                    Text(
 //                        text = "Name for personal category",
@@ -187,17 +191,6 @@ fun <T, VM> EditDialogComponent(
                         horizontalArrangement = Arrangement.Center,
                     ) {
 
-//                        //button to create category
-//                        Button(
-//                            onClick = onDismiss,
-//                            colors = ButtonDefaults.buttonColors(
-//                                containerColor = MaterialTheme.colorScheme.onPrimary,
-//                                contentColor = MaterialTheme.colorScheme.onSurface,
-//                            ),
-//                            shape = MaterialTheme.shapes.medium
-//                        ) {
-//                            Text(text = "Cancel")
-//                        }
                         Spacer(modifier = Modifier.width(20.dp))
                         Button(
                             onClick = {
@@ -206,6 +199,7 @@ fun <T, VM> EditDialogComponent(
                                 } else {
                                     viewModel.update(key, value)
                                     if (viewModel.isUpdateSuccess) {
+                                        Toast.makeText(context, "Update successfully", Toast.LENGTH_SHORT).show()
                                         onDismiss()
                                     }
                                 }
@@ -216,7 +210,7 @@ fun <T, VM> EditDialogComponent(
                             ),
                             shape = MaterialTheme.shapes.medium,
                         ) {
-                            Text(text = "Create")
+                            Text(text = "Save")
                         }
                     }
                 }

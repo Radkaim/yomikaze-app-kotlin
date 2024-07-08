@@ -161,6 +161,8 @@ class ComicRepositoryImpl @Inject constructor(
                     Log.e("ComicRepositoryImpl", "Failed to download cover image")
                     // Có thể hiển thị thông báo cho người dùng hoặc xử lý theo cách khác tùy vào yêu cầu của ứng dụng
                 }
+
+                else -> {}
             }
             when (bannerResult) {
                 is DownloadResult.Success -> {
@@ -177,6 +179,8 @@ class ComicRepositoryImpl @Inject constructor(
                     Log.e("ComicRepositoryImpl", "Failed to download banner image")
                     // Có thể hiển thị thông báo cho người dùng hoặc xử lý theo cách khác tùy vào yêu cầu của ứng dụng
                 }
+
+                else -> {}
             }
 
             // Chỉ thực hiện lưu vào cơ sở dữ liệu nếu cả hai ảnh đều tải xuống thành công

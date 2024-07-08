@@ -20,6 +20,7 @@ data class LibraryState(
     //create category
     val isCreateCategorySuccess: Boolean = true,
     val isUpdateCategoryNameSuccess: Boolean = true,
+    val isDeleteCategorySuccess: Boolean = true,
 
     val imageCoverOfCate: String = "",
 )

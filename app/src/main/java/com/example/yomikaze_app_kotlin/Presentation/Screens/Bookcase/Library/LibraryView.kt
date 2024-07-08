@@ -104,7 +104,8 @@ fun LibraryContent(
     }
     LaunchedEffect(
         key1 = state.isCreateCategorySuccess,
-        key2 = state.isUpdateCategoryNameSuccess
+        key2 = state.isUpdateCategoryNameSuccess,
+        key3 = state.isDeleteCategorySuccess
     ) {
         libraryViewModel.getAllCategory()
     }

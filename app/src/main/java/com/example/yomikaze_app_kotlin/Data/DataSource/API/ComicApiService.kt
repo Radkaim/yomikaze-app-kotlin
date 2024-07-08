@@ -11,6 +11,7 @@ import retrofit2.http.Header
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 
 //Data class for the response from the API
@@ -30,6 +31,16 @@ interface ComicApiService {
         @Query("Size") size: Int? = null,
         @Query("OrderBy") orderByTotalViews: String? = "TotalViews",
         @Query("OrderBy") orderByName : String? = "Name",
+    ): BaseResponse<ComicResponse>
+
+    /**
+     * TODO: use for advanced search comic in AdvancedSearch screen
+     */
+
+    @GET("comics")
+    suspend fun advancedSearchComic(
+        @Header("Authorization") token: String,
+        @QueryMap queryMap: Map<String, String>,
     ): BaseResponse<ComicResponse>
 
     /**

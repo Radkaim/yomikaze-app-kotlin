@@ -40,6 +40,7 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConfirmDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.EditDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryViewModel
@@ -223,16 +224,16 @@ fun CategoryCard(
                         )
                     }
 
-//                    2 -> {
-//                        DeleteDialogComponent(
-//                            title = "Delete Category",
-//                            content = "Are you sure you want to delete this category?",
-//                            showDialog = showDialog,
-//                            onDismiss = { showDialog = 0 },
-//                            onConfirm = { onDeleteClick() }
-//                        )
-//
-//                    }
+                    2 -> {
+                        DeleteConfirmDialogComponent(
+                            key = categoryId,
+                            value = value,
+                            title = "Are you sure you want to delete this category?",
+                            onDismiss = { showDialog = 0 },
+                            viewModel = libraryViewModel
+                        )
+
+                    }
 
                 }
             }

@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -798,6 +799,7 @@ fun RatingComicDialog(
 ) {
     // Remember the state of the stars
     val starState = remember { mutableStateListOf(false, false, false, false, false) }
+    val context = LocalContext.current
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -881,6 +883,7 @@ fun RatingComicDialog(
                                 comicDetailViewModel.rateComic(comicId, selectedStars)
                                 Log.d("RatingComicDialog", "Selected stars: $selectedStars")
                                 if (state.isRatingComicSuccess) {
+                                    Toast.makeText(context, "Rating successfully", Toast.LENGTH_SHORT).show()
                                     onDismiss()
                                 } else {
                                     onDismiss()
