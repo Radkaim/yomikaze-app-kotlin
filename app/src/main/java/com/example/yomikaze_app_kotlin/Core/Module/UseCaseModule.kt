@@ -12,8 +12,11 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.CreateLibraryCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.DeleteCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComicsInCateUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
@@ -201,5 +204,32 @@ object UseCaseModule {
     @Singleton
     fun provideGetCategoryInLibraryUC(libraryCategoryRepository: LibraryCategoryRepository): GetLibraryCategoryUC {
         return GetLibraryCategoryUC(libraryCategoryRepository)
+    }
+
+    /**
+     * Todo: Provide the get comics in category
+     */
+    @Provides
+    @Singleton
+    fun provideGetComicsInCateUC(libraryCategoryRepository: LibraryCategoryRepository): GetComicsInCateUC {
+        return GetComicsInCateUC(libraryCategoryRepository)
+    }
+
+    /**
+     * Todo: Provide the delete category in library
+     */
+    @Provides
+    @Singleton
+    fun provideDeleteCategoryInLibraryUC(libraryCategoryRepository: LibraryCategoryRepository): DeleteCategoryUC {
+        return DeleteCategoryUC(libraryCategoryRepository)
+    }
+
+    /**
+     * Todo: Provide the update category name in library
+     */
+    @Provides
+    @Singleton
+    fun provideUpdateCategoryNameInLibraryUC(libraryCategoryRepository: LibraryCategoryRepository): UpdateCateNameUC {
+        return UpdateCateNameUC(libraryCategoryRepository)
     }
 }

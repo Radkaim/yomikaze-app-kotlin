@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Dialog
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,9 +11,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -33,28 +34,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryViewModel
+import androidx.lifecycle.ViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Base.StatefulViewModel
 import com.example.yomikaze_app_kotlin.R
 
-/**
- * Dialog for creating a new category
- */
 @Composable
-fun CreateCategoryDialog(
-    libraryViewModel: LibraryViewModel,
+fun <T, VM> EditDialogComponent(
+    key: Long,
+    title: String,
+    value: String,
+    viewModel: VM,
     onDismiss: () -> Unit
-) {
-    var categoryName by remember { mutableStateOf("") }
+) where VM : ViewModel, VM : StatefulViewModel<T> {
+
+    var value by remember { mutableStateOf(value) }
     var isError by remember { mutableStateOf(false) }
     //get state of libraryViewModel
-    val state by libraryViewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
 
     //get context
     val context = LocalContext.current
@@ -87,53 +89,52 @@ fun CreateCategoryDialog(
                         .align(Alignment.Center)
                 ) {
                     Text(
-                        text = "Create new personal category",
+                        text = title,
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.inverseSurface,
                         fontWeight = FontWeight.Medium
                     )
-                    Text(
-                        text = "Name for personal category",
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.inverseSurface,
-                        fontStyle = FontStyle.Italic,
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
-
+//                    Text(
+//                        text = "Name for personal category",
+//                        fontSize = 13.sp,
+//                        color = MaterialTheme.colorScheme.inverseSurface,
+//                        fontStyle = FontStyle.Italic,
+//                        modifier = Modifier.padding(top = 2.dp)
+//                    )
 
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     //text field for category name
                     TextField(
-                        value = categoryName,
-                        onValueChange = { categoryName = it },
+                        value = value,
+                        onValueChange = { value = it },
                         label = {
-                            if (isError && categoryName.isEmpty()) {
+                            if (isError && value.isEmpty()) {
                                 Text(
                                     text = "Category Name is required",
                                     fontSize = 12.sp,
                                     color = MaterialTheme.colorScheme.error
                                 )
                             }
-                                if (categoryName.length > 32) {
-                                    isError = true
+                            if (value.length > 32) {
+                                isError = true
+                                Text(
+                                    text = "Category Name is too long",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }else {
+                                //label for text field (category name
+                                if (value.isNotEmpty() || !isError) {
+                                    isError = false
                                     Text(
-                                        text = "Category Name is too long",
+                                        text = "Category Name",
                                         fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.error
+                                        color = MaterialTheme.colorScheme.primary
                                     )
-                                }else {
-                                    //label for text field (category name
-                                    if (categoryName.isNotEmpty() || !isError) {
-                                        isError = false
-                                        Text(
-                                            text = "Category Name",
-                                            fontSize = 12.sp,
-                                            color = MaterialTheme.colorScheme.primary
-                                        )
-                                    }
                                 }
+                            }
                         },
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions.Default.copy(
@@ -152,8 +153,19 @@ fun CreateCategoryDialog(
 
                         modifier = Modifier
                             .fillMaxWidth()
-                            .offset(y = (-10).dp)
-                            .height(56.dp),
+                            .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                shape = MaterialTheme.shapes.large,
+
+                                )
+                            .height(56.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(20.dp),
+                            ),
+                        shape = RoundedCornerShape(24.dp),
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = MaterialTheme.colorScheme.surfaceTint,
                             backgroundColor = Color.Transparent,
@@ -172,28 +184,28 @@ fun CreateCategoryDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 10.dp, end = 20.dp),
-                        horizontalArrangement = Arrangement.End,
+                        horizontalArrangement = Arrangement.Center,
                     ) {
 
-                        //button to create category
-                        Button(
-                            onClick = onDismiss,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onPrimary,
-                                contentColor = MaterialTheme.colorScheme.onSurface,
-                            ),
-                            shape = MaterialTheme.shapes.medium
-                        ) {
-                            Text(text = "Cancel")
-                        }
+//                        //button to create category
+//                        Button(
+//                            onClick = onDismiss,
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = MaterialTheme.colorScheme.onPrimary,
+//                                contentColor = MaterialTheme.colorScheme.onSurface,
+//                            ),
+//                            shape = MaterialTheme.shapes.medium
+//                        ) {
+//                            Text(text = "Cancel")
+//                        }
                         Spacer(modifier = Modifier.width(20.dp))
                         Button(
                             onClick = {
-                                if (categoryName.isEmpty() || categoryName.length > 32) {
+                                if (value.isEmpty() || value.length > 32) {
                                     isError = true
                                 } else {
-                                    libraryViewModel.addNewCategory(categoryName)
-                                    if (state.isCreateCategorySuccess) {
+                                    viewModel.update(key, value)
+                                    if (viewModel.isUpdateSuccess) {
                                         onDismiss()
                                     }
                                 }
@@ -212,3 +224,4 @@ fun CreateCategoryDialog(
         }
     }
 }
+

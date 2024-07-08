@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -38,6 +37,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BasicComicCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.CategoryCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.CreateCategoryDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
@@ -102,7 +102,10 @@ fun LibraryContent(
     LaunchedEffect(Unit) { // should be called only once
         libraryViewModel.getAllCategory()
     }
-    LaunchedEffect(key1 = state.isCreateCategorySuccess) {
+    LaunchedEffect(
+        key1 = state.isCreateCategorySuccess,
+        key2 = state.isUpdateCategoryNameSuccess
+    ) {
         libraryViewModel.getAllCategory()
     }
 
@@ -110,8 +113,6 @@ fun LibraryContent(
         modifier = Modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .fillMaxHeight()
-            .wrapContentSize(Alignment.Center)
             .background(MaterialTheme.colorScheme.background)
             .padding(top = 15.dp)
             .padding(bottom = 60.dp) // for show all content
@@ -169,7 +170,8 @@ fun LibraryContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Personal Categories: " + state.totalCategoryResults.toString(),
@@ -185,11 +187,12 @@ fun LibraryContent(
                     content = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_create_to_library),
-                            contentDescription = "Delete Icon",
+                            contentDescription = "Create Category",
                             tint = MaterialTheme.colorScheme.inverseSurface,
                             modifier = Modifier
                                 .width(20.dp)
                                 .height(20.dp)
+                                .offset(y = (-2).dp)
                         )
                     },
                     onClick = {
@@ -219,13 +222,13 @@ fun LibraryContent(
                 }
                 CategoryCard(
                     categoryId = category.id,
+                    value = category.name,
                     name = category.name,
+                    createAt = category.creationTime,
                     // totalComics = category.totalComics,
                     image = APIConfig.imageAPIURL.toString() + state.imageCoverOfCate,
                     onClick = { libraryViewModel.onNavigateCategoryDetail(category.id) },
-                    onOptionsClick = { /*TODO*/ },
-                    onEditClick = { /*TODO*/ },
-                    onDeleteClick = { /*TODO*/ },
+                    libraryViewModel = libraryViewModel
                 )
             }
         }
