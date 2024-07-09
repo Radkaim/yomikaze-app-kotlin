@@ -188,7 +188,7 @@ fun PersonalCategoryViewContent(
     ) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComics.size) {
+                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComics.size &&  state.listComics.size > 5) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
                         Toast.makeText(context, "No Comic More", Toast.LENGTH_SHORT).show()
                     }

@@ -156,7 +156,7 @@ fun RatingComicViewContent(
     ) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByRatingRanking.size) {
+                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByRatingRanking.size && state.listComicByRatingRanking.size > 5) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
                         Toast.makeText(context, "No comics left", Toast.LENGTH_SHORT).show()
                     }

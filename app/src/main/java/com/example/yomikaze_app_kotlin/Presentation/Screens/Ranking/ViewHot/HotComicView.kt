@@ -162,7 +162,7 @@ fun HotComicViewContent(
     ) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByViewRanking.size) {
+                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByViewRanking.size && state.listComicByViewRanking.size > 5) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
                         Toast.makeText(context, "No comics left", Toast.LENGTH_SHORT).show()
                     }

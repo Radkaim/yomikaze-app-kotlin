@@ -222,7 +222,7 @@ fun FollowComicViewContent(
     ) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByFollowRanking.size) {
+                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByFollowRanking.size && state.listComicByFollowRanking.size > 5) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
                         Toast.makeText(context, "No comics left", Toast.LENGTH_SHORT).show()
                     }
