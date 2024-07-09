@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.Pe
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,13 +30,14 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.LottieAnimationComponent
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.NormalComicCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ComicCateCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
@@ -114,20 +116,24 @@ fun PersonalCategoryViewContent(
             verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
         ) {
             itemsIndexed(state.listComics) { index, comic ->
-                NormalComicCard(
+                ComicCateCard(
                     comicId = comic.libraryEntry.comicId,
                     image = APIConfig.imageAPIURL.toString() + comic.libraryEntry.cover,
                     comicName = comic.libraryEntry.name,
                     status = comic.libraryEntry.status,
                     authorNames = comic.libraryEntry.authors,
                     publishedDate = comic.libraryEntry.publicationDate,
-                    ratingScore = comic.libraryEntry.averageRating,
-                    follows = comic.libraryEntry.follows,
-                    views = comic.libraryEntry.views,
-                    comments = comic.libraryEntry.comments,
                     isDeleted = true,
                     backgroundColor = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(119.dp)
+                        .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
+                            shape = MaterialTheme.shapes.small
+                        ),
                     onClicked = { personalCategoryViewModel.navigateToComicDetail(comic.libraryEntry.comicId) }
                 )
             }
@@ -188,7 +194,7 @@ fun PersonalCategoryViewContent(
     ) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComics.size &&  state.listComics.size > 5) {
+                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComics.size && state.listComics.size > 5) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
                         Toast.makeText(context, "No Comic More", Toast.LENGTH_SHORT).show()
                     }
