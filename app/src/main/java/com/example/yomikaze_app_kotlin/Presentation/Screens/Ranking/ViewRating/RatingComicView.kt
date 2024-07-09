@@ -158,7 +158,7 @@ fun RatingComicViewContent(
             .collectLatest { lastVisibleItemIndex ->
                 if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByRatingRanking.size) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
-                        Toast.makeText(context, "No Comic More", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "No comics left", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

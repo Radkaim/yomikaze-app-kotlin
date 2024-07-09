@@ -89,7 +89,7 @@ fun HomeView(
                     homeViewModel.updateTotalResults(0)
                 },
                 onSearchClicked = {
-                    Log.d("HomeView", "Search text: $searchTextState")
+                    //  Log.d("HomeView", "Search text: $searchTextState")
                     homeViewModel.searchComic(searchTextState)
 
                 },
@@ -106,12 +106,11 @@ fun HomeView(
                 navController,
                 searchWidgetState = searchWidgetState,
                 searchTextState = searchTextState,
-                onCloseClicked= {
+                onCloseClicked = {
                     homeViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
                 }
 
             )
-//            homeViewModel.getComicByViewRanking(1, 3)
         } else {
             // Show UI for No Internet Connectivity
             UnNetworkScreen()
@@ -188,9 +187,9 @@ fun HomeContent(
         ) {
             item {
                 if (state.totalResults != 0) {
-                    Column (
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                    ){
+                    ) {
                         Text(
                             text = "Results: " + state.totalResults.toString(),
                             color = MaterialTheme.colorScheme.inverseSurface,
@@ -206,7 +205,7 @@ fun HomeContent(
             }
 
             items(state.searchResult.value) { comic ->
-              //  Spacer(modifier = Modifier.height(10.dp))
+                //  Spacer(modifier = Modifier.height(10.dp))
                 SearchResultItem(comic = comic, homeViewModel = homeViewModel)
             }
 
@@ -243,7 +242,7 @@ fun HomeContent(
         )
         {
             item {
-                showAutoSlider(state = state, images = state.images)
+                showComicCarouselByViewRanking(state = state, homeViewModel = homeViewModel)
             }
             Log.d("HomeView", "State images: ${homeViewModel.checkUserIsLogin()}")
             if (homeViewModel.checkUserIsLogin()) {
@@ -257,7 +256,7 @@ fun HomeContent(
             }
 
             item {
-                showWeekly(state = state, navController = navController)
+                showWeekly(homeViewModel = homeViewModel ,state = state, navController = navController)
             }
 
         }
@@ -334,7 +333,6 @@ fun getListCardComicHistory(): List<CardComicItem> {
             averageRatingNumber = 4.5f
         )
     )
-
     return comics
 }
 
@@ -366,13 +364,30 @@ fun getListCardComicWeekly(): List<CardComicItem> {
 }
 
 @Composable
-fun showAutoSlider(state: HomeState, images: List<String>) {
-    Box(modifier = Modifier.padding(top = 60.dp)) {
-        if (state.isLoading) {
-            ComponentRectangle()
-        } else if (state.images.isNotEmpty() && !state.isLoading) {
+fun showComicCarouselByViewRanking(
+    homeViewModel: HomeViewModel,
+    state: HomeState
+) {
+    val comics = state.listComicCarousel
+    val images = mutableMapOf<Long, String>()
 
-            Autoslider(images = images)
+    for (comic in comics) {
+        val imageUrl = if (comic.banner == null) {
+            APIConfig.imageAPIURL.toString() + comic.cover
+        } else {
+            APIConfig.imageAPIURL.toString() + comic.banner
+        }
+        images[comic.comicId] = imageUrl
+    }
+    Log.d("HomeView", "Images: $images")
+
+    Box(modifier = Modifier.padding(top = 60.dp)) {
+        if (state.isCoverCarouselLoading) {
+            ComponentRectangle()
+        } else if (images.isNotEmpty() && !state.isCoverCarouselLoading) {
+            Autoslider(imagesWithIds = images, onClick = { comicId ->
+                homeViewModel.onNavigateComicDetail(comicId)
+            })
         }
     }
 }
@@ -528,7 +543,7 @@ fun showTabRow(
     val tabs = listOf("Hot", "Rating", "Comment", "Follow")
 
     LaunchedEffect(Unit) {
-        homeViewModel.getComicByViewRanking(1, 3)
+        homeViewModel.getComicByViewRanking(1, 5)
     }
 
     Row(
@@ -612,7 +627,7 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
                 views = comic.views,
                 comments = comic.comments,
                 modifier = Modifier.fillMaxWidth(), // Make sure each card takes the full width
-                onClicked = { homeViewModel.onComicRankingClicked(comic.comicId) }
+                onClicked = { homeViewModel.onNavigateComicDetail(comic.comicId) }
             )
             // Add space between each card
         }
@@ -621,7 +636,11 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
 }
 
 @Composable
-fun showWeekly(state: HomeState, navController: NavController) {
+fun showWeekly(
+    homeViewModel: HomeViewModel,
+    state: HomeState,
+    navController: NavController
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -647,7 +666,7 @@ fun showWeekly(state: HomeState, navController: NavController) {
             )
             // Spacer(modifier = Modifier.weight(1f))
         }
-        showAutoSlider(state = state, images = state.images)
+        showComicCarouselByViewRanking(state = state, homeViewModel = homeViewModel)
     }
     showWeeklyCardComic()
     showWeeklyCardComic()

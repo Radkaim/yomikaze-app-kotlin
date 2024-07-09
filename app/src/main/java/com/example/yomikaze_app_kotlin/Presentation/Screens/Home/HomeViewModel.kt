@@ -96,6 +96,7 @@ class HomeViewModel @Inject constructor(
      * Todo: Implement getComicByFollowRanking
      */
     fun getComicByFollowRanking(page: Int, size: Int) {
+        _state.value = _state.value.copy(listRankingComics = emptyList())
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
@@ -129,6 +130,7 @@ class HomeViewModel @Inject constructor(
      * Todo: Implement get Comic for Comment Ranking Tab
      */
     fun getComicByCommentRanking(page: Int, size: Int) {
+        _state.value = _state.value.copy(listRankingComics = emptyList())
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
@@ -161,8 +163,12 @@ class HomeViewModel @Inject constructor(
      * Todo: Implement get Comic for View Ranking Tab
      */
     fun getComicByViewRanking(page: Int, size: Int) {
+        _state.value = _state.value.copy(listRankingComics = emptyList())
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = _state.value.copy(isLoadingRanking = true)
+            _state.value = _state.value.copy(
+                isLoadingRanking = true,
+                isCoverCarouselLoading = true
+            )
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result =
@@ -178,13 +184,18 @@ class HomeViewModel @Inject constructor(
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(
-                        listRankingComics = results,
+                        listRankingComics = results.take(3),
+                        listComicCarousel = results,
+                        isCoverCarouselLoading = false,
                         isLoadingRanking = false
                     )
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
-                    _state.value = _state.value.copy(isLoadingRanking = true)
+                    _state.value = _state.value.copy(
+                        isLoadingRanking = true,
+                        isCoverCarouselLoading = true
+                    )
                 }
             )
         }
@@ -194,6 +205,7 @@ class HomeViewModel @Inject constructor(
      * Todo: Implement get Comic for Rating Ranking Tab
      */
     fun getComicByRatingRanking(page: Int, size: Int) {
+        _state.value = _state.value.copy(listRankingComics = emptyList())
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isLoadingRanking = true)
             val token =
@@ -279,7 +291,7 @@ class HomeViewModel @Inject constructor(
         navController?.navigate("view_chapter_route/$chapterId")
     }
 
-    fun onComicRankingClicked(comicId: Long) {
+    fun onNavigateComicDetail(comicId: Long) {
         navController?.navigate("comic_detail_route/$comicId")
     }
 

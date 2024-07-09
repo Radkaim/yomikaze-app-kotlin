@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,9 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.yomikaze_app_kotlin.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -31,7 +34,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun AutoSlidingCarousel(
     modifier: Modifier = Modifier,
-    autoSlideDuration: Long = 3000L /*AUTO_SLIDE_DURATION*/,
+    autoSlideDuration: Long = 3000L, /*AUTO_SLIDE_DURATION*/
     pagerState: PagerState = remember { PagerState() },
     itemsCount: Int,
     itemContent: @Composable (index: Int) -> Unit,
@@ -71,7 +74,14 @@ fun AutoSlidingCarousel(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Autoslider(images: List<String>) {
+fun Autoslider(
+    //images: List<String>
+    imagesWithIds: Map<Long, String>,
+    onClick: (Long) -> Unit // does it mean
+
+) {
+    val images = imagesWithIds.keys.toList()
+
     Card(
         modifier = Modifier.padding(16.dp),
         shape = RoundedCornerShape(16.dp),
@@ -79,13 +89,19 @@ fun Autoslider(images: List<String>) {
         AutoSlidingCarousel(
             itemsCount = images.size,
             itemContent = { index ->
+                val imageId = images[index]
+                val image = imagesWithIds[imageId] ?: ""
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(images[index])
+                        .data(image)
                         .build(),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.height(200.dp)
+                    contentScale = ContentScale.Fit,
+                    placeholder = painterResource(R.drawable.placeholder),
+                    error = painterResource(R.drawable.placeholder),
+                    modifier = Modifier
+                        .height(200.dp)
+                        .clickable { onClick(imageId) }
                 )
             }
         )
