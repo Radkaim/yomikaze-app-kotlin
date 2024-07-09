@@ -7,6 +7,7 @@ import androidx.navigation.navigation
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.BottomHomeNavItems
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadDetailsView.DownloadDetailView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.PersonalCategory.PersonalCateView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notification.NotificationView
@@ -53,6 +54,16 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
                 navController = navController,
                 comicId = comicId?.toLong() ?: 0,
                 comicName = comicName ?: ""
+            )
+        }
+
+        composable("category_detail_route/{categoryId}/{categoryName}") { navBackStackEntry ->
+            val categoryId = navBackStackEntry.arguments?.getString("categoryId")
+            val categoryName = navBackStackEntry.arguments?.getString("categoryName")
+            PersonalCateView(
+                navController = navController,
+                categoryId = categoryId?.toLong() ?: 0,
+                categoryName = categoryName ?: ""
             )
         }
 

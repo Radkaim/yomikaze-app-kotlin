@@ -125,6 +125,9 @@ data class ComicResponse(
     @ColumnInfo(name = "comments")
     val comments: Long,
 
+    @SerializedName("isFollowing")
+    val isFollowing: Boolean? = null,
+
     //for api
     @SerializedName("totalChapters")
     //for database

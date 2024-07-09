@@ -129,6 +129,8 @@ fun LibraryContent(
                     libraryViewModel.updateSearchWidgetState(newState = SearchWidgetState.CLOSE)
                     libraryViewModel.updateSearchResult(newSearchResult = emptyList()) // Cập nhật searchResult
                     libraryViewModel.updateTotalResults(0)
+                    libraryViewModel.updateIsSearchResult(false)
+
                 },
                 onSearchClicked = { onSearchClicked() }
             )
@@ -136,7 +138,7 @@ fun LibraryContent(
 
         //TODO Search result
         item {
-            if (state.totalSearchResults != 0) {
+            if (state.totalSearchResults != 0 || state.isSearchResult) {
                 Text(
                     text = "Results: " + state.totalSearchResults.toString(),
                     color = MaterialTheme.colorScheme.inverseSurface,
@@ -208,6 +210,20 @@ fun LibraryContent(
             }
         }
 
+        item {
+            if (state.isCategoryLoading) {
+                repeat(4) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 10.dp, top = 10.dp, end = 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        NormalComicCardShimmerLoading()
+                    }
+                }
+            }
+        }
         //TODO Category list
         items(state.categoryList) { category ->
             Column(
@@ -216,11 +232,7 @@ fun LibraryContent(
                     .padding(start = 10.dp, top = 10.dp, end = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                if (state.isCategoryLoading) {
-                    repeat(4) {
-                        NormalComicCardShimmerLoading()
-                    }
-                }
+
                 CategoryCard(
                     categoryId = category.id,
                     value = category.name,
@@ -228,7 +240,12 @@ fun LibraryContent(
                     createAt = category.creationTime,
                     totalComics = category.totalComics,
                     image = APIConfig.imageAPIURL.toString() + category.firstCoverImage,
-                    onClick = { libraryViewModel.onNavigateCategoryDetail(category.id) },
+                    onClick = {
+                        libraryViewModel.onNavigateCategoryDetail(
+                            category.id,
+                            category.name
+                        )
+                    },
                     libraryViewModel = libraryViewModel
                 )
             }

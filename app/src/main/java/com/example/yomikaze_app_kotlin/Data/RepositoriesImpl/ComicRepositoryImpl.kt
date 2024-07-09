@@ -204,7 +204,7 @@ class ComicRepositoryImpl @Inject constructor(
                         follows = comic.follows,
                         comments = comic.comments,
                         totalChapters = comic.totalChapters,
-                        totalMbs = comic.totalMbs
+                        totalMbs = comic.totalMbs,
                     )
                 )
             } else {

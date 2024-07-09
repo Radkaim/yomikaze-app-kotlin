@@ -77,6 +77,10 @@ class LibraryViewModel @Inject constructor(
         _state.value = _state.value.copy(totalSearchResults = newValue)
     }
 
+    fun updateIsSearchResult(newValue: Boolean) {
+        _state.value = _state.value.copy(isSearchResult = newValue)
+    }
+
     @SuppressLint("SuspiciousIndentation")
     fun searchComic(comicNameQuery: String) {
         _state.value.searchResult.value = emptyList() // for clear search result for search again
@@ -91,15 +95,22 @@ class LibraryViewModel @Inject constructor(
                 onSuccess = { baseResponse ->
 
                     val results = baseResponse.results
-
-                    // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(totalSearchResults = baseResponse.totals)
-                    _state.value.searchResult.value = results
-                    _state.value = _state.value.copy(isSearchLoading = false)
+                    if (results.isEmpty()) {
+                        Log.d("LibraryViewModel", "searchComic: No result")
+                        _state.value = _state.value.copy(totalSearchResults = 0)
+                        _state.value = _state.value.copy(isSearchResult = true)
+                        return@fold
+                    } else {
+                        // Xử lý kết quả thành công
+                        _state.value = _state.value.copy(totalSearchResults = baseResponse.totals)
+                        _state.value.searchResult.value = results
+                        _state.value = _state.value.copy(isSearchLoading = false)
+                    }
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
                     _state.value = _state.value.copy(isSearchLoading = false)
+                    _state.value = _state.value.copy(totalSearchResults = 0)
                     Log.d("LibraryViewModel", "searchComic: $exception")
                 }
             )
@@ -110,8 +121,8 @@ class LibraryViewModel @Inject constructor(
      * Todo: Implement get all Category
      */
     fun getAllCategory() {
+        _state.value = _state.value.copy(isCategoryLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = _state.value.copy(isCategoryLoading = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
 
@@ -133,7 +144,6 @@ class LibraryViewModel @Inject constructor(
 
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(totalCategoryResults = baseResponse.totals)
-
                     _state.value = _state.value.copy(categoryList = results)
                     _state.value = _state.value.copy(isCategoryLoading = false)
                 },
@@ -173,34 +183,34 @@ class LibraryViewModel @Inject constructor(
     }
 
 
-   private suspend fun getCoverImage(
+    private suspend fun getCoverImage(
         categoryName: String,
     ): String? {
         var coverImage: String? = ""
-       val token =
-           if (appPreference.authToken == null) "" else appPreference.authToken!!
-       return withContext(Dispatchers.IO) {
-           val result = getComicsInCateUC.getComicsInCate(
-               token = token,
-               categoryName = categoryName,
-               orderBy = "CreationTime",
-               page = 1,
-               size = 1
-           )
+        val token =
+            if (appPreference.authToken == null) "" else appPreference.authToken!!
+        return withContext(Dispatchers.IO) {
+            val result = getComicsInCateUC.getComicsInCate(
+                token = token,
+                categoryName = categoryName,
+                orderBy = "CreationTime",
+                page = 1,
+                size = 1
+            )
 
-           result.fold(
-               onSuccess = { baseResponse ->
-                   val results = baseResponse.results
-                   // Trả về ảnh bìa đầu tiên nếu có
-                   val coverImage = results.firstOrNull()?.libraryEntry?.cover
-                   coverImage
-               },
-               onFailure = { exception ->
-                   Log.d("LibraryViewModel", "Get Comics In Category: $exception")
-                   null
-               }
-           )
-       }
+            result.fold(
+                onSuccess = { baseResponse ->
+                    val results = baseResponse.results
+                    // Trả về ảnh bìa đầu tiên nếu có
+                    val coverImage = results.firstOrNull()?.libraryEntry?.cover
+                    coverImage
+                },
+                onFailure = { exception ->
+                    Log.d("LibraryViewModel", "Get Comics In Category: $exception")
+                    null
+                }
+            )
+        }
     }
 
     /**
@@ -284,9 +294,8 @@ class LibraryViewModel @Inject constructor(
         navController?.navigate("comic_detail_route/$comicId")
     }
 
-    fun onNavigateCategoryDetail(categoryId: Long) {
-        Log.d("LibraryViewModel", "onNavigateCategoryDetail: $categoryId")
-        // navController?.navigate("category_detail_route/$categoryId")
+    fun onNavigateCategoryDetail(categoryId: Long, categoryName: String) {
+        navController?.navigate("category_detail_route/$categoryId/$categoryName")
     }
 
 }

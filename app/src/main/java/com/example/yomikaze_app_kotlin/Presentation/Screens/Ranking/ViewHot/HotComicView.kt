@@ -34,7 +34,6 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Ranking
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.R
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -138,7 +137,6 @@ fun HotComicViewContent(
         if (page.value > state.currentPage.value && !loading.value) {
             loading.value = true
             hotComicViewModel.getComicByViewRanking(page.value)
-            delay(5000) // Simulate a network delay
             loading.value = false
         }
 
