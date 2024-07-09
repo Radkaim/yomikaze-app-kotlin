@@ -16,6 +16,7 @@ data class LibraryState(
     val categoryList: List<LibraryCategoryResponse> = emptyList(),
     val totalCategoryResults: Int? = 0,
     val isCategoryLoading: Boolean = false,
+    val comicList: List<LibraryEntry> = emptyList(),
 
     //create category
     val isCreateCategorySuccess: Boolean = true,

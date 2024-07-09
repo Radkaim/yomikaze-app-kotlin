@@ -3,9 +3,9 @@ package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryCategoryApiService
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
-import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
 import retrofit2.Response
@@ -42,10 +42,13 @@ class LibraryCategoryRepositoryImpl @Inject constructor(
      */
     override suspend fun getComicsInCategory(
         token: String,
-        categoryName: String
-    ): Result<BaseResponse<ComicResponse>> {
+        categoryName: String,
+        orderBy: String?,
+        page: Int?,
+        size: Int?
+    ): Result<BaseResponse<LibraryEntry>> {
         return try {
-            val response = api.getComicsInCategory("Bearer $token", categoryName)
+            val response = api.getComicsInCategory("Bearer $token", categoryName, orderBy, page, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

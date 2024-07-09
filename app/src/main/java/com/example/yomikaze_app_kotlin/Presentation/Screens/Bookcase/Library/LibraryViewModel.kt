@@ -13,6 +13,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.CreateLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.DeleteCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComicsInCateUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
@@ -23,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +34,8 @@ class LibraryViewModel @Inject constructor(
     private val getLibraryCategoryUC: GetLibraryCategoryUC,
     private val createLibraryCategoryUC: CreateLibraryCategoryUC,
     private val updateCateNameUC: UpdateCateNameUC,
-    private val deleteCategoryUC: DeleteCategoryUC
+    private val deleteCategoryUC: DeleteCategoryUC,
+    private val getComicsInCateUC: GetComicsInCateUC
 ) : ViewModel(), StatefulViewModel<LibraryState> {
 
     private val _state = MutableStateFlow(LibraryState())
@@ -117,10 +120,20 @@ class LibraryViewModel @Inject constructor(
             result.fold(
                 onSuccess = { baseResponse ->
 
-                    val results = baseResponse.results
+                    val results = baseResponse.results.toMutableList()
+
+                    // Lấy ảnh bìa cho mỗi danh mục
+                    results.forEach { category ->
+                        val coverImage = getCoverImage(category.name)
+                        val totalsComics = getTotalsComicsInCate(category.name)
+                        category.firstCoverImage = coverImage
+                        category.totalComics = totalsComics
+                    }
+
 
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(totalCategoryResults = baseResponse.totals)
+
                     _state.value = _state.value.copy(categoryList = results)
                     _state.value = _state.value.copy(isCategoryLoading = false)
                 },
@@ -131,6 +144,63 @@ class LibraryViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    private suspend fun getTotalsComicsInCate(categoryName: String): Int {
+        var totalComics = 0
+        val token =
+            if (appPreference.authToken == null) "" else appPreference.authToken!!
+        return withContext(Dispatchers.IO) {
+            val result = getComicsInCateUC.getComicsInCate(
+                token = token,
+                categoryName = categoryName,
+                orderBy = "CreationTime",
+                page = 1,
+                size = 1
+            )
+
+            result.fold(
+                onSuccess = { baseResponse ->
+                    totalComics = baseResponse.totals
+                    totalComics
+                },
+                onFailure = { exception ->
+                    Log.d("LibraryViewModel", "Get Comics In Category: $exception")
+                    totalComics
+                }
+            )
+        }
+    }
+
+
+   private suspend fun getCoverImage(
+        categoryName: String,
+    ): String? {
+        var coverImage: String? = ""
+       val token =
+           if (appPreference.authToken == null) "" else appPreference.authToken!!
+       return withContext(Dispatchers.IO) {
+           val result = getComicsInCateUC.getComicsInCate(
+               token = token,
+               categoryName = categoryName,
+               orderBy = "CreationTime",
+               page = 1,
+               size = 1
+           )
+
+           result.fold(
+               onSuccess = { baseResponse ->
+                   val results = baseResponse.results
+                   // Trả về ảnh bìa đầu tiên nếu có
+                   val coverImage = results.firstOrNull()?.libraryEntry?.cover
+                   coverImage
+               },
+               onFailure = { exception ->
+                   Log.d("LibraryViewModel", "Get Comics In Category: $exception")
+                   null
+               }
+           )
+       }
     }
 
     /**

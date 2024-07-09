@@ -1,9 +1,9 @@
 package com.example.yomikaze_app_kotlin.Domain.Repositories
 
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
-import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import retrofit2.Response
 
@@ -27,8 +27,11 @@ interface LibraryCategoryRepository {
      */
     suspend fun getComicsInCategory(
         token: String,
-        categoryName: String
-    ): Result<BaseResponse<ComicResponse>>
+        categoryName: String,
+        orderBy: String? = null,
+        page: Int? = null,
+        size: Int? = null
+    ): Result<BaseResponse<LibraryEntry>>
 
     /**
      * TODO: Implement the function to add comic to category

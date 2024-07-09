@@ -105,7 +105,10 @@ fun ComicDetailsView(
     LaunchedEffect(Unit) {
         comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
     }
-    LaunchedEffect(key1 = state.isRatingComicSuccess) {
+    LaunchedEffect(
+        key1 = state.isRatingComicSuccess,
+        key2 = state.isFollowComicSuccess
+    ) {
         comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
     }
     // comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)

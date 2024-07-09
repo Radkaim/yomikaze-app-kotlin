@@ -17,4 +17,8 @@ data class LibraryCategoryResponse(
 
     @SerializedName("creationTime")
     val creationTime: String,
+
+    var firstCoverImage: String?,
+
+    var totalComics: Int?
 )

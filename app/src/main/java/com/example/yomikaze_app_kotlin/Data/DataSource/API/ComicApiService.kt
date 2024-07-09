@@ -86,7 +86,7 @@ interface ComicApiService {
         @Header("Authorization") token: String,
         @Query("OrderBy") orderByAverageRatings: String,
         @Query("Page") page: Int? = null,
-        @Query("Size") size: Int?,
+        @Query("Size") size: Int? = null,
     ): BaseResponse<ComicResponse>
 
     /**

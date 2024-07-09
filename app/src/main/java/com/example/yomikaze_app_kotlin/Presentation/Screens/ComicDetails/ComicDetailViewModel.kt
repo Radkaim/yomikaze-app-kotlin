@@ -192,34 +192,6 @@ class ComicDetailViewModel @Inject constructor(
         }
     }
 
-//    /**
-//     * Todo: Implement add new category
-//     */
-//    fun addNewCategory(categoryName: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _state.value = _state.value.copy(isCreateCategorySuccess = false)
-//            val token =
-//                if (appPreference.authToken == null) "" else appPreference.authToken!!
-//            Log.d("LibraryViewModel", "Create category: $categoryName")
-//            val result = createLibraryCategoryUC.createLibraryCategory(
-//                token,
-//                LibraryCategoryRequest(categoryName)
-//            )
-//
-//            result.fold(
-//                onSuccess = {
-//                    // Xử lý kết quả thành công
-//                    _state.value = _state.value.copy(isCreateCategorySuccess = true)
-//                },
-//                onFailure = { exception ->
-//                    // Xử lý lỗi
-//                    _state.value = _state.value.copy(isCreateCategorySuccess = false)
-//                    Log.d("LibraryViewModel", "CreateCategory: $exception")
-//                }
-//            )
-//        }
-//    }
-
 
     /**
      * Todo: Implement get list chapter by comic id in comic detail view

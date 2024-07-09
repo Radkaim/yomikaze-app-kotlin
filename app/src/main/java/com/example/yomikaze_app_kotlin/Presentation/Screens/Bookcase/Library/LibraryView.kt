@@ -152,7 +152,7 @@ fun LibraryContent(
 
                 items(state.searchResult.value) { comic ->
                     if (state.isSearchLoading) {
-                        repeat(2) {
+                        repeat(4) {
                             BasicComicCardShimmerLoading()
                             Spacer(modifier = Modifier.width(20.dp))
                         }
@@ -193,7 +193,7 @@ fun LibraryContent(
                             modifier = Modifier
                                 .width(20.dp)
                                 .height(20.dp)
-                                .offset(y = (-2).dp)
+                                .offset(y = (5).dp)
                         )
                     },
                     onClick = {
@@ -217,7 +217,7 @@ fun LibraryContent(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (state.isCategoryLoading) {
-                    repeat(3) {
+                    repeat(4) {
                         NormalComicCardShimmerLoading()
                     }
                 }
@@ -226,8 +226,8 @@ fun LibraryContent(
                     value = category.name,
                     name = category.name,
                     createAt = category.creationTime,
-                    // totalComics = category.totalComics,
-                    image = APIConfig.imageAPIURL.toString() + state.imageCoverOfCate,
+                    totalComics = category.totalComics,
+                    image = APIConfig.imageAPIURL.toString() + category.firstCoverImage,
                     onClick = { libraryViewModel.onNavigateCategoryDetail(category.id) },
                     libraryViewModel = libraryViewModel
                 )

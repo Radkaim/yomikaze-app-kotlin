@@ -1,9 +1,9 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.API
 
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
-import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -40,7 +40,10 @@ interface LibraryCategoryApiService {
     suspend fun getComicsInCategory(
         @Header("Authorization") token: String,
         @Query("Category") categoryName: String,
-    ): BaseResponse<ComicResponse>
+        @Query("OrderBy") orderBy: String? = null,
+        @Query("Page") page: Int? = null,
+        @Query("Size") size: Int? = null,
+    ): BaseResponse<LibraryEntry>
 
     /**
      * TODO: Implement the function to add comic to category
