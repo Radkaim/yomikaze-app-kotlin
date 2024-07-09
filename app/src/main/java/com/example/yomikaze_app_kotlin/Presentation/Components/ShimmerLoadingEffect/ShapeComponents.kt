@@ -69,7 +69,8 @@ fun ComponentRectangleLineLong() {
         modifier = Modifier
             .clip(shape = RoundedCornerShape(8.dp))
             .background(color = Color.LightGray)
-            .size(height = 30.dp, width = 200.dp)
+            .height(30.dp)
+            .fillMaxWidth()
             .shimmerLoadingAnimation() // <--- Here.
     )
 }

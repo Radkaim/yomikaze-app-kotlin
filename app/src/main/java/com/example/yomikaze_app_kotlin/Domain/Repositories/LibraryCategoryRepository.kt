@@ -35,9 +35,9 @@ interface LibraryCategoryRepository {
      */
     suspend fun addComicToCategory(
         token: String,
-        libraryId: Long,
+        libraryEntryId: Long,
         pathRequest: List<PathRequest>
-    ): Result<LibraryCategoryResponse>
+    ): Response<Unit>
 
     /**
      * TODO: Implement the function to delete a category in library

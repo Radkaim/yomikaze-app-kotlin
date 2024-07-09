@@ -19,5 +19,9 @@ data class ComicDetailState(
     //category
     val categoryList: List<LibraryCategoryResponse> = emptyList(),
     val totalCategoryResults: Int? = 0,
-    val isCategoryLoading: Boolean = false,
+    val isCategoryLoading: Boolean = true,
+
+    val isFollowComicSuccess: Boolean = true,
+
+
 )

@@ -136,6 +136,16 @@ data class ComicResponse(
     val totalMbs: Float,
 )
 
+data class FollowComicResponse(
+
+    @SerializedName("comicId")
+    val comicId: Long,
+
+    //library Entry Id
+    @SerializedName("id")
+    val id: Long,
+)
+
 data class Comic(
     val comicId: Long,
     val rankingNumber: Int,
@@ -150,23 +160,6 @@ data class Comic(
     val comments: Long
 )
 
-data class ComicChapter(
-    val chapterId: Int? = null,
-    val rankingNumber: Int? = null,
-
-    val chapterIndex: Int,
-    val title: String,
-    val isLocked: Boolean,
-    val image: String? = null,
-    val comicName: String? = null,
-    val status: String? = null,
-    val authorName: String? = null,
-    val publishedDate: String,
-    val ratingScore: Float? = null,
-    val follows: Int? = null,
-    val views: Long,
-    val comments: Long
-)
 
 data class RatingRequest(
     @SerializedName("rating")

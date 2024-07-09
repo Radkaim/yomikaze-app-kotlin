@@ -84,7 +84,10 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Ranking
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconicDataComicDetail
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.CreateCategoryDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangleLineLong
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryViewModel
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
@@ -680,11 +683,19 @@ fun AddToLibraryDialog(
         comicDetailViewModel.getAllCategory()
     }
 
+
     //val categories = state.categoryList.map { it.name }
     val categories = state.categoryList
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var selectedCategories by remember { mutableStateOf(listOf<Long>()) }
 
+    val libraryViewModel = hiltViewModel<LibraryViewModel>()
+    val libraryState by libraryViewModel.state.collectAsState()
+
+    LaunchedEffect(key1 = libraryState.isCreateCategorySuccess) {
+        Log.d("AddToLibraryDialog", "Create category success")
+        comicDetailViewModel.getAllCategory()
+    }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -729,6 +740,13 @@ fun AddToLibraryDialog(
                             .height(160.dp)
                         // .background(MaterialTheme.colorScheme.onSurface)
                     ) {
+                        item { if(!state.isCategoryLoading)
+                            repeat(5) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                               ComponentRectangleLineLong()
+                            }
+                        }
+
                         items(categories) { category ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -803,20 +821,30 @@ fun AddToLibraryDialog(
                                 .height(15.dp),
                         )
                         Spacer(modifier = Modifier.width(10.dp))
+                        var showPopupMenu by remember { mutableStateOf(false) }
                         Text(
                             text = "Create new personal category",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.W500,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.padding(top = 10.dp)
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .clickable { showPopupMenu = true }
                         )
+                        when {
+                            showPopupMenu -> CreateCategoryDialog(
+                                libraryViewModel = libraryViewModel,
+                                onDismiss = { showPopupMenu = false }
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                     Button(
                         onClick = {
                             //viewModel.addToLibrary(selectedCategories)
-                            Log.d("AddToLibraryDialog", "Selected categories: $selectedCategories")
+                            // Log.d("AddToLibraryDialog", "Selected categories: $selectedCategories")
+                            comicDetailViewModel.followComic(comicId, selectedCategories)
                             onDismiss()
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -826,7 +854,7 @@ fun AddToLibraryDialog(
                         shape = MaterialTheme.shapes.medium
                     ) {
                         Text(
-                            text = "Add to Library",
+                            text = "Save",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.bodySmall,

@@ -17,6 +17,8 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComic
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.AddComicToCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.FollowComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
@@ -159,6 +161,24 @@ object UseCaseModule {
     @Singleton
     fun provideRatingComicUC(comicRepository: ComicRepository): RatingComicUC {
         return RatingComicUC(comicRepository)
+    }
+
+    /**
+     * Todo: Provide the follow comic use case
+     */
+    @Provides
+    @Singleton
+    fun provideFollowComicUC(comicRepository: ComicRepository): FollowComicUC {
+        return FollowComicUC(comicRepository)
+    }
+
+    /**
+     * Todo: Provide the AddComicToCategoryUC
+     */
+    @Provides
+    @Singleton
+    fun provideAddComicToCategoryUC(libraryCategoryRepository: LibraryCategoryRepository): AddComicToCategoryUC {
+        return AddComicToCategoryUC(libraryCategoryRepository)
     }
 
     /**

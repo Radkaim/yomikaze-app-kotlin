@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Data.DataSource.API
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
+import com.example.yomikaze_app_kotlin.Domain.Models.FollowComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -114,5 +115,5 @@ interface ComicApiService {
     suspend fun followComic(
         @Header("Authorization") token: String,
         @Path("key") comicId : Long,
-    ): Response<Unit>
+    ): FollowComicResponse
 }

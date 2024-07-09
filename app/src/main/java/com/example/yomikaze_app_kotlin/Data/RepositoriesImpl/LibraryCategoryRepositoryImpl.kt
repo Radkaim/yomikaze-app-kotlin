@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 
+import android.util.Log
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryCategoryApiService
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
@@ -56,10 +57,34 @@ class LibraryCategoryRepositoryImpl @Inject constructor(
      */
     override suspend fun addComicToCategory(
         token: String,
-        libraryId: Long,
+        libraryEntryId: Long,
         pathRequest: List<PathRequest>
-    ): Result<LibraryCategoryResponse> {
-        return api.addComicToCategory("Bearer $token", libraryId, pathRequest)
+    ): Response<Unit> {
+        // check status code of response
+        val response = api.addComicToCategory("Bearer $token", libraryEntryId, pathRequest)
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            val httpCode = response.code()
+            when (httpCode) {
+                400 -> {
+                    // Xử lý lỗi 400 (Bad Request)
+                    Log.e("ComicRepositoryImpl", "Bad Request")
+                }
+
+                401 -> {
+                    // Xử lý lỗi 401 (Unauthorized)
+                    Log.e("ComicRepositoryImpl", "Unauthorized")
+                }
+                // Xử lý các mã lỗi khác
+                else -> {
+                    // Xử lý mặc định cho các mã lỗi khác
+                    Log.e("ComicRepositoryImpl", "Failed to rate comic code: $httpCode")
+                }
+            }
+            Result.failure(Exception("Failed to rate comic"))
+        }
+        return response
     }
 
     /**

@@ -48,9 +48,9 @@ interface LibraryCategoryApiService {
     @PATCH("library/{libraryId}")
     suspend fun addComicToCategory(
         @Header("Authorization") token: String,
-        @Path("libraryId") libraryId: Long,
+        @Path("libraryId") libraryEntryId: Long,
         @Body pathRequest: List<PathRequest>,
-    ): Result<LibraryCategoryResponse>
+    ): Response<Unit>
 
 
     /**
