@@ -80,8 +80,7 @@ class ComicDetailViewModel @Inject constructor(
                         isLoading = false,
                     )
                     //  comic = comicDetailResponse
-                 //   downloadComic(comicDetailResponse)
-                  //  Log.d("ComicDetailsViewModel", "ComicDetailsViewLocal: $comic")
+                    Log.d("ComicDetailsViewModel", "ComicDetailsViewLocal: $comicDetailResponse")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -229,21 +228,19 @@ class ComicDetailViewModel @Inject constructor(
             Log.d("ComicDetailViewModelDownload", "Comic details Download: $comic")
             try {
                 downloadUC.insertComicDB(comic, context)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("ComicDetailViewModelDownload", "downloadComic: $e")
             }
 
 
-
-
-           // val result = downloadUC.testDownloadComic("https://yomikaze.org/string")
-           // val result2 = downloadUC.testDownloadComic("https://yomikaze.org/string")
-    //           Log.e("ComicDetailViewModelDownload", "downloadComic1: $result")
+            // val result = downloadUC.testDownloadComic("https://yomikaze.org/string")
+            // val result2 = downloadUC.testDownloadComic("https://yomikaze.org/string")
+            //           Log.e("ComicDetailViewModelDownload", "downloadComic1: $result")
 //                Log.e("ComicDetailViewModelDownload", "downloadComic2: $result2")
-          //  val resultAfter = downloadUC.testReturnImageLocalPath(result, context)
-        //    Log.e("ComicDetailViewModelDownload", "downloadComic1: $resultAfter")
-          //  val resultAfter2 = downloadUC.testReturnImageLocalPath(result2, context)
-          //  Log.e("ComicDetailViewModelDownload", "downloadComic2: $resultAfter2")
+            //  val resultAfter = downloadUC.testReturnImageLocalPath(result, context)
+            //    Log.e("ComicDetailViewModelDownload", "downloadComic1: $resultAfter")
+            //  val resultAfter2 = downloadUC.testReturnImageLocalPath(result2, context)
+            //  Log.e("ComicDetailViewModelDownload", "downloadComic2: $resultAfter2")
         }
     }
 

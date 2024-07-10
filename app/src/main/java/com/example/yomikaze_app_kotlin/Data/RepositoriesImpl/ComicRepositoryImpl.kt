@@ -200,41 +200,20 @@ class ComicRepositoryImpl @Inject constructor(
             var coverLocalPath: String? = null
             var bannerLocalPath: String? = null
 
-            when (coverResult) {
-                is DownloadResult.Success -> {
-                    coverLocalPath =
-                        imageRepository.returnImageLocalPath(coverResult.imageData, context)
-                    Log.d(
-                        "ComicRepositoryImpl",
-                        "insertComicDB: Cover local path = $coverLocalPath"
-                    )
-                }
-
-                DownloadResult.Failure -> {
-                    // Xử lý khi tải ảnh bìa thất bại
-                    Log.e("ComicRepositoryImpl", "Failed to download cover image")
-                    // Có thể hiển thị thông báo cho người dùng hoặc xử lý theo cách khác tùy vào yêu cầu của ứng dụng
-                }
-
-                else -> {}
+            if (coverResult is DownloadResult.Success) {
+                coverLocalPath =
+                    imageRepository.returnImageLocalPath(coverResult.imageData, context)
+                Log.d("ComicRepositoryImpl", "insertComicDB: Cover local path = $coverLocalPath")
+            } else {
+                Log.e("ComicRepositoryImpl", "Failed to download cover image")
             }
-            when (bannerResult) {
-                is DownloadResult.Success -> {
-                    bannerLocalPath =
-                        imageRepository.returnImageLocalPath(bannerResult.imageData, context)
-                    Log.d(
-                        "ComicRepositoryImpl",
-                        "insertComicDB: Banner local path = $bannerLocalPath"
-                    )
-                }
 
-                DownloadResult.Failure -> {
-                    // Xử lý khi tải ảnh banner thất bại
-                    Log.e("ComicRepositoryImpl", "Failed to download banner image")
-                    // Có thể hiển thị thông báo cho người dùng hoặc xử lý theo cách khác tùy vào yêu cầu của ứng dụng
-                }
-
-                else -> {}
+            if (bannerResult is DownloadResult.Success) {
+                bannerLocalPath =
+                    imageRepository.returnImageLocalPath(bannerResult.imageData, context)
+                Log.d("ComicRepositoryImpl", "insertComicDB: Banner local path = $bannerLocalPath")
+            } else {
+                Log.e("ComicRepositoryImpl", "Failed to download banner image")
             }
             // get name of list Tags
             val tags = comic.tags.map { it.name }
@@ -269,6 +248,29 @@ class ComicRepositoryImpl @Inject constructor(
 //                Log.e("ComicRepositoryImpl", "Failed to insert comics to database")
 //                // Có thể hiển thị thông báo cho người dùng hoặc xử lý theo cách khác tùy vào yêu cầu của ứng dụng
 //            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    /**
+     * Todo delete a comic in database by comic id and all related data
+     */
+    override suspend fun deleteComicByIdDB(comicId: Long, context: Context) {
+        try {
+            val comic = comicDao.getComicByIdDB(comicId)
+            if (comic != null) {
+                // Xóa ảnh bìa
+                imageRepository.deleteImageFromLocal(comic.cover)
+                // Xóa ảnh banner
+                imageRepository.deleteImageFromLocal(comic.banner)
+
+                // Xóa các chapter của comic
+
+                // Xóa các ảnh của các chapter
+                // Xóa comic
+                comicDao.deleteComicByIdDB(comicId)
+            }
         } catch (e: Exception) {
             throw e
         }

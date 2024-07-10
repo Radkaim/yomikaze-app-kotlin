@@ -20,10 +20,6 @@ class DownloadComicDetailUC @Inject constructor(
         }
     }
 
-    suspend fun getAllComicsDownloadedDB(): Result<List<ComicResponse>> {
-        return comicRepository.getAllComicsDownloadedDB()
-    }
-
     suspend fun testDownloadComic(url: String): DownloadResult {
         return imageRepository.downloadImageFromApi(url)
     }

@@ -105,16 +105,19 @@ fun ComicDetailsView(
     //set navController for viewModel
     comicDetailViewModel.setNavController(navController)
 
-    LaunchedEffect(
-        key1 = state.isRatingComicSuccess,
-        key2 = state.isFollowComicSuccess
-    ) {
-        comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
-    }
+
     // comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
     //comicDetailViewModel.downloadComic(state.comicResponse ?: return)
     if (CheckNetwork()) {
         LaunchedEffect(Unit) {
+            Log.d("ComicDetailsView", "launchedEffect:1")
+            comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+        }
+
+        LaunchedEffect(
+            key1 = state.isRatingComicSuccess,
+            key2 = state.isFollowComicSuccess
+        ) {
             comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
         }
         ComicDetailContent(
@@ -513,7 +516,7 @@ fun ComicDetailContent(
                 }
             }
             when (tabIndex) {
-                0 -> DescriptionInComicDetailView(state = state)
+                0 -> DescriptionInComicDetailView(state = state, comicDetailViewModel = comicDetailViewModel)
                 1 -> ListChapterInComicDetailView(
                     comicDetailViewModel = comicDetailViewModel,
                     comicId = comicId
@@ -531,7 +534,8 @@ fun ComicDetailContent(
 
 @Composable
 fun DescriptionInComicDetailView(
-    state: ComicDetailState
+    state: ComicDetailState,
+    comicDetailViewModel: ComicDetailViewModel
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val description = state.comicResponse?.description
@@ -612,6 +616,7 @@ fun DescriptionInComicDetailView(
                     ),
                     onClick = {
                         //TODO
+                        comicDetailViewModel.downloadComic(state.comicResponse!!)
                     }) {
                     Text(
                         text = "Start Reading",

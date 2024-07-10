@@ -1,7 +1,6 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -24,6 +23,10 @@ interface ComicDao {
     suspend fun updateTotalMbsOfComic(comicId: Long, totalsMbs: Float)
 
     //delete comic
-    @Delete
-    suspend fun deleteComicDB(comic: ComicResponse)
+    @Query("DELETE FROM comics WHERE id = :comicId")
+    suspend fun deleteComicByIdDB(comicId: Long)
+
+    //delete all comic
+    @Query("DELETE FROM comics")
+    suspend fun deleteAllComics()
 }

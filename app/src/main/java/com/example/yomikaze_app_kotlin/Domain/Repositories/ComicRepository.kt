@@ -107,6 +107,14 @@ interface ComicRepository {
     )
 
     /**
+     * Todo delete a comic in database by comic id and all related data
+     */
+    suspend fun deleteComicByIdDB(
+        comicId: Long,
+        context: Context
+    )
+
+    /**
      * TODO: use for get comic by comic id in database
      */
     suspend fun getComicByIdDB(

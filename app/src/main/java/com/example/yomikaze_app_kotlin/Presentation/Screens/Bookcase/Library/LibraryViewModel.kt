@@ -38,10 +38,11 @@ class LibraryViewModel @Inject constructor(
     private val getComicsInCateUC: GetComicsInCateUC
 ) : ViewModel(), StatefulViewModel<LibraryState> {
 
-    private val _state = MutableStateFlow(LibraryState())
     private var navController: NavController? = null
 
+
     //for StatefulViewModel
+    private val _state = MutableStateFlow(LibraryState())
     override val state: StateFlow<LibraryState> get() = _state
 
     override val isUpdateSuccess: Boolean = _state.value.isUpdateCategoryNameSuccess

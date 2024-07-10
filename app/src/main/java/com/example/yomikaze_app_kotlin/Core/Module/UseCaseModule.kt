@@ -11,7 +11,9 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DeleteComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadComicDetailUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.GetAllComicInDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteAllHistoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteHistoryRecordUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetHistoriesUC
@@ -159,7 +161,6 @@ object UseCaseModule {
     }
 
 
-
     /**
      * Todo: Provide the RatingComicUC
      */
@@ -204,8 +205,23 @@ object UseCaseModule {
         return DownloadComicDetailUC(comicRepository, imageRepository)
     }
 
+    /**
+     * TODO get all comic in database
+     */
+    @Provides
+    @Singleton
+    fun provideGetAllComicInDBUC(comicRepository: ComicRepository): GetAllComicInDBUC {
+        return GetAllComicInDBUC(comicRepository)
+    }
 
-
+    /*
+    * Todo: Provide the DeleteComicByIdDBUC
+     */
+    @Provides
+    @Singleton
+    fun provideDeleteComicByIdDBUC(comicRepository: ComicRepository): DeleteComicByIdDBUC {
+        return DeleteComicByIdDBUC(comicRepository)
+    }
 
 
     /**

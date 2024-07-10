@@ -109,8 +109,13 @@ fun BookcaseComicCard(
                             .height(17.dp)
                             .clickable {
                                 //TODO: Implement delete history record
-                                showPopupMenu = true
-                                showDialog = 1
+//                                test for history record
+                                if (isHistory) {
+                                    showPopupMenu = true
+                                    showDialog = 1
+
+                                }
+
                                 onDeleteClicked()
                             }
                     )
