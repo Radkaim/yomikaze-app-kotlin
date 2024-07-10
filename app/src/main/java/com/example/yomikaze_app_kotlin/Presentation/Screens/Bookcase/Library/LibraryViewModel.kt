@@ -267,7 +267,7 @@ class LibraryViewModel @Inject constructor(
     /**
      * Todo: Implement delete category of StatefulViewModel
      */
-    override fun delete(key: Long) {
+    override fun delete(key: Long, isDeleteAll: Boolean?) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isDeleteCategorySuccess = false)
             val token =

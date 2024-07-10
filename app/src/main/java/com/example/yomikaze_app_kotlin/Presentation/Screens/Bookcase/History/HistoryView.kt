@@ -43,6 +43,7 @@ import androidx.wear.compose.material.Icon
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BookcaseComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConfirmDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.NotSignIn.NotSignIn
@@ -93,11 +94,14 @@ fun HistoryContent(
     ) {
         // consume the NormalComicCard composable
         stickyHeader {
+            var showPopupMenu by remember { mutableStateOf(false) }
+            var showDialog by remember { mutableStateOf<Int?>(null) }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 Button(
                     modifier = Modifier
                         .width(120.dp)
@@ -111,10 +115,11 @@ fun HistoryContent(
                     ),
                     onClick = {
                         //TODO
-                        historyViewModel.deleteAllHistoryRecords()
+                        showPopupMenu = true
+                        showDialog = 1
                         // Log.d("HistoryView", "Clear All")
-                    }) {
-
+                    }
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_delete),
                         contentDescription = "delete_all_history",
@@ -136,7 +141,21 @@ fun HistoryContent(
                     onOldSortClick = { isSelected = true }
                 )
             }
+            if (showPopupMenu!= null) {
+                //TODO
+                when(showDialog) {
+                    1 ->  DeleteConfirmDialogComponent(
+                        key = 0, // not use
+                        value = "", // not use
+                        isDeleteAll = true,
+                        title = "Are you sure you want to delete all history record?",
+                        onDismiss = { showDialog = 0 },
+                        viewModel = historyViewModel!!
+                    )
+                }
+            }
         }
+
 
         item {
             if (state.isHistoryListLoading) {

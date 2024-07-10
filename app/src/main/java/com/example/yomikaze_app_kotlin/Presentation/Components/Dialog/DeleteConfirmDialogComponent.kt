@@ -43,7 +43,8 @@ fun <T, VM> DeleteConfirmDialogComponent(
     title: String, // title of dialog
     value: String?, //name
     viewModel: VM,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    isDeleteAll: Boolean? = null
 ) where VM : ViewModel, VM : StatefulViewModel<T> {
 
     var value by remember { mutableStateOf(value) }
@@ -87,7 +88,7 @@ fun <T, VM> DeleteConfirmDialogComponent(
                         color = MaterialTheme.colorScheme.inverseSurface,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
-                     //   modifier = Modifier.padding(start = 10.dp)
+                        //   modifier = Modifier.padding(start = 10.dp)
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -166,30 +167,28 @@ fun <T, VM> DeleteConfirmDialogComponent(
 //                        ),
 //                        isError = isError
 //                    )
+                    if (value!!.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.padding(start = 40.dp)
+                        ) {
+                            Text(
+                                text = "Name: ",
+                                fontSize = 15.sp,
+                                color = MaterialTheme.colorScheme.inverseSurface,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center,
+                            )
 
-                    Row (
-                        modifier = Modifier.padding(start = 40.dp)
-                    ){
-                        Text(
-                            text = "Name: ",
-                            fontSize = 15.sp,
-                            color = MaterialTheme.colorScheme.inverseSurface,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Center,
-                        )
+                            Text(
+                                text = value ?: "",
+                                fontSize = 15.sp,
+                                color = MaterialTheme.colorScheme.error,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center,
+                            )
 
-                        Text(
-                            text = value?:"",
-                            fontSize = 15.sp,
-                            color = MaterialTheme.colorScheme.error,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Center,
-                        )
-
+                        }
                     }
-
-
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -198,11 +197,15 @@ fun <T, VM> DeleteConfirmDialogComponent(
                     ) {
                         Button(
                             onClick = {
-                                    viewModel.delete(key)
-                                    if (viewModel.isDeleteSuccess!!) {
-                                        Toast.makeText(context, "Delete successfully", Toast.LENGTH_SHORT).show()
-                                        onDismiss()
-                                    }
+                                viewModel.delete(key, isDeleteAll)
+                                if (viewModel.isDeleteSuccess!!) {
+                                    Toast.makeText(
+                                        context,
+                                        "Delete successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    onDismiss()
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.onSecondary,

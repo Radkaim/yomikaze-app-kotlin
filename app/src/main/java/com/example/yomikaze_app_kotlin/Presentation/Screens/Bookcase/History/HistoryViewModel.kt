@@ -27,6 +27,7 @@ class HistoryViewModel @Inject constructor(
     private var navController: NavController? = null
 
     private val _state = MutableStateFlow(HistoryState())
+
     //for StatefulViewModel
     override val state: StateFlow<HistoryState> get() = _state
 
@@ -66,8 +67,13 @@ class HistoryViewModel @Inject constructor(
     /**
      * Delete a history record
      */
-    override fun delete(key: Long) {
-        deleteHistoryRecord(key)
+    override fun delete(key: Long, isDeleteAll: Boolean?) {
+        if (isDeleteAll == true) {
+            deleteAllHistoryRecords()
+            return
+        } else {
+            deleteHistoryRecord(key)
+        }
     }
 
 
@@ -112,7 +118,7 @@ class HistoryViewModel @Inject constructor(
     /**
      * Delete all history records
      */
-    fun deleteAllHistoryRecords() {
+   private fun deleteAllHistoryRecords() {
         viewModelScope.launch(Dispatchers.IO) {
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val response = deleteAllHistoryUC.deleteAllHistories(token)
@@ -126,7 +132,7 @@ class HistoryViewModel @Inject constructor(
 
 
     //delete history record
-   private fun deleteHistoryRecord(historyRecordId: Long) {
+    private fun deleteHistoryRecord(historyRecordId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val response = deleteHistoryRecordUC.deleteHistoryRecord(token, historyRecordId)
@@ -139,7 +145,7 @@ class HistoryViewModel @Inject constructor(
                         listHistoryRecords = listHistoryRecords
                     )
                 }
-            }else{
+            } else {
                 Log.e("HistoryViewModel", "deleteHistoryRecord: ${response.errorBody()}")
             }
         }
