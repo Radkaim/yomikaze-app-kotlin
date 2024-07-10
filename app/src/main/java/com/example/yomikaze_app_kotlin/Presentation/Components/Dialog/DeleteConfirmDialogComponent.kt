@@ -41,7 +41,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Base.StatefulViewMod
 fun <T, VM> DeleteConfirmDialogComponent(
     key: Long,
     title: String, // title of dialog
-    value: String, //name
+    value: String?, //name
     viewModel: VM,
     onDismiss: () -> Unit
 ) where VM : ViewModel, VM : StatefulViewModel<T> {
@@ -179,7 +179,7 @@ fun <T, VM> DeleteConfirmDialogComponent(
                         )
 
                         Text(
-                            text = value,
+                            text = value?:"",
                             fontSize = 15.sp,
                             color = MaterialTheme.colorScheme.error,
                             fontWeight = FontWeight.Medium,
@@ -199,7 +199,7 @@ fun <T, VM> DeleteConfirmDialogComponent(
                         Button(
                             onClick = {
                                     viewModel.delete(key)
-                                    if (viewModel.isUpdateSuccess) {
+                                    if (viewModel.isDeleteSuccess!!) {
                                         Toast.makeText(context, "Delete successfully", Toast.LENGTH_SHORT).show()
                                         onDismiss()
                                     }

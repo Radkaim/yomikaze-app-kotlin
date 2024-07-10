@@ -7,7 +7,7 @@ import javax.inject.Inject
 class DeleteHistoryRecordUC @Inject constructor(
     private val historyRepository: HistoryRepository
 ) {
-    suspend fun deleteAllHistories(
+    suspend fun deleteHistoryRecord(
         token: String,
         historyRecordId: Long
     ): Response<Unit> {

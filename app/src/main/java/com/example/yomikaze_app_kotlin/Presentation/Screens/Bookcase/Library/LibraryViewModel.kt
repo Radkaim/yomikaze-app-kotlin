@@ -140,7 +140,7 @@ class LibraryViewModel @Inject constructor(
                         category.firstCoverImage = coverImage
                         category.totalComics = totalsComics
                     }
-
+                    Log.d("LibraryViewModel", "Get All Categories: $results")
 
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(totalCategoryResults = baseResponse.totals)

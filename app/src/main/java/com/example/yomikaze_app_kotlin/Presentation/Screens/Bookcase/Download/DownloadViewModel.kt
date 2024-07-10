@@ -6,7 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DownloadViewModel @Inject constructor() : ViewModel() {
+class DownloadViewModel @Inject constructor(
+) : ViewModel() {
 
     private var navController: NavController? = null
     fun setNavController(navController: NavController) {

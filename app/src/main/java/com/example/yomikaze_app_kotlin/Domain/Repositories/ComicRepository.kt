@@ -72,14 +72,6 @@ interface ComicRepository {
 
 
     /**
-     * TODO: use for download comic and add to database
-     */
-    suspend fun insertComicDB(
-        comic: ComicResponse,
-        context: Context
-    )
-
-    /**
      * TODO: use for get all comic downloaded in database
      */
     suspend fun getAllComicsDownloadedDB(): Result<List<ComicResponse>>
@@ -100,5 +92,25 @@ interface ComicRepository {
         token: String,
         comicId: Long,
     ): Result<FollowComicResponse>
+
+    /**
+     * ---------------------------------------------------------------------------------------------------
+     * TODO: Use For DATABASE
+     */
+
+    /**
+     * TODO: use for download comic and add to database
+     */
+    suspend fun insertComicDB(
+        comic: ComicResponse,
+        context: Context
+    )
+
+    /**
+     * TODO: use for get comic by comic id in database
+     */
+    suspend fun getComicByIdDB(
+        comicId: Long
+    ): ComicResponse
 
 }

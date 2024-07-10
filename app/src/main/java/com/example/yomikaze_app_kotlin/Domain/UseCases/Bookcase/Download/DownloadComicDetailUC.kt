@@ -7,7 +7,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import javax.inject.Inject
 
-class DownloadUC @Inject constructor(
+class DownloadComicDetailUC @Inject constructor(
     private val comicRepository: ComicRepository,
     private val imageRepository: ImageRepository
 ) {

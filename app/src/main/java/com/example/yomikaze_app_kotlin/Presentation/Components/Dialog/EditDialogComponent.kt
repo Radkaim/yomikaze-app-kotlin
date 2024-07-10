@@ -198,7 +198,7 @@ fun <T, VM> EditDialogComponent(
                                     isError = true
                                 } else {
                                     viewModel.update(key, value)
-                                    if (viewModel.isUpdateSuccess) {
+                                    if (viewModel.isUpdateSuccess!!) {
                                         Toast.makeText(context, "Update successfully", Toast.LENGTH_SHORT).show()
                                         onDismiss()
                                     }

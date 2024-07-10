@@ -24,11 +24,13 @@ class PageRepositoryImpl @Inject constructor(
     @Inject
     lateinit var pageRepository: PageRepository
     override suspend fun getPagesByChapterNumberOfComic(
+        token: String,
         comicId: Long,
         chapterIndex: Int
     ): Result<Page> {
         return try {
-            val response = api.getPagesByChapterNumberOfComic(comicId, chapterIndex)
+            val response =
+                api.getPagesByChapterNumberOfComic("Bearer $token", comicId, chapterIndex)
             Log.d("PageRepositoryImpl", "getPagesByChapterNumberOfComic: $response")
 
             if (response.isSuccessful) {
@@ -51,11 +53,21 @@ class PageRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun downloadPagesOfChapter(comicId: Long, chapter: Chapter, context: Context) {
+    override suspend fun downloadPagesOfChapter(
+        token: String,
+        comicId: Long,
+        chapter: Chapter,
+        context: Context
+    ) {
         try {
             // Lấy danh sách các trang ảnh của chương
 
-            val result = pageRepository.getPagesByChapterNumberOfComic(comicId, chapter.number)
+            val result =
+                pageRepository.getPagesByChapterNumberOfComic(
+                    "Bearer $token",
+                    comicId,
+                    chapter.number
+                )
             if (result.isSuccess) {
                 val pages = result.getOrThrow() // Lấy đối tượng Page
 

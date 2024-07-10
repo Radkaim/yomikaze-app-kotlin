@@ -136,6 +136,59 @@ class ComicRepositoryImpl @Inject constructor(
     }
 
     /**
+     * TODO: Implement the function to rate a comic
+     *
+     */
+    override suspend fun rateComic(
+        token: String,
+        comicId: Long,
+        rating: RatingRequest
+    ): Response<Unit> {
+        // check status code of response
+        val response = api.rateComic("Bearer $token", comicId, rating)
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            val httpCode = response.code()
+            when (httpCode) {
+                400 -> {
+                    // Xử lý lỗi 400 (Bad Request)
+                    Log.e("ComicRepositoryImpl", "Bad Request")
+                }
+
+                401 -> {
+                    // Xử lý lỗi 401 (Unauthorized)
+                    Log.e("ComicRepositoryImpl", "Unauthorized")
+                }
+                // Xử lý các mã lỗi khác
+                else -> {
+                    // Xử lý mặc định cho các mã lỗi khác
+                }
+            }
+            Result.failure(Exception("Failed to rate comic"))
+        }
+        return response
+    }
+
+    /**
+     * TODO: Implement the function to follow a comic
+     */
+    override suspend fun followComic(token: String, comicId: Long): Result<FollowComicResponse> {
+        return try {
+            val response = api.followComic("Bearer $token", comicId)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
+    /**
+     * ---------------------------------------------------------------------------------------------------
+     * TODO: Use For DATABASE
+     */
+
+    /**
      * TODO: Implement the function to download comic and add to database
      */
     override suspend fun insertComicDB(comic: ComicResponse, context: Context) {
@@ -183,35 +236,39 @@ class ComicRepositoryImpl @Inject constructor(
 
                 else -> {}
             }
+            // get name of list Tags
+            val tags = comic.tags.map { it.name }
+            Log.d("ComicRepositoryImpl", "insertComicDB: Tags = $tags")
 
             // Chỉ thực hiện lưu vào cơ sở dữ liệu nếu cả hai ảnh đều tải xuống thành công
-            if (coverLocalPath != null && bannerLocalPath != null) {
-                comicDao.insertComicDB(
-                    ComicResponse(
-                        comicId = comic.comicId,
-                        name = comic.name,
-                        aliases = comic.aliases,
-                        description = comic.description,
-                        cover = coverLocalPath,
-                        banner = bannerLocalPath,
-                        publicationDate = comic.publicationDate,
-                        authors = comic.authors,
-                        status = comic.status,
-                        tags = comic.tags,
-                        totalRatings = comic.totalRatings,
-                        averageRating = comic.averageRating,
-                        views = comic.views,
-                        follows = comic.follows,
-                        comments = comic.comments,
-                        totalChapters = comic.totalChapters,
-                        totalMbs = comic.totalMbs,
-                    )
+//            if (coverLocalPath != null && bannerLocalPath != null) {
+            comicDao.insertComicDB(
+                ComicResponse(
+                    comicId = comic.comicId,
+                    name = comic.name,
+                    aliases = comic.aliases,
+                    description = comic.description,
+                    cover = coverLocalPath ?: "",
+                    banner = bannerLocalPath ?: "",
+                    publicationDate = comic.publicationDate,
+                    authors = comic.authors,
+                    status = comic.status,
+                    tags = comic.tags,
+                    tagDB = tags,
+                    totalRatings = comic.totalRatings,
+                    averageRating = comic.averageRating,
+                    views = comic.views,
+                    follows = comic.follows,
+                    comments = comic.comments,
+                    totalChapters = comic.totalChapters,
+                    totalMbs = comic.totalMbs,
                 )
-            } else {
-                // Xử lý khi ít nhất một trong hai ảnh không tải xuống thành công
-                Log.e("ComicRepositoryImpl", "Failed to download one or both images")
-                // Có thể hiển thị thông báo cho người dùng hoặc xử lý theo cách khác tùy vào yêu cầu của ứng dụng
-            }
+            )
+//            } else {
+//                // Xử lý khi ít nhất một trong hai ảnh không tải xuống thành công
+//                Log.e("ComicRepositoryImpl", "Failed to insert comics to database")
+//                // Có thể hiển thị thông báo cho người dùng hoặc xử lý theo cách khác tùy vào yêu cầu của ứng dụng
+//            }
         } catch (e: Exception) {
             throw e
         }
@@ -230,49 +287,13 @@ class ComicRepositoryImpl @Inject constructor(
     }
 
     /**
-     * TODO: Implement the function to rate a comic
-     *
+     * TODO: Implement the function to get comic by comic id in database
      */
-    override suspend fun rateComic(
-        token: String,
-        comicId: Long,
-        rating: RatingRequest
-    ): Response<Unit> {
-        // check status code of response
-        val response = api.rateComic("Bearer $token", comicId, rating)
-        if (response.isSuccessful) {
-            Result.success(Unit)
-        } else {
-            val httpCode = response.code()
-            when (httpCode) {
-                400 -> {
-                    // Xử lý lỗi 400 (Bad Request)
-                    Log.e("ComicRepositoryImpl", "Bad Request")
-                }
-
-                401 -> {
-                    // Xử lý lỗi 401 (Unauthorized)
-                    Log.e("ComicRepositoryImpl", "Unauthorized")
-                }
-                // Xử lý các mã lỗi khác
-                else -> {
-                    // Xử lý mặc định cho các mã lỗi khác
-                }
-            }
-            Result.failure(Exception("Failed to rate comic"))
-        }
-        return response
-    }
-
-    /**
-     * TODO: Implement the function to follow a comic
-     */
-    override suspend fun followComic(token: String, comicId: Long): Result<FollowComicResponse> {
+    override suspend fun getComicByIdDB(comicId: Long): ComicResponse {
         return try {
-            val response = api.followComic("Bearer $token", comicId)
-            Result.success(response)
+            comicDao.getComicByIdDB(comicId)
         } catch (e: Exception) {
-            Result.failure(e)
+            throw e
         }
     }
 }

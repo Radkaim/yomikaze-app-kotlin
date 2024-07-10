@@ -7,9 +7,9 @@ interface StatefulViewModel<T> {
 
     val state: StateFlow<T>
     fun update(key: Long, value: String)
-    val isUpdateSuccess: Boolean
+    val isUpdateSuccess: Boolean?
 
     fun delete(key: Long)
-    val isDeleteSuccess: Boolean
+    val isDeleteSuccess: Boolean?
 
 }

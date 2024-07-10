@@ -7,8 +7,12 @@ import javax.inject.Inject
 class GetPagesByChapterNumberOfComicUC @Inject constructor(
     private val pageRepository: PageRepository
 ) {
-    suspend fun getPagesByChapterNumberOfComic(comicId: Long, chapterNumber: Int): Result<Page> {
-        return pageRepository.getPagesByChapterNumberOfComic(comicId, chapterNumber)
+    suspend fun getPagesByChapterNumberOfComic(
+        token: String,
+        comicId: Long,
+        chapterNumber: Int
+    ): Result<Page> {
+        return pageRepository.getPagesByChapterNumberOfComic(token, comicId, chapterNumber)
     }
 
 }

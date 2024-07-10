@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ViewChapterModel @Inject constructor(
+    private val appPreference: AppPreference,
     private val getPagesByChapterNumberOfComicUC: GetPagesByChapterNumberOfComicUC
 ) : ViewModel() {
 
@@ -31,9 +33,16 @@ class ViewChapterModel @Inject constructor(
     }
 
     // get pages by chapter number of comic
-     fun getPagesByChapterNumberOfComic(comicId: Long, chapterNumber: Int) {
+    fun getPagesByChapterNumberOfComic(comicId: Long, chapterNumber: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = getPagesByChapterNumberOfComicUC.getPagesByChapterNumberOfComic(comicId, chapterNumber)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+
+            val result = getPagesByChapterNumberOfComicUC.getPagesByChapterNumberOfComic(
+                token,
+                comicId,
+                chapterNumber
+            )
             result.fold(
                 onSuccess = { page ->
                     // Xử lý kết quả thành công

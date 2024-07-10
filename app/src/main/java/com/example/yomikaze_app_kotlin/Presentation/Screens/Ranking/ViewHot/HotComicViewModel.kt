@@ -75,6 +75,7 @@ class HotComicViewModel @Inject constructor(
                     )
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
+                    Log.d("HotComicViewModel", "Hung")
 
                 },
                 onFailure = { exception ->

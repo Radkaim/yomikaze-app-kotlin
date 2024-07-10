@@ -86,6 +86,8 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareCo
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.CreateCategoryDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangleLineLong
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryViewModel
 import com.example.yomikaze_app_kotlin.R
@@ -102,9 +104,7 @@ fun ComicDetailsView(
 
     //set navController for viewModel
     comicDetailViewModel.setNavController(navController)
-    LaunchedEffect(Unit) {
-        comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
-    }
+
     LaunchedEffect(
         key1 = state.isRatingComicSuccess,
         key2 = state.isFollowComicSuccess
@@ -113,13 +113,33 @@ fun ComicDetailsView(
     }
     // comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
     //comicDetailViewModel.downloadComic(state.comicResponse ?: return)
+    if (CheckNetwork()) {
+        LaunchedEffect(Unit) {
+            comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+        }
+        ComicDetailContent(
+            comicId = comicId,
+            navController = navController,
+            comicDetailViewModel = comicDetailViewModel,
+            state = state
+        )
+    } else {
 
-    ComicDetailContent(
-        comicId = comicId,
-        navController = navController,
-        comicDetailViewModel = comicDetailViewModel,
-        state = state
-    )
+        //   Log.d("ComicDetailsView", "CheckNetwork:")
+            comicDetailViewModel.getComicByIdDB(comicId = comicId)
+        Log.d("ComicDetailsView", "comic exist: ${state.isComicExistInDB}")
+        if (state.isComicExistInDB) {
+            ComicDetailContent(
+                comicId = comicId,
+                navController = navController,
+                comicDetailViewModel = comicDetailViewModel,
+                state = state
+            )
+        } else {
+            NoNetworkAvailable()
+      }
+    }
+
 
 }
 
@@ -300,6 +320,12 @@ fun ComicDetailContent(
                         //.offset(y = (-5).dp)
                     ) {
                         // main image
+                        var image: String
+                        if (CheckNetwork()) {
+                          image =  APIConfig.imageAPIURL.toString() + state.comicResponse?.cover
+                        } else {
+                            image = state.comicResponse?.cover ?: ""
+                        }
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(APIConfig.imageAPIURL.toString() + state.comicResponse?.cover)
@@ -743,11 +769,12 @@ fun AddToLibraryDialog(
                             .height(160.dp)
                         // .background(MaterialTheme.colorScheme.onSurface)
                     ) {
-                        item { if(!state.isCategoryLoading)
-                            repeat(5) {
-                                Spacer(modifier = Modifier.height(10.dp))
-                               ComponentRectangleLineLong()
-                            }
+                        item {
+                            if (!state.isCategoryLoading)
+                                repeat(5) {
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    ComponentRectangleLineLong()
+                                }
                         }
 
                         items(categories) { category ->

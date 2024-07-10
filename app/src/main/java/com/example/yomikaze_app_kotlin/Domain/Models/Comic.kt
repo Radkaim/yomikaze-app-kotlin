@@ -95,6 +95,9 @@ data class ComicResponse(
     @ColumnInfo(name = "tags")
     val tags: List<Tag>,
 
+    @ColumnInfo(name = "tagDB")
+    val tagDB: List<String>?,
+
     //for api
     @SerializedName("totalRatings")
     //for database

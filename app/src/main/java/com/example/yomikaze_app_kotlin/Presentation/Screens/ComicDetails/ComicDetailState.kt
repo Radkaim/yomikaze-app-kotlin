@@ -23,5 +23,7 @@ data class ComicDetailState(
 
     val isFollowComicSuccess: Boolean = true,
 
+    //for Database
+    val isComicExistInDB: Boolean = false,
 
 )

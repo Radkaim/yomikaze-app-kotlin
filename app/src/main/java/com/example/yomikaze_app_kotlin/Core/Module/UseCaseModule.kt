@@ -11,7 +11,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadComicDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteAllHistoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteHistoryRecordUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetHistoriesUC
@@ -23,6 +23,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibra
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.AddComicToCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.FollowComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
@@ -88,7 +89,6 @@ object UseCaseModule {
     }
 
 
-
     /**
      *-------------------------------------------------------------------------
      * TODO Comic Use Cases
@@ -111,6 +111,15 @@ object UseCaseModule {
     @Singleton
     fun provideSearchComicUseCase(comicRepository: ComicRepository): SearchComicUC {
         return SearchComicUC(comicRepository)
+    }
+
+    /**
+     * TODO  get comic by ID from API
+     */
+    @Provides
+    @Singleton
+    fun provideGetComicDetailsFromApiUseCase(comicRepository: ComicRepository): GetComicDetailsFromApiUC {
+        return GetComicDetailsFromApiUC(comicRepository)
     }
 
     /**
@@ -149,14 +158,7 @@ object UseCaseModule {
         return GetComicByFollowRankingUC(comicRepository)
     }
 
-    /**
-     * Todo: Provide the GetComicDetailsFromApiUC
-     */
-    @Provides
-    @Singleton
-    fun provideGetComicDetailsFromApiUC(comicRepository: ComicRepository): GetComicDetailsFromApiUC {
-        return GetComicDetailsFromApiUC(comicRepository)
-    }
+
 
     /**
      * Todo: Provide the RatingComicUC
@@ -176,23 +178,35 @@ object UseCaseModule {
         return FollowComicUC(comicRepository)
     }
 
-
     /**
      *-------------------------------------------------------------------------
-     * TODO Download Use Cases
+     * TODO Comic In DATABASE (Download) Use Cases
      */
 
     /**
-     * Todo: Provide the DownloadDBUC
+     * Todo: Provide the get comic by ID from database
      */
     @Provides
     @Singleton
-    fun provideDownloadDBUC(
+    fun provideGetComicByIdDBUseCase(comicRepository: ComicRepository): GetComicByIdDBUC {
+        return GetComicByIdDBUC(comicRepository)
+    }
+
+    /**
+     * Todo: Provide the download comic detail use case
+     */
+    @Provides
+    @Singleton
+    fun provideDownloadComicDetailDBlUC(
         comicRepository: ComicRepository,
         imageRepository: ImageRepository
-    ): DownloadUC {
-        return DownloadUC(comicRepository, imageRepository)
+    ): DownloadComicDetailUC {
+        return DownloadComicDetailUC(comicRepository, imageRepository)
     }
+
+
+
+
 
     /**
      *-------------------------------------------------------------------------
@@ -294,7 +308,6 @@ object UseCaseModule {
     fun provideSearchComicInLibraryUC(libraryRepository: LibraryRepository): SearchInLibraryUC {
         return SearchInLibraryUC(libraryRepository)
     }
-
 
 
     /**
