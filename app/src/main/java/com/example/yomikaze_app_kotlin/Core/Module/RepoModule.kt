@@ -4,6 +4,7 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.HistoryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryCategoryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.PageApiService
@@ -13,6 +14,7 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.PageDao
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.AuthRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ChapterRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ComicRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.HistoryRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ImageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.LibraryCategoryRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.LibraryRepositoryImpl
@@ -20,6 +22,7 @@ import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.PageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
@@ -126,5 +129,15 @@ object RepoModule {
         return LibraryCategoryRepositoryImpl(libraryCategoryApiService)
     }
 
+    /**
+     * Todo: Provide the HistoryRepository
+     */
+    @Provides
+    @Singleton
+    fun provideHistoryRepository(
+        historyApiService: HistoryApiService
+    ): HistoryRepository {
+        return HistoryRepositoryImpl(historyApiService)
+    }
 
 }

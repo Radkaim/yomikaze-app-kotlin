@@ -37,11 +37,24 @@ data class Chapter(
     val comicId: Long,
 
     //for api
+    @SerializedName("views")
+    //for database
+    @ColumnInfo(name = "views")
+    val views: Long,
+
+    //for api
+    @SerializedName("hasLock")
+    //for database
+    @ColumnInfo(name = "hasLock")
+    val hasLock: Boolean,
+
+    //for api
     @SerializedName("number")
     //for database
     @ColumnInfo(name = "number")
     @NonNull
     val number: Int,
+
 
     //for api
     @SerializedName("name")
@@ -50,15 +63,22 @@ data class Chapter(
     val name: String,
 
     //for api
-    @SerializedName("views")
+    @SerializedName("price")
     //for database
-    @ColumnInfo(name = "views")
-    val views: Long,
+    @ColumnInfo(name = "price")
+    val price: Int,
 
     //for api
-    @SerializedName("comments")
+    @SerializedName("isUnlocked")
     //for database
-    @ColumnInfo(name = "comments")
+    @ColumnInfo(name = "isUnlocked")
+    val isUnlocked: Boolean,
+
+
+    //for api
+    @SerializedName("totalComments")
+    //for database
+    @ColumnInfo(name = "totalComments")
     val comments: Long,
 
     //for api

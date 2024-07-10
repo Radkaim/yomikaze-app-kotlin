@@ -639,7 +639,7 @@ fun ListChapterInComicDetailView(
         modifier = Modifier
             .fillMaxSize()
             .offset(x = (-4).dp),
-        verticalArrangement = Arrangement.spacedBy(1.5.dp) // 8.dp space between each item
+        verticalArrangement = Arrangement.spacedBy(4.dp) // 8.dp space between each item
     ) {
         listChapter?.let { // means if listChapter is not null
             items(it) { chapter ->
@@ -649,7 +649,7 @@ fun ListChapterInComicDetailView(
                     views = chapter.views,
                     comments = chapter.comments,
                     publishedDate = chapter.creationTime,
-                    isLocked = chapter.isLocked,
+                    isLocked = chapter.isUnlocked,
                     onClick = {
                         comicDetailViewModel.navigateToViewChapter(
                             comicId,

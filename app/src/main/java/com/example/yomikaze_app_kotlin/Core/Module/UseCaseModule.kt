@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Core.Module
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
@@ -11,6 +12,10 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteAllHistoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteHistoryRecordUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetHistoriesUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.UpdateLastReadPageUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.CreateLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.DeleteCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComicsInCateUC
@@ -40,6 +45,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCaseModule {
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Authentication Use Cases
+     */
 
     /**
      * Todo: Provide the LoginUseCase
@@ -76,6 +86,13 @@ object UseCaseModule {
     fun provideLogoutUseCase(authRepository: AuthRepository): LogoutUC {
         return LogoutUC(authRepository)
     }
+
+
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Comic Use Cases
+     */
 
     /**
      * Todo: Provide the GetHotComicBannerUseCase
@@ -141,19 +158,6 @@ object UseCaseModule {
         return GetComicDetailsFromApiUC(comicRepository)
     }
 
-
-    /**
-     * Todo: Provide the DownloadDBUC
-     */
-    @Provides
-    @Singleton
-    fun provideDownloadDBUC(
-        comicRepository: ComicRepository,
-        imageRepository: ImageRepository
-    ): DownloadUC {
-        return DownloadUC(comicRepository, imageRepository)
-    }
-
     /**
      * Todo: Provide the RatingComicUC
      */
@@ -172,6 +176,29 @@ object UseCaseModule {
         return FollowComicUC(comicRepository)
     }
 
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Download Use Cases
+     */
+
+    /**
+     * Todo: Provide the DownloadDBUC
+     */
+    @Provides
+    @Singleton
+    fun provideDownloadDBUC(
+        comicRepository: ComicRepository,
+        imageRepository: ImageRepository
+    ): DownloadUC {
+        return DownloadUC(comicRepository, imageRepository)
+    }
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO LibraryCategory Use Cases
+     */
+
     /**
      * Todo: Provide the AddComicToCategoryUC
      */
@@ -179,33 +206,6 @@ object UseCaseModule {
     @Singleton
     fun provideAddComicToCategoryUC(libraryCategoryRepository: LibraryCategoryRepository): AddComicToCategoryUC {
         return AddComicToCategoryUC(libraryCategoryRepository)
-    }
-
-    /**
-     * Todo: Provide the GetListChaptersByComicIdUC
-     */
-    @Provides
-    @Singleton
-    fun provideGetListChaptersByComicIdUC(chapterRepository: ChapterRepository): GetListChaptersByComicIdUC {
-        return GetListChaptersByComicIdUC(chapterRepository)
-    }
-
-    /**
-     * Todo: Provide the GetPagesByChapterNumberOfComic
-     */
-    @Provides
-    @Singleton
-    fun provideGetPagesByChapterNumberOfComicUC(pageRepository: PageRepository): GetPagesByChapterNumberOfComicUC {
-        return GetPagesByChapterNumberOfComicUC(pageRepository)
-    }
-
-    /**
-     * Todo: Provide the search comic in Library
-     */
-    @Provides
-    @Singleton
-    fun provideSearchComicInLibraryUC(libraryRepository: LibraryRepository): SearchInLibraryUC {
-        return SearchInLibraryUC(libraryRepository)
     }
 
     /**
@@ -252,4 +252,91 @@ object UseCaseModule {
     fun provideUpdateCategoryNameInLibraryUC(libraryCategoryRepository: LibraryCategoryRepository): UpdateCateNameUC {
         return UpdateCateNameUC(libraryCategoryRepository)
     }
+
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Chapter Use Cases
+     */
+
+
+    /**
+     * Todo: Provide the GetListChaptersByComicIdUC
+     */
+    @Provides
+    @Singleton
+    fun provideGetListChaptersByComicIdUC(chapterRepository: ChapterRepository): GetListChaptersByComicIdUC {
+        return GetListChaptersByComicIdUC(chapterRepository)
+    }
+
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Page Use Cases
+     */
+
+    /**
+     * Todo: Provide the GetPagesByChapterNumberOfComic
+     */
+    @Provides
+    @Singleton
+    fun provideGetPagesByChapterNumberOfComicUC(pageRepository: PageRepository): GetPagesByChapterNumberOfComicUC {
+        return GetPagesByChapterNumberOfComicUC(pageRepository)
+    }
+
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Library Use Cases
+     */
+    @Provides
+    @Singleton
+    fun provideSearchComicInLibraryUC(libraryRepository: LibraryRepository): SearchInLibraryUC {
+        return SearchInLibraryUC(libraryRepository)
+    }
+
+
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO History Use Cases
+     */
+
+
+    /**
+     * Todo: Provide the getHistoryUseCase
+     */
+    @Provides
+    @Singleton
+    fun provideGetHistoryUseCase(historyRepository: HistoryRepository): GetHistoriesUC {
+        return GetHistoriesUC(historyRepository)
+    }
+
+    /**
+     * Todo: Provide the updateLastReadPageUseCase
+     */
+    @Provides
+    @Singleton
+    fun provideUpdateLastReadPageUseCase(historyRepository: HistoryRepository): UpdateLastReadPageUC {
+        return UpdateLastReadPageUC(historyRepository)
+    }
+
+    /**
+     * Todo: Provide the delete all history use case
+     */
+    @Provides
+    @Singleton
+    fun provideDeleteAllHistoryUseCase(historyRepository: HistoryRepository): DeleteAllHistoryUC {
+        return DeleteAllHistoryUC(historyRepository)
+    }
+
+    /**
+     * Todo: Provide the delete history record use case
+     */
+    @Provides
+    @Singleton
+    fun provideDeleteHistoryRecordUseCase(historyRepository: HistoryRepository): DeleteHistoryRecordUC {
+        return DeleteHistoryRecordUC(historyRepository)
+    }
+
 }
