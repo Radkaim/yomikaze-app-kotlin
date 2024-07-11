@@ -80,6 +80,7 @@ fun DownloadViewContent(
                 status = comic.status,
                 authorNames = comic.authors,
                 isDownloaded = true,
+                downloadViewModel = downloadViewModel,
                 isDeleted = true,
                 totalMbs = comic.totalMbs,
                 publishedDate = comic.publicationDate,
@@ -95,9 +96,12 @@ fun DownloadViewContent(
                     .clickable {
                         downloadViewModel.onComicDownloadedClick(comic.name, comic.comicId)
                     },
-                onDeleteClicked = {
-                    downloadViewModel.delete(comic.comicId, false)
-                }
+                onClicked = {
+                    downloadViewModel.onComicDownloadedClick(comic.name, comic.comicId)
+                },
+//                onDeleteClicked = {
+//                    downloadViewModel.delete(comic.comicId, false)
+//                }
             )
         }
     }

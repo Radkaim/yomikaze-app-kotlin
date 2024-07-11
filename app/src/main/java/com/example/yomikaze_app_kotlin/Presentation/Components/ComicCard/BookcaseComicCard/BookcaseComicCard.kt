@@ -37,6 +37,7 @@ import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConfirmDialogComponent
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.History.HistoryViewModel
 import com.example.yomikaze_app_kotlin.R
 
@@ -55,10 +56,13 @@ fun BookcaseComicCard(
     isHistory: Boolean = false,
     historyRecordId: Long? = null,
     historyViewModel: HistoryViewModel? = null,
-    value: String? = null,
 
+    value: String? = null,
+    onClicked: () -> Unit = {},
     lastChapter: String? = null,
     isDownloaded: Boolean = false,
+    downloadViewModel: DownloadViewModel? = null,
+
     totalMbs: Float? = null,
     isDeleted: Boolean = false,
     onDeleteClicked: () -> Unit = {},
@@ -87,8 +91,7 @@ fun BookcaseComicCard(
                 .fillMaxWidth()
                 .offset(x = (-4).dp)
                 .clickable {
-                    // onClicked()
-
+                     onClicked()
                 }
         ) {
             if (isDeleted) {
@@ -115,8 +118,11 @@ fun BookcaseComicCard(
                                     showDialog = 1
 
                                 }
+                                if (isDownloaded){
+                                    showPopupMenu = true
+                                    showDialog = 2
+                                }
 
-                                onDeleteClicked()
                             }
                     )
                 }
@@ -251,6 +257,16 @@ fun BookcaseComicCard(
                     title = "Are you sure you want to delete this history record?",
                     onDismiss = { showDialog = 0 },
                     viewModel = historyViewModel!!
+                )
+            }
+
+            2->{
+                DeleteConfirmDialogComponent(
+                    key = comicId,
+                    value = comicName,
+                    title = "Are you sure you want to delete downloaded comic?",
+                    onDismiss = { showDialog = 0 },
+                    viewModel = downloadViewModel!!
                 )
             }
 

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Text
+import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.Download.NormalChapterDownload
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -54,8 +55,14 @@ fun DownloadDetailView(
     )
     { paddingValues ->
         // Nội dung của bạn ở đây, có thể dùng paddingValues nếu cần
-        Text(
-            text = "DownloadDetailView",
-            )
+        NormalChapterDownload(
+                    orderIndex = 1,
+                    chapterIndex = 0,
+                    totalMbs = 12f,
+                    isDownloaded = true,
+                    isInSelectionMode = true ,
+                    isSelected = true,
+                    onClicked = {}
+                )
     }
 }

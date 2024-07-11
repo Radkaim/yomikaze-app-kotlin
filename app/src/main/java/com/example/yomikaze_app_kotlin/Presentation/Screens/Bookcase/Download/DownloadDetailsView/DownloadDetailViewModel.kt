@@ -9,4 +9,5 @@ import javax.inject.Inject
 class DownloadDetailViewModel @Inject constructor(
     navController: NavController
 ) : ViewModel() {
+
 }
