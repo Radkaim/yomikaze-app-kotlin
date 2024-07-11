@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun NormalChapterDownload(
     orderIndex: Int,
-    chapterIndex: Int,
-    totalMbs: Float,
+    chapterNumber: Int,
+    totalMbs: Long,
     isDownloaded: Boolean,
     isInSelectionMode: Boolean,
     isSelected: Boolean,
@@ -53,7 +53,7 @@ fun NormalChapterDownload(
                 )
 
                 Text(
-                    text = "Chapter $chapterIndex",
+                    text = "Chapter $chapterNumber",
                     color = titleColor,
                     fontSize = 15.sp
                 )

@@ -195,12 +195,15 @@ fun ChooseChapterDownloadContent(
                     val chaptersToDownload =
                         chapterNumbers!!.filterIndexed { index, _ -> selectedChapters[index] }
 
-                    chooseChapterDownloadViewModel.getComicDetailsAndDownload(comicId)
-
-                    chooseChapterDownloadViewModel.downloadListChapterChoose(
-                        comicId,
-                        chaptersToDownload
-                    )
+//                    chooseChapterDownloadViewModel.getComicDetailsAndDownload(comicId)
+//
+//                    chooseChapterDownloadViewModel.downloadListChapterChoose(
+//                        comicId,
+//                        chaptersToDownload
+//                    )
+                   // chooseChapterDownloadViewModel.downloadAllPageOfChapterFromDB(comicId)
+                    chooseChapterDownloadViewModel. getPagesByChapterNumberOfComic(68638295025815553, 1,)
+                    Log.d("ChooseChapterDownloadContent", "ChooseChapterDownloadContent: $chaptersToDownload")
 //                onDownload(chaptersToDownload)
 //                onDismiss()
                 }) {

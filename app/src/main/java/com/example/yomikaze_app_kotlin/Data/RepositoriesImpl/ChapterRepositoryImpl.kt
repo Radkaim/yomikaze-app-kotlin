@@ -53,4 +53,11 @@ class ChapterRepositoryImpl @Inject constructor(
         return chapterDao.getChapterById(id)
     }
 
+    /**
+     * TODO: Get chapter by comic id in database
+     */
+    override suspend fun getChapterByComicIdDB(comicId: Long): List<Chapter> {
+        return chapterDao.getListChaptersDownloadedByComicId(comicId)
+    }
+
 }

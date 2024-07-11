@@ -7,7 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.DownloadPagesOfChapterUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.InsertChapterToDBUC
@@ -35,7 +39,11 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     private val getChapterDetailUC: GetChapterDetailUC,
     private val insertChapterToDBUC: InsertChapterToDBUC,
     private val getChapterByIdDBUC: GetChapterByIdDBUC,
-    private val getComicByIdDBUC: GetComicByIdDBUC
+    private val getComicByIdDBUC: GetComicByIdDBUC,
+    private val downloadPagesOfChapterUC: DownloadPagesOfChapterUC,
+    private val getChapterByComicIdDBUC: GetChapterByComicIdDBUC,
+    private val pageRepository: PageRepository
+
 
 ) : ViewModel() {
     private var navController: NavController? = null
@@ -48,8 +56,22 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     }
 
 
+
+    //test get page
+    fun getPagesByChapterNumberOfComic(
+        comicId: Long,
+        chapterIndex: Int
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = pageRepository.getImagesByComicIdAndChapterNumberDB(comicId, chapterIndex)
+            Log.d("ChooseChapterDownloadViewModel", "getPagesByChapterNumberOfComic: $result")
+        }
+    }
+
+
+
     /**
-     *Todo: Implement get the list chapter of comic
+     *Todo: Implement get the list chapter of comic from API
      */
 
     fun getListChapterByComicId(comicId: Long) {
@@ -144,7 +166,7 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     /**
      * TODO: Implement download detail of chapter and insert to database
      */
-    fun downloadChapterDetail(comicId: Long, chapterNumber: Int) {
+    private fun downloadChapterDetail(comicId: Long, chapterNumber: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -175,31 +197,38 @@ class ChooseChapterDownloadViewModel @Inject constructor(
 
 
     /**
+     * TODO get list chapter of downloaded comic from database
+     */
+    fun downloadAllPageOfChapterFromDB(comicId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val chapters = getChapterByComicIdDBUC.getChapterByComicIdDB(comicId)
+
+            Log.d("ComicDetailViewModelDownload", "Chapter: $chapters")
+
+            chapters.forEach { chapter ->
+                downloadPageOfChapter(comicId, chapter)
+            }
+        }
+    }
+
+    /**
      * TODO: Implement get list page of chapter and download
      */
-    fun downloadPageOfChapter(comicId: Long, chapterNumber: Int) {
+  private  fun downloadPageOfChapter(comicId: Long, chapter: Chapter) {
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            try {
+                downloadPagesOfChapterUC.downloadPagesOfChapter(
+                    token,
+                    comicId,
+                    chapter,
+                    context
+                )
+            } catch (e: Exception) {
+                Log.e("ComicDetailViewModelDownload", "downloadPageOfChapter: $e")
+            }
 
-            val pageResult = getPagesByChapterNumberOfComicUC.getPagesByChapterNumberOfComic(
-                token,
-                comicId,
-                chapterNumber
-            )
-
-            pageResult.fold(
-                onSuccess = { page ->
-                    // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(
-                        //  pages = page.pages
-                    )
-                },
-                onFailure = { exception ->
-                    // Xử lý lỗi
-                    Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: $exception")
-                }
-            )
         }
     }
 

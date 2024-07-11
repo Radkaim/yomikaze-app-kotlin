@@ -14,6 +14,7 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.PageDao
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.AuthRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ChapterRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ComicRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.DownloadPageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.HistoryRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ImageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.LibraryCategoryRepositoryImpl
@@ -22,6 +23,7 @@ import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.PageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.DownloadPageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
@@ -87,15 +89,34 @@ object RepoModule {
         chapterDao: ChapterDao,
         pageDao: PageDao,
         imageRepository: ImageRepository,
-//        pageRepository: PageRepository,
+        //  pageRepository: PageRepository,
         pageApiService: PageApiService
     ): PageRepository {
         return PageRepositoryImpl(
             chapterDao,
             pageDao,
             imageRepository,
-//            pageRepository,
+            //     pageRepository,
             pageApiService
+        )
+    }
+
+    /**
+     ** Todo: Provide the DownloadPageRepository
+     */
+    @Provides
+    @Singleton
+    fun provideDownloadPageRepository(
+        chapterDao: ChapterDao,
+        pageDao: PageDao,
+        imageRepository: ImageRepository,
+        pageRepository: PageRepository
+    ): DownloadPageRepository {
+        return DownloadPageRepositoryImpl(
+            chapterDao,
+            pageDao,
+            imageRepository,
+            pageRepository
         )
     }
 

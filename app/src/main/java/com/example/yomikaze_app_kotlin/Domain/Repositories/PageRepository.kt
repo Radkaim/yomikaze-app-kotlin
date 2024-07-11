@@ -1,7 +1,5 @@
 package com.example.yomikaze_app_kotlin.Domain.Repositories
 
-import android.content.Context
-import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Models.Page
 
 interface PageRepository {
@@ -12,10 +10,5 @@ interface PageRepository {
         chapterNumber: Int
     ): Result<Page>
 
-    suspend fun downloadPagesOfChapter(
-        token: String,
-        comicId: Long,
-        chapter: Chapter,
-        context: Context
-    )
+    suspend fun getImagesByComicIdAndChapterNumberDB(comicId: Long, number: Int): List<Page>
 }

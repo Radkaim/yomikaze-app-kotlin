@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Core.Module
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.DownloadPageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
@@ -11,6 +12,8 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.DownloadPagesOfChapterUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.InsertChapterToDBUC
@@ -242,6 +245,24 @@ object UseCaseModule {
     @Singleton
     fun provideGetChapterByIdDBUC(chapterRepository: ChapterRepository): GetChapterByIdDBUC {
         return GetChapterByIdDBUC(chapterRepository)
+    }
+
+    /**
+     * TODO download pages of chapter
+     */
+    @Provides
+    @Singleton
+    fun provideDownloadPagesOfChapterUC(downloadPageRepository: DownloadPageRepository): DownloadPagesOfChapterUC {
+        return DownloadPagesOfChapterUC(downloadPageRepository)
+    }
+
+    /**
+     * TODo: Provide the get List chapter downloaded by comic ID from database
+     */
+    @Provides
+    @Singleton
+    fun provideGetChapterByComicIdDBUC(chapterRepository: ChapterRepository): GetChapterByComicIdDBUC {
+        return GetChapterByComicIdDBUC(chapterRepository)
     }
 
     /**
