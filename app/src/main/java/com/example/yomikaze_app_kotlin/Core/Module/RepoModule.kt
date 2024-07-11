@@ -69,10 +69,12 @@ object RepoModule {
     @Provides
     @Singleton
     fun provideChapterRepository(
-        chapterApiService: ChapterApiService
+        chapterApiService: ChapterApiService,
+        chapterDao: ChapterDao
     ): ChapterRepository {
         return ChapterRepositoryImpl(
-            chapterApiService
+            chapterApiService,
+            chapterDao
         )
     }
 

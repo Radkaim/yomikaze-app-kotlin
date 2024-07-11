@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.DB
+package com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB
 
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository

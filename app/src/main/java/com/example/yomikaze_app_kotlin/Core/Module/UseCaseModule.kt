@@ -11,6 +11,9 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByIdDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.InsertChapterToDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DeleteComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadComicDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.GetAllComicInDBUC
@@ -25,8 +28,8 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibra
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.AddComicToCategoryUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.FollowComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetChapterDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
@@ -180,7 +183,7 @@ object UseCaseModule {
     }
 
     /**
-     *-------------------------------------------------------------------------
+     *---------------------------------------------------------------------------------------------
      * TODO Comic In DATABASE (Download) Use Cases
      */
 
@@ -223,6 +226,23 @@ object UseCaseModule {
         return DeleteComicByIdDBUC(comicRepository)
     }
 
+    /**
+     * TODO: Implement for insert chapter to database
+     */
+    @Provides
+    @Singleton
+    fun provideInsertChapterToDBUC(chapterRepository: ChapterRepository): InsertChapterToDBUC {
+        return InsertChapterToDBUC(chapterRepository)
+    }
+
+    /**
+     * TODO  Get chapter by id database
+     */
+    @Provides
+    @Singleton
+    fun provideGetChapterByIdDBUC(chapterRepository: ChapterRepository): GetChapterByIdDBUC {
+        return GetChapterByIdDBUC(chapterRepository)
+    }
 
     /**
      *-------------------------------------------------------------------------
@@ -297,6 +317,15 @@ object UseCaseModule {
     @Singleton
     fun provideGetListChaptersByComicIdUC(chapterRepository: ChapterRepository): GetListChaptersByComicIdUC {
         return GetListChaptersByComicIdUC(chapterRepository)
+    }
+
+    /**
+     * TODO get chapter detail
+     */
+    @Provides
+    @Singleton
+    fun provideGetChapterDetailUC(chapterRepository: ChapterRepository): GetChapterDetailUC {
+        return GetChapterDetailUC(chapterRepository)
     }
 
 

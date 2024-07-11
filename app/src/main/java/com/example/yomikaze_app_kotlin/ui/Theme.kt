@@ -18,28 +18,32 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Green500, //0B9D5F
+    primary = Green500, //1FC488
     onPrimary = Orange500, //E05C48
     primaryContainer = Green900, //00260F
     inversePrimary = Green700, //02753E
+
     secondary = Green300, //89F8DC
     onSecondary = Green500, //1FC488 -> Green500
-
     secondaryContainer = Green600, //0B9D5F -> Green600
     onSecondaryContainer = Orange900, //02753E
 
     error = Orange600, //B22F24
     onError = Orange700, //831513
-    background = Green100, //F2FFFD
-    surface = Orange400, //F28C74
 
+    background = Green100, //F2FFFD
+    onBackground = GrayA07, //D9D9D9
+
+    surface = Orange400, //F28C74
+    onSurface = Orange100, //FFF7F2
     inverseSurface = Orange800, //550A0A
     inverseOnSurface = switchTrackColor,
     surfaceTint = Green800,
-    onSurface = Orange100, //FFF7F2
-    onBackground = GrayA07, //D9D9D9
+
+
     tertiary = Color.White, //FFFFFF
     onTertiary = Color.Black,
+    tertiaryContainer = Green200, //BFFEF2
 
 
     outline = OrangeSplash, //E38B6C

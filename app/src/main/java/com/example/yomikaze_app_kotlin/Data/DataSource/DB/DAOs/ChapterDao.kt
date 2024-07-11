@@ -12,14 +12,17 @@ import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 interface ChapterDao {
 
     @Query("SELECT * FROM chapters WHERE comicId = :comicId")
-     fun getListChaptersDownloadedByComicId(comicId: Long): List<Chapter>
+    fun getListChaptersDownloadedByComicId(comicId: Long): List<Chapter>
+
+    @Query("SELECT * FROM chapters WHERE id = :id")
+    fun getChapterById(id: Long): Chapter
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-     fun insertChapter(chapter: Chapter)
+    fun insertChapter(chapter: Chapter)
 
     @Update
-     fun updateChapterDownloaded(chapter: Chapter)
+    fun updateChapterDownloaded(chapter: Chapter)
 
     @Delete
-     fun deleteChapterDownloaded(chapter: Chapter)
+    fun deleteChapterDownloaded(chapter: Chapter)
 }

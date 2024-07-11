@@ -129,7 +129,7 @@ fun ComicDetailsView(
     } else {
 
         //   Log.d("ComicDetailsView", "CheckNetwork:")
-            comicDetailViewModel.getComicByIdDB(comicId = comicId)
+        comicDetailViewModel.getComicByIdDB(comicId = comicId)
         Log.d("ComicDetailsView", "comic exist: ${state.isComicExistInDB}")
         if (state.isComicExistInDB) {
             ComicDetailContent(
@@ -140,7 +140,7 @@ fun ComicDetailsView(
             )
         } else {
             NoNetworkAvailable()
-      }
+        }
     }
 
 
@@ -170,7 +170,7 @@ fun ComicDetailContent(
 
     val listTitlesOfComicMenuOption = listOf(
         MenuOptions("Add to Library", "add_to_library_dialog_route", R.drawable.ic_library),
-        MenuOptions("Download", "download_dialog_route", R.drawable.ic_download),
+        MenuOptions("Download", "choose_chapter_download_route", R.drawable.ic_download),
         MenuOptions("Rating", "rating_dialog_route", R.drawable.ic_star_fill),
         MenuOptions("Report", "report_dialog_route", R.drawable.ic_report),
         MenuOptions("Share", "share_dialog_route", R.drawable.ic_share),
@@ -243,7 +243,13 @@ fun ComicDetailContent(
                                         showPopupMenu = false
                                         when (menuOptions.route) {
                                             "add_to_library_dialog_route" -> showDialog = 1
-                                            "download_dialog_route" -> showDialog = 2
+                                            "choose_chapter_download_route" -> {
+                                                comicDetailViewModel.navigateToChooseChapterDownload(
+                                                    comicId = comicId,
+                                                    comicName = state.comicResponse?.name ?: ""
+                                                )
+                                            }
+
                                             "rating_dialog_route" -> showDialog = 3
                                             "report_dialog_route" -> showDialog = 4
                                             "share_dialog_route" -> showDialog = 5
@@ -291,7 +297,6 @@ fun ComicDetailContent(
                                     state = state,
                                     onDismiss = { showDialog = null })
 
-                                2 -> CustomDialog4(onDismiss = { showDialog = null })
                                 3 -> RatingComicDialog(
                                     comicId = comicId,
                                     onDismiss = { showDialog = null },
@@ -325,7 +330,7 @@ fun ComicDetailContent(
                         // main image
                         var image: String
                         if (CheckNetwork()) {
-                          image =  APIConfig.imageAPIURL.toString() + state.comicResponse?.cover
+                            image = APIConfig.imageAPIURL.toString() + state.comicResponse?.cover
                         } else {
                             image = state.comicResponse?.cover ?: ""
                         }
@@ -516,7 +521,11 @@ fun ComicDetailContent(
                 }
             }
             when (tabIndex) {
-                0 -> DescriptionInComicDetailView(state = state, comicDetailViewModel = comicDetailViewModel)
+                0 -> DescriptionInComicDetailView(
+                    state = state,
+                    comicDetailViewModel = comicDetailViewModel
+                )
+
                 1 -> ListChapterInComicDetailView(
                     comicDetailViewModel = comicDetailViewModel,
                     comicId = comicId
@@ -607,7 +616,6 @@ fun DescriptionInComicDetailView(
                     modifier = Modifier
                         .width(250.dp)
                         .height(40.dp)
-
                         .shadow(4.dp, shape = RoundedCornerShape(8.dp))
                         .clip(RoundedCornerShape(20.dp)),
                     colors = ButtonDefaults.buttonColors(
@@ -616,7 +624,7 @@ fun DescriptionInComicDetailView(
                     ),
                     onClick = {
                         //TODO
-                        comicDetailViewModel.downloadComic(state.comicResponse!!)
+                    //    comicDetailViewModel.downloadComic(state.comicResponse!!)
                     }) {
                     Text(
                         text = "Start Reading",
@@ -686,8 +694,9 @@ fun ListChapterInComicDetailView(
                             comicId,
                             chapter.number
                         )
-                    }) {
-                }
+                    },
+                    onReportClick = {}
+                )
             }
         }
     }

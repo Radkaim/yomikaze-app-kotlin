@@ -1,6 +1,5 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -10,10 +9,10 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadComicDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.AddComicToCategoryUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.FollowComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
@@ -57,6 +56,9 @@ class ComicDetailViewModel @Inject constructor(
         navController?.navigate("view_chapter_route/$comicId/$chapterId")
     }
 
+    fun navigateToChooseChapterDownload(comicId: Long, comicName: String) {
+        navController?.navigate("choose_chapter_download_route/$comicId/$comicName")
+    }
     /**
      * Todo: Implement check user is login
      */
@@ -214,35 +216,6 @@ class ComicDetailViewModel @Inject constructor(
         }
     }
 
-
-    /**
-     * -----------------------------------------------------------------------------------------------
-     * Todo: Implement for Download Database
-     */
-    /**
-     * Todo: Implement download comic in comic detail view
-     */
-    @SuppressLint("SuspiciousIndentation")
-    fun downloadComic(comic: ComicResponse) {
-        viewModelScope.launch(Dispatchers.IO) {
-            Log.d("ComicDetailViewModelDownload", "Comic details Download: $comic")
-            try {
-                downloadUC.insertComicDB(comic, context)
-            } catch (e: Exception) {
-                Log.e("ComicDetailViewModelDownload", "downloadComic: $e")
-            }
-
-
-            // val result = downloadUC.testDownloadComic("https://yomikaze.org/string")
-            // val result2 = downloadUC.testDownloadComic("https://yomikaze.org/string")
-            //           Log.e("ComicDetailViewModelDownload", "downloadComic1: $result")
-//                Log.e("ComicDetailViewModelDownload", "downloadComic2: $result2")
-            //  val resultAfter = downloadUC.testReturnImageLocalPath(result, context)
-            //    Log.e("ComicDetailViewModelDownload", "downloadComic1: $resultAfter")
-            //  val resultAfter2 = downloadUC.testReturnImageLocalPath(result2, context)
-            //  Log.e("ComicDetailViewModelDownload", "downloadComic2: $resultAfter2")
-        }
-    }
 
     /**
      * Todo: Implement get comic by comic id in database

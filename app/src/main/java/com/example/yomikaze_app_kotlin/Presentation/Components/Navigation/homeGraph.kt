@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.BottomHomeNavItems
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.ChooseChapterDownload.ChooseChapterDownloadView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadDetailsView.DownloadDetailView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.PersonalCategory.PersonalCateView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
@@ -51,6 +52,16 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             val comicId = navBackStackEntry.arguments?.getString("comicId")
             val comicName = navBackStackEntry.arguments?.getString("comicName")
             DownloadDetailView(
+                navController = navController,
+                comicId = comicId?.toLong() ?: 0,
+                comicName = comicName ?: ""
+            )
+        }
+
+        composable("choose_chapter_download_route/{comicId}/{comicName}") { navBackStackEntry ->
+            val comicId = navBackStackEntry.arguments?.getString("comicId")
+            val comicName = navBackStackEntry.arguments?.getString("comicName")
+            ChooseChapterDownloadView(
                 navController = navController,
                 comicId = comicId?.toLong() ?: 0,
                 comicName = comicName ?: ""

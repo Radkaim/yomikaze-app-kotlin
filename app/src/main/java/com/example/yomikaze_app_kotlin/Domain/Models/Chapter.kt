@@ -30,7 +30,7 @@ data class Chapter(
     val chapterId: Long,
 
     //for api
-    @SerializedName("ComicId")
+    @SerializedName("comicId")
     //for database
     @ColumnInfo(name = "comicId")
     @NonNull
@@ -99,4 +99,4 @@ data class Chapter(
     @ColumnInfo(name = "isLocked")
     val isLocked: Boolean,
 
-    )
+)

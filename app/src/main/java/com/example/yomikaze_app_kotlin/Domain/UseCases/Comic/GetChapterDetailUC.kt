@@ -4,10 +4,16 @@ import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import javax.inject.Inject
 
-class GetListChaptersByComicIdUC @Inject constructor(
+class GetChapterDetailUC @Inject constructor(
     private val chapterRepository: ChapterRepository
 ) {
-    suspend fun getListChapters(comicId: Long): Result<List<Chapter>> {
-        return chapterRepository.getListChaptersByComicId(comicId)
+    suspend fun getChapterDetail(
+        token: String,
+        comicId: Long,
+        chapterNumber: Int
+    ): Result<Chapter> {
+        return chapterRepository.getChapterDetail(token, comicId, chapterNumber)
     }
+
 }
+

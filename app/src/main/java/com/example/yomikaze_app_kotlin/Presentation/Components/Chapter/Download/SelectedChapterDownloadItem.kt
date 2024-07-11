@@ -1,7 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.Download
 
-import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,16 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.shimmerLoadingAnimation
 
 @Composable
 fun SelectedChapterDownloadItem(
-    chapterIndexes: List<Int>,
+    chapterNumber: List<Int>,
     onDismiss: () -> Unit,
-    onDownload: (List<String>) -> Unit
+    onDownload: (List<Int>) -> Unit
 ) {
     // Remember the state of selected chapters
     val selectedChapters =
-        remember { mutableStateListOf<Boolean>().apply { addAll(List(chapterIndexes.size) { false }) } }
+        remember { mutableStateListOf<Boolean>().apply { addAll(List(chapterNumber.size) { false }) } }
 
 
     LazyVerticalGrid(
@@ -41,25 +42,30 @@ fun SelectedChapterDownloadItem(
             .padding(horizontal = 16.dp)
 
     ) {
-        items(chapterIndexes.size) { index ->
-            val chapter = chapterIndexes[index]
+        items(chapterNumber.size) { index ->
+            val number = chapterNumber[index]
             val isSelected = selectedChapters[index]
 
             Box(
                 modifier = Modifier.run {
-                    padding(4.dp)
-                        .background(if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surface)
+                    padding(5.dp)
+                        .background(if (!isSelected) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.background)
                         .toggleable(
                             value = isSelected,
                             onValueChange = {
                                 selectedChapters[index] = it
                             }
                         )
+                        .shimmerLoadingAnimation()
+                        .height(50.dp)
+                        .width(80.dp)
+                        .then(if (isSelected) Modifier.border(width = 1.dp, color = MaterialTheme.colorScheme.primary) else Modifier)
                 }
             ) {
                 Text(
-                    text = "Chapter $chapter",
-                    style = MaterialTheme.typography.titleLarge,
+                    text = number.toString(),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
@@ -76,15 +82,16 @@ fun SelectedChapterDownloadItem(
         ),
         onClick = {
             val chaptersToDownload =
-                chapterIndexes.filterIndexed { index, _ -> selectedChapters[index] }
-            Log.d("SelectedChapterDownloadItem", "chaptersToDownload: $chaptersToDownload")
+                chapterNumber.filterIndexed { index, _ -> selectedChapters[index] }
+          //  Log.d("SelectedChapterDownloadItem", "chaptersToDownload: $chaptersToDownload")
+            onDownload(chaptersToDownload)
             onDismiss()
         }) {
         Text(
             text = "Download",
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = MaterialTheme.colorScheme.primaryContainer
         )
     }
 }

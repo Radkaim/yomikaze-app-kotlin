@@ -72,11 +72,6 @@ interface ComicRepository {
 
 
     /**
-     * TODO: use for get all comic downloaded in database
-     */
-    suspend fun getAllComicsDownloadedDB(): Result<List<ComicResponse>>
-
-    /**
      * TODO: use for rating a comic
      */
     suspend fun rateComic(
@@ -105,6 +100,11 @@ interface ComicRepository {
         comic: ComicResponse,
         context: Context
     )
+
+    /**
+     * TODO: use for get all comic downloaded in database
+     */
+    suspend fun getAllComicsDownloadedDB(): Result<List<ComicResponse>>
 
     /**
      * Todo delete a comic in database by comic id and all related data
