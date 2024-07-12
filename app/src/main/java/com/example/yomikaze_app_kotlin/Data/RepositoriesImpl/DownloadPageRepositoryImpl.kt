@@ -35,7 +35,7 @@ class DownloadPageRepositoryImpl @Inject constructor(
                 )
             if (result.isSuccess) {
                 val pages = result.getOrThrow() // Lấy đối tượng Page
-              //  Log.d("PageRepositoryImpl", "downloadPagesOfChapter: $pages")
+                //  Log.d("PageRepositoryImpl", "downloadPagesOfChapter: $pages")
                 var totalSize = 0L
                 var localPaths: MutableList<String> = mutableListOf()
                 for ((index, pageUrl) in pages.pages.withIndex()) {
@@ -48,7 +48,7 @@ class DownloadPageRepositoryImpl @Inject constructor(
                                 imageResult.imageData,
                                 context
                             ) // Lưu ảnh vào bộ nhớ trong
-                            totalSize += imageResult.imageData.size.toLong()
+                            totalSize += imageResult.imageData.size.toLong() / 1024 // divided by 1024 to convert bytes to kilobytes
                             localPaths.add(localPath ?: "")
                         }
 

@@ -43,11 +43,15 @@ class ImageRepositoryImpl @Inject constructor(
 
             val inputStream: InputStream = connection.inputStream
             val bitmap = BitmapFactory.decodeStream(inputStream)
-            val compressedBitmap = compressBitmap(bitmap, 80) // Nén ảnh với chất lượng 80%
+
+            // Reduce image resolution if needed
+            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.width / 2, bitmap.height / 2, true)
+            val compressedBitmap = compressBitmap(bitmap, 70) // Nén ảnh với chất lượng 80%
+
 
             if (compressedBitmap != null) {
                 val outputStream = ByteArrayOutputStream()
-                compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream)
+                compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
                 outputStream.close()
                 return DownloadResult.Success(outputStream.toByteArray())
             } else {

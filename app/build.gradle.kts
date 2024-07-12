@@ -17,7 +17,7 @@ android {
 
         }
         applicationId = "com.example.yomikaze_app_kotlin"
-        minSdk = 29
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
