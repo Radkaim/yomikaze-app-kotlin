@@ -60,4 +60,14 @@ class ChapterRepositoryImpl @Inject constructor(
         return chapterDao.getListChaptersDownloadedByComicId(comicId)
     }
 
+    /**
+     * TODO: Get chapter by comic id and chapter number in database
+     */
+    override suspend fun getChapterByComicIdAndChapterNumberDB(
+        comicId: Long,
+        number: Int
+    ): Chapter {
+        return chapterDao.getChapterByComicIdAndChapterNumber(comicId, number)
+    }
+
 }

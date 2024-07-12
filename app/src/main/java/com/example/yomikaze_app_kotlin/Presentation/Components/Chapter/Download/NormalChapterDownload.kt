@@ -76,7 +76,7 @@ fun NormalChapterDownload(
                 )
             } else {
                 Text(
-                    text = "Not Downloaded",
+                    text = "Pending",
                     color = downloadStatusColor,
                     style = returnStyleForDownloadStatus(),
                     modifier = Modifier.padding(end = 20.dp)

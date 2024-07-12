@@ -14,6 +14,11 @@ interface ChapterDao {
     @Query("SELECT * FROM chapters WHERE comicId = :comicId")
     fun getListChaptersDownloadedByComicId(comicId: Long): List<Chapter>
 
+
+   // select a chapter by comicId and chapterNumber
+    @Query("SELECT * FROM chapters WHERE comicId = :comicId AND number = :number")
+    fun getChapterByComicIdAndChapterNumber(comicId: Long, number: Int): Chapter
+
     @Query("SELECT * FROM chapters WHERE id = :id")
     fun getChapterById(id: Long): Chapter
 

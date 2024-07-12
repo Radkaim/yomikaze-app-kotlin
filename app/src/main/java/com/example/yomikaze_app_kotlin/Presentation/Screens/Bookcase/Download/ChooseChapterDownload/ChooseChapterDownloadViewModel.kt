@@ -11,6 +11,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.DownloadPagesOfChapterUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdAndChapterNumberDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
@@ -23,9 +24,11 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,7 +45,8 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     private val getComicByIdDBUC: GetComicByIdDBUC,
     private val downloadPagesOfChapterUC: DownloadPagesOfChapterUC,
     private val getChapterByComicIdDBUC: GetChapterByComicIdDBUC,
-    private val pageRepository: PageRepository
+    private val pageRepository: PageRepository,
+    private val getChapterByComicIdAndChapterNumberDBUC: GetChapterByComicIdAndChapterNumberDBUC
 
 
 ) : ViewModel() {
@@ -56,7 +60,6 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     }
 
 
-
     //test get page
     fun getPagesByChapterNumberOfComic(
         comicId: Long,
@@ -67,7 +70,6 @@ class ChooseChapterDownloadViewModel @Inject constructor(
             Log.d("ChooseChapterDownloadViewModel", "getPagesByChapterNumberOfComic: $result")
         }
     }
-
 
 
     /**
@@ -104,25 +106,35 @@ class ChooseChapterDownloadViewModel @Inject constructor(
         }
     }
 
+
     /**
      * Todo: Implement get comic details and download
      */
-    fun getComicDetailsAndDownload(comicId: Long) {
+    fun getComicDetailsAndDownload(comicId: Long, listChapterNumberChoose: List<Int>) {
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = getComicDetailsFromApiUC.getComicDetailsFromApi(token, comicId)
-            result.fold(
-                onSuccess = { comicDetailResponse ->
-                    // Xử lý kết quả thành công
-                    downloadComic(comicDetailResponse)
-                    //  Log.d("ChooseChapterDownloadViewModel", "getComicDetailsFromApi: $comicDetailResponse")
-                },
-                onFailure = { exception ->
-                    // Xử lý lỗi
-                    Log.e("ChooseChapterDownloadViewModel", "getComicDetailAndDownload: $exception")
-                }
-            )
+            withContext(Dispatchers.IO) {
+                result.fold(
+                    onSuccess = { comicDetailResponse ->
+                        // Xử lý kết quả thành công
+                        downloadComic(comicDetailResponse, listChapterNumberChoose)
+                        //  Log.d("ChooseChapterDownloadViewModel", "getComicDetailsFromApi: $comicDetailResponse")
+                    },
+                    onFailure = { exception ->
+                        // Xử lý lỗi
+                        Log.e(
+                            "ChooseChapterDownloadViewModel",
+                            "getComicDetailAndDownload: $exception"
+                        )
+                    }
+                )
+
+                delay(4000)
+
+                downloadListChapterChoose(comicId, listChapterNumberChoose)
+            }
         }
     }
 
@@ -132,11 +144,13 @@ class ChooseChapterDownloadViewModel @Inject constructor(
      */
     /**
      * Todo: Implement download comic in comic detail view
+     * 1
      */
     @SuppressLint("SuspiciousIndentation")
-    private fun downloadComic(comic: ComicResponse) {
+    private fun downloadComic(comic: ComicResponse, listChapterNumberChoose: List<Int>) {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d("ComicDetailViewModelDownload", "Comic details Download: $comic")
+
             try {
                 val existingComic = getComicByIdDBUC.getComicByIdDB(comic.comicId)
 
@@ -145,6 +159,7 @@ class ChooseChapterDownloadViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e("ComicDetailViewModelDownload", "downloadComic: $e")
+
             }
 
         }
@@ -152,13 +167,20 @@ class ChooseChapterDownloadViewModel @Inject constructor(
 
     /**
      * TODO: download List Chapter choose by user
+     * 2
      */
     fun downloadListChapterChoose(comicId: Long, listChapterNumberChoose: List<Int>) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("ComicDetailViewModelDownload", "List Chapter Choose: $listChapterNumberChoose")
-            listChapterNumberChoose.forEach { chapterNumber ->
-                Log.d("ComicDetailViewModelDownload", "hung")
-                downloadChapterDetail(comicId, chapterNumber)
+            withContext(Dispatchers.IO) {
+                Log.d("downloadListChapterChoose", "List Chapter Choose: $listChapterNumberChoose")
+                listChapterNumberChoose.forEach { chapterNumber ->
+                    Log.d("ComicDetailViewModelDownload", "hung")
+                    withContext(Dispatchers.IO) {
+                        downloadChapterDetail(comicId, chapterNumber)
+                    }
+                }
+                delay(2000)
+                downloadAllPageOfChapterFromDB(comicId, listChapterNumberChoose)
             }
         }
     }
@@ -178,9 +200,10 @@ class ChooseChapterDownloadViewModel @Inject constructor(
                     try {
                         val existingChapter = getChapterByIdDBUC.getChapterByIdDB(chapter.chapterId)
                         if (existingChapter == null) {
-                            //log yes
+                            Log.d("ComicDetailViewModelDownload", "chapter do not exist")
                             insertChapterToDBUC.insertChapterDB(chapter)
                         } else {
+                            Log.d("ComicDetailViewModelDownload", "chapter exist")
                             return@fold
                         }
                     } catch (e: Exception) {
@@ -199,36 +222,51 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     /**
      * TODO get list chapter of downloaded comic from database
      */
-    fun downloadAllPageOfChapterFromDB(comicId: Long) {
+    fun downloadAllPageOfChapterFromDB(comicId: Long, listNumberChoose: List<Int>) {
         viewModelScope.launch(Dispatchers.IO) {
-            val chapters = getChapterByComicIdDBUC.getChapterByComicIdDB(comicId)
+            //  val chapters = getChapterByComicIdDBUC.getChapterByComicIdDB(comicId)
+            val chapters = mutableListOf<Chapter>()
+            withContext(Dispatchers.IO) {
 
-            Log.d("ComicDetailViewModelDownload", "Chapter: $chapters")
+                listNumberChoose.forEach() { number ->
+                    val chapter =
+                        getChapterByComicIdAndChapterNumberDBUC.getChapterByComicIdAndChapterNumberDB(
+                            comicId,
+                            number
+                        )
+                    chapters.add(chapter)
+                }
 
-            chapters.forEach { chapter ->
-                downloadPageOfChapter(comicId, chapter)
+                delay(2000)
+                Log.d("ComicDetailViewModelDownload", "Chapter: $chapters")
+
+                chapters.forEach { chapter ->
+                    downloadPageOfChapter(comicId, chapter)
+                }
             }
+
         }
     }
 
     /**
      * TODO: Implement get list page of chapter and download
      */
-  private  fun downloadPageOfChapter(comicId: Long, chapter: Chapter) {
+    private fun downloadPageOfChapter(comicId: Long, chapter: Chapter) {
         viewModelScope.launch(Dispatchers.IO) {
-            val token =
-                if (appPreference.authToken == null) "" else appPreference.authToken!!
-            try {
-                downloadPagesOfChapterUC.downloadPagesOfChapter(
-                    token,
-                    comicId,
-                    chapter,
-                    context
-                )
-            } catch (e: Exception) {
-                Log.e("ComicDetailViewModelDownload", "downloadPageOfChapter: $e")
+            withContext(Dispatchers.IO) {
+                val token =
+                    if (appPreference.authToken == null) "" else appPreference.authToken!!
+                try {
+                    downloadPagesOfChapterUC.downloadPagesOfChapter(
+                        token,
+                        comicId,
+                        chapter,
+                        context
+                    )
+                } catch (e: Exception) {
+                    Log.e("ComicDetailViewModelDownload", "downloadPageOfChapter: $e")
+                }
             }
-
         }
     }
 

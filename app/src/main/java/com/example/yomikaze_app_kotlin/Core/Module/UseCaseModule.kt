@@ -13,6 +13,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.DownloadPagesOfChapterUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdAndChapterNumberDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
@@ -256,6 +257,8 @@ object UseCaseModule {
         return DownloadPagesOfChapterUC(downloadPageRepository)
     }
 
+
+
     /**
      * TODo: Provide the get List chapter downloaded by comic ID from database
      */
@@ -264,6 +267,16 @@ object UseCaseModule {
     fun provideGetChapterByComicIdDBUC(chapterRepository: ChapterRepository): GetChapterByComicIdDBUC {
         return GetChapterByComicIdDBUC(chapterRepository)
     }
+
+    /**
+     * TODO: Provide the get chapter by comic id and chapter number in database
+     */
+    @Provides
+    @Singleton
+    fun provideGetChapterByComicIdAndChapterNumberDBUC(chapterRepository: ChapterRepository): GetChapterByComicIdAndChapterNumberDBUC {
+        return GetChapterByComicIdAndChapterNumberDBUC(chapterRepository)
+    }
+
 
     /**
      *-------------------------------------------------------------------------
