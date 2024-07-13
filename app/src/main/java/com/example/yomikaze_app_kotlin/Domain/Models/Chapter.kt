@@ -99,4 +99,6 @@ data class Chapter(
     @ColumnInfo(name = "isLocked")
     val isLocked: Boolean,
 
+    val isSelected: Boolean = false
+
 )

@@ -30,4 +30,7 @@ interface ChapterDao {
 
     @Delete
     fun deleteChapterDownloaded(chapter: Chapter)
+
+    @Query("DELETE FROM chapters WHERE id = :chapterId")
+    fun deleteChapterByChapterId(chapterId: Long)
 }

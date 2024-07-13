@@ -1,11 +1,14 @@
 package com.example.yomikaze_app_kotlin.Core.Module
 
 import android.app.Application
+import android.content.Context
 import androidx.navigation.NavController
+import androidx.work.WorkManager
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -67,5 +70,15 @@ object AppModule {
     fun provideNavController(application: Application): NavController {
         return NavController(application)
     }
+
+    /**
+     * Todo: provide downloadWorker
+     */
+    @Singleton
+    @Provides
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
+        return WorkManager.getInstance(context)
+    }
+
 
 }

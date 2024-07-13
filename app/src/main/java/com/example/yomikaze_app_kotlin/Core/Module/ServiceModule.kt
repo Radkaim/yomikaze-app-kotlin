@@ -79,4 +79,5 @@ object ServiceModule {
     fun provideHistoryApiService(retrofit: Retrofit): HistoryApiService {
         return retrofit.create(HistoryApiService::class.java)
     }
+
 }

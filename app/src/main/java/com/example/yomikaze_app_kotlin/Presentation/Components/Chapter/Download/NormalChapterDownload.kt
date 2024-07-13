@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun NormalChapterDownload(
@@ -35,9 +39,13 @@ fun NormalChapterDownload(
     Surface(
         modifier = Modifier.clickable { onClicked() }
     ) {
+        val arrangement = if (isInSelectionMode) {
+            Arrangement.SpaceBetween
+        } else {
+            Arrangement.SpaceBetween
+        }
         Row(
-            //modifier = Modifier
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = arrangement,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
@@ -46,37 +54,58 @@ fun NormalChapterDownload(
                 .padding(start = 30.dp)
         ) {
             Box {
-                Text(
-                    text = "$orderIndex.",
-                    color = titleColor,
-                    modifier = Modifier.offset(x = (-16).dp)
-                )
+                if (isInSelectionMode) {
+                    val icon = if (isSelected) {
+                        R.drawable.ic_choose_circle_tick
+                    } else {
+                        R.drawable.ic_choose_circle
+                    }
+                    Icon(
+                        painter = painterResource(id = icon),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                            .offset(x = -20.dp)
+                            .width(17.dp)
+                            .height(17.dp),
+                    )
+                }
 
-                Text(
-                    text = "Chapter $chapterNumber",
-                    color = titleColor,
-                    fontSize = 15.sp
-                )
+                val offset = if (isInSelectionMode) 10 else -16
+                Row {
+                    Text(
+                        text = "$orderIndex.",
+                        color = titleColor,
+                        modifier = Modifier.offset(x = offset.dp)
+                    )
+
+                    Text(
+                        text = "Chapter $chapterNumber",
+                        color = titleColor,
+                        fontSize = 15.sp,
+                        modifier = Modifier.offset(x = offset.dp)
+                    )
+                }
+
             }
-
+            val offset = if (isInSelectionMode) -20 else 0
             Text(
-                text = "$totalMbs KB",
+                text = convertToMbsOrGbs(totalMbs),
                 color = downloadStatusColor,
-                fontSize = 13.sp
+                fontSize = 13.sp,
+                modifier = Modifier.offset(x = offset.dp)
             )
 
-            if (isDownloaded) {
-                Text(
-                    text = "Downloaded",
-                    color = downloadStatusColor,
-                    style = returnStyleForDownloadStatus(),
-                    modifier = Modifier.padding(end = 20.dp)
-
-
-                )
+            if (isInSelectionMode) {
+//                Text(
+//                    text = if (isSelected) "Selected" else "Select",
+//                    color = downloadStatusColor,
+//                    style = returnStyleForDownloadStatus(),
+//                    modifier = Modifier.padding(end = 20.dp)
+//                )
             } else {
                 Text(
-                    text = "Pending",
+                    text = if (isDownloaded) "Downloaded" else "Pending",
                     color = downloadStatusColor,
                     style = returnStyleForDownloadStatus(),
                     modifier = Modifier.padding(end = 20.dp)
@@ -92,12 +121,14 @@ fun returnStyleForDownloadStatus(): TextStyle {
     return TextStyle(
         color = MaterialTheme.colorScheme.secondaryContainer,
         fontWeight = TextStyle.Default.fontWeight,
-        fontSize = 9.sp
+        fontSize = 10.sp
 
     )
 }
 
 
-fun convertToMbs(kbs: Double): Double {
-    return kbs / 1024
+fun convertToMbsOrGbs(kbs: Long): String {
+    if (kbs < 1024) return "$kbs KB" // KB
+    if (kbs < 1024 * 1024) return "${kbs / 1024} MB" // MB
+    return "${kbs / (1024 * 1024)} GB" // GB
 }

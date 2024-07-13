@@ -144,6 +144,11 @@ dependencies {
     //noinspection KaptUsageInsteadOfKsp
     kapt ("androidx.room:room-compiler:2.6.1")
     //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+
+    // work Manager for background tasks
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.hilt:hilt-work:1.2.0")
+
 }
 kapt {
     correctErrorTypes = true

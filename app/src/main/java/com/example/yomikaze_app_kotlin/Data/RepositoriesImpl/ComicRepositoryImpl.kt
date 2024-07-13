@@ -265,9 +265,9 @@ class ComicRepositoryImpl @Inject constructor(
                 // Xóa ảnh banner
                 imageRepository.deleteImageFromLocal(comic.banner)
 
-                // Xóa các chapter của comic
 
                 // Xóa các ảnh của các chapter
+
                 // Xóa comic
                 comicDao.deleteComicByIdDB(comicId)
             }

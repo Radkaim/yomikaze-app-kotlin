@@ -6,6 +6,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
@@ -46,9 +49,8 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     private val downloadPagesOfChapterUC: DownloadPagesOfChapterUC,
     private val getChapterByComicIdDBUC: GetChapterByComicIdDBUC,
     private val pageRepository: PageRepository,
+    private val workManager: WorkManager,
     private val getChapterByComicIdAndChapterNumberDBUC: GetChapterByComicIdAndChapterNumberDBUC
-
-
 ) : ViewModel() {
     private var navController: NavController? = null
 
@@ -70,7 +72,18 @@ class ChooseChapterDownloadViewModel @Inject constructor(
             Log.d("ChooseChapterDownloadViewModel", "getPagesByChapterNumberOfComic: $result")
         }
     }
+    fun getComicDetailsAndDownload1(comicId: Long, listChapterNumberChoose: List<Int>) {
+        val inputData = workDataOf(
+            "comicId" to comicId,
+            "listChapterNumberChoose" to listChapterNumberChoose.toIntArray()
+        )
 
+        val downloadWorkRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+            .setInputData(inputData)
+            .build()
+
+        workManager.enqueue(downloadWorkRequest)
+    }
 
     /**
      *Todo: Implement get the list chapter of comic from API
@@ -112,6 +125,7 @@ class ChooseChapterDownloadViewModel @Inject constructor(
      */
     fun getComicDetailsAndDownload(comicId: Long, listChapterNumberChoose: List<Int>) {
         viewModelScope.launch(Dispatchers.IO) {
+            _state.value = state.value.copy(isPrepareForDownload = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = getComicDetailsFromApiUC.getComicDetailsFromApi(token, comicId)
@@ -121,9 +135,11 @@ class ChooseChapterDownloadViewModel @Inject constructor(
                         // Xử lý kết quả thành công
                         downloadComic(comicDetailResponse, listChapterNumberChoose)
                         //  Log.d("ChooseChapterDownloadViewModel", "getComicDetailsFromApi: $comicDetailResponse")
+                        _state.value = state.value.copy(isPrepareForDownload = false)
                     },
                     onFailure = { exception ->
                         // Xử lý lỗi
+                        _state.value = state.value.copy(isPrepareForDownload = false)
                         Log.e(
                             "ChooseChapterDownloadViewModel",
                             "getComicDetailAndDownload: $exception"

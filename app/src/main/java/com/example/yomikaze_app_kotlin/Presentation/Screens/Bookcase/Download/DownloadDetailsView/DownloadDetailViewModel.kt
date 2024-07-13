@@ -26,6 +26,16 @@ class DownloadDetailViewModel @Inject constructor(
         this.navController = navController
     }
 
+    fun toggleEditMode() {
+        _state.value = _state.value.copy(isEditMode = !_state.value.isEditMode)
+    }
+
+    fun toggleChapterSelection(index: Int) {
+        val updatedChapters = _state.value.listChapterDownloaded.toMutableList()
+        val chapter = updatedChapters[index]
+        updatedChapters[index] = chapter.copy(isSelected = !chapter.isSelected)
+        _state.value = _state.value.copy(listChapterDownloaded = updatedChapters)
+    }
 
     fun getChaptersFromDBByComicId(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -34,5 +44,21 @@ class DownloadDetailViewModel @Inject constructor(
                 listChapterDownloaded = chapters
             )
         }
+    }
+
+    // Get selected chapters
+    fun getSelectedChapters(): List<Long> {
+        return _state.value.listChapterDownloaded.filter { it.isSelected }
+            .map { it.chapterId!! }
+    }
+
+    // navigate to choose download chapter screen
+    fun navigateToChooseDownloadChapterScreen(comicId: Long, comicName: String) {
+        navController?.navigate("choose_chapter_download_route/$comicId/$comicName")
+    }
+
+    // navigate to view chapter screen
+    fun navigateToViewChapterScreen(comicId: Long, chapterNumber: Int) {
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber")
     }
 }

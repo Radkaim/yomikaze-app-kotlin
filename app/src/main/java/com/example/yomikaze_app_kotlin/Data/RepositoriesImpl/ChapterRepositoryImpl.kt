@@ -70,4 +70,11 @@ class ChapterRepositoryImpl @Inject constructor(
         return chapterDao.getChapterByComicIdAndChapterNumber(comicId, number)
     }
 
+    /**
+     * TODO: Delete chapter downloaded in database by chapter id
+     */
+    override suspend fun deleteChapterByChapterIdDB(chapterId: Long) {
+        chapterDao.deleteChapterByChapterId(chapterId)
+    }
+
 }

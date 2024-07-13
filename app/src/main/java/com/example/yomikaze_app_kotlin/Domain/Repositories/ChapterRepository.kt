@@ -38,4 +38,8 @@ interface ChapterRepository {
      */
     suspend fun getChapterByComicIdAndChapterNumberDB(comicId: Long, number: Int): Chapter
 
+    /**
+     * TODO: Delete chapter downloaded in database by chapter id
+     */
+    suspend fun deleteChapterByChapterIdDB(chapterId: Long)
 }
