@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
@@ -12,13 +13,16 @@ import com.example.yomikaze_app_kotlin.Domain.Models.FollowComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import retrofit2.Response
 import javax.inject.Inject
 
 class ComicRepositoryImpl @Inject constructor(
     private val api: ComicApiService,
     private val comicDao: ComicDao,
-    private val imageRepository: ImageRepository
+    private val chapterDao: ChapterDao,
+    private val imageRepository: ImageRepository,
+    private val pageRepository: PageRepository
 ) : ComicRepository {
 
     /**
@@ -264,6 +268,18 @@ class ComicRepositoryImpl @Inject constructor(
                 imageRepository.deleteImageFromLocal(comic.cover)
                 // Xóa ảnh banner
                 imageRepository.deleteImageFromLocal(comic.banner)
+
+                //get all number of chapter by comicId
+                val chapters = chapterDao.getListChaptersDownloadedByComicId(comicId)
+                val numberChaptersInDB = mutableListOf<Int>()
+
+                chapters.forEach {
+                    numberChaptersInDB.add(it.number)
+                }
+
+                numberChaptersInDB.forEach {
+                    pageRepository.deletePageByComicIdAndChapterNumberDB(comicId, it)
+                }
 
 
                 // Xóa các ảnh của các chapter

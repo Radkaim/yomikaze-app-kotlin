@@ -60,9 +60,11 @@ object RepoModule {
     fun provideComicRepository(
         api: ComicApiService,
         comicDao: ComicDao,
-        imageRepository: ImageRepository
+        chapterDao: ChapterDao,
+        imageRepository: ImageRepository,
+        pageRepository: PageRepository
     ): ComicRepository {
-        return ComicRepositoryImpl(api, comicDao, imageRepository)
+        return ComicRepositoryImpl(api, comicDao, chapterDao, imageRepository, pageRepository)
     }
 
     /**
