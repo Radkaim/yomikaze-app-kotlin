@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetPageByComicIdAndChapterNumberDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewChapterModel @Inject constructor(
     private val appPreference: AppPreference,
-    private val getPagesByChapterNumberOfComicUC: GetPagesByChapterNumberOfComicUC
+    private val getPagesByChapterNumberOfComicUC: GetPagesByChapterNumberOfComicUC,
+    private val getPageByComicIdAndChapterNumberDBUC: GetPageByComicIdAndChapterNumberDBUC
 ) : ViewModel() {
 
 
@@ -55,6 +57,30 @@ class ViewChapterModel @Inject constructor(
                     Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: $exception")
                 }
             )
+        }
+    }
+
+    // get page by comic id and chapter number
+    fun getPageByComicIdAndChapterNumberInDB(comicId: Long, chapterNumber: Int) {
+        Log.d("ViewChapterModel", "getPageByComicIdAndChapterNumberInDB: $comicId, $chapterNumber")
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val result = getPageByComicIdAndChapterNumberDBUC.getPageByComicIdAndChapterNumberDB(
+                comicId,
+                chapterNumber
+            )
+            if (result == null) {
+                _state.value = _state.value.copy(
+                    isPagesExistInDB = false,
+                    pages = emptyList()
+                )
+                return@launch
+            }
+            _state.value = _state.value.copy(
+                isPagesExistInDB = true,
+                pages = result.imageLocalPaths!!
+            )
+            Log.d("ViewChapterModel", "getPageByComicIdAndChapterNumberInDB: ${result.pages}")
         }
     }
 

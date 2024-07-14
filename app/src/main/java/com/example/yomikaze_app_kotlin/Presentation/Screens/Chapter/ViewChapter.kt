@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +44,8 @@ import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPager
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPagerOrientation
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 
@@ -62,9 +65,61 @@ fun ViewChapter(
     viewChapterModel.setNavController(navController)
 
     //get pages by chapter number of comic
-    LaunchedEffect(Unit) {
-        viewChapterModel.getPagesByChapterNumberOfComic(comicId, chapterNumber)
+    if (CheckNetwork()) {
+        Log.e("ViewChapter", "Network Available")
+        LaunchedEffect(Unit) {
+            viewChapterModel.getPagesByChapterNumberOfComic(comicId, chapterNumber)
+        }
+        ViewChapterContent(
+            state = state,
+            navController = navController,
+            viewChapterModel = viewChapterModel
+        )
+    } else {
+        Log.e("ViewChapter", "No Network Available")
+        LaunchedEffect(Unit) {
+            viewChapterModel.getPageByComicIdAndChapterNumberInDB(comicId, chapterNumber)
+        }
+        if (state.isPagesExistInDB) {
+            ViewChapterContent(
+                state = state,
+                navController = navController,
+                viewChapterModel = viewChapterModel
+            )
+        } else {
+            Scaffold(
+                topBar = {
+                    CustomAppBar(
+
+                        title = "View Chapter",
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                navController.popBackStack()
+                            }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back Icon"
+                                )
+                            }
+                        },
+                    )
+                })
+            {
+                NoNetworkAvailable()
+            }
+        }
     }
+
+
+}
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@Composable
+fun ViewChapterContent(
+    state: ViewChapterState,
+    navController: NavController,
+    viewChapterModel: ViewChapterModel
+) {
 
     var isScrolling by remember {
         mutableStateOf(true)
@@ -79,6 +134,9 @@ fun ViewChapter(
 
     val currentPage = pagerState.currentPage + 1
     val currentPageScroll = scrollState.firstVisibleItemIndex + 1
+    val imagePath = if (CheckNetwork()) APIConfig.imageAPIURL.toString() else {
+        ""
+    }
     Scaffold(
         topBar = {
             CustomAppBar(
@@ -100,32 +158,33 @@ fun ViewChapter(
             )
         })
     {
-
-
         if (isScrolling) {
             // Scroll View
             // Comic Image
             LazyColumn(
-                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 state = scrollState
 
             ) {
                 // Icon change scroll
-               item {
-                   // Icon change scroll
-                   IconButton(onClick = { isScrolling = !isScrolling}) {
-                       Icon(
-                           imageVector = Icons.Default.Add,
-                           contentDescription = "Change Scroll"
-                       )
-                   }
-               }
+                item {
+                    // Icon change scroll
+                    IconButton(onClick = { isScrolling = !isScrolling }) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Change Scroll"
+                        )
+                    }
+                }
+
                 items(images.size) { index ->
                     images[index].let { image ->
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data(APIConfig.imageAPIURL.toString() + image)
+                                .data(imagePath + image)
                                 .memoryCachePolicy(CachePolicy.ENABLED)
                                 .build(),
                             placeholder = painterResource(R.drawable.placeholder),
@@ -146,10 +205,9 @@ fun ViewChapter(
                     }
                 }
             }
-        }
-        else{
+        } else {
             // Icon change scroll
-            IconButton(onClick = { isScrolling = !isScrolling}) {
+            IconButton(onClick = { isScrolling = !isScrolling }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Change Scroll"
@@ -161,15 +219,12 @@ fun ViewChapter(
                 navController = navController
             )
         }
-
-
     }
 }
 
 @Composable
 fun ViewChapterFlipPager(
     images: List<String>,
-
     pagerState: androidx.compose.foundation.pager.PagerState,
     navController: NavController
 ) {
@@ -180,7 +235,9 @@ fun ViewChapterFlipPager(
 
     FlipPager(
         state = pagerState,
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         orientation = orientation,
     ) { page ->
         Box(
@@ -189,10 +246,13 @@ fun ViewChapterFlipPager(
                 .clip(RoundedCornerShape(16.dp)),
         )
         //Comic Image
+        val imagePath = if (CheckNetwork()) APIConfig.imageAPIURL.toString() else {
+            ""
+        }
         images[page].let { image ->
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(APIConfig.imageAPIURL.toString() + image)
+                    .data(imagePath + image)
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 placeholder = painterResource(R.drawable.placeholder),
@@ -215,7 +275,7 @@ fun ViewChapterFlipPager(
     //button to change orientation
     IconButton(
         onClick = {
-          orientation = if (orientation == FlipPagerOrientation.Vertical) {
+            orientation = if (orientation == FlipPagerOrientation.Vertical) {
                 FlipPagerOrientation.Horizontal
             } else {
                 FlipPagerOrientation.Vertical
