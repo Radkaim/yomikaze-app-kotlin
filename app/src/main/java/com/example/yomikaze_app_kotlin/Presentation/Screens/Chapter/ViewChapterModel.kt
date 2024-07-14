@@ -49,7 +49,8 @@ class ViewChapterModel @Inject constructor(
                 onSuccess = { page ->
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(
-                        pages = page.pages
+                        pagesImage = page.pages,
+                        pageResponse = page
                     )
                 },
                 onFailure = { exception ->
@@ -72,13 +73,14 @@ class ViewChapterModel @Inject constructor(
             if (result == null) {
                 _state.value = _state.value.copy(
                     isPagesExistInDB = false,
-                    pages = emptyList()
+                    pagesImage = emptyList()
                 )
                 return@launch
             }
             _state.value = _state.value.copy(
                 isPagesExistInDB = true,
-                pages = result.imageLocalPaths!!
+                pagesImage = result.imageLocalPaths!!,
+                pageResponse = result
             )
             Log.d("ViewChapterModel", "getPageByComicIdAndChapterNumberInDB: ${result.pages}")
         }

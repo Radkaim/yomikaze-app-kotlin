@@ -49,4 +49,17 @@ class AppPreference(context : Context) {
     fun deleteIsUserLoggedIn() {
         encryptedPreferences.edit().remove("is_user_logged_in").apply()
     }
+    // save isScrollMode
+    var isScrollMode: Boolean
+        get() = encryptedPreferences.getBoolean("is_scroll_mode", true)
+        set(value) = encryptedPreferences.edit().putBoolean("is_scroll_mode", value).apply()
+
+    // save orientation (true for Vertical, false for Horizontal)
+    var orientation: Boolean
+        get() = encryptedPreferences.getBoolean("orientation", true)
+        set(value) = encryptedPreferences.edit().putBoolean("orientation", value).apply()
+
+    var autoScrollChecked: Boolean
+        get() = encryptedPreferences.getBoolean("auto_scroll_checked", false)
+        set(value) = encryptedPreferences.edit().putBoolean("auto_scroll_checked", value).apply()
 }
