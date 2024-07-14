@@ -134,7 +134,7 @@ fun ViewChapterContent(
         ""
     }
 
-    LaunchedEffect(autoScroll) {
+    LaunchedEffect(key1 = autoScroll) {
         if (autoScroll && isScrollMode) {
             while (autoScroll) {
                 delay(3000)
