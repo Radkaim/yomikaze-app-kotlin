@@ -131,6 +131,15 @@ data class ComicResponse(
     @SerializedName("isFollowing")
     val isFollowing: Boolean? = null,
 
+    @SerializedName("isRated")
+    val isRated: Boolean? = null,
+
+    @SerializedName("myRating")
+    val myRating: Int? = null,
+
+    @SerializedName("isRead")
+    val isRead: Boolean? = false,
+
     //for api
     @SerializedName("totalChapters")
     //for database

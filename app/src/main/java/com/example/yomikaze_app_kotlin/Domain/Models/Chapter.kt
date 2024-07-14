@@ -100,5 +100,12 @@ data class Chapter(
     val isLocked: Boolean,
 
     val isSelected: Boolean = false
+)
+data class ContinueReadingResponse(
 
+    @SerializedName("pageNumber")
+    val pageNumber: Int,
+
+    @SerializedName("chapterId")
+    val chapterId: Long,
 )

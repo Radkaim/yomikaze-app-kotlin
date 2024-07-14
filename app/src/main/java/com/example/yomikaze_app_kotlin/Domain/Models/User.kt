@@ -77,24 +77,11 @@ data class ChangePasswordRequest(
     val confirmPassword: String
 )
 
+
 /**
  * User Info
  */
-//
-//data class UserInfoResponse(
-//
-//    @SerializedName("success")
-//    val success: Boolean,
-//
-//    @SerializedName("message")
-//    val message: String,
-//
-//    //for api
-//    @SerializedName("data")
-//    //for database
-//    @ColumnInfo(name = "user_data")
-//    val data: UserData
-//)
+
 
 data class UserInfoResponse(
     //for api

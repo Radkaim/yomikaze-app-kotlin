@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -29,13 +31,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -44,9 +50,13 @@ import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPager
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPagerOrientation
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.ChapterBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailState
+import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailViewModel
 import com.example.yomikaze_app_kotlin.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -90,7 +100,6 @@ fun ViewChapter(
             Scaffold(
                 topBar = {
                     CustomAppBar(
-
                         title = "View Chapter",
                         navigationIcon = {
                             IconButton(onClick = {
@@ -103,7 +112,15 @@ fun ViewChapter(
                             }
                         },
                     )
-                })
+                },
+                bottomBar = {
+                    ChapterBottomNavBar(
+                        navController = navController,
+                        canPrevious = false,
+                        canNext = true
+                    )
+                }
+            )
             {
                 NoNetworkAvailable()
             }
@@ -156,7 +173,15 @@ fun ViewChapterContent(
                     }
                 },
             )
-        })
+        },
+        bottomBar = {
+            ChapterBottomNavBar(
+                navController = navController,
+                canPrevious = false,
+                canNext = true
+            )
+        }
+    )
     {
         if (isScrolling) {
             // Scroll View
@@ -292,3 +317,56 @@ fun ViewChapterFlipPager(
     }
 }
 
+
+/**
+ * TODO : dialog for menu option
+ */
+
+@Composable
+fun AddToLibraryDialog(
+    comicId: Long,
+    comicDetailViewModel: ComicDetailViewModel,
+    state: ComicDetailState,
+    onDismiss: () -> Unit
+) {
+    LaunchedEffect(Unit) {
+        comicDetailViewModel.getAllCategory()
+    }
+
+
+    //val categories = state.categoryList.map { it.name }
+    val categories = state.categoryList
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
+    var selectedCategories by remember { mutableStateOf(listOf<Long>()) }
+
+    val libraryViewModel = hiltViewModel<LibraryViewModel>()
+    val libraryState by libraryViewModel.state.collectAsState()
+
+    LaunchedEffect(key1 = libraryState.isCreateCategorySuccess) {
+        Log.d("AddToLibraryDialog", "Create category success")
+        comicDetailViewModel.getAllCategory()
+    }
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = true
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray.copy(alpha = 0.7f))
+                .clickable { onDismiss() }
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+            ) {}
+        }
+    }
+}

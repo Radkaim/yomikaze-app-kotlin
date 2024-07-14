@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.API
 
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.ContinueReadingResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.HistoryResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import retrofit2.Response
@@ -53,4 +54,12 @@ interface HistoryApiService {
         @Path("key") key: Long
     ): Response<Unit>
 
+    /**
+     * TODO: continue reading
+     */
+    @GET("history/comics/{comicId}/continue")
+    suspend fun continueReading(
+        @Header("Authorization") token: String,
+        @Path("comicId") comicId: Long
+    ): ContinueReadingResponse
 }

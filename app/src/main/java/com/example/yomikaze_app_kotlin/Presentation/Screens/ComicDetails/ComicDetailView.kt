@@ -624,15 +624,26 @@ fun DescriptionInComicDetailView(
                     ),
                     onClick = {
                         //TODO
-                    //    comicDetailViewModel.downloadComic(state.comicResponse!!)
+                        //    comicDetailViewModel.downloadComic(state.comicResponse!!)
                     }) {
-                    Text(
-                        text = "Start Reading",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    if (state.comicResponse?.isRead ?: false) {
+                        Text(
+                            text = "Continue Reading",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    } else {
+                        Log.d("DescriptionInComicDetailView", "DescriptionInComicDetailView: ${state.comicResponse?.isRead}")
+                        Text(
+                            text = "Start Reading",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
         }

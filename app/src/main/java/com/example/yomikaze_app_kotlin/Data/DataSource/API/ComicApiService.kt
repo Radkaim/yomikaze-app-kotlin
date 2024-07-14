@@ -116,4 +116,5 @@ interface ComicApiService {
         @Header("Authorization") token: String,
         @Path("key") comicId : Long,
     ): FollowComicResponse
+
 }

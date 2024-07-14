@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.ChapterBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.HomeBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.NavigationGraph
 
@@ -52,7 +51,7 @@ fun MainView(viewModel: MainViewModel) {
 
         bottomBar = {
             when (currentDestination?.route) {
-                "view_chapter_route/{comicId}/{chapterNumber}" -> ChapterBottomNavBar(navController = navController)
+           //     "view_chapter_route/{comicId}/{chapterNumber}" -> ChapterBottomNavBar(navController = navController)
                 "home_route", "bookcase_route", "notification_route", "profile_route" -> HomeBottomNavBar(
                     navController = navController
                 )
