@@ -12,12 +12,16 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.DeleteChapterByChapterIdDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.DeletePageByComicIdAndChapterNumberDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.DownloadPagesOfChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdAndChapterNumberDBUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByIdDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChaptersByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetPageByComicIdAndChapterNumberDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.InsertChapterToDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.UpdateTotalMbsOfComicDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DeleteComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadComicDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.GetAllComicInDBUC
@@ -258,14 +262,13 @@ object UseCaseModule {
     }
 
 
-
     /**
      * TODo: Provide the get List chapter downloaded by comic ID from database
      */
     @Provides
     @Singleton
-    fun provideGetChapterByComicIdDBUC(chapterRepository: ChapterRepository): GetChapterByComicIdDBUC {
-        return GetChapterByComicIdDBUC(chapterRepository)
+    fun provideGetChaptersByComicIdDBUC(chapterRepository: ChapterRepository): GetChaptersByComicIdDBUC {
+        return GetChaptersByComicIdDBUC(chapterRepository)
     }
 
     /**
@@ -275,6 +278,42 @@ object UseCaseModule {
     @Singleton
     fun provideGetChapterByComicIdAndChapterNumberDBUC(chapterRepository: ChapterRepository): GetChapterByComicIdAndChapterNumberDBUC {
         return GetChapterByComicIdAndChapterNumberDBUC(chapterRepository)
+    }
+
+    /**
+     * TODO delete chapter by chapter id in database
+     */
+    @Provides
+    @Singleton
+    fun provideDeleteChapterByChapterIdDBUC(chapterRepository: ChapterRepository): DeleteChapterByChapterIdDBUC {
+        return DeleteChapterByChapterIdDBUC(chapterRepository)
+    }
+
+    /**
+     * TODO get page by comic id and chapter number in database
+     */
+    @Provides
+    @Singleton
+    fun provideGetPagesByChapterNumberOfComicDBUC(pageRepository: PageRepository): GetPageByComicIdAndChapterNumberDBUC {
+        return GetPageByComicIdAndChapterNumberDBUC(pageRepository)
+    }
+
+    /**
+     * TODO delete page by comicID and chapterNumber in database
+     */
+    @Provides
+    @Singleton
+    fun provideDeletePageByComicIdAndChapterNumberDBUC(pageRepository: PageRepository): DeletePageByComicIdAndChapterNumberDBUC {
+        return DeletePageByComicIdAndChapterNumberDBUC(pageRepository)
+    }
+
+    /**
+     * TODO: Update total Mbs of comic in database
+     */
+    @Provides
+    @Singleton
+    fun provideUpdateTotalMbsOfComicDBUC(comicRepository: ComicRepository): UpdateTotalMbsOfComicDBUC {
+        return UpdateTotalMbsOfComicDBUC(comicRepository)
     }
 
 

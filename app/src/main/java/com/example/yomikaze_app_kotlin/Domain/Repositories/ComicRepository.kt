@@ -121,4 +121,13 @@ interface ComicRepository {
         comicId: Long
     ): ComicResponse
 
+
+    /**
+     * TODO: use for update total mbs of comic in database
+     */
+    suspend fun updateTotalMbsOfComic(
+        comicId: Long,
+        totalsMbs: Long
+    )
+
 }

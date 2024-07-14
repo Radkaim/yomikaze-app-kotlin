@@ -128,7 +128,9 @@ fun returnStyleForDownloadStatus(): TextStyle {
 
 
 fun convertToMbsOrGbs(kbs: Long): String {
-    if (kbs < 1024) return "$kbs KB" // KB
-    if (kbs < 1024 * 1024) return "${kbs / 1024} MB" // MB
-    return "${kbs / (1024 * 1024)} GB" // GB
+    return when {
+        kbs < 1024 ->  "$kbs KB" // KB
+        kbs < 1024 * 1024 -> String.format("%.2f MB", kbs / 1024.0) // MB
+        else -> String.format("%.2f GB", kbs / (1024.0 * 1024.0)) // GB
+    }
 }

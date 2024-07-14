@@ -8,9 +8,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
@@ -26,6 +30,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,6 +39,7 @@ import androidx.navigation.NavController
 import androidx.wear.compose.material.Text
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.Download.NormalChapterDownload
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
+import com.example.yomikaze_app_kotlin.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -77,9 +84,10 @@ fun DownloadDetailView(
                         text = if (state.isEditMode) "Cancel" else "Edit",
                         color = colorSelected,
                         fontSize = 16.sp,
-                        modifier = Modifier.clickable {
-                            downloadDetailViewModel.toggleEditMode()
-                        }
+                        modifier = Modifier
+                            .clickable {
+                                downloadDetailViewModel.toggleEditMode()
+                            }
                             .padding(end = 10.dp)
                     )
                 },
@@ -87,38 +95,137 @@ fun DownloadDetailView(
         },
         bottomBar = {
             // Bottom bar content
-            Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .background(MaterialTheme.colorScheme.tertiary)
+
+            ) {
                 Divider(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                     thickness = 1.dp
                 )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.tertiary)
-                        .clickable {
-                            downloadDetailViewModel.navigateToChooseDownloadChapterScreen(
-                                comicId,
-                                comicName
-                            )
-                            val selectedChapters = downloadDetailViewModel.getSelectedChapters()
-                            Log.d("DownloadDetailView", "Selected Chapters: $selectedChapters")
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Downloaded More",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.secondaryContainer,
+                if (state.isEditMode) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(top = 15.dp)
-                    )
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                    ) {
+
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 40.dp)
+                                .clickable {
+                                   downloadDetailViewModel.selectAllChapters()
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = Modifier.padding(top = 10.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_choose_circle_tick),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .width(20.dp)
+                                        .height(20.dp)
+
+                                )
+                                Text(
+                                    text = "Choose All",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight= FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    modifier = Modifier
+
+                                )
+                            }
+
+                        }
+                        // Divider between two boxes
+                        Divider(
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                            modifier = Modifier
+                                .height(40.dp) // Height of the divider to match the height of the Boxes
+                                .width(1.dp)   // Width of the divider
+                                .offset(y = 5.dp) // Offset to center the divider vertically
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .padding(end = 40.dp)
+                                .clickable {
+                                    //  downloadDetailViewModel.deleteSelectedChapters()
+                                    val selectedChapters =
+                                        downloadDetailViewModel.getSelectedChapters()
+                                    Log.d(
+                                        "DownloadDetailView",
+                                        "Selected Chapters: $selectedChapters"
+                                    )
+                                    downloadDetailViewModel.deleteAllSelectedChaptersAndPages()
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = Modifier.padding(top = 10.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_delete),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .width(20.dp)
+                                        .height(20.dp)
+                                )
+                                Text(
+                                    text = "Delete",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight= FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    modifier = Modifier
+                                )
+                            }
+                        }
+
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                downloadDetailViewModel.navigateToChooseDownloadChapterScreen(
+                                    comicId,
+                                    comicName
+                                )
+                                val selectedChapters =
+                                    downloadDetailViewModel.getSelectedChapters()
+                                Log.d(
+                                    "DownloadDetailView",
+                                    "Selected Chapters: $selectedChapters"
+                                )
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Download More",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight= FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(top = 20.dp)
+                        )
+                    }
                 }
             }
-        },
-    )
-    { paddingValues ->
+        }) { paddingValues ->
         // Nội dung của bạn ở đây, có thể dùng paddingValues nếu cần
 
         Column(

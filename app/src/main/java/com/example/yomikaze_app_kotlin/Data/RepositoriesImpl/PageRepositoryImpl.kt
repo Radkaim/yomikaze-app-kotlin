@@ -50,10 +50,22 @@ class PageRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun getImagesByComicIdAndChapterNumberDB(
+    override suspend fun getPageByComicIdAndChapterNumberDB(
         comicId: Long,
         number: Int
-    ): List<Page> {
-        return pageDao.getImagesByComicIdAndChapterNumberDB(comicId, number)
+    ): Page {
+        return pageDao.getPageByComicIdAndChapterNumberDB(comicId, number)
+    }
+
+    override suspend fun deletePageByComicIdAndChapterNumberDB(comicId: Long, number: Int) {
+        val page = pageDao.getPageByComicIdAndChapterNumberDB(comicId, number)
+        if (page.imageLocalPaths == null) {
+            return
+        }
+       page.imageLocalPaths.forEach { imagePath ->
+            imageRepository.deleteImageFromLocal(imagePath)
+        }
+
+        pageDao.deletePage(page)
     }
 }

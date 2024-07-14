@@ -10,5 +10,10 @@ interface PageRepository {
         chapterNumber: Int
     ): Result<Page>
 
-    suspend fun getImagesByComicIdAndChapterNumberDB(comicId: Long, number: Int): List<Page>
+    suspend fun getPageByComicIdAndChapterNumberDB(comicId: Long, number: Int): Page
+
+    /**
+     * delete image of page by comicID and chapterNumber
+     */
+    suspend fun deletePageByComicIdAndChapterNumberDB(comicId: Long, number: Int)
 }

@@ -139,7 +139,7 @@ data class ComicResponse(
 
     //for database
     @ColumnInfo(name = "totalMbs")
-    val totalMbs: Float,
+    val totalMbs: Long, //kbs
 )
 
 data class FollowComicResponse(

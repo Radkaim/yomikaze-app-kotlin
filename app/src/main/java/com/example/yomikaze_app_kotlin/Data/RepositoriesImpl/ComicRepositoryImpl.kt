@@ -298,5 +298,17 @@ class ComicRepositoryImpl @Inject constructor(
             throw e
         }
     }
+
+    /**
+     * TODO: Implement the function to update total mbs of comic in database
+     */
+    override suspend fun updateTotalMbsOfComic(comicId: Long, totalsMbs: Long) {
+        try {
+            comicDao.updateTotalMbsOfComic(comicId, totalsMbs)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
 }
 

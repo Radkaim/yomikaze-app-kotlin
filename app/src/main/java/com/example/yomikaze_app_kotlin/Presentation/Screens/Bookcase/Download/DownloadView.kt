@@ -24,17 +24,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BookcaseComicCard
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadDetailsView.DownloadDetailViewModel
 
 @Composable
 fun DownloadView(
     navController: NavController,
-    downloadViewModel: DownloadViewModel = hiltViewModel()
+    downloadViewModel: DownloadViewModel = hiltViewModel(),
+    downloadDetailViewModel: DownloadDetailViewModel = hiltViewModel()
 ) {
     downloadViewModel.setNavController(navController)
     val state by downloadViewModel.state.collectAsState()
 
+    val downloadDetailState by downloadDetailViewModel.state.collectAsState()
 
-
+    LaunchedEffect(key1 = downloadDetailState.isDeleteSuccess) {
+        downloadViewModel.getAllComicsDownloadedDB()
+    }
     val comicsListCardModel = state.listComicsDB
 
 

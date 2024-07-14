@@ -31,7 +31,7 @@ interface ChapterRepository {
     /**
      * TODO: Get chapter by comic id in database
      */
-    suspend fun getChapterByComicIdDB(comicId: Long): List<Chapter>
+    suspend fun getChaptersByComicIdDB(comicId: Long): List<Chapter>
 
     /**
      * TODO: Get chapter by comic id and chapter number in database

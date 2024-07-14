@@ -20,7 +20,7 @@ interface ComicDao {
 
     // update total mbs of comic
     @Query("UPDATE comics SET totalMbs = :totalsMbs WHERE id = :comicId")
-    suspend fun updateTotalMbsOfComic(comicId: Long, totalsMbs: Float)
+    suspend fun updateTotalMbsOfComic(comicId: Long, totalsMbs: Long)
 
     //delete comic
     @Query("DELETE FROM comics WHERE id = :comicId")

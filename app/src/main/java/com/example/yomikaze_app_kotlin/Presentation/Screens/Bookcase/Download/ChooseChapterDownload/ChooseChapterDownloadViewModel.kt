@@ -12,7 +12,7 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.DownloadPagesOfChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdAndChapterNumberDBUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChaptersByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.InsertChapterToDBUC
@@ -42,7 +42,7 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     private val getChapterByIdDBUC: GetChapterByIdDBUC,
     private val getComicByIdDBUC: GetComicByIdDBUC,
     private val downloadPagesOfChapterUC: DownloadPagesOfChapterUC,
-    private val getChapterByComicIdDBUC: GetChapterByComicIdDBUC,
+    private val getChaptersByComicIdDBUC: GetChaptersByComicIdDBUC,
     private val pageRepository: PageRepository,
     private val workManager: WorkManager,
     private val getChapterByComicIdAndChapterNumberDBUC: GetChapterByComicIdAndChapterNumberDBUC
@@ -63,7 +63,7 @@ class ChooseChapterDownloadViewModel @Inject constructor(
         chapterIndex: Int
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = pageRepository.getImagesByComicIdAndChapterNumberDB(comicId, chapterIndex)
+            val result = pageRepository.getPageByComicIdAndChapterNumberDB(comicId, chapterIndex)
             Log.d("ChooseChapterDownloadViewModel", "getPagesByChapterNumberOfComic: $result")
         }
     }

@@ -16,7 +16,6 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.Inse
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadComicDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetChapterDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +27,6 @@ class DownloadWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
     private val appPreference: AppPreference,
-    private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC,
     private val getComicDetailsFromApiUC: GetComicDetailsFromApiUC,
     private val getComicByIdDBUC: GetComicByIdDBUC,
     private val downloadComicDetailUC: DownloadComicDetailUC,
@@ -36,7 +34,7 @@ class DownloadWorker @AssistedInject constructor(
     private val getChapterByIdDBUC: GetChapterByIdDBUC,
     private val insertChapterToDBUC: InsertChapterToDBUC,
     private val getChapterByComicIdAndChapterNumberDBUC: GetChapterByComicIdAndChapterNumberDBUC,
-    private val downloadPagesOfChapterUC: DownloadPagesOfChapterUC
+    private val downloadPagesOfChapterUC: DownloadPagesOfChapterUC,
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -139,4 +137,6 @@ class DownloadWorker @AssistedInject constructor(
             Log.e("DownloadWorker", "downloadPageOfChapter: $e")
         }
     }
+
+
 }

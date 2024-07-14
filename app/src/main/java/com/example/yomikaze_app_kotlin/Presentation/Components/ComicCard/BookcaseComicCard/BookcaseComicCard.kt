@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.Download.convertToMbsOrGbs
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConfirmDialogComponent
@@ -63,7 +64,7 @@ fun BookcaseComicCard(
     isDownloaded: Boolean = false,
     downloadViewModel: DownloadViewModel? = null,
 
-    totalMbs: Float? = null,
+    totalMbs: Long? = null,
     isDeleted: Boolean = false,
     onDeleteClicked: () -> Unit = {},
     backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -223,7 +224,7 @@ fun BookcaseComicCard(
                                 fontWeight = FontWeight.Medium,
                             )
                             Text(
-                                text = totalMbs.toString() + " MBs",
+                                text = convertToMbsOrGbs(totalMbs!!),
                                 style = TextStyle(
                                     fontStyle = FontStyle.Italic,
                                     fontWeight = FontWeight.Medium,

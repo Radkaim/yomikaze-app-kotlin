@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChaptersByComicIdDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.UpdateTotalMbsOfComicDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DeleteComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.GetAllComicInDBUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Base.StatefulViewModel
@@ -14,13 +16,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class DownloadViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val getAllComicInDBUC: GetAllComicInDBUC,
-    private val deleteComicByIdDBUC: DeleteComicByIdDBUC
+    private val deleteComicByIdDBUC: DeleteComicByIdDBUC,
+    private val getChaptersByComicIdDBUC: GetChaptersByComicIdDBUC,
+    private val updateTotalMbsOfComicDBUC: UpdateTotalMbsOfComicDBUC
 ) : ViewModel(), StatefulViewModel<DownloadState> {
 
     private var navController: NavController? = null
@@ -39,10 +44,26 @@ class DownloadViewModel @Inject constructor(
         this.navController = navController
     }
 
+
+    private fun convertToMbsOrGbs(kbs: Long): Float {
+        return when {
+            kbs < 1024 -> kbs.toFloat() // KB
+            kbs < 1024 * 1024 -> String.format("%.1f", kbs / 1024.0).toFloat() // MB
+            else -> String.format("%.1f", kbs / (1024.0 * 1024.0)).toFloat() // GB
+        }
+    }
+
     fun getAllComicsDownloadedDB() {
         viewModelScope.launch(Dispatchers.IO) {
             getAllComicInDBUC.getAllComicsDownloadedDB().onSuccess {
-                _state.value = state.value.copy(listComicsDB = it)
+                withContext(Dispatchers.IO){
+                    it.forEach { comic ->
+                        val chaptersInDB = getChaptersByComicIdDBUC.getChaptersByComicIdDB(comic.comicId)
+                        val totalMbs = chaptersInDB.sumOf { it.size }
+                        updateTotalMbsOfComicDBUC.updateTotalMbsOfComicDB(comic.comicId, totalMbs)
+                    }
+                    _state.value = state.value.copy(listComicsDB = it)
+                }
                 Log.d("DownloadViewModel", "getAllComicsDownloadedDB: ${it.size}")
             }
         }
