@@ -1,10 +1,13 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Navigation
 
+import android.content.Intent
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.BottomHomeNavItems
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.AdvancedSearchView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.ChooseChapterDownload.ChooseChapterDownloadView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadDetailsView.DownloadDetailView
@@ -19,7 +22,16 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
         startDestination = BottomHomeNavItems.Home.screen_route,
         route = "main_graph_route"
     ) {
-        composable(BottomHomeNavItems.Home.screen_route) {
+        composable(
+            route = BottomHomeNavItems.Home.screen_route,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "https://yomikaze.org/home"
+                    action = Intent.ACTION_VIEW
+                }
+            )
+
+        ) {
             HomeView(navController = navController)
         }
         composable(BottomHomeNavItems.Bookcase.screen_route) {
@@ -78,5 +90,12 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             )
         }
 
+        composable("advance_search_route/{searchText}") { navBackStackEntry ->
+            val comicNameSearchText = navBackStackEntry.arguments?.getString("searchText")
+            AdvancedSearchView(
+                navController = navController,
+                comicNameSearchText = comicNameSearchText
+            )
+        }
     }
 }

@@ -1,9 +1,11 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Navigation
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AboutUs.AboutUsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
@@ -53,7 +55,13 @@ fun NavigationGraph(
         }
 
         // comic Details screen
-        composable("comic_detail_route/{comicId}") { navBackStackEntry ->
+        composable(route = "comic_detail_route/{comicId}",
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "https://yomikaze.org/comic_detail/{comicId}"
+                    action = Intent.ACTION_VIEW
+                }
+            )) { navBackStackEntry ->
 //
             val comicId = navBackStackEntry.arguments?.getString("comicId")
             ComicDetailsView(comicId = comicId?.toLong() ?: 0, navController)

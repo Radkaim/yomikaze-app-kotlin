@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.ViewModel
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Base.StatefulViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 import com.example.yomikaze_app_kotlin.R
 
 @Composable

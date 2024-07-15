@@ -23,6 +23,14 @@ interface ComicRepository {
     ): Result<BaseResponse<ComicResponse>>
 
     /**
+     * TODO: use for advanced search comic in AdvancedSearch screen
+     */
+    suspend fun advancedSearchComic(
+        token: String,
+        queryMap: Map<String, String>
+    ): Result<BaseResponse<ComicResponse>>
+
+    /**
      * TODO: use for get comic in ranking screen by view ranking
      */
     suspend fun getComicByViewRanking(

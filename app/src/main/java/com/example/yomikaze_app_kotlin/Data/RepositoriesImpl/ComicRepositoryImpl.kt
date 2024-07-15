@@ -54,6 +54,21 @@ class ComicRepositoryImpl @Inject constructor(
     }
 
     /**
+     * TODO: Implement the function to advanced search comic
+     */
+    override suspend fun advancedSearchComic(
+        token: String,
+        queryMap: Map<String, String>
+    ): Result<BaseResponse<ComicResponse>> {
+        return try {
+            val response = api.advancedSearchComic("Bearer $token", queryMap)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
      * TODO: Implement the function to get comic by view ranking
      */
     override suspend fun getComicByViewRanking(

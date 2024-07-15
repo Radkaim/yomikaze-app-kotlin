@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Base
+package com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel
 
 import kotlinx.coroutines.flow.StateFlow
 

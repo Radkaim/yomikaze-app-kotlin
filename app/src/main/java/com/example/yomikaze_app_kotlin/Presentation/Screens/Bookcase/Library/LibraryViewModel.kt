@@ -17,7 +17,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComic
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Base.StatefulViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.SearchWidgetState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

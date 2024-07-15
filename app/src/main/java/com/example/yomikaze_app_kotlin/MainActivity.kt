@@ -1,24 +1,27 @@
 package com.example.yomikaze_app_kotlin
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
@@ -49,7 +52,6 @@ class MainActivity : ComponentActivity() {
             // check view model stateApp theme
             val viewModel: MainViewModel = MainViewModel()
             checkAndChangeStatusBarColor(viewModel.stateApp.theme, windowInsetsController, window)
-
             YomikazeappkotlinTheme(appTheme = viewModel.stateApp.theme) {
                 // A surface container using the 'background' color from the theme
                 Surface (
@@ -61,7 +63,6 @@ class MainActivity : ComponentActivity() {
                     Paper.init(navController.context.applicationContext)
                     NavHost(navController, startDestination = "splash_route") {
                         composable("splash_route") {
-
                             SplashScreen(navController)
                             // After a delay or when app is ready, navigate to main content
                             // navController.navigate("main_content_route")
@@ -69,9 +70,37 @@ class MainActivity : ComponentActivity() {
                         composable("main_screen_route") {
                             MainView(viewModel)
                         }
-                    }
-                }
 
+                        composable(
+                            route = "comic_detail_route/{comicId}",
+                            deepLinks = listOf(
+                                navDeepLink {
+                                    uriPattern = "https://yomikaze.org/comic_detail/{comicId}"
+                                    action = Intent.ACTION_VIEW
+                                }
+                            ),
+                            arguments = listOf(navArgument("comicId") { defaultValue = "0" })
+                        ) { navBackStackEntry ->
+                            val comicId = navBackStackEntry.arguments?.getString("comicId")
+                            ComicDetailsView(comicId = comicId?.toLong() ?: 0, navController)
+                        }
+
+                    }
+                    // Handle deep link intent
+                    handleDeepLinkIntent(intent, navController)
+                }
+            }
+        }
+    }
+    private fun handleDeepLinkIntent(intent: Intent?, navController: NavController) {
+        intent?.data?.let { uri ->
+            val pathSegments = uri.pathSegments
+            if (pathSegments.size > 1 && pathSegments[0] == "comic_detail") {
+                val comicId = pathSegments[1]
+                Log.d("DeepLink", "comicId: $comicId")
+                navController.navigate("comic_detail_route/$comicId")
+            }else{
+                navController.navigate("main_screen_route")
             }
         }
     }
@@ -98,10 +127,10 @@ fun checkAndChangeStatusBarColor(theme: AppTheme, windowInsetsController: Window
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun MainPreview() {
-    val viewModel: MainViewModel = viewModel()
-    //val currentTheme by viewModel.stateApp.collectAsState()
-    YomikazeappkotlinTheme(appTheme = viewModel.stateApp.theme) { MainView(viewModel) }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun MainPreview() {
+//    val viewModel: MainViewModel = viewModel()
+//    //val currentTheme by viewModel.stateApp.collectAsState()
+//    YomikazeappkotlinTheme(appTheme = viewModel.stateApp.theme) { MainView(viewModel) }
+//}

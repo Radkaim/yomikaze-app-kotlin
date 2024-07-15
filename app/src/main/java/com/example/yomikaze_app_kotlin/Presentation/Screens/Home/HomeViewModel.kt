@@ -300,7 +300,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onAdvanceSearchClicked(searchText: String) {
-        Log.d("HomeViewModel", "onAdvanceSearchClicked: $searchText")
-        //navController?.navigate("advance_search_route/$searchText")
+      //  Log.d("HomeViewModel", "onAdvanceSearchClicked: $searchText")
+        navController?.navigate("advance_search_route/$searchText")
     }
 }

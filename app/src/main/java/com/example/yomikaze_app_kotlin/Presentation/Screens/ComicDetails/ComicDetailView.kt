@@ -1,5 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
@@ -170,6 +172,8 @@ fun ComicDetailContent(
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Description", "Chapter")
 
+    var hasShared by remember { mutableStateOf(false) }
+
     val listTitlesOfComicMenuOption = listOf(
         MenuOptions("Add to Library", "add_to_library_dialog_route", R.drawable.ic_library),
         MenuOptions("Download", "choose_chapter_download_route", R.drawable.ic_download),
@@ -292,6 +296,8 @@ fun ComicDetailContent(
                             }
                         }
                         if (showDialog != null) {
+                            val context = LocalContext.current
+
                             when (showDialog) {
                                 1 -> AddToLibraryDialog(
                                     comicId = comicId,
@@ -307,7 +313,14 @@ fun ComicDetailContent(
                                 )
 
                                 4 -> CustomDialog4(onDismiss = { showDialog = null })
-                                5 -> CustomDialog4(onDismiss = { showDialog = null })
+                                5 ->
+                                {
+                                    Share(
+                                        text = "https://yomikaze.org/comic_detail/$comicId",
+                                        context = context
+                                    )
+                                    showDialog = null
+                                }
                             }
                         }
                     }
@@ -745,6 +758,20 @@ fun ListChapterInComicDetailView(
 @Composable
 fun changeColorForTabComicDetail(tabIndex: Int, index: Int): Color {
     return if (tabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer
+}
+
+@Composable
+fun Share(text: String, context: Context) {
+
+        val sendIntent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+//        startActivity(context, shareIntent, null)
+
+    context.startActivity(shareIntent)
+
 }
 
 //

@@ -9,6 +9,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
+import com.example.yomikaze_app_kotlin.Domain.UseCases.AdvancedSearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
@@ -124,6 +125,15 @@ object UseCaseModule {
     @Singleton
     fun provideSearchComicUseCase(comicRepository: ComicRepository): SearchComicUC {
         return SearchComicUC(comicRepository)
+    }
+
+    /**
+     * TODO: Provide the advanced search comic use case
+     */
+    @Provides
+    @Singleton
+    fun provideAdvancedSearchComicUseCase(comicRepository: ComicRepository): AdvancedSearchComicUC {
+        return AdvancedSearchComicUC(comicRepository)
     }
 
     /**
