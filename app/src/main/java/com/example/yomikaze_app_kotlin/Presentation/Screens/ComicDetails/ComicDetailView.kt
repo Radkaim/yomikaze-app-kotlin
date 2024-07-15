@@ -78,6 +78,7 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
+import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.processNameByComma
@@ -85,6 +86,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareCo
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.CreateCategoryDialog
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
@@ -635,7 +637,10 @@ fun DescriptionInComicDetailView(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     } else {
-                        Log.d("DescriptionInComicDetailView", "DescriptionInComicDetailView: ${state.comicResponse?.isRead}")
+                        Log.d(
+                            "DescriptionInComicDetailView",
+                            "DescriptionInComicDetailView: ${state.comicResponse?.isRead}"
+                        )
                         Text(
                             text = "Start Reading",
                             fontSize = 16.sp,
@@ -663,6 +668,9 @@ fun ListChapterInComicDetailView(
     var isSelected by remember { mutableStateOf(true) }
     val listChapter = comicDetailViewModel.state.value.listChapters
 
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedChapter by remember { mutableStateOf<Chapter?>(null) }
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth(),
@@ -683,7 +691,6 @@ fun ListChapterInComicDetailView(
             onOldSortClick = { isSelected = true }
         )
     }
-
     //list Chapter
     LazyColumn(
         modifier = Modifier
@@ -699,17 +706,37 @@ fun ListChapterInComicDetailView(
                     views = chapter.views,
                     comments = chapter.comments,
                     publishedDate = chapter.creationTime,
-                    isLocked = chapter.isUnlocked,
+                    isLocked = chapter.hasLock,
                     onClick = {
-                        comicDetailViewModel.navigateToViewChapter(
-                            comicId,
-                            chapter.number
-                        )
+                        if (chapter.hasLock) {
+                            selectedChapter = chapter
+                            showDialog = true
+                        } else {
+                            comicDetailViewModel.navigateToViewChapter(
+                                comicId,
+                                chapter.number
+                            )
+                        }
                     },
                     onReportClick = {}
                 )
+
             }
         }
+
+    }
+    if (showDialog) {
+        UnlockChapterDialogComponent(
+            title = "Do you want to unlock this chapter?",
+            chapter = selectedChapter!!,
+            totalCoin = 100,
+            coinOfUserAvailable = 200,
+            onConfirmClick = {
+                //UnlockUC
+                //if(state.success) {navigateToViewChapter}
+            },
+            onDismiss = { showDialog = false }
+        )
     }
 }
 

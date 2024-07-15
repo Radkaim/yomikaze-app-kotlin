@@ -93,7 +93,7 @@ fun <T, VM> EditDialogComponent(
                     Text(
                         text = title,
                         fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.inverseSurface,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(start = 40.dp)

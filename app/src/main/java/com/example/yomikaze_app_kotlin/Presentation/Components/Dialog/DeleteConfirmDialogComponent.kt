@@ -85,7 +85,7 @@ fun <T, VM> DeleteConfirmDialogComponent(
                     Text(
                         text = title,
                         fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.inverseSurface,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
                         //   modifier = Modifier.padding(start = 10.dp)
@@ -174,7 +174,7 @@ fun <T, VM> DeleteConfirmDialogComponent(
                             Text(
                                 text = "Name: ",
                                 fontSize = 15.sp,
-                                color = MaterialTheme.colorScheme.inverseSurface,
+                                color = MaterialTheme.colorScheme.primaryContainer,
                                 fontWeight = FontWeight.Medium,
                                 textAlign = TextAlign.Center,
                             )

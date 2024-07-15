@@ -190,7 +190,6 @@ fun ViewChapterContent(
                 Box(
                     modifier = Modifier
                         .width(70.dp)
-
                         .padding(8.dp)
                         .background(
                             color = MaterialTheme.colorScheme.surface.copy(0.4f),

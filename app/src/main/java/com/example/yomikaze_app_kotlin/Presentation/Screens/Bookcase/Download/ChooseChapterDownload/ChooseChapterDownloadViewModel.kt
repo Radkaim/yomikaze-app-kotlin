@@ -9,11 +9,12 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.DownloadPagesOfChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByComicIdAndChapterNumberDBUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChaptersByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChapterByIdDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChaptersByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.InsertChapterToDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadComicDetailUC
@@ -56,22 +57,59 @@ class ChooseChapterDownloadViewModel @Inject constructor(
         this.navController = navController
     }
 
+    // Get selected chapters
 
-    //test get page
-    fun getPagesByChapterNumberOfComic(
-        comicId: Long,
-        chapterIndex: Int
-    ) {
+    fun getTotalPriceOfSelectedChapters(): Int {
+        return _state.value.listChapterForDownloaded.filter { it.isSelected }.sumBy { it.price }
+    }
+    fun getChapterIdOfSelectedChaptersContainingLockedChapter(): List<Long> {
+        return _state.value.listChapterForDownloaded.filter { it.isSelected && it.hasLock }.map { it.chapterId }
+    }
+
+    fun getSelectedChapters(): List<Chapter> {
+        return _state.value.listChapterForDownloaded.filter { it.isSelected }
+    }
+
+    fun selectAllChapters() {
+        val areAllSelected = _state.value.listChapterForDownloaded.all { it.isSelected }
+        val updatedChapters =
+            _state.value.listChapterForDownloaded.map { it.copy(isSelected = !areAllSelected) }
+        _state.value = _state.value.copy(listChapterForDownloaded = updatedChapters)
+    }
+    fun toggleChapterSelection(chapter: Chapter) {
+        val index = _state.value.listChapterForDownloaded.indexOf(chapter)
+        val updatedChapters = _state.value.listChapterForDownloaded.toMutableList()
+        val chapter = updatedChapters[index]
+        updatedChapters[index] = chapter.copy(isSelected = !chapter.isSelected)
+        _state.value = _state.value.copy(listChapterForDownloaded = updatedChapters)
+    }
+
+    // a funtion for get downloaded chapter from db and map to listChapterForDownloaded map isdownloaded of the state
+    fun getDownloadedChaptersFromDB(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = pageRepository.getPageByComicIdAndChapterNumberDB(comicId, chapterIndex)
-            Log.d("ChooseChapterDownloadViewModel", "getPagesByChapterNumberOfComic: $result")
+            val downloadedChapters = getChaptersByComicIdDBUC.getChaptersByComicIdDB(comicId)
+            val currentChapters = _state.value.listChapterForDownloaded
+
+            val updatedChapters = currentChapters.map { chapter ->
+                val downloadedChapter = downloadedChapters.find { it.chapterId == chapter.chapterId }
+                chapter.copy(isDownloaded = downloadedChapter?.isDownloaded ?: false)
+            }
+            _state.value = _state.value.copy(listChapterForDownloaded = updatedChapters)
         }
     }
-    fun getComicDetailsAndDownload(comicId: Long, listChapterNumberChoose: List<Int>) {
+
+
+    fun getComicDetailsAndDownload(comicId: Long) {
+        val selectedChapters = _state.value.listChapterForDownloaded.filter { it.isSelected }
+        if (selectedChapters.isEmpty()) return
         val inputData = workDataOf(
             "comicId" to comicId,
-            "listChapterNumberChoose" to listChapterNumberChoose.toIntArray()
+            "listChapterNumberChoose" to selectedChapters.map { it.number }.toIntArray()
         )
+//        val inputData = workDataOf(
+//            "comicId" to comicId,
+//            "listChapterNumberChoose" to listChapterNumberChoose.toIntArray()
+//        )
 
         val downloadWorkRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
             .setInputData(inputData)
@@ -100,6 +138,9 @@ class ChooseChapterDownloadViewModel @Inject constructor(
                     currentList?.sort()
 
                     _state.value = state.value.copy(
+                     listChapterForDownloaded = listChapter,
+                    )
+                    _state.value = state.value.copy(
                         listNumberChapters = currentList,
                         isListNumberLoading = false
                     )
@@ -111,6 +152,8 @@ class ChooseChapterDownloadViewModel @Inject constructor(
                     Log.e("ComicDetailViewModel", "getListChapterByComicId: $exception")
                 }
             )
+
+            getDownloadedChaptersFromDB(comicId) // map downloaded chapter to listChapterForDownloaded
         }
     }
 

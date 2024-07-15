@@ -89,13 +89,13 @@ fun CreateCategoryDialog(
                     Text(
                         text = "Create new personal category",
                         fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.inverseSurface,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
                         text = "Name for personal category",
                         fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.inverseSurface,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         fontStyle = FontStyle.Italic,
                         modifier = Modifier.padding(top = 2.dp)
                     )

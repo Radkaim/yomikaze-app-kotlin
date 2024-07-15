@@ -44,15 +44,6 @@ class DownloadDetailViewModel @Inject constructor(
         _state.value = _state.value.copy(listChapterDownloaded = updatedChapters)
     }
 
-    fun getChaptersFromDBByComicId(comicId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val chapters = getChaptersByComicIdDBUC.getChaptersByComicIdDB(comicId)
-            _state.value = _state.value.copy(
-                listChapterDownloaded = chapters
-            )
-        }
-    }
-
     // Get selected chapters
     fun getSelectedChapters(): List<Int> {
         return _state.value.listChapterDownloaded.filter { it.isSelected }
@@ -64,6 +55,15 @@ class DownloadDetailViewModel @Inject constructor(
         val updatedChapters =
             _state.value.listChapterDownloaded.map { it.copy(isSelected = !areAllSelected) }
         _state.value = _state.value.copy(listChapterDownloaded = updatedChapters)
+    }
+
+    fun getChaptersFromDBByComicId(comicId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val chapters = getChaptersByComicIdDBUC.getChaptersByComicIdDB(comicId)
+            _state.value = _state.value.copy(
+                listChapterDownloaded = chapters
+            )
+        }
     }
 
 

@@ -161,12 +161,12 @@ fun DownloadDetailView(
                                 .padding(end = 40.dp)
                                 .clickable {
                                     //  downloadDetailViewModel.deleteSelectedChapters()
-                                    val selectedChapters =
-                                        downloadDetailViewModel.getSelectedChapters()
-                                    Log.d(
-                                        "DownloadDetailView",
-                                        "Selected Chapters: $selectedChapters"
-                                    )
+//                                    val selectedChapters =
+//                                        downloadDetailViewModel.getSelectedChapters()
+//                                    Log.d(
+//                                        "DownloadDetailView",
+//                                        "Selected Chapters: $selectedChapters"
+//                                    )
                                     downloadDetailViewModel.deleteAllSelectedChaptersAndPages()
                                 },
                             contentAlignment = Alignment.Center

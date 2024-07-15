@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,41 +12,42 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
+import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.LottieAnimationComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
-import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.shimmerLoadingAnimation
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
+import com.example.yomikaze_app_kotlin.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -60,7 +62,52 @@ fun ChooseChapterDownloadView(
 
     LaunchedEffect(Unit) {
         chooseChapterDownloadViewModel.getListChapterByComicId(comicId = comicId)
+
     }
+
+    if (CheckNetwork()) {
+        if (state.isListNumberLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                LottieAnimationComponent(
+                    animationFileName = R.raw.loading, // Replace with your animation file name
+                    loop = true,
+                    autoPlay = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .scale(1.15f)
+                )
+            }
+        } else {
+            ChooseChapterDownloadContent(
+                comicId = comicId,
+                navController = navController,
+                chooseChapterDownloadViewModel = chooseChapterDownloadViewModel,
+                state = state
+            )
+        }
+    } else {
+        UnNetworkScreen()
+    }
+//    }
+}
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@Composable
+fun ChooseChapterDownloadContent(
+    comicId: Long,
+    navController: NavController,
+    chooseChapterDownloadViewModel: ChooseChapterDownloadViewModel,
+    state: ChooseChapterDownloadState
+) {
+
+    val chapterList = state.listChapterForDownloaded
+
     Scaffold(
         topBar = {
             CustomAppBar(
@@ -76,48 +123,143 @@ fun ChooseChapterDownloadView(
                     }
                 },
             )
-        })
-    {
-        if (CheckNetwork()) {
-            ChooseChapterDownloadContent(
-                comicId = comicId,
-                navController = navController,
-                chooseChapterDownloadViewModel = chooseChapterDownloadViewModel,
-                state = state
-            )
-        } else {
-            UnNetworkScreen()
+        },
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.tertiary)
+
+            ) {
+                Divider(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                    thickness = 1.dp
+                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 40.dp)
+                            .clickable {
+                                chooseChapterDownloadViewModel.selectAllChapters()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        //total selected chapters
+                        val totalSelectedChapters =
+                            chooseChapterDownloadViewModel.getSelectedChapters().size
+                        Text( text = "Have chosen: $totalSelectedChapters ${if (totalSelectedChapters > 1) "chapters" else "chapter"}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.W300,
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            modifier = Modifier.align(Alignment.Center).padding(start = 70.dp)
+                        )
+                    }
+                }
+                Divider(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                    thickness = 1.dp
+                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 40.dp)
+                            .clickable {
+                                chooseChapterDownloadViewModel.selectAllChapters()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.padding(top = 10.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_choose_circle_tick),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .width(20.dp)
+                                    .height(20.dp)
+
+                            )
+                            Text(
+                                text = "Choose All",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                modifier = Modifier
+
+                            )
+                        }
+
+                    }
+                    // Divider between two boxes
+                    Divider(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                        modifier = Modifier
+                            .height(30.dp) // Height of the divider to match the height of the Boxes
+                            .width(1.dp)   // Width of the divider
+                            .offset(y = 5.dp) // Offset to center the divider vertically
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .padding(end = 40.dp)
+                            .clickable {
+//                                chooseChapterDownloadViewModel.getComicDetailsAndDownload(comicId)
+                                val se =
+                                    chooseChapterDownloadViewModel.getTotalPriceOfSelectedChapters()
+                                Log.d("ChooseChapterDownload", "ChooseChapterDownloadContent: $se")
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.padding(top = 10.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_download),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .width(20.dp)
+                                    .height(20.dp)
+                            )
+                            Text(
+                                text = "Download",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                modifier = Modifier
+                            )
+                        }
+                    }
+
+                }
+            }
         }
-    }
-}
+    ) {
 
-@Composable
-fun ChooseChapterDownloadContent(
-    comicId: Long,
-    navController: NavController,
-    chooseChapterDownloadViewModel: ChooseChapterDownloadViewModel,
-    state: ChooseChapterDownloadState
-) {
-
-
-    if (state.isListNumberLoading) {
-        //Loading
-        CircularProgressIndicator()
-
-    } else {
-        val chapterNumbers = state.listNumberChapters
-
-        Log.d("ChooseChapterDownloadContent", "ChooseChapterDownloadContent:")
-        // Remember the state of selected chapters
-        val selectedChapters =
-            remember { mutableStateListOf<Boolean>().apply { addAll(List(chapterNumbers!!.size) { false }) } }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Total chapters: ${chapterNumbers!!.size}",
+                text = "Total chapters: ${chapterList!!.size}",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp)
@@ -140,84 +282,91 @@ fun ChooseChapterDownloadContent(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+                columns = GridCells.Fixed(4),
                 modifier = Modifier
                     .fillMaxWidth()
-                //.padding(start = 5.dp),
+                    .padding(bottom = 50.dp),
             ) {
-                items(chapterNumbers!!.size) { index ->
-                    val number = chapterNumbers[index]
-                    val isSelected = selectedChapters[index]
-
-                    Box(
-                        modifier = Modifier.run {
-                            padding(5.dp)
-                                .background(if (!isSelected) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.background)
-                                .toggleable(
-                                    value = isSelected,
-                                    onValueChange = {
-                                        selectedChapters[index] = it
-                                    }
-                                )
-                                .shimmerLoadingAnimation()
-                                .height(50.dp)
-                                .width(80.dp)
-                                .then(
-                                    if (isSelected) Modifier.border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.primary
-                                    ) else Modifier
-                                )
-
-                        }
-                    ) {
-                        Text(
-                            text = number.toString(),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
+                items(chapterList.size) { index ->
+                    val chapter = chapterList[index]
+                    BoxSelectedDownload(
+                        chapter = chapter,
+                        isSelected = chapter.isSelected,
+                        onClicked = { chooseChapterDownloadViewModel.toggleChapterSelection(chapter) }
+                    )
                 }
 
             }
-
-            Button(
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(40.dp)
-                    .padding(bottom = 16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = MaterialTheme.colorScheme.primary,
-                    disabledContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                onClick = {
-                    val chaptersToDownload =
-                        chapterNumbers!!.filterIndexed { index, _ -> selectedChapters[index] }
-
-                   chooseChapterDownloadViewModel.getComicDetailsAndDownload(comicId, chaptersToDownload)
-
-//                    chooseChapterDownloadViewModel.downloadListChapterChoose(
-//                        68638295025815553,
-//                       chapterNumbers
-//                    )
-
-
-            //        chooseChapterDownloadViewModel.downloadAllPageOfChapterFromDB(comicId)
-               //     chooseChapterDownloadViewModel. getPagesByChapterNumberOfComic(68638295025815553, 1,)
-                    Log.d("ChooseChapterDownloadContent", "ChooseChapterDownloadContent: $chaptersToDownload")
-//                onDownload(chaptersToDownload)
-//                onDismiss()
-                }) {
-                Text(
-                    text = "Download",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primaryContainer
-                )
-            }
-
         }
     }
+}
 
+@Composable
+fun BoxSelectedDownload(
+    chapter: Chapter,
+    isSelected: Boolean,
+    onClicked: () -> Unit
+
+) {
+    Box(
+        modifier = Modifier
+            .height(50.dp)
+            .width(60.dp)
+            .padding(4.dp)
+            .background(if (!isSelected) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.background)
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            .then(
+                if (isSelected) Modifier.border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary
+                ) else Modifier
+            )
+            .clickable {
+//                if (chapter.hasLock) {
+//                   Log.d("ChooseChapterDownload", "You can't download this chapter and you need use $${chapter.price} coin to unlock it")
+//                } else {
+                onClicked()
+
+            }
+    ) {
+        // Tick icon in the top-left corner
+        if (chapter.isDownloaded) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_tick_downloaded),
+                contentDescription = "tick downloaded",
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .width(15.dp)
+                    .height(17.dp)
+                    .align(Alignment.TopStart)
+                    .padding(start = 4.dp, top = 4.dp)
+                    .offset(x = 4.dp)
+            )
+        }
+        if (chapter.hasLock && !chapter.isDownloaded) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_lock),
+                contentDescription = "lock",
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .width(15.dp)
+                    .height(17.dp)
+                    .align(Alignment.TopStart)
+                    .padding(end = 4.dp, top = 4.dp)
+                    .offset(x = 4.dp)
+            )
+        }
+
+        // Chapter number in the center
+        Box(
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Text(
+                text = chapter.number.toString(),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+    }
 }
