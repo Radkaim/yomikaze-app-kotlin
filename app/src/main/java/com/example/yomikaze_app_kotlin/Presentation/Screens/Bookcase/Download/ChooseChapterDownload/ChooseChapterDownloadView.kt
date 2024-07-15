@@ -218,7 +218,7 @@ fun ChooseChapterDownloadContent(
                         modifier = Modifier
                             .padding(end = 40.dp)
                             .clickable {
-//                                chooseChapterDownloadViewModel.getComicDetailsAndDownload(comicId)
+                               chooseChapterDownloadViewModel.getComicDetailsAndDownload(comicId)
                                 val se =
                                     chooseChapterDownloadViewModel.getTotalPriceOfSelectedChapters()
                                 Log.d("ChooseChapterDownload", "ChooseChapterDownloadContent: $se")
