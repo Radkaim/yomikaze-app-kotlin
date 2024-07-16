@@ -113,13 +113,17 @@ fun RegisterContent(
                 birthdayError = "Date of birth cannot be in the future"
             } else {
                 // Định dạng ngày sinh theo kiểu `dd-MM-yyyy`
-                val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 birthday = sdf.format(selectedDate.time)
                 birthdayError = null // Clear error on successful date selection
             }
         }, year, month, day
     ).apply {
-        datePicker.maxDate = System.currentTimeMillis()
+        // Subtract one day from the current date to set maxDate to yesterday
+        val yesterday = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -1)
+        }.timeInMillis
+        datePicker.maxDate = yesterday
     }
     Scaffold(
         topBar = {

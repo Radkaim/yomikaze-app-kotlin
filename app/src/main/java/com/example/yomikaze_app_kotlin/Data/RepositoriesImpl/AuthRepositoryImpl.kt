@@ -101,6 +101,7 @@ class AuthRepositoryImpl @Inject constructor(
             appPreference.isUserLoggedIn = true
             return Result.success(result.body()!!)
         }
+        Log.d("AuthRepositoryImpl", "register: ${result.errorBody()?.string()}")
         return failure(Exception("Register failed"))
     }
 

@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Core.Module
 
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.CoinShopRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.DownloadPageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
@@ -36,6 +37,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComic
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetCoinPricingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.AddComicToCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.FollowComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetChapterDetailUC
@@ -478,6 +480,23 @@ object UseCaseModule {
     @Singleton
     fun provideDeleteHistoryRecordUseCase(historyRepository: HistoryRepository): DeleteHistoryRecordUC {
         return DeleteHistoryRecordUC(historyRepository)
+    }
+
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Coin Shop Use Cases
+     */
+
+    /**
+     * TODO: Provide the get coin pricing use case
+     */
+    @Provides
+    @Singleton
+    fun provideGetCoinPricingUseCase(
+        coinShopRepository: CoinShopRepository
+    ): GetCoinPricingUC {
+        return GetCoinPricingUC(coinShopRepository)
     }
 
 }

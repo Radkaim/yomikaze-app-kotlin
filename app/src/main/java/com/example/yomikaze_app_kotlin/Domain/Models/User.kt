@@ -91,6 +91,18 @@ data class UserInfoResponse(
     val user: User,
 )
 
+data class Author(
+
+    @SerializedName("id")
+    val id: Long,
+
+    @SerializedName("name")
+    val name: String,
+
+    @SerializedName("birthday")
+    val birthday: String,
+)
+
 data class DataUser(
     //for api
     @SerializedName("user")

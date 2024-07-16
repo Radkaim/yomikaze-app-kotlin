@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.SettingProfile
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +26,7 @@ data class SettingObject(
     val iconStartColor: Color? = null,
     val title: String,
     val iconEnd: Int,
-    val route : String
+    val route: String
 
 )
 
@@ -40,47 +41,49 @@ fun SettingItemComponent(
     var finalIconStartColor = iconStartColor ?: MaterialTheme.colorScheme.surfaceTint
     if (iconStartColor == null) {
         finalIconStartColor = MaterialTheme.colorScheme.surfaceTint
-    }else{
+    } else {
         finalIconStartColor = iconStartColor
     }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 5.dp)
+            .clickable { onClicked() }
+            .height(50.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 5.dp)
-                .height(50.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Row (
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ){
-                Icon(
-                    painter = painterResource(id = iconStart),
-                    contentDescription = null,
-                    tint = finalIconStartColor,
-                    modifier = Modifier.size(24.dp)
-                )
+            Icon(
+                painter = painterResource(id = iconStart),
+                contentDescription = null,
+                tint = finalIconStartColor,
+                modifier = Modifier.size(24.dp)
+            )
 
-                Text(
-                    text = title,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Normal,
-                )
-            }
-
-            IconButton(onClick = { onClicked() }) {
-                Icon(
-                    painter = painterResource(id = iconEnd),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.65f),
-                    modifier = Modifier.size(10.dp)
-                )
-            }
+            Text(
+                text = title,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
         }
 
-        Divider(
-            color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
-            thickness = 1.dp,
-        )
-
+        IconButton(onClick = { onClicked() }) {
+            Icon(
+                painter = painterResource(id = iconEnd),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.65f),
+                modifier = Modifier.size(10.dp)
+            )
+        }
     }
+
+    Divider(
+        color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
+        thickness = 1.dp,
+    )
+
+}

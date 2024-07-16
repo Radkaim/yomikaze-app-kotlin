@@ -11,6 +11,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.AboutUs.AboutUsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.CoinShop.CoinShopView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile.EditProfileView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting.SettingView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.RankingView
@@ -95,8 +96,8 @@ fun NavigationGraph(
             AboutUsView(navController = navController)
         }
         // for ranking screen
-        composable("ranking_route") {
-            RankingView(navController = navController)
+        composable("coins_shop_route") {
+            CoinShopView(navController = navController)
         }
 
     }

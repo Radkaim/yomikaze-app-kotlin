@@ -123,13 +123,11 @@ dependencies {
     //implementation("com.google.android.gms:play-services-wallet:19.4.0")
 
     //for google sign in
-    implementation ("androidx.credentials:credentials:1.2.2")
+    implementation("androidx.credentials:credentials:1.2.2")
     // optional - needed for credentials support from play services, for devices running
     // Android 13 and below.
-    implementation( "androidx.credentials:credentials-play-services-auth:1.2.2")
-    implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.1")
-
-
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
 
     // use for EncryptedSharedPreferences
@@ -137,17 +135,23 @@ dependencies {
 
     // Room Local DB
 
-    implementation( "androidx.room:room-runtime:2.6.1")
-    implementation( "androidx.room:room-ktx:2.6.1")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.8")
-    annotationProcessor ("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
     //noinspection KaptUsageInsteadOfKsp
-    kapt ("androidx.room:room-compiler:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
     //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
 
     // work Manager for background tasks
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.hilt:hilt-work:1.2.0")
+
+    //stripe payment
+    implementation("com.stripe:stripe-android:20.48.1")
+    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    implementation("com.github.kittinunf.fuel:fuel-json:2.3.1")
+
 
 }
 kapt {

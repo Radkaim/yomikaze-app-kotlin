@@ -3,7 +3,9 @@ package com.example.yomikaze_app_kotlin.Core.Module
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.CoinShopApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicCommentApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.HistoryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryCategoryApiService
@@ -13,6 +15,8 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.PageDao
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.AuthRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ChapterRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.CoinShopRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ComicCommentRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ComicRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.DownloadPageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.HistoryRepositoryImpl
@@ -22,6 +26,8 @@ import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.LibraryRepositoryIm
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.PageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.CoinShopRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicCommentRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.DownloadPageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
@@ -165,4 +171,25 @@ object RepoModule {
         return HistoryRepositoryImpl(historyApiService)
     }
 
+    /**
+     * Todo: provide the coinShopRepository
+     */
+    @Provides
+    @Singleton
+    fun provideCoinShopRepository(
+        coinShopApiService: CoinShopApiService
+    ): CoinShopRepository {
+        return CoinShopRepositoryImpl(coinShopApiService)
+    }
+
+    /**
+     * Todo: Provide the Comic Comment Repository
+     */
+    @Provides
+    @Singleton
+    fun provideComicCommentRepository(
+        comicCommentApiService: ComicCommentApiService
+    ): ComicCommentRepository {
+        return ComicCommentRepositoryImpl(comicCommentApiService)
+    }
 }

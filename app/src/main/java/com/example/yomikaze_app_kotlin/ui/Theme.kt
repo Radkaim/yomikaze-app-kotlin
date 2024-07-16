@@ -44,6 +44,7 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Color.White, //FFFFFF
     onTertiary = Color.Black,
     tertiaryContainer = Green200, //BFFEF2
+    onTertiaryContainer = Orange200 ,// FFDACA
 
 
     outline = OrangeSplash, //E38B6C

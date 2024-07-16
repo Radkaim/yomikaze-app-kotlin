@@ -87,6 +87,17 @@ fun NormalComicCardShimmerLoading() {
             .shimmerLoadingAnimation() // <--- Here.
     )
 }
+@Composable
+fun CoinShopCardShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .width(350.dp)
+            .height(55.dp)
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
 
 // rectangle shape with line short
 @Composable
