@@ -181,10 +181,10 @@ fun CoinShopContent(
                 }
             }
             item {
-                    App(
-                        coinShopViewModel = coinShopViewModel,
-                        state = coinShopState
-                    )
+                App(
+                    coinShopViewModel = coinShopViewModel,
+                    state = coinShopState
+                )
             }
         }
     }
@@ -386,25 +386,28 @@ fun App(
     LaunchedEffect(Unit) {
         coinShopViewModel.getPaymentSheetResponse()
     }
-
-    LaunchedEffect(context) {
-            if (state.isGetPaymentSheetResponseSuccess) {
-                //val publishableKey = responseJson.getString("publishableKey") Log.d("CoinShopViewModel", "getPaymentSheetResponse: ${state.paymentSheetResponse!!.publishableKey}")
-
-                customerConfig = PaymentSheet.CustomerConfiguration(
-                    id = state.paymentSheetResponse!!.customer!!.toString(),
-                    ephemeralKey = state.paymentSheetResponse!!.ephemeralKey!!.toString()
-                )
-
-                PaymentConfiguration.init(context, state.paymentSheetResponse!!.publishableKey)
-            }
+    if (state.isGetPaymentSheetResponseSuccess) {
+        LaunchedEffect(context) {
+            //val publishableKey = responseJson.getString("publishableKey") Log.d("CoinShopViewModel", "getPaymentSheetResponse: ${state.paymentSheetResponse!!.publishableKey}")
+            Log.d(
+                "CoinShopViewModel1",
+                "publishableKey: ${state.paymentSheetResponse!!.publishableKey}"
+            )
+            Log.d("CoinShopViewModel", "customer: ${state.paymentSheetResponse!!.customer}")
+            customerConfig = PaymentSheet.CustomerConfiguration(
+                state.paymentSheetResponse!!.customer.toString(),
+                state.paymentSheetResponse!!.ephemeralKey.toString()
+            )
+            Log.d("CoinShopViewModel", "CurrentConfig1: ${customerConfig.toString()}")
+            PaymentConfiguration.init(context, state.paymentSheetResponse!!.publishableKey)
+        }
     }
     Button(
         onClick = {
             val currentConfig = customerConfig
             val currentClientSecret = state.paymentSheetResponse!!.paymentIntentClientSecret
 
-            Log.d("CoinShopViewModel", "getPaymentSheetResponse: $currentConfig")
+            Log.d("CoinShopViewModel", "CurrentConfig2: $currentConfig")
             if (currentConfig != null && currentClientSecret != null) {
                 presentPaymentSheet(paymentSheet, currentConfig, currentClientSecret)
             }
@@ -426,7 +429,7 @@ private fun presentPaymentSheet(
             customer = customerConfig,
             // Set `allowsDelayedPaymentMethods` to true if your business handles
             // delayed notification payment methods like US bank accounts.
-            allowsDelayedPaymentMethods = true
+           allowsDelayedPaymentMethods = true
         )
     )
 }
@@ -439,6 +442,7 @@ private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
         }
 
         is PaymentSheetResult.Failed -> {
+            Log.e("CoinShopViewModel", "Failed: ${paymentSheetResult.error}")
             print("Error: ${paymentSheetResult.error}")
         }
 

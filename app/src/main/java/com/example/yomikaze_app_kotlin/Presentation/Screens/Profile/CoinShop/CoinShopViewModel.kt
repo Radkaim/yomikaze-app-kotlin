@@ -80,6 +80,7 @@ class CoinShopViewModel @Inject constructor(
                         paymentSheetResponse = paymentSheetResponse
                     )
                     Log.d("CoinShopViewModel", "getPaymentSheetResponse: $paymentSheetResponse")
+                    delay(1000)
                       _state.value = _state.value.copy(isGetPaymentSheetResponseSuccess = true)
                 },
                 onFailure = { exception ->
