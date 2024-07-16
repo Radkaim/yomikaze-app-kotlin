@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Core.Module
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.CoinShopRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicCommentRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.DownloadPageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
@@ -38,6 +39,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibra
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetCoinPricingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetPaymentSheetResponseUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.AddComicToCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.FollowComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetChapterDetailUC
@@ -45,6 +47,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFrom
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
@@ -497,6 +500,34 @@ object UseCaseModule {
         coinShopRepository: CoinShopRepository
     ): GetCoinPricingUC {
         return GetCoinPricingUC(coinShopRepository)
+    }
+
+    /**
+     * Todo: get payment sheet response use case
+     */
+    @Provides
+    @Singleton
+    fun provideGetPaymentSheetResponseUC(
+        coinShopRepository: CoinShopRepository
+    ): GetPaymentSheetResponseUC {
+        return GetPaymentSheetResponseUC(coinShopRepository)
+    }
+
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Comic Comment Use Cases
+     */
+
+    /**
+     * TODO: Provide the get all comic comment by comic id use case
+     */
+    @Provides
+    @Singleton
+    fun provideGetAllComicCommentByComicIdUC(
+        comicCommentRepository: ComicCommentRepository
+    ): GetAllComicCommentByComicIdUC {
+        return GetAllComicCommentByComicIdUC(comicCommentRepository)
     }
 
 }

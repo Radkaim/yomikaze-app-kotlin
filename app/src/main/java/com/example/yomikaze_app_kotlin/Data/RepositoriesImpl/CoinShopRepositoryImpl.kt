@@ -4,6 +4,8 @@ import android.util.Log
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.CoinShopApiService
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.CoinPricingResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.PaymentSheetRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.PaymentSheetResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.CoinShopRepository
 import javax.inject.Inject
 
@@ -20,6 +22,19 @@ class CoinShopRepositoryImpl @Inject constructor(
             Result.success(response)
         } catch (e: Exception) {
             Log.e("CoinShopRepositoryImpl", "getCoinPricing: $e")
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getPaymentSheetResponse(
+        token: String,
+        priceId: PaymentSheetRequest
+    ): Result<PaymentSheetResponse>{
+        return try {
+            val response = api.getPaymentSheetResponse("Bearer $token", priceId)
+            Result.success(response)
+        } catch (e: Exception) {
+            Log.e("CoinShopRepositoryImpl", "getPaymentSheetResponse: $e")
             Result.failure(e)
         }
     }

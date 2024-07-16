@@ -99,6 +99,9 @@ data class Author(
     @SerializedName("name")
     val name: String,
 
+    @SerializedName("avatar")
+    val avatar: String,
+
     @SerializedName("birthday")
     val birthday: String,
 )

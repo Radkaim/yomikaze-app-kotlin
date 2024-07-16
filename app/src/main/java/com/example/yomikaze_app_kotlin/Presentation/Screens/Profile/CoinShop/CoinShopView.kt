@@ -3,6 +3,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.CoinShop
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,11 +56,9 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.CoinShopCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
-import com.github.kittinunf.fuel.httpPost
-import com.github.kittinunf.fuel.json.responseJson
-import com.github.kittinunf.result.Result
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheet.CustomerConfiguration
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.rememberPaymentSheet
 
@@ -182,14 +181,10 @@ fun CoinShopContent(
                 }
             }
             item {
-                val showLoading = mutableStateOf(false)
-                Button(onClick = {
-                    showLoading.value = true
-                }) {
-                    if (showLoading.value) {
-                        App()
-                    }
-                }
+                    App(
+                        coinShopViewModel = coinShopViewModel,
+                        state = coinShopState
+                    )
             }
         }
     }
@@ -379,31 +374,37 @@ fun CoinAvailableContent(
 //}
 
 @Composable
-fun App() {
+fun App(
+    coinShopViewModel: CoinShopViewModel,
+    state: CoinShopState
+) {
     val paymentSheet = rememberPaymentSheet(::onPaymentSheetResult)
     val context = LocalContext.current
-    var customerConfig by remember { mutableStateOf<PaymentSheet.CustomerConfiguration?>(null) }
+    var customerConfig by remember { mutableStateOf<CustomerConfiguration?>(null) }
     var paymentIntentClientSecret by remember { mutableStateOf<String?>(null) }
 
+    LaunchedEffect(Unit) {
+        coinShopViewModel.getPaymentSheetResponse()
+    }
+
     LaunchedEffect(context) {
-        "Your backend endpoint/payment-sheet".httpPost().responseJson { _, _, result ->
-            if (result is Result.Success) {
-                val responseJson = result.get().obj()
-                paymentIntentClientSecret = responseJson.getString("paymentIntent")
+            if (state.isGetPaymentSheetResponseSuccess) {
+                //val publishableKey = responseJson.getString("publishableKey") Log.d("CoinShopViewModel", "getPaymentSheetResponse: ${state.paymentSheetResponse!!.publishableKey}")
+
                 customerConfig = PaymentSheet.CustomerConfiguration(
-                    responseJson.getString("customer"),
-                    responseJson.getString("ephemeralKey")
+                    id = state.paymentSheetResponse!!.customer!!.toString(),
+                    ephemeralKey = state.paymentSheetResponse!!.ephemeralKey!!.toString()
                 )
-                val publishableKey = responseJson.getString("publishableKey")
-                PaymentConfiguration.init(context, publishableKey)
+
+                PaymentConfiguration.init(context, state.paymentSheetResponse!!.publishableKey)
             }
-        }
     }
     Button(
         onClick = {
             val currentConfig = customerConfig
-            val currentClientSecret = paymentIntentClientSecret
+            val currentClientSecret = state.paymentSheetResponse!!.paymentIntentClientSecret
 
+            Log.d("CoinShopViewModel", "getPaymentSheetResponse: $currentConfig")
             if (currentConfig != null && currentClientSecret != null) {
                 presentPaymentSheet(paymentSheet, currentConfig, currentClientSecret)
             }
@@ -415,7 +416,7 @@ fun App() {
 
 private fun presentPaymentSheet(
     paymentSheet: PaymentSheet,
-    customerConfig: PaymentSheet.CustomerConfiguration,
+    customerConfig: CustomerConfiguration,
     paymentIntentClientSecret: String
 ) {
     paymentSheet.presentWithPaymentIntent(

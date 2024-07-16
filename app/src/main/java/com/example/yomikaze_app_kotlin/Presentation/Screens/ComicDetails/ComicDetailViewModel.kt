@@ -10,13 +10,13 @@ import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DownloadComicDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.AddComicToCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.FollowComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -35,9 +35,9 @@ class ComicDetailViewModel @Inject constructor(
     private val getLibraryCategoryUC: GetLibraryCategoryUC,
     private val followComicUC: FollowComicUC,
     private val addComicToCategoryUC: AddComicToCategoryUC,
-    //for Database
-    private val downloadUC: DownloadComicDetailUC,
-    private val getComicByIdDBUC: GetComicByIdDBUC
+    private val getComicByIdDBUC: GetComicByIdDBUC,
+
+    private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -59,6 +59,7 @@ class ComicDetailViewModel @Inject constructor(
     fun navigateToChooseChapterDownload(comicId: Long, comicName: String) {
         navController?.navigate("choose_chapter_download_route/$comicId/$comicName")
     }
+
     /**
      * Todo: Implement check user is login
      */
@@ -230,6 +231,40 @@ class ComicDetailViewModel @Inject constructor(
                     isComicExistInDB = true
                 )
             }
+        }
+    }
+
+    init {
+        getAllComicCommentByComicId(68638295025815553)
+    }
+
+    /**
+     * Todo: Implement get all comment of comic by comicId
+     */
+    fun getAllComicCommentByComicId(comicId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = getAllComicCommentByComicIdUC.getAllComicCommentByComicId(
+                token = token,
+                comicId = comicId,
+                orderBy = "CreationTime",
+                page = 1,
+                size = 3
+            )
+            result.fold(
+                onSuccess = { baseResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(
+                        listComicComment = baseResponse.results,
+                        )
+                    Log.d("ComicDetailViewModel", "getAllComicCommentByComicId: $result")
+                },
+
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicDetailViewModel", "getAllComicCommentByComicId: $exception")
+                }
+            )
         }
     }
 }

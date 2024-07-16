@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.Models.PaymentSheetRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetCoinPricingUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetPaymentSheetResponseUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CoinShopViewModel @Inject constructor(
     private val appPreference: AppPreference,
-    private val getCoinPricingUC: GetCoinPricingUC
+    private val getCoinPricingUC: GetCoinPricingUC,
+    private val getPaymentSheetResponseUC: GetPaymentSheetResponseUC
 ) : ViewModel() {
     private val _state = MutableStateFlow(CoinShopState())
     val state: StateFlow<CoinShopState> get() = _state
@@ -47,7 +50,7 @@ class CoinShopViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         coinPricingList = results.asReversed(),
 
-                    )
+                        )
                     delay(1000)
                     _state.value = _state.value.copy(isGetCoinPricingLoading = false)
                 },
@@ -58,6 +61,33 @@ class CoinShopViewModel @Inject constructor(
                 }
             )
 
+        }
+    }
+
+    /**
+     * Todo: Implement getPaymentSheetResponse
+     */
+    fun getPaymentSheetResponse() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result =
+                getPaymentSheetResponseUC.getPaymentSheetResponse(token, PaymentSheetRequest("71323105397571584"))
+            result.fold(
+                onSuccess = { paymentSheetResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(
+                        paymentSheetResponse = paymentSheetResponse
+                    )
+                    Log.d("CoinShopViewModel", "getPaymentSheetResponse: $paymentSheetResponse")
+                      _state.value = _state.value.copy(isGetPaymentSheetResponseSuccess = true)
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("CoinShopViewModel", "getPaymentSheetResponse: $exception")
+                       _state.value = _state.value.copy(isGetPaymentSheetResponseSuccess = false)
+                }
+            )
         }
     }
 }
