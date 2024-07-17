@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetHistoriesUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
@@ -31,6 +32,7 @@ class HomeViewModel @Inject constructor(
     private val getComicByCommentsRankingUC: GetComicByCommentsRankingUC,
     private val getComicByFollowRankingUC: GetComicByFollowRankingUC,
     private val getComicByViewRankingUC: GetComicByViewRankingUC,
+    private val getHistoriesUC: GetHistoriesUC,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
@@ -73,6 +75,34 @@ class HomeViewModel @Inject constructor(
     }
     fun updateTotalResults(newValue: Int) {
         _state.value = _state.value.copy(totalResults = newValue)
+    }
+
+    /**
+     * Get all history records
+     */
+    fun getHistories(page: Int? = 1) {
+        _state.value = _state.value.copy(isHistoryListLoading = true)
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+
+            val result = getHistoriesUC.getHistories(token, page, 3)
+            result.fold(
+                onSuccess = { baseResponse ->
+                    // Xử lý kết quả thành công
+                    val results = baseResponse.results
+                    _state.value = _state.value.copy(
+                        listHistoryRecords = results,
+                        isHistoryListLoading = false
+                    )
+                    Log.d("HomeViewModel", "getHistories: $results")
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    _state.value = _state.value.copy(isHistoryListLoading = true)
+                    Log.e("HomeViewModel", "getHistories: $exception")
+                }
+            )
+        }
     }
 
 

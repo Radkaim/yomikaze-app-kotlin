@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Home
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.HistoryResponse
 
 
 enum class SearchWidgetState {
@@ -26,4 +27,9 @@ data class HomeState(
     val isCoverCarouselLoading: Boolean = false,
 
     val isLoading: Boolean = true,
+
+
+    val listHistoryRecords: List<HistoryResponse> = emptyList(),
+    val isHistoryListLoading: Boolean = true,
+
 )

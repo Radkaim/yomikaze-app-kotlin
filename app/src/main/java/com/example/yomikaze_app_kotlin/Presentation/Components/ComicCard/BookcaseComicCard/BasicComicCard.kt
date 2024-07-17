@@ -113,8 +113,9 @@ fun BasicComicCard(
                         modifier = Modifier.padding(start = 3.dp, top = 10.dp)
                     )
                 } else {
+                    //history
                     Text(
-                        text = comicChapter!!,
+                        text ="Last: Ch.$comicChapter",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         maxLines = 1,

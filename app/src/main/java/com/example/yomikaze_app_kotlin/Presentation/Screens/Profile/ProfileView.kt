@@ -107,7 +107,7 @@ fun ProfileContent(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .offset(y = (-260).dp)
+            .offset(y = (-230).dp)
     ) {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),

@@ -45,8 +45,6 @@ import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BasicComicCard
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.CardComicItem
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.CardComicWeeklyHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.NormalComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
@@ -171,6 +169,7 @@ fun HomeContent(
     ) {
     if (searchWidgetState == SearchWidgetState.OPEN) {
 
+
         LazyColumn(
             modifier = Modifier
                 .padding(top = 70.dp)
@@ -247,7 +246,7 @@ fun HomeContent(
             Log.d("HomeView", "State images: ${homeViewModel.checkUserIsLogin()}")
             if (homeViewModel.checkUserIsLogin()) {
                 item {
-                    showHistory(navController, homeViewModel)
+                    showHistory(navController, homeViewModel, state)
                 }
             }
 
@@ -294,74 +293,33 @@ private fun SearchResultItem(
 }
 
 
-fun getListCardComicHistory(): List<CardComicItem> {
-    val comics = listOf(
-        CardComicItem(
-            comicName = "Hunter X Hunter",
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicAuth = "auth",
-            comicChapter = "Chapter 1: The Adventure Begins",
-            averageRatingNumber = 4.5f
-        ),
-        CardComicItem(
-            comicName = "Comic 2",
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicAuth = "auth",
-            comicChapter = "Chapter 2",
-            averageRatingNumber = 4.5f
-        ),
-        CardComicItem(
-            comicName = "Comic 3",
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicAuth = "auth",
-            comicChapter = "Chapter 3",
-            averageRatingNumber = 4.5f
-        ),
-        CardComicItem(
-            comicName = "Comic 3",
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicAuth = "auth",
-            comicChapter = "Chapter 3",
-            averageRatingNumber = 4.5f
 
-        ),
-        CardComicItem(
-            comicName = "Comic 3",
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicAuth = "auth",
-            comicChapter = "Chapter 3",
-            averageRatingNumber = 4.5f
-        )
-    )
-    return comics
-}
-
-fun getListCardComicWeekly(): List<CardComicItem> {
-    val comicCard = listOf(
-        CardComicItem(
-            comicName = "Comic 1",
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicAuth = "auth",
-            comicChapter = "Chapter 1",
-            averageRatingNumber = 4.5f
-        ),
-        CardComicItem(
-            comicName = "Comic 2",
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicAuth = "auth",
-            comicChapter = "Chapter 2",
-            averageRatingNumber = 4.5f
-        ),
-        CardComicItem(
-            comicName = "Comic 3",
-            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-            comicAuth = "auth",
-            comicChapter = "Chapter 3",
-            averageRatingNumber = 4.5f
-        )
-    )
-    return comicCard
-}
+//fun getListCardComicWeekly(): List<CardComicItem> {
+//    val comicCard = listOf(
+//        CardComicItem(
+//            comicName = "Comic 1",
+//            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+//            comicAuth = "auth",
+//            comicChapter = "Chapter 1",
+//            averageRatingNumber = 4.5f
+//        ),
+//        CardComicItem(
+//            comicName = "Comic 2",
+//            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+//            comicAuth = "auth",
+//            comicChapter = "Chapter 2",
+//            averageRatingNumber = 4.5f
+//        ),
+//        CardComicItem(
+//            comicName = "Comic 3",
+//            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
+//            comicAuth = "auth",
+//            comicChapter = "Chapter 3",
+//            averageRatingNumber = 4.5f
+//        )
+//    )
+//    return comicCard
+//}
 
 @Composable
 fun showComicCarouselByViewRanking(
@@ -393,7 +351,11 @@ fun showComicCarouselByViewRanking(
 }
 
 @Composable
-fun showHistory(navController: NavController, viewModel: HomeViewModel) {
+fun showHistory(navController: NavController, viewModel: HomeViewModel, state: HomeState) {
+
+    LaunchedEffect(Unit){
+        viewModel.getHistories()
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -439,24 +401,27 @@ fun showHistory(navController: NavController, viewModel: HomeViewModel) {
             }
         }
     }
-    showHistoryCardComic()
+    showHistoryCardComic(state = state)
 }
 
 @Composable
-fun showHistoryCardComic() {
-    val comics = getListCardComicHistory()
+fun showHistoryCardComic(
+    state: HomeState
+) {
+    val comics = state.listHistoryRecords
+    Log.d("HomeView", "History records: $comics")
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 9.dp, end = 5.dp, bottom = 8.dp, top = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
+            .padding(start = 30.dp, end = 5.dp, bottom = 8.dp, top = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(25.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        comics.forEach { comic ->
+        comics.forEach { historyRecord ->
             BasicComicCard(
-                image = comic.image,
-                comicName = comic.comicName,
-                comicChapter = comic.comicChapter,
+                image = APIConfig.imageAPIURL.toString() + historyRecord.comic.cover,
+                comicName = historyRecord.comic.name,
+                comicChapter = historyRecord.chapter.number.toString(),
                 onClick = { /*TODO*/ },
                 // averageRatingNumber = comic.averageRatingNumber
             )
@@ -668,32 +633,32 @@ fun showWeekly(
         }
         showComicCarouselByViewRanking(state = state, homeViewModel = homeViewModel)
     }
-    showWeeklyCardComic()
-    showWeeklyCardComic()
+//    showWeeklyCardComic()
+//    showWeeklyCardComic()
 }
 
-@Composable
-fun showWeeklyCardComic() {
-    val comics = getListCardComicWeekly()
-
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 10.dp, end = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp), // Reduced horizontal spacing
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-
-        comics.forEach { comic ->
-            CardComicWeeklyHome(
-                image = comic.image,
-                comicName = comic.comicName,
-                comicAuth = comic.comicAuth
-            )
-        }
-    }
-
-}
+//@Composable
+//fun showWeeklyCardComic() {
+//    val comics = getListCardComicWeekly()
+//
+//    Row(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(start = 10.dp, end = 8.dp),
+//        horizontalArrangement = Arrangement.spacedBy(12.dp), // Reduced horizontal spacing
+//        verticalAlignment = Alignment.CenterVertically,
+//    ) {
+//
+//        comics.forEach { comic ->
+//            CardComicWeeklyHome(
+//                image = comic.image,
+//                comicName = comic.comicName,
+//                comicAuth = comic.comicAuth
+//            )
+//        }
+//    }
+//
+//}
 
 
 @Composable
