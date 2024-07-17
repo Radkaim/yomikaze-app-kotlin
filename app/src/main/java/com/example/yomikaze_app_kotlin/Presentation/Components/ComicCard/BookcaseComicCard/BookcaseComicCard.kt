@@ -70,7 +70,6 @@ fun BookcaseComicCard(
     backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
     modifier: Modifier,
 ) {
-
     var showPopupMenu by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf<Int?>(null) }
 

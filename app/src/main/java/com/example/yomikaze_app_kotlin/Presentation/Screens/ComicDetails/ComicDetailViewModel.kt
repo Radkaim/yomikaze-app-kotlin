@@ -206,7 +206,7 @@ class ComicDetailViewModel @Inject constructor(
                     // Xử lý kết quả thành công
                     //_state.value.listChapters.value = listChapter
                     _state.value = _state.value.copy(
-                        listChapters = listChapter
+                        listChapters = listChapter.sortedBy { it.number }
                     )
                 },
                 onFailure = { exception ->

@@ -313,8 +313,7 @@ fun ComicDetailContent(
                                 )
 
                                 4 -> CustomDialog4(onDismiss = { showDialog = null })
-                                5 ->
-                                {
+                                5 -> {
                                     Share(
                                         text = "https://yomikaze.org/comic_detail/$comicId",
                                         context = context
@@ -679,6 +678,8 @@ fun ListChapterInComicDetailView(
         comicDetailViewModel.getListChapterByComicId(comicId = comicId)
     }
     var isSelected by remember { mutableStateOf(true) }
+    var isReversed by remember { mutableStateOf(false) }
+
     val listChapter = comicDetailViewModel.state.value.listChapters
 
     var showDialog by remember { mutableStateOf(false) }
@@ -700,8 +701,14 @@ fun ListChapterInComicDetailView(
 
         SortComponent(
             isOldestSelected = isSelected,
-            onnNewSortClick = { isSelected = false },
-            onOldSortClick = { isSelected = true }
+            onnNewSortClick = {
+                isSelected = false
+                isReversed = true
+            },
+            onOldSortClick = {
+                isSelected = true
+                isReversed = false
+            }
         )
     }
     //list Chapter
@@ -712,7 +719,8 @@ fun ListChapterInComicDetailView(
         verticalArrangement = Arrangement.spacedBy(4.dp) // 8.dp space between each item
     ) {
         listChapter?.let { // means if listChapter is not null
-            items(it) { chapter ->
+            val sortedList = if (isReversed) it.reversed() else it
+            items(sortedList) { chapter ->
                 ChapterCard(
                     chapterNumber = chapter.number,
                     title = chapter.name,
@@ -763,11 +771,11 @@ fun changeColorForTabComicDetail(tabIndex: Int, index: Int): Color {
 @Composable
 fun Share(text: String, context: Context) {
 
-        val sendIntent = Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_TEXT, text)
-            type = "text/plain"
-        }
-        val shareIntent = Intent.createChooser(sendIntent, null)
+    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, text)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, null)
 //        startActivity(context, shareIntent, null)
 
     context.startActivity(shareIntent)
