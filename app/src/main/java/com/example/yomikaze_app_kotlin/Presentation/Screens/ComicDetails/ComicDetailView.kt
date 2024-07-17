@@ -687,7 +687,9 @@ fun ListChapterInComicDetailView(
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -715,6 +717,7 @@ fun ListChapterInComicDetailView(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
+            .padding(top = 15.dp)
             .offset(x = (-4).dp),
         verticalArrangement = Arrangement.spacedBy(4.dp) // 8.dp space between each item
     ) {
