@@ -33,14 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 
 @Composable
 fun UnlockChapterDialogComponent(
     title: String, // title of dialog
     totalCoin: Long, // total coin for unlock
     coinOfUserAvailable: Long, // coin of user available
-    chapter: Chapter,
+    chapterNumber: Number,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit
 ) {
@@ -84,7 +83,7 @@ fun UnlockChapterDialogComponent(
                     )
                     Box {
                         Text(
-                            text = "chapter 1: the beginning of the end of the world and the beginning of the end of the world",
+                            text = "Chapter $chapterNumber",
                             fontSize = 12.sp,
                             maxLines = 2,
                             lineHeight = 16.sp,

@@ -10,6 +10,7 @@ import javax.inject.Inject
 class ComicCommentRepositoryImpl @Inject constructor(
     private val api: ComicCommentApiService
 ) : ComicCommentRepository {
+
     override suspend fun getAllComicCommentByComicId(
         token: String,
         comicId: Long,
@@ -25,4 +26,19 @@ class ComicCommentRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun postComicCommentByComicId(
+        token: String,
+        comicId: Long,
+        content: String
+    ): Result<CommentResponse> {
+        return try {
+            val response = api.postComicCommentByComicId("Bearer $token", comicId, content)
+            Result.success(response)
+        } catch (e: Exception) {
+            Log.e("CommentComicRepositoryImpl", "postComicCommentByComicId: $e")
+            Result.failure(e)
+        }
+    }
+
 }

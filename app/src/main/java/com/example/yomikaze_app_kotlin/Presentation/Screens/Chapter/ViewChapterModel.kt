@@ -68,17 +68,6 @@ class ViewChapterModel @Inject constructor(
         return if (currentIndex >= 0 && currentIndex < state.value.listChapters!!.size - 1) state.value.listChapters!![currentIndex + 1].number else null
     }
 
-    //navigate to view chapter
-    fun navigateToViewChapter(comicId: Long, chapterNumber: Int) {
-        navController?.navigate("view_chapter_route/$comicId/$chapterNumber") {
-            //remove current view chapter from backstack
-            popUpTo("view_chapter_route/$comicId/$chapterNumber") {
-                inclusive = false
-            }
-
-        }
-    }
-
 
     // get pages by chapter number of comic
     fun getPagesByChapterNumberOfComic(comicId: Long, chapterNumber: Int) {
@@ -92,13 +81,21 @@ class ViewChapterModel @Inject constructor(
                 comicId,
                 chapterNumber
             )
+//            if (result.hashCode() == 403) {
+//                _state.value = _state.value.copy(isGetPageApiSuccess = false)
+//                Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: Hung is here")
+//                return@launch
+//            }
             result.fold(
                 onSuccess = { page ->
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(
                         pagesImage = page.pages,
                         pageResponse = page,
-                        currentChapterNumber = chapterNumber
+                        currentChapterNumber = chapterNumber,
+
+                        isUserNeedToLogin = false,
+                        isChapterNeedToUnlock = false
 
                     )
                     _state.value = _state.value.copy(isGetPageApiSuccess = true)
@@ -107,6 +104,18 @@ class ViewChapterModel @Inject constructor(
                     // Xử lý lỗi
                     _state.value = _state.value.copy(isGetPageApiSuccess = false)
                     Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: $exception")
+
+                    // catch 403 code
+                    if (exception.message == "403") {
+                        _state.value = _state.value.copy(isChapterNeedToUnlock = true)
+                        _state.value = _state.value.copy(chapterUnlockNumber = chapterNumber)
+                        Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: Chapter is locked (403)")
+                    }
+
+                    if (exception.message == "401") {
+                        _state.value = _state.value.copy(isUserNeedToLogin = true)
+                        Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: Unauthorized (401)")
+                    }
                 }
             )
         }
@@ -128,6 +137,7 @@ class ViewChapterModel @Inject constructor(
                 )
                 return@launch
             }
+
             _state.value = _state.value.copy(
                 isPagesExistInDB = true,
                 pagesImage = result.imageLocalPaths!!,

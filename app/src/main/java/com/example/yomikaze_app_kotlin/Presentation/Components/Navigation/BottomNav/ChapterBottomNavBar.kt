@@ -521,7 +521,7 @@ fun ViewListChapterDialog(
                 if (showDialog) {
                     UnlockChapterDialogComponent(
                         title = "Do you want to unlock this chapter?",
-                        chapter = selectedChapter!!,
+                        chapterNumber = selectedChapter?.number!!,
                         totalCoin = 100,
                         coinOfUserAvailable = 200,
                         onConfirmClick = {

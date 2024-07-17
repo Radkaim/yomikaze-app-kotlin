@@ -103,7 +103,7 @@ data class ProfileResponse(
     val balance: Long,
 
     @SerializedName("avatar")
-    val avatar: String,
+    val avatar: String? = null,
 
     @SerializedName("roles")
     val roles: List<String>? = null,

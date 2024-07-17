@@ -44,10 +44,6 @@ fun SplashScreen(navController: NavController) {
     val color = MaterialTheme.colorScheme.background
     LaunchedEffect(key1 = true) {
 
-
-//        systemUiController.isStatusBarVisible = false
-//        systemUiController.isNavigationBarVisible = false
-
         scale.animateTo(
             targetValue = 0.7f,
             animationSpec = tween(
@@ -56,12 +52,11 @@ fun SplashScreen(navController: NavController) {
                     OvershootInterpolator(4f).getInterpolation(it)
                 })
         )
-        delay(1000L)
+        delay(500L)
         // Optionally, show the system bars again after the splash screen
 
         navController.navigate("main_screen_route")
-//        systemUiController.isStatusBarVisible = true
-//        systemUiController.isNavigationBarVisible = true
+
     }
 
     // Image

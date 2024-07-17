@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -87,6 +88,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Ranking
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconicDataComicDetail
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Comment.CommentCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.CreateCategoryDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
@@ -116,6 +118,7 @@ fun ComicDetailsView(
         LaunchedEffect(Unit) {
             Log.d("ComicDetailsView", "launchedEffect:1")
             comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+            comicDetailViewModel.getAllComicCommentByComicId(comicId = comicId)
         }
 
         LaunchedEffect(
@@ -228,6 +231,7 @@ fun ComicDetailContent(
                             || previousRoute?.startsWith("bookcase_route") == true
                             || previousRoute?.startsWith("notification_route") == true
                             || previousRoute?.startsWith("ranking_route") == true
+                            || previousRoute?.startsWith("download_detail_route") == true
                         ) {
                             navController.popBackStack()
                         } else {
@@ -578,9 +582,10 @@ fun DescriptionInComicDetailView(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 20.dp)
+            .wrapContentHeight()
+            .padding(top = 20.dp, start = 2.dp, end = 8.dp)
     ) {
-//TODO: Description
+        //TODO: Description
         item {
             Box(
                 modifier = Modifier
@@ -605,11 +610,16 @@ fun DescriptionInComicDetailView(
                             fontSize = 14.sp,
                         )
                     } else {
-                        Text(
-                            text = "More",
-                            color = MaterialTheme.colorScheme.error,
-                            fontSize = 14.sp,
-                        )
+                        if (description != null) {
+                            if (description.length > 70) {
+                                Text(
+                                    text = "More",
+                                    color = MaterialTheme.colorScheme.error,
+                                    fontSize = 14.sp,
+                                )
+                            }
+                        }
+
                     }
                 }
 
@@ -669,7 +679,65 @@ fun DescriptionInComicDetailView(
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onSurface
                         )
+
                     }
+                }
+            }
+        }
+        //   for commment
+        item { Spacer(modifier = Modifier.height(30.dp)) }
+        item {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp)
+            ) {
+                Text(
+                    text = "New Comments",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondaryContainer
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "More",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                     Icon(
+                         painterResource(id = R.drawable.ic_next),
+                         contentDescription = null,
+                         modifier = Modifier
+                             .width(10.dp)
+                             .height(10.dp),
+                     )
+                }
+
+            }
+
+        }
+        item { Spacer(modifier = Modifier.height(30.dp)) }
+        if (state.listComicComment != null) {
+            item {
+                state.listComicComment.forEach { comment ->
+                    CommentCard(
+                        commentId = comment.id,
+                        content = comment.content,
+                        authorName = comment.author.name,
+                        authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
+                            ?: "",
+                        roleName = comment.author.roles?.get(0) ?: "",
+                        isOwnComment = true,//comment.author.id == 1L,
+                        onEditClicked = {},
+                        onDeleteClicked = {},
+                        onClicked = {}
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }
@@ -761,7 +829,7 @@ fun ListChapterInComicDetailView(
     if (showDialog) {
         UnlockChapterDialogComponent(
             title = "Do you want to unlock this chapter?",
-            chapter = selectedChapter!!,
+            chapterNumber = selectedChapter?.number!!,
             totalCoin = 100,
             coinOfUserAvailable = 200,
             onConfirmClick = {

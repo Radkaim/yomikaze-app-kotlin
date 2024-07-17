@@ -16,5 +16,14 @@ interface ComicCommentRepository {
         size: Int? = null
     ): Result<BaseResponse<CommentResponse>>
 
+    /**
+     * TODO: use for post comment of comic by comicId
+     */
+    suspend fun postComicCommentByComicId(
+        token: String,
+        comicId: Long,
+        content: String
+    ): Result<CommentResponse>
+
 
 }

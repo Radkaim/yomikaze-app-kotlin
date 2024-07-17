@@ -106,7 +106,7 @@ fun ChooseChapterDownloadContent(
     state: ChooseChapterDownloadState
 ) {
 
-    val chapterList = state.listChapterForDownloaded
+    val chapterList = state.listChapterForDownloaded.sortedBy { it.number }
 
     Scaffold(
         topBar = {
@@ -253,7 +253,8 @@ fun ChooseChapterDownloadContent(
         }
     ) {
 
-
+        var isSelected by remember { mutableStateOf(true) }
+        var isReversed by remember { mutableStateOf(false) }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -265,12 +266,17 @@ fun ChooseChapterDownloadContent(
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp)
             )
 
-            var isSelected by remember { mutableStateOf(true) }
 
             SortComponent(
                 isOldestSelected = isSelected,
-                onnNewSortClick = { isSelected = false },
-                onOldSortClick = { isSelected = true }
+                onnNewSortClick = {
+                    isSelected = false
+                    isReversed = true
+                },
+                onOldSortClick = {
+                    isSelected = true
+                    isReversed = false
+                }
             )
         }
 
@@ -287,14 +293,29 @@ fun ChooseChapterDownloadContent(
                     .fillMaxWidth()
                     .padding(bottom = 50.dp),
             ) {
-                items(chapterList.size) { index ->
-                    val chapter = chapterList[index]
-                    BoxSelectedDownload(
-                        chapter = chapter,
-                        isSelected = chapter.isSelected,
-                        onClicked = { chooseChapterDownloadViewModel.toggleChapterSelection(chapter) }
-                    )
+                chapterList?.let {
+                    val sortedList = if (isReversed) it.reversed() else it
+                    items(chapterList.size) { index ->
+
+                        val chapter = sortedList[index]
+                        BoxSelectedDownload(
+                            chapter = chapter,
+                            isSelected = chapter.isSelected,
+                            onClicked = { chooseChapterDownloadViewModel.toggleChapterSelection(chapter) }
+                        )
+                    }
+
                 }
+//                val sortedList = if (isReversed) it.reversed() else it
+//                items(chapterList.size) { index ->
+//
+//                    val chapter = chapterList[index]
+//                    BoxSelectedDownload(
+//                        chapter = chapter,
+//                        isSelected = chapter.isSelected,
+//                        onClicked = { chooseChapterDownloadViewModel.toggleChapterSelection(chapter) }
+//                    )
+//                }
 
             }
         }

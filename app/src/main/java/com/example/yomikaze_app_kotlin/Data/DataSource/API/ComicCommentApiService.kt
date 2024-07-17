@@ -28,6 +28,7 @@ interface ComicCommentApiService {
     @POST("comics/{comicId}/comments")
     suspend fun postComicCommentByComicId(
         @Header("Authorization") token: String,
+        @Path("comicId") comicId: Long,
         @Query("Content") content: String,
-    ): BaseResponse<CommentResponse>
+    ): CommentResponse
 }

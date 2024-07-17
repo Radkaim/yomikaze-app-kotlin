@@ -46,6 +46,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPager
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPagerOrientation
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.ChapterBottomNavBar
@@ -127,6 +128,14 @@ fun ViewChapterContent(
         Log.e("ViewChapterContent", "canGoToNextChapter: $canGoToNextChapter")
     }
 
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(key1 = state.isChapterNeedToUnlock){
+        if (state.isChapterNeedToUnlock){
+            showDialog = true
+        }
+    }
 
 
 //    var isScrollMode by remember {
@@ -250,6 +259,24 @@ fun ViewChapterContent(
         }
     )
     {
+        when {
+            showDialog -> {
+                UnlockChapterDialogComponent(
+                    title = "Do you want to unlock this chapter?",
+                    chapterNumber = state.chapterUnlockNumber,
+                    totalCoin = 100,
+                    coinOfUserAvailable = 200,
+                    onConfirmClick = {
+                        //UnlockUC
+                        //if(state.success) {navigateToViewChapter}
+                    },
+                    onDismiss = { showDialog = false }
+                )
+            }
+            else -> {
+                // Show comic images
+            }
+        }
         if (isScrollMode) {
             // Scroll View
             // Comic Image

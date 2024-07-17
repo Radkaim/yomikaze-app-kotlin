@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -66,53 +67,69 @@ fun CommentCard(
             .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small, clip = true)
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.error.copy(alpha = 0.5f),
                 shape = MaterialTheme.shapes.small
             )
-            .clickable { onClicked() }
+            .clickable { onClicked() },
+        color = MaterialTheme.colorScheme.onSurface,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .wrapContentHeight()
                 .padding(10.dp)
+
 
         ) {
             //image and role
-            Column {
+            Column(
+                modifier = Modifier
+                    .padding(5.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 //Author Image
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(authorImage)
                         .memoryCachePolicy(CachePolicy.ENABLED)
                         .build(),
-                    placeholder = painterResource(R.drawable.placeholder),
-                    error = painterResource(R.drawable.placeholder),
+                    placeholder = painterResource(R.drawable.ic_profile),
+                    error = painterResource(R.drawable.ic_profile),
                     contentDescription = "Comic Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .width(80.dp)
-                        .height(80.dp)
+                        .width(50.dp)
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(100.dp))
                         .border(
                             width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                             shape = RoundedCornerShape(100.dp)
                         )
-                        .shadow(elevation = 4.dp, shape = RoundedCornerShape(100.dp))
+
                 )
 
                 Text(
                     text = roleName,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    modifier = Modifier.padding(top = 5.dp)
                 )
             }
 
             //name and content
-            Column {
+            Column(
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.Start
+            ) {
                 //Author Name
                 Text(
                     text = authorName,
@@ -131,17 +148,21 @@ fun CommentCard(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     overflow = TextOverflow.Ellipsis,
                     lineHeight = 15.sp,
-                    modifier = Modifier.width(300.dp)
+                    modifier = Modifier.width(265.dp).padding(top = 10.dp)
                 )
 
                 // created at and likes
-                Row {
+                Row (
+                    modifier = Modifier.padding(top = 20.dp),
+                ){
+
                     Text(
                         text = "1 day ago",
                         style = MaterialTheme.typography.bodyMedium,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+
                     )
 
 

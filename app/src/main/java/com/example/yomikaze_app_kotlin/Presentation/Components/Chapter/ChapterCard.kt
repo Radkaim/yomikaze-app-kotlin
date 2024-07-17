@@ -97,7 +97,7 @@ fun ChapterCard(
                         ) {
                             Row() {
                                 Text(
-                                    text = "Chapter $chapterNumber: $title",
+                                    text = "Chapter ${chapterNumber +1}: $title",
                                     fontSize = 13.sp,
                                     style = MaterialTheme.typography.titleLarge,
                                     color = changeColorWhenLocked(
@@ -187,7 +187,7 @@ fun ChapterCard(
 
                                 //Published Date
                                 Text(
-                                    text = "Published date: ${changeDateTimeFormat(publishedDate)}",
+                                    text = "Create date: ${changeDateTimeFormat(publishedDate)}",
                                     fontSize = 10.sp,
                                     style = TextStyle(
                                         fontWeight = FontWeight.Light,

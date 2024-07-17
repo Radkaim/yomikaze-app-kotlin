@@ -49,6 +49,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByCo
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUc
@@ -532,6 +533,16 @@ object UseCaseModule {
         return GetAllComicCommentByComicIdUC(comicCommentRepository)
     }
 
+    /**
+     * TODO: Provide the post comic comment by comic id use case
+     */
+    @Provides
+    @Singleton
+    fun providePostComicCommentByComicIdUC(
+        comicCommentRepository: ComicCommentRepository
+    ): PostComicCommentByComicIdUC {
+        return PostComicCommentByComicIdUC(comicCommentRepository)
+    }
 
     /**
      *-------------------------------------------------------------------------

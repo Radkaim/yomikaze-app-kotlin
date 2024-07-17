@@ -37,7 +37,13 @@ class PageRepositoryImpl @Inject constructor(
                     Result.failure(Throwable("No pages found"))
                 }
             } else {
-                Result.failure(Throwable("API call failed: ${response.code()} ${response.message()}"))
+                if (response.code() == 403) {
+                    Result.failure(Throwable("403"))
+                } else if (response.code() == 401) {
+                    Result.failure(Throwable("401"))
+                } else {
+                    Result.failure(Throwable("API call failed: ${response.code()} ${response.message()}"))
+                }
             }
         } catch (e: IOException) {
             Result.failure(e)
@@ -62,7 +68,7 @@ class PageRepositoryImpl @Inject constructor(
         if (page.imageLocalPaths == null) {
             return
         }
-       page.imageLocalPaths.forEach { imagePath ->
+        page.imageLocalPaths.forEach { imagePath ->
             imageRepository.deleteImageFromLocal(imagePath)
         }
 
