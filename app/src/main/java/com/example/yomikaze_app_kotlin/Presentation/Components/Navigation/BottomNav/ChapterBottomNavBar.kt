@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -26,6 +28,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,12 +46,18 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
+import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPagerOrientation
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapterModel
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun ChapterBottomNavBar(
+    comicId: Long,
     navController: NavController,
     appPreference: AppPreference,
     canPrevious: Boolean,
@@ -58,6 +67,8 @@ fun ChapterBottomNavBar(
     setSelectedTabIndex: (Int) -> Unit,
     isFlipModeSelected: (FlipPagerOrientation) -> Unit,
     checkAutoScroll: (Boolean) -> Unit,
+
+    viewChapterModel: ViewChapterModel,
 
     ) {
 
@@ -121,11 +132,38 @@ fun ChapterBottomNavBar(
                     }
 
                     when (item.screen_route) {
-                        "previous_chapter_route" -> if (canPrevious) {}
+                        "previous_chapter_route" -> if (canPrevious) {
+//                            Log.d("ChapterBottomNavBar", "onPreviousClick: ${canPrevious}")
+//                            Log.d("ChapterBottomNavBar", "onPreviousClick: ${viewChapterModel.state.value.currentChapterNumber - 1}")
+//                            viewChapterModel.getPagesByChapterNumberOfComic(
+//                                comicId,
+//                                viewChapterModel.state.value.currentChapterNumber - 1)
+//                            currentRoute = null
+                            val previousChapterNumber = viewChapterModel.getPreviousChapterNumber(viewChapterModel.state.value.currentChapterNumber)
+                            if (previousChapterNumber != null) {
+                                viewChapterModel.getPagesByChapterNumberOfComic(comicId, previousChapterNumber)
+                                currentRoute = null
+                            }
+                        }
+
                         "list_chapter_route" -> showDialog = 2
                         "comment_route" -> showDialog = 1
                         "setting_route" -> showDialog = 4
-                        "next_chapter_route" -> if (canNext) {}
+                        "next_chapter_route" -> if (canNext) {
+//                            Log.d("ChapterBottomNavBar", "onNextClick: ${canNext}")
+//
+//                            val nextChapter = viewChapterModel.state.value.currentChapterNumber + 1
+//                            Log.d("ChapterBottomNavBar", "onNextClick: $nextChapter")
+//                            viewChapterModel.getPagesByChapterNumberOfComic(
+//                                comicId,
+//                                nextChapter)
+//                            currentRoute = null
+                            val nextChapterNumber = viewChapterModel.getNextChapterNumber(viewChapterModel.state.value.currentChapterNumber)
+                            if (nextChapterNumber != null) {
+                                viewChapterModel.getPagesByChapterNumberOfComic(comicId, nextChapterNumber)
+                                currentRoute = null
+                            }
+                        }
                     }
                     Log.d("ChapterBottomNavBar", "onClick: ${item.screen_route}")
                 },
@@ -141,14 +179,14 @@ fun ChapterBottomNavBar(
                 }
 
                 2 -> {
-//                    DeleteConfirmDialogComponent(
-//                        key = categoryId,
-//                        value = value,
-//                        title = "Are you sure you want to delete this category?",
-//                        onDismiss = { showDialog = 0 },
-//                        viewModel = libraryViewModel
-//                    )
-
+                    ViewListChapterDialog(
+                        comicId = comicId,
+                        viewChapterModel = viewChapterModel,
+                        onDismiss = {
+                            showDialog = null
+                            currentRoute = null
+                        }
+                    )
                 }
 
                 3 -> {
@@ -252,6 +290,7 @@ fun SettingDialog(
                                             appPreference.isScrollMode = true
                                             onDismissRequest()
                                         }
+
                                         1 -> {
                                             isScrollModeSelected(false)
                                             setSelectedTabIndex(index)
@@ -259,6 +298,7 @@ fun SettingDialog(
                                             appPreference.isScrollMode = false
                                             appPreference.orientation = true
                                         }
+
                                         2 -> {
                                             isScrollModeSelected(false)
                                             setSelectedTabIndex(index)
@@ -369,4 +409,129 @@ fun SelectedModeComponent(
 
     }
 
+}
+
+
+// view list chapter option 2
+@Composable
+fun ViewListChapterDialog(
+    comicId: Long,
+    viewChapterModel: ViewChapterModel,
+    onDismiss: () -> Unit
+) {
+    LaunchedEffect(Unit) {
+        viewChapterModel.getListChapterByComicId(comicId = comicId)
+    }
+    var isSelected by remember { mutableStateOf(true) }
+    var isReversed by remember { mutableStateOf(false) }
+
+    val listChapter = viewChapterModel.state.value.listChapters
+
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedChapter by remember { mutableStateOf<Chapter?>(null) }
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = true
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Gray.copy(alpha = 0.7f))
+                .clickable { onDismiss() }
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(500.dp)
+                    .align(Alignment.BottomCenter)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .offset(y = (-220).dp)
+                        .padding(top = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Total Chapter: ${listChapter?.size}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(8.dp)
+
+                    )
+
+                    SortComponent(
+                        isOldestSelected = isSelected,
+                        onnNewSortClick = {
+                            isSelected = false
+                            isReversed = true
+                        },
+                        onOldSortClick = {
+                            isSelected = true
+                            isReversed = false
+                        }
+                    )
+                }
+
+                //list Chapter
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 60.dp)
+                        .offset(x = (-4).dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp) // 8.dp space between each item
+                ) {
+                    listChapter?.let { // means if listChapter is not null
+                        val sortedList = if (isReversed) it.reversed() else it
+                        items(sortedList) { chapter ->
+                            ChapterCard(
+                                chapterNumber = chapter.number,
+                                title = chapter.name,
+                                views = chapter.views,
+                                comments = chapter.comments,
+                                publishedDate = chapter.creationTime,
+                                isLocked = chapter.hasLock,
+                                onClick = {
+                                    if (chapter.hasLock) {
+                                        selectedChapter = chapter
+                                        showDialog = true
+                                    } else {
+                                        viewChapterModel.getPagesByChapterNumberOfComic(
+                                            comicId,
+                                            chapter.number
+                                        )
+                                        onDismiss()
+                                    }
+                                },
+                                onReportClick = {}
+                            )
+
+                        }
+                    }
+
+                }
+                if (showDialog) {
+                    UnlockChapterDialogComponent(
+                        title = "Do you want to unlock this chapter?",
+                        chapter = selectedChapter!!,
+                        totalCoin = 100,
+                        coinOfUserAvailable = 200,
+                        onConfirmClick = {
+                            //UnlockUC
+                            //if(state.success) {navigateToViewChapter}
+                        },
+                        onDismiss = { showDialog = false }
+                    )
+                }
+            }
+        }
+    }
 }

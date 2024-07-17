@@ -86,6 +86,7 @@ fun ViewChapter(
         NoNetworkAvailable()
     } else {
         ViewChapterContent(
+            comicId = comicId,
             state = state,
             navController = navController,
             chapterNumber = chapterNumber,
@@ -98,6 +99,7 @@ fun ViewChapter(
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ViewChapterContent(
+    comicId: Long,
     state: ViewChapterState,
     navController: NavController,
     chapterNumber: Int,
@@ -105,6 +107,26 @@ fun ViewChapterContent(
 ) {
     val context = LocalContext.current
     val appPreference = AppPreference(context)
+
+
+    LaunchedEffect(Unit){
+        viewChapterModel.getListChapterByComicId(comicId)
+    }
+    var canGoToPreviousChapter by remember {
+        mutableStateOf(false)
+    }
+    var canGoToNextChapter by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = state.isGetPageApiSuccess){
+       canGoToPreviousChapter = viewChapterModel.canGoToPreviousChapter(state.currentChapterNumber)
+       canGoToNextChapter = viewChapterModel.canGoToNextChapter(state.currentChapterNumber)
+
+        Log.e("ViewChapterContent", "canGoToPreviousChapter: $canGoToPreviousChapter")
+        Log.e("ViewChapterContent", "canGoToNextChapter: $canGoToNextChapter")
+    }
+
 
 
 //    var isScrollMode by remember {
@@ -164,7 +186,11 @@ fun ViewChapterContent(
 
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()
+                        navController.navigate("comic_detail_route/${comicId}"){
+                            popUpTo("view_chapter_route/${comicId}/${chapterNumber}"){
+                                inclusive = true
+                            }
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -206,10 +232,11 @@ fun ViewChapterContent(
                 }
                 // The actual bottom bar
                 ChapterBottomNavBar(
+                    comicId = comicId,
                     navController = navController,
                     appPreference = appPreference,
-                    canPrevious = true,
-                    canNext = true,
+                    canPrevious = canGoToPreviousChapter,
+                    canNext = canGoToNextChapter,
                     isScrollModeSelected = { isScrollMode = it },
                     selectedTabIndex = selectedTabIndex,
                     setSelectedTabIndex = setSelectedTabIndex,
@@ -217,7 +244,7 @@ fun ViewChapterContent(
                         orientation = it
                     },
                     checkAutoScroll = { autoScroll = it },
-
+                    viewChapterModel = viewChapterModel,
                     )
             }
         }

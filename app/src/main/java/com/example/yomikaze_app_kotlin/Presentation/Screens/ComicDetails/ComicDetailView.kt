@@ -223,7 +223,16 @@ fun ComicDetailContent(
                 ) {
                     // Back button
                     IconButton(onClick = {
-                        navController.popBackStack()
+                        val previousRoute = navController.previousBackStackEntry?.destination?.route
+                        if (previousRoute?.startsWith("home_route") == true
+                            || previousRoute?.startsWith("bookcase_route") == true
+                            || previousRoute?.startsWith("notification_route") == true
+                            || previousRoute?.startsWith("ranking_route") == true
+                        ) {
+                            navController.popBackStack()
+                        } else {
+                            navController.popBackStack("home_route", inclusive = false)
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -673,7 +682,7 @@ fun ListChapterInComicDetailView(
     comicDetailViewModel: ComicDetailViewModel,
     comicId: Long
 ) {
-    Log.d("ListChapterInComicDetailView", "ListChapterInComicDetailView: $comicId")
+
     LaunchedEffect(Unit) {
         comicDetailViewModel.getListChapterByComicId(comicId = comicId)
     }

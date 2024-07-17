@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetPageByComicIdAndChapterNumberDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class ViewChapterModel @Inject constructor(
     private val appPreference: AppPreference,
     private val getPagesByChapterNumberOfComicUC: GetPagesByChapterNumberOfComicUC,
-    private val getPageByComicIdAndChapterNumberDBUC: GetPageByComicIdAndChapterNumberDBUC
+    private val getPageByComicIdAndChapterNumberDBUC: GetPageByComicIdAndChapterNumberDBUC,
+    private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC
 ) : ViewModel() {
 
 
@@ -34,8 +36,53 @@ class ViewChapterModel @Inject constructor(
         this.navController = navController
     }
 
+    //update can previous chapter
+    fun updateCanPreviousChapter(canPreviousChapter: Boolean) {
+        _state.value = _state.value.copy(canPreviousChapter = canPreviousChapter)
+    }
+
+    //update can next chapter
+    fun updateCanNextChapter(canNextChapter: Boolean) {
+        _state.value = _state.value.copy(canNextChapter = canNextChapter)
+    }
+
+    fun canGoToPreviousChapter(currentChapterNumber: Int): Boolean {
+        val currentIndex =
+            state.value.listChapters!!.indexOfFirst { it.number == currentChapterNumber }
+        return currentIndex > 0
+    }
+
+    fun canGoToNextChapter(currentChapterNumber: Int): Boolean {
+        val currentIndex =
+            state.value.listChapters!!.indexOfFirst { it.number == currentChapterNumber }
+        return currentIndex >= 0 && currentIndex < state.value.listChapters!!.size - 1
+    }
+
+    fun getPreviousChapterNumber(currentChapterNumber: Int): Int? {
+        val currentIndex = state.value.listChapters!!.indexOfFirst { it.number == currentChapterNumber }
+        return if (currentIndex > 0) state.value.listChapters!![currentIndex - 1].number else null
+    }
+
+    fun getNextChapterNumber(currentChapterNumber: Int): Int? {
+        val currentIndex = state.value.listChapters!!.indexOfFirst { it.number == currentChapterNumber }
+        return if (currentIndex >= 0 && currentIndex < state.value.listChapters!!.size - 1) state.value.listChapters!![currentIndex + 1].number else null
+    }
+
+    //navigate to view chapter
+    fun navigateToViewChapter(comicId: Long, chapterNumber: Int) {
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber") {
+            //remove current view chapter from backstack
+            popUpTo("view_chapter_route/$comicId/$chapterNumber") {
+                inclusive = false
+            }
+
+        }
+    }
+
+
     // get pages by chapter number of comic
     fun getPagesByChapterNumberOfComic(comicId: Long, chapterNumber: Int) {
+        _state.value = _state.value.copy(isGetPageApiSuccess = false)
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -50,11 +97,15 @@ class ViewChapterModel @Inject constructor(
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(
                         pagesImage = page.pages,
-                        pageResponse = page
+                        pageResponse = page,
+                        currentChapterNumber = chapterNumber
+
                     )
+                    _state.value = _state.value.copy(isGetPageApiSuccess = true)
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isGetPageApiSuccess = false)
                     Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: $exception")
                 }
             )
@@ -83,6 +134,30 @@ class ViewChapterModel @Inject constructor(
                 pageResponse = result
             )
             Log.d("ViewChapterModel", "getPageByComicIdAndChapterNumberInDB: ${result.pages}")
+        }
+    }
+
+
+    /**
+     * Todo: Implement get list chapter by comic id in comic detail view
+     */
+    fun getListChapterByComicId(comicId: Long) {
+        _state.value = _state.value.copy(listChapters = emptyList())
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = getListChaptersByComicIdUC.getListChapters(comicId)
+            result.fold(
+                onSuccess = { listChapter ->
+                    // Xử lý kết quả thành công
+                    //_state.value.listChapters.value = listChapter
+                    _state.value = _state.value.copy(
+                        listChapters = listChapter.sortedBy { it.number }
+                    )
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicDetailViewModel", "getListChapterByComicId: $exception")
+                }
+            )
         }
     }
 
