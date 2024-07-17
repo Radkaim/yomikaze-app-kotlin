@@ -1,9 +1,10 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.CoinShop
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.CoinShop
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,8 +29,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -89,8 +88,59 @@ fun CoinShopContent(
     coinShopViewModel: CoinShopViewModel,
     coinShopState: CoinShopState
 ) {
+
     LaunchedEffect(Unit) {
         coinShopViewModel.getCoinPricing(1, 30)
+    }
+
+    LaunchedEffect(Unit) {
+        coinShopViewModel.getProfile()
+    }
+    LaunchedEffect(key1 = coinShopViewModel.isPaymentSuccess.value) {
+        if (coinShopViewModel.isPaymentSuccess.value) {
+            coinShopViewModel.getProfile()
+            coinShopViewModel.isPaymentSuccess.value = false
+        }
+    }
+
+    val paymentSheet = rememberPaymentSheet { paymentSheetResult ->
+        onPaymentSheetResult(paymentSheetResult, coinShopViewModel)
+    }
+
+    var customerConfig by remember { mutableStateOf<CustomerConfiguration?>(null) }
+    var paymentIntentClientSecret by remember { mutableStateOf<String?>(null) }
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = coinShopViewModel.coinPricingId.value) {
+        coinShopViewModel.coinPricingId.value?.let {
+            coinShopViewModel.getPaymentSheetResponse(it)
+        }
+    }
+
+    if (coinShopState.isGetPaymentSheetResponseSuccess) {
+        LaunchedEffect(context) {
+
+            customerConfig = PaymentSheet.CustomerConfiguration(
+                coinShopState.paymentSheetResponse!!.customer,
+                coinShopState.paymentSheetResponse!!.ephemeralKey
+            )
+            paymentIntentClientSecret =
+                coinShopState.paymentSheetResponse!!.paymentIntentClientSecret
+            Log.d("CoinShopViewModel", "CurrentConfig1: ${customerConfig.toString()}")
+            PaymentConfiguration.init(context, coinShopState.paymentSheetResponse!!.publishableKey)
+
+
+            val currentConfig = customerConfig
+            val currentClientSecret = paymentIntentClientSecret
+
+            if (currentConfig != null && currentClientSecret != null) {
+                Log.d("CoinShopViewModel", "CurrentConfig2: $currentConfig")
+                coinShopViewModel.isPaymentSheetVisible.value = true
+                presentPaymentSheet(paymentSheet, currentConfig, currentClientSecret)
+
+            }
+        }
     }
 
     Scaffold(
@@ -111,7 +161,7 @@ fun CoinShopContent(
         },
     ) {
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(25.dp), // 15.dp space between each card
+            verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .fillMaxWidth()
@@ -121,23 +171,30 @@ fun CoinShopContent(
 
         ) {
             item {
-                CoinAvailableContent(1000, onReloadClicked = {})
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Buy coin to unlock and download chapters",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.W300,
-                        fontStyle = FontStyle.Italic,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                    )
-                }
-
-
+                CoinAvailableContent(
+                    coinShopState.profileResponse?.balance ?: 0,
+                    onReloadClicked = {
+                        if (coinShopViewModel.checkUserIsLogin()) {
+                            coinShopViewModel.getProfile()
+                        } else {
+                            navController.navigate("login")
+                        }
+                    })
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = if (coinShopViewModel.checkUserIsLogin()) "Buy coin to unlock and download chapters" else "Please login to buy coins",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.W300,
+                            fontStyle = FontStyle.Italic,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                        )
+                    }
             }
+            //shimmer loading
             item {
                 if (coinShopState.isGetCoinPricingLoading) {
                     Column(
@@ -153,6 +210,8 @@ fun CoinShopContent(
                     }
                 }
             }
+
+            //divider
             item {
                 if (!coinShopState.isGetCoinPricingLoading) {
                     Divider(
@@ -162,6 +221,7 @@ fun CoinShopContent(
                     )
                 }
             }
+
             items(coinShopState.coinPricingList) { coinPricing ->
                 Column(
                     //verticalArrangement = Arrangement.spacedBy(20.dp), // 15.dp space between each card
@@ -175,17 +235,25 @@ fun CoinShopContent(
                             price = coinPricing.price,
                             currency = coinPricing.currency,
                             onClicked = {
+
+                                if (coinShopViewModel.checkUserIsLogin()) {
+                                    coinShopViewModel.coinPricingId.value = coinPricing.id
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "You need to login to buy coins",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    navController.navigate("login_route")
+                                }
+
+
                             }
                         )
                     }
                 }
             }
-            item {
-                App(
-                    coinShopViewModel = coinShopViewModel,
-                    state = coinShopState
-                )
-            }
+
         }
     }
 }
@@ -206,7 +274,8 @@ fun CoinShopCard(
             .offset(x = 20.dp, y = 10.dp)
             .clickable(onClick = onClicked),
         color = MaterialTheme.colorScheme.onSurface,
-        shape = RoundedCornerShape(30), // Making it oval
+        shape = RoundedCornerShape(40), // Making it oval
+        shadowElevation = 5.dp
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -275,13 +344,14 @@ fun CoinShopCard(
                     modifier = Modifier
                         .wrapContentWidth()
                         .wrapContentHeight()
-                        .background(MaterialTheme.colorScheme.background)
-                        .offset(x = -(10).dp)
+//                        .background(MaterialTheme.colorScheme.background)
+                        .offset(x = (-20).dp)
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.5f),
                             shape = RoundedCornerShape(40)
                         )
+
                 ) {
                     Text(
                         text = "$$price $currency",
@@ -289,6 +359,7 @@ fun CoinShopCard(
                         fontWeight = FontWeight.W400,
                         color = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier
+                            .align(Alignment.Center)
                             .padding(8.dp)
                     )
                 }
@@ -336,15 +407,6 @@ fun CoinAvailableContent(
                 onReloadClicked()
                 iconReloadClick.value = false
             }) {
-                if (iconReloadClick.value) {
-                    Box(
-                        modifier = Modifier
-                            .height(25.dp)
-                            .width(25.dp)
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                } else {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_reload),
                         contentDescription = "Coins Icon",
@@ -353,91 +415,46 @@ fun CoinAvailableContent(
                             .width(25.dp)
                             .height(25.dp)
                     )
-                }
-
             }
         }
     }
 }
 
-//@Composable
-//fun checkOut() {
-//    lateinit var paymentSheet: PaymentSheet
-//    lateinit var context: Context
-//    paymentSheet = PaymentSheet(
-//        activity = context,
-//        createIntentCallback = { _, _ ->
-//            TODO() // You'll implement this later
-//        },
-//        paymentResultCallback = ::onPaymentSheetResult,
-//    )
-//}
-
-@Composable
-fun App(
-    coinShopViewModel: CoinShopViewModel,
-    state: CoinShopState
-) {
-    val paymentSheet = rememberPaymentSheet(::onPaymentSheetResult)
-    val context = LocalContext.current
-    var customerConfig by remember { mutableStateOf<CustomerConfiguration?>(null) }
-    var paymentIntentClientSecret by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        coinShopViewModel.getPaymentSheetResponse()
-    }
-    if (state.isGetPaymentSheetResponseSuccess) {
-        LaunchedEffect(context) {
-            //val publishableKey = responseJson.getString("publishableKey") Log.d("CoinShopViewModel", "getPaymentSheetResponse: ${state.paymentSheetResponse!!.publishableKey}")
-            Log.d(
-                "CoinShopViewModel1",
-                "publishableKey: ${state.paymentSheetResponse!!.publishableKey}"
-            )
-            Log.d("CoinShopViewModel", "customer: ${state.paymentSheetResponse!!.customer}")
-            customerConfig = PaymentSheet.CustomerConfiguration(
-                state.paymentSheetResponse!!.customer.toString(),
-                state.paymentSheetResponse!!.ephemeralKey.toString()
-            )
-            Log.d("CoinShopViewModel", "CurrentConfig1: ${customerConfig.toString()}")
-            PaymentConfiguration.init(context, state.paymentSheetResponse!!.publishableKey)
-        }
-    }
-    Button(
-        onClick = {
-            val currentConfig = customerConfig
-            val currentClientSecret = state.paymentSheetResponse!!.paymentIntentClientSecret
-
-            Log.d("CoinShopViewModel", "CurrentConfig2: $currentConfig")
-            if (currentConfig != null && currentClientSecret != null) {
-                presentPaymentSheet(paymentSheet, currentConfig, currentClientSecret)
-            }
-        }
-    ) {
-        Text("Checkout")
-    }
-}
 
 private fun presentPaymentSheet(
     paymentSheet: PaymentSheet,
     customerConfig: CustomerConfiguration,
     paymentIntentClientSecret: String
 ) {
+
     paymentSheet.presentWithPaymentIntent(
         paymentIntentClientSecret,
         PaymentSheet.Configuration(
-            merchantDisplayName = "My merchant name",
+            merchantDisplayName = "Yomikaze",
             customer = customerConfig,
             // Set `allowsDelayedPaymentMethods` to true if your business handles
             // delayed notification payment methods like US bank accounts.
-           allowsDelayedPaymentMethods = true
+            googlePay = PaymentSheet.GooglePayConfiguration(
+                environment = PaymentSheet.GooglePayConfiguration.Environment.Test,
+                countryCode = "US",
+            ),
+            allowsDelayedPaymentMethods = true
         )
+
     )
 }
 
-private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+fun onPaymentSheetResult(
+    paymentSheetResult: PaymentSheetResult,
+    coinShopViewModel: CoinShopViewModel
+) {
     // implemented in the next steps
+
     when (paymentSheetResult) {
         is PaymentSheetResult.Canceled -> {
+            coinShopViewModel.isPaymentSheetVisible.value = false
+            coinShopViewModel.coinPricingId.value = null
+            coinShopViewModel.isPaymentSuccess.value = false
             print("Canceled")
         }
 
@@ -448,7 +465,10 @@ private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
 
         is PaymentSheetResult.Completed -> {
             // Display for example, an order confirmation screen
+            coinShopViewModel.isPaymentSuccess.value = true
             print("Completed")
         }
     }
+    coinShopViewModel.coinPricingId.value = null // Reset coinPricingId after payment result
+    coinShopViewModel.isPaymentSheetVisible.value = false // Reset visibility flag
 }

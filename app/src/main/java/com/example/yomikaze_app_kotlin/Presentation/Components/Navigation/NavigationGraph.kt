@@ -7,14 +7,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
-import com.example.yomikaze_app_kotlin.Presentation.Screens.AboutUs.AboutUsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.CoinShop.CoinShopView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile.EditProfileView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting.SettingView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.RankingView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.AboutUs.AboutUsView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.CoinShop.CoinShopView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.EditProfile.EditProfileView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.SettingView
 
 
 @Composable
@@ -92,7 +92,7 @@ fun NavigationGraph(
             SettingView(navController = navController, viewModel = viewModel)
         }
 
-        composable("aboutUs_route") {
+        composable("about_us_route") {
             AboutUsView(navController = navController)
         }
         // for ranking screen

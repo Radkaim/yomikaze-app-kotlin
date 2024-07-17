@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUc
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,7 +19,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     appPreference: AppPreference,
     private val logoutUC: LogoutUC,
-    private val getUserInfoUC: GetUserInfoUC
+    private val getUserInfoUC: GetUserInfoUC,
+    private val getProfileUc: GetProfileUc
 ) : ViewModel() {
 
     private val appPreference = appPreference
@@ -61,6 +64,35 @@ class ProfileViewModel @Inject constructor(
                     Log.d("ProfileViewModel", "getUserInfo: $error")
                 }
             }
+        }
+    }
+
+    /**
+     * Todo: Implement getProfile
+     */
+    fun getProfile() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isGetProfileLoading = true)
+
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result =
+                getProfileUc.getProfile(token)
+            result.fold(
+                onSuccess = { profileResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(
+                        profileResponse = profileResponse
+                    )
+                    Log.d("CoinShopViewModel", "getProfile: $profileResponse")
+                    _state.value = _state.value.copy(isGetProfileLoading = false)
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("CoinShopViewModel", "getProfile: $exception")
+                    _state.value = _state.value.copy(isGetProfileLoading = false)
+                }
+            )
         }
     }
 

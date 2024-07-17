@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
@@ -44,8 +45,8 @@ fun SplashScreen(navController: NavController) {
     LaunchedEffect(key1 = true) {
 
 
-        systemUiController.isStatusBarVisible = false
-        systemUiController.isNavigationBarVisible = false
+//        systemUiController.isStatusBarVisible = false
+//        systemUiController.isNavigationBarVisible = false
 
         scale.animateTo(
             targetValue = 0.7f,
@@ -59,14 +60,14 @@ fun SplashScreen(navController: NavController) {
         // Optionally, show the system bars again after the splash screen
 
         navController.navigate("main_screen_route")
-        systemUiController.isStatusBarVisible = true
-        systemUiController.isNavigationBarVisible = true
+//        systemUiController.isStatusBarVisible = true
+//        systemUiController.isNavigationBarVisible = true
     }
 
     // Image
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().offset(y = -(50).dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),

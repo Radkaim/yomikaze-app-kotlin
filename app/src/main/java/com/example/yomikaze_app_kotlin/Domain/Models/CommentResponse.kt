@@ -10,7 +10,7 @@ data class CommentResponse(
     val content: String,
 
     @SerializedName("author")
-    val author: Author,
+    val author: ProfileResponse,
 
     @SerializedName("replies")
     val replies: List<CommentResponse>? = null,
@@ -18,4 +18,4 @@ data class CommentResponse(
     @SerializedName("creationTime")
     val creationTime: String,
 
-)
+    )

@@ -10,6 +10,7 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.API.HistoryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryCategoryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.PageApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.ProfileApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.PageDao
@@ -24,6 +25,7 @@ import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ImageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.LibraryCategoryRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.LibraryRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.PageRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ProfileRepositoryImpl
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.CoinShopRepository
@@ -35,6 +37,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ProfileRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -191,5 +194,17 @@ object RepoModule {
         comicCommentApiService: ComicCommentApiService
     ): ComicCommentRepository {
         return ComicCommentRepositoryImpl(comicCommentApiService)
+    }
+
+    /**
+     * --------------------------------------------------------------------------
+     * Todo: Provide the the Profile Repository
+     */
+    @Provides
+    @Singleton
+    fun provideProfileRepository(
+        profileApiService: ProfileApiService
+    ): ProfileRepository {
+        return ProfileRepositoryImpl(profileApiService)
     }
 }

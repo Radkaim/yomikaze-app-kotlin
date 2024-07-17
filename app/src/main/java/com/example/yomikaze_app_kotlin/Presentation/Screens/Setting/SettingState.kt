@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Setting
 
 data class SettingState (
     val isLoading: Boolean = true,

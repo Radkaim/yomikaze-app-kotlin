@@ -48,11 +48,11 @@ class HomeViewModel @Inject constructor(
     val searchTextState: MutableState<String> get() = _searchTextState
 
 
-    init {
-        viewModelScope.launch {
-            checkUserIsLogin()
-        }
-    }
+//    init {
+//        viewModelScope.launch {
+//            checkUserIsLogin()
+//        }
+//    }
 
     fun updateSearchWidgetState(newState: SearchWidgetState) {
         _searchWidgetState.value = newState
@@ -75,21 +75,6 @@ class HomeViewModel @Inject constructor(
         _state.value = _state.value.copy(totalResults = newValue)
     }
 
-
-//    fun fetchImages() {
-//        viewModelScope.launch {
-//            val result = getHotComicBannerUseCase.getHotComicBannerImages()
-//            result.onSuccess { images ->
-//                //get list string from images
-//                val imageList = images.map { it.thumbnailUrl }
-//                //get 5 images api 5000 images testcase
-//                _state.value = _state.value.copy(images = imageList.take(5), isLoading = false)
-//            }.onFailure {
-//                _state.value = _state.value.copy(isLoading = true, error = it.message)
-//            }
-//
-//        }
-//    }
 
 
     /**

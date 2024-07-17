@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.EditProfile
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.EditProfile
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController

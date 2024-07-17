@@ -11,6 +11,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ProfileRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.AdvancedSearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
@@ -50,6 +51,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUc
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByRatingRankingUC
@@ -530,4 +532,20 @@ object UseCaseModule {
         return GetAllComicCommentByComicIdUC(comicCommentRepository)
     }
 
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Profile Use Case
+     */
+
+    /**
+     * Todo: Provide the getProfileUseCase
+     */
+    @Provides
+    @Singleton
+    fun provideGetProfileUseCase(
+        profileRepository: ProfileRepository
+    ): GetProfileUc {
+        return GetProfileUc(profileRepository)
+    }
 }

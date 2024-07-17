@@ -1,9 +1,9 @@
-package com.example.yomikaze_app_kotlin.Presentation.Components.AboutUs
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.AboutUs
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
@@ -16,64 +16,66 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 data class AboutUsObject(
     val title: String,
-    val titleEnd: String? = null,
-    val iconEnd: Int? = null,
+    val titleEnd: String,
+    val iconEnd: Int,
 )
 
 @Composable
 fun AboutUsItem(
-    aboutUsObjectIcon: AboutUsObject,
-    modifier: Modifier = Modifier,
+    title: String,
+    titleEnd: String,
+    iconEnd: Int,
+    onClicked: () -> Unit
 ) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClicked() }
             .padding(horizontal = 10.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = aboutUsObjectIcon.title,
+            text = title,
             style = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
-            )
+            ),
+            color = MaterialTheme.colorScheme.primaryContainer,
+            modifier = Modifier.padding(start = 5.dp)
         )
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        aboutUsObjectIcon.titleEnd?.let {
+        if (titleEnd.isNotEmpty()) {
             Text(
-                text = it,
+                text = titleEnd,
                 style = TextStyle(
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraLight
-                )
+                    fontWeight = FontWeight.W300
+                ),
+                color = MaterialTheme.colorScheme.primaryContainer
             )
-        }
-
-        aboutUsObjectIcon.iconEnd?.let {
+        } else {
             IconButton(
                 modifier = Modifier.size(10.dp),
-                onClick = { /* Handle icon click */ }) {
+                onClick = { onClicked()  }) {
                 Icon(
-                    painter = painterResource(id = it),
+                    painter = painterResource(id = iconEnd),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.65f),
                     modifier = Modifier.size(16.dp)
                 )
             }
+
         }
     }
     Divider(
-        color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
+        color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.1f),
         thickness = 1.dp,
-//        modifier = Modifier.padding(vertical = 8.dp)
     )
 }

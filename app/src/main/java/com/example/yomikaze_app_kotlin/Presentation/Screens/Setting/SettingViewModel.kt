@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.Setting
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Setting
 
 import android.widget.Toast
 import androidx.lifecycle.ViewModel

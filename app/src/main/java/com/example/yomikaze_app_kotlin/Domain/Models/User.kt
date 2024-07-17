@@ -91,7 +91,7 @@ data class UserInfoResponse(
     val user: User,
 )
 
-data class Author(
+data class ProfileResponse(
 
     @SerializedName("id")
     val id: Long,
@@ -99,8 +99,14 @@ data class Author(
     @SerializedName("name")
     val name: String,
 
+    @SerializedName("balance")
+    val balance: Long,
+
     @SerializedName("avatar")
     val avatar: String,
+
+    @SerializedName("roles")
+    val roles: List<String>? = null,
 
     @SerializedName("birthday")
     val birthday: String,

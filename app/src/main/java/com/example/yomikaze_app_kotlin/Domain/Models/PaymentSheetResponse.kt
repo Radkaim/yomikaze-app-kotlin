@@ -18,5 +18,5 @@ data class PaymentSheetResponse(
 
 data class PaymentSheetRequest(
     @SerializedName("priceId")
-    val priceId: String
+    val priceId: Long
 )
