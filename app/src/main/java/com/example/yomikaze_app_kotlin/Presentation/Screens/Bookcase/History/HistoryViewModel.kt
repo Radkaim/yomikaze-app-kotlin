@@ -62,7 +62,9 @@ class HistoryViewModel @Inject constructor(
     fun checkUserIsLogin(): Boolean {
         return appPreference.isUserLoggedIn
     }
-
+    fun onHistoryComicClicked(comicId: Long, chapterNumber: Int) {
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber")
+    }
 
 
     /**

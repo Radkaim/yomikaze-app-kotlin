@@ -255,7 +255,11 @@ fun HomeContent(
             }
 
             item {
-                showWeekly(homeViewModel = homeViewModel ,state = state, navController = navController)
+                showWeekly(
+                    homeViewModel = homeViewModel,
+                    state = state,
+                    navController = navController
+                )
             }
 
         }
@@ -291,7 +295,6 @@ private fun SearchResultItem(
         onClicked = { homeViewModel.onComicSearchClicked(comic.comicId) }
     )
 }
-
 
 
 //fun getListCardComicWeekly(): List<CardComicItem> {
@@ -353,60 +356,66 @@ fun showComicCarouselByViewRanking(
 @Composable
 fun showHistory(navController: NavController, viewModel: HomeViewModel, state: HomeState) {
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.getHistories()
     }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 30.dp)
-    ) {
-        Row(
+    if (state.listHistoryRecords.isNotEmpty()) {
+        // show 3 shimmer loading cards
+
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(start = 8.dp, bottom = 1.dp)
                 .fillMaxWidth()
+                .padding(top = 30.dp)
         ) {
-            Spacer(modifier = Modifier.width(2.dp))
-            Icon(
-                painter = painterResource(id = R.drawable.ic_history),
-                contentDescription = "Icon History",
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-            Text(
-                text = "History",
-                modifier = Modifier.padding(top = 5.dp, start = 5.dp),
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
+            Row(
+                modifier = Modifier
+                    .padding(start = 8.dp, bottom = 1.dp)
+                    .fillMaxWidth()
+            ) {
+                Spacer(modifier = Modifier.width(2.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_history),
+                    contentDescription = "Icon History",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
                 Text(
-                    text = "More",
-                    modifier = Modifier.padding(top = 8.dp, end = 5.dp),
-                    fontSize = 10.sp,
+                    text = "History",
+                    modifier = Modifier.padding(top = 5.dp, start = 5.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_next),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .padding(top = 10.dp, end = 8.dp)
-                        .width(8.dp)
-                        .height(8.dp)
-                        .clickable { viewModel.onViewMoreHistoryClicked() },
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                Spacer(modifier = Modifier.weight(1f))
+                Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
+                    Text(
+                        text = "More",
+                        modifier = Modifier.padding(top = 8.dp, end = 5.dp),
+                        fontSize = 10.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_next),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(top = 10.dp, end = 8.dp)
+                            .width(8.dp)
+                            .height(8.dp)
+                            .clickable { viewModel.onViewMoreHistoryClicked() },
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
 
-                )
+                    )
 
+                }
             }
         }
+        showHistoryCardComic(state = state, homeViewModel = viewModel)
     }
-    showHistoryCardComic(state = state)
 }
 
 @Composable
 fun showHistoryCardComic(
-    state: HomeState
+    state: HomeState,
+    homeViewModel: HomeViewModel
 ) {
     val comics = state.listHistoryRecords
     Log.d("HomeView", "History records: $comics")
@@ -417,17 +426,23 @@ fun showHistoryCardComic(
         horizontalArrangement = Arrangement.spacedBy(25.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+
         comics.forEach { historyRecord ->
             BasicComicCard(
                 image = APIConfig.imageAPIURL.toString() + historyRecord.comic.cover,
                 comicName = historyRecord.comic.name,
                 comicChapter = historyRecord.chapter.number.toString(),
-                onClick = { /*TODO*/ },
+                onClick = {
+                    homeViewModel.onHistoryComicClicked(
+                        historyRecord.comic.comicId,
+                        historyRecord.chapter.number
+                    )
+                },
                 // averageRatingNumber = comic.averageRatingNumber
             )
         }
-    }
 
+    }
 }
 
 
@@ -578,7 +593,6 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
                 NormalComicCardShimmerLoading()
             }
         }
-        Log.d("HomeView", "List ranking comics: ${state.listRankingComics}")
         state.listRankingComics.forEachIndexed { index, comic ->
             RankingComicCard(
                 comicId = comic.comicId,

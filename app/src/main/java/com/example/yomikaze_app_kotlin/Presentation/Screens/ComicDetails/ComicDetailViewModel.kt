@@ -52,8 +52,8 @@ class ComicDetailViewModel @Inject constructor(
     }
 
     //navigate to view chapter
-    fun navigateToViewChapter(comicId: Long, chapterId: Int) {
-        navController?.navigate("view_chapter_route/$comicId/$chapterId")
+    fun navigateToViewChapter(comicId: Long, chapterNumber: Int) {
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber")
     }
 
     fun navigateToChooseChapterDownload(comicId: Long, comicName: String) {

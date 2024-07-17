@@ -92,7 +92,7 @@ fun BookcaseComicCard(
                 .fillMaxWidth()
                 .offset(x = (-4).dp)
                 .clickable {
-                     onClicked()
+                    onClicked()
                 }
         ) {
             if (isDeleted) {
@@ -119,7 +119,7 @@ fun BookcaseComicCard(
                                     showDialog = 1
 
                                 }
-                                if (isDownloaded){
+                                if (isDownloaded) {
                                     showPopupMenu = true
                                     showDialog = 2
                                 }
@@ -254,14 +254,14 @@ fun BookcaseComicCard(
             1 -> {
                 DeleteConfirmDialogComponent(
                     key = historyRecordId!!,
-                    value = value?:"",
+                    value = value ?: "",
                     title = "Are you sure you want to delete this history record?",
                     onDismiss = { showDialog = 0 },
                     viewModel = historyViewModel!!
                 )
             }
 
-            2->{
+            2 -> {
                 DeleteConfirmDialogComponent(
                     key = comicId,
                     value = comicName,

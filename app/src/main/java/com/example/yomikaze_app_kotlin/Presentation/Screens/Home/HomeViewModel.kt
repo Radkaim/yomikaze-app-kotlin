@@ -98,7 +98,8 @@ class HomeViewModel @Inject constructor(
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
-                    _state.value = _state.value.copy(isHistoryListLoading = true)
+                    _state.value = _state.value.copy(
+                        isHistoryListLoading = true)
                     Log.e("HomeViewModel", "getHistories: $exception")
                 }
             )
@@ -305,8 +306,8 @@ class HomeViewModel @Inject constructor(
         navController?.navigate("ranking_route/$tabIndex")
     }
 
-    fun onHistoryComicClicked(chapterId: Int) {
-        navController?.navigate("view_chapter_route/$chapterId")
+    fun onHistoryComicClicked(comicId: Long, chapterNumber: Int) {
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber")
     }
 
     fun onNavigateComicDetail(comicId: Long) {
