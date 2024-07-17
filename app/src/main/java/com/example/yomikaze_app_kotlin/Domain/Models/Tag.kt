@@ -26,16 +26,41 @@ data class Tag(
     @ColumnInfo(name = "description")
     val description: String,
 
-    //for api
-    @SerializedName("category")
-    //for database
-    @ColumnInfo(name = "category")
-    val category: String,
+//    //for api
+//    @SerializedName("category")
+//    //for database
+//    @ColumnInfo(name = "category")
+//    val category: String? = null,
 
     //for api
     @SerializedName("creationTime")
     //for database
     @ColumnInfo(name = "creationTime")
-    val creationTime: String
+    val creationTime: String,
 
+    // For API
+    @SerializedName("category")
+
+    val category: Category
+
+)
+
+data class Category(
+    // For API
+    @SerializedName("name")
+    // For database
+    @ColumnInfo(name = "name")
+    val name: String,
+
+    // For API
+    @SerializedName("id")
+    // For database
+    @ColumnInfo(name = "id")
+    val categoryId: Long,
+
+    // For API
+    @SerializedName("creationTime")
+    // For database
+    @ColumnInfo(name = "creationTime")
+    val creationTime: String
 )

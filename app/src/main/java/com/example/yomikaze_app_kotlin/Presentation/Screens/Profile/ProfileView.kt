@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -137,11 +138,10 @@ fun ProfileContent(
                         contentDescription = "Avatar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .width(120.dp)
-                            .height(120.dp)
+                            .width(90.dp)
+                            .height(90.dp)
+                            .blur(2.dp)
                             .align(Alignment.Center)
-
-
 
                     )
                 }
@@ -163,21 +163,23 @@ fun ProfileContent(
                 )
 
             }
-        }
 
-
-        // Sign In Button
-        if (!profileViewModel.checkUserIsLogin()) {
-            Button(
-                onClick = { profileViewModel.onSignInButtonClicked() },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
-            ) {
-                Text(text = "Sign In", color = Color.White)
+            item {
+                // Sign In Button
+                if (!profileViewModel.checkUserIsLogin()) {
+                    Button(
+                        onClick = { profileViewModel.onSignInButtonClicked() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    ) {
+                        Text(text = "Sign In", color = Color.White)
+                    }
+                }
             }
         }
+
 
     }
 }

@@ -16,7 +16,7 @@ android {
         defaultConfig {
 
         }
-        applicationId = "com.example.yomikaze_app_kotlin"
+        applicationId = "org.yomikaze.app"
         minSdk = 30
         targetSdk = 34
         versionCode = 1

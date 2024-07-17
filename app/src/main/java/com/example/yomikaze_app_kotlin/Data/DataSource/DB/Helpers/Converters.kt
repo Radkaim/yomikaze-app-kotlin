@@ -1,7 +1,11 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.DB.Helpers
 
 import androidx.room.TypeConverter
+import com.example.yomikaze_app_kotlin.Domain.Models.Category
 import com.example.yomikaze_app_kotlin.Domain.Models.Tag
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 
 class Converters {
@@ -34,16 +38,38 @@ class Converters {
 //        }
 //    }
 
+//    @TypeConverter
+//    fun fromTagList(tags: List<Tag>?): String? {
+//        return tags?.joinToString(",") { it.tagId.toString() }
+//    }
+//
+//    @TypeConverter
+//    fun toTagList(tags: String?): List<Tag>? {
+//        return tags?.split(",")?.map {
+//            Tag(it.toLong(), "", "", "",null )
+//        }
+//    }
+
+
     @TypeConverter
-    fun fromTagList(tags: List<Tag>?): String? {
-        return tags?.joinToString(",") { it.tagId.toString() }
+    fun fromTagList(tags: List<Tag>): String {
+        return Gson().toJson(tags)
     }
 
     @TypeConverter
-    fun toTagList(tags: String?): List<Tag>? {
-        return tags?.split(",")?.map {
-            Tag(it.toLong(), "", "", "", "")
-        }
+    fun toTagList(data: String): List<Tag> {
+        val listType: Type = object : TypeToken<List<Tag>>() {}.type
+        return Gson().fromJson(data, listType)
+    }
+
+    @TypeConverter
+    fun fromCategory(category: Category): String {
+        return Gson().toJson(category)
+    }
+
+    @TypeConverter
+    fun toCategory(data: String): Category {
+        return Gson().fromJson(data, Category::class.java)
     }
 //    @TypeConverter
 //    fun fromTagList(value: List<Tag>?): String? {

@@ -131,9 +131,11 @@ class HomeViewModel @Inject constructor(
                         listRankingComics = results,
                         isLoadingRanking = false
                     )
+                    Log.d("HomeViewModel", "getComicByFollowRanking: $results")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    Log.e("HomeViewModel", "getComicByFollowRanking: $exception")
                     _state.value = _state.value.copy(isLoadingRanking = true)
                 }
             )
@@ -244,6 +246,7 @@ class HomeViewModel @Inject constructor(
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    Log.e("HomeViewModel", "getComicByRatingRanking: $exception")
                     _state.value = _state.value.copy(isLoadingRanking = true)
                 }
             )

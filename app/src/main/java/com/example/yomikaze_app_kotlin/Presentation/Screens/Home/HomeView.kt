@@ -578,6 +578,7 @@ fun showRankingComicCard(homeViewModel: HomeViewModel, state: HomeState) {
                 NormalComicCardShimmerLoading()
             }
         }
+        Log.d("HomeView", "List ranking comics: ${state.listRankingComics}")
         state.listRankingComics.forEachIndexed { index, comic ->
             RankingComicCard(
                 comicId = comic.comicId,
