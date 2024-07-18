@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HotComicViewModel @Inject constructor(
     private val getComicByViewRankingUC: GetComicByViewRankingUC,
-    appPreference: AppPreference
+    private val appPreference: AppPreference
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HotComicState())
@@ -23,7 +23,7 @@ class HotComicViewModel @Inject constructor(
 
     //navController
     private var navController: NavController? = null
-    private val appPreference = appPreference
+
 
     //set navController
     fun setNavController(navController: NavController) {
@@ -50,6 +50,7 @@ class HotComicViewModel @Inject constructor(
 
     fun getComicByViewRanking(page: Int? = 1) {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             val size = _state.value.size
@@ -75,12 +76,14 @@ class HotComicViewModel @Inject constructor(
                     )
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
+                    _state.value = _state.value.copy(isLoading = false)
                     Log.d("HotComicViewModel", "Hung")
 
                 },
                 onFailure = { exception ->
                     // Xử lý kết quả thất bại
-                   Log.e("HotComicViewModel", exception.message.toString())
+                    _state.value = _state.value.copy(isLoading = false)
+                    Log.e("HotComicViewModel", exception.message.toString())
                 }
             )
         }

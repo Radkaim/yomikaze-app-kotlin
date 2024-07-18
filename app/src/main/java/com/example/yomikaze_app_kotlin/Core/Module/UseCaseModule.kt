@@ -52,7 +52,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommen
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUc
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByRatingRankingUC
@@ -556,7 +556,7 @@ object UseCaseModule {
     @Singleton
     fun provideGetProfileUseCase(
         profileRepository: ProfileRepository
-    ): GetProfileUc {
-        return GetProfileUc(profileRepository)
+    ): GetProfileUC {
+        return GetProfileUC(profileRepository)
     }
 }

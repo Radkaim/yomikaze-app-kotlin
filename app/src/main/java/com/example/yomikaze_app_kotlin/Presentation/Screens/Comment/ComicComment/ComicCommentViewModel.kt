@@ -9,6 +9,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommen
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class ComicCommentViewModel @Inject constructor(
     private val appPreference: AppPreference,
     private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC,
-    private val postComicCommentByComicIdU: PostComicCommentByComicIdUC
+    private val postComicCommentByComicIdU: PostComicCommentByComicIdUC,
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -33,7 +34,13 @@ class ComicCommentViewModel @Inject constructor(
 
     // reset state
     fun resetState() {
-        _state.value = ComicCommentState()
+        _state.value = _state.value.copy(
+            listComicComment = emptyList(),
+            isListComicCommentLoading = true,
+        )
+        _state.value.currentPage.value = 0
+        _state.value.totalPages.value = 0
+        _state.value.totalCommentResults.value = 0
     }
 
     /**
@@ -72,6 +79,7 @@ class ComicCommentViewModel @Inject constructor(
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
                     _state.value.totalCommentResults.value = baseResponse.totals
+                    delay(1000)
                     _state.value = _state.value.copy(isListComicCommentLoading = false)
 
                     Log.d("HotComicViewModel", "currentPage1: ${baseResponse.currentPage}")
@@ -91,11 +99,11 @@ class ComicCommentViewModel @Inject constructor(
      * Todo: Implement post comment of comic by comicId
      */
     fun postComicCommentByComicId(
-        token: String,
         comicId: Long,
         content: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = postComicCommentByComicIdU.postComicCommentByComicId(
                 token = token,
                 comicId = comicId,
@@ -104,7 +112,7 @@ class ComicCommentViewModel @Inject constructor(
             result.fold(
                 onSuccess = { baseResponse ->
                     // Xử lý kết quả thành công
-                    Log.d("HotComicViewModel", "postComicCommentByComicId: $baseResponse")
+
                 },
 
                 onFailure = { exception ->
@@ -113,6 +121,12 @@ class ComicCommentViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    // check is that own user comment for set edit and delete button
+    fun checkIsOwnUserComment(userId: Long): Boolean {
+        val ownUserId = appPreference.userId
+        return ownUserId == userId
     }
 
 

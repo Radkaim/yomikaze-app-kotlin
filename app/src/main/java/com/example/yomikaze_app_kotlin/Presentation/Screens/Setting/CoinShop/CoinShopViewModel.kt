@@ -10,7 +10,7 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.PaymentSheetRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetCoinPricingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetPaymentSheetResponseUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUc
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -24,7 +24,7 @@ class CoinShopViewModel @Inject constructor(
     private val appPreference: AppPreference,
     private val getCoinPricingUC: GetCoinPricingUC,
     private val getPaymentSheetResponseUC: GetPaymentSheetResponseUC,
-    private val getProfileUc: GetProfileUc
+    private val getProfileUC: GetProfileUC
 ) : ViewModel() {
     private val _state = MutableStateFlow(CoinShopState())
     val state: StateFlow<CoinShopState> get() = _state
@@ -128,7 +128,7 @@ class CoinShopViewModel @Inject constructor(
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result =
-                getProfileUc.getProfile(token)
+                getProfileUC.getProfile(token)
             result.fold(
                 onSuccess = { profileResponse ->
                     // Xử lý kết quả thành công

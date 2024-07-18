@@ -9,6 +9,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.RegisterRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.UserInfoResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ProfileRepository
 import com.google.gson.Gson
 import javax.inject.Inject
 import kotlin.Result.Companion.failure
@@ -17,6 +18,7 @@ import kotlin.Result.Companion.failure
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApiService,
     private val appPreference: AppPreference,
+    private val profileRepository: ProfileRepository
 ) : AuthRepository {
     override suspend fun login(loginRequest: LoginRequest): Result<TokenResponse> {
         val result = api.login(LoginRequest(loginRequest.username, loginRequest.password))
@@ -25,8 +27,17 @@ class AuthRepositoryImpl @Inject constructor(
             if (tokenResponse?.token != null) {
                 appPreference.authToken = tokenResponse.token
                 appPreference.isUserLoggedIn = true
+
+                val profileResponse = profileRepository.getProfile(tokenResponse.token)
+                if (profileResponse.isSuccess) {
+                    appPreference.userId = profileResponse.getOrNull()?.id!!
+                    Log.d("AuthRepositoryImpl", "login: ${profileResponse.getOrNull()}")
+                }else{
+                    Log.d("AuthRepositoryImpl", "login: ${profileResponse.exceptionOrNull()}")
+                }
                 return Result.success(tokenResponse)
             }
+
         }
 
         val errorResponse = result.errorBody()?.string()
@@ -47,6 +58,7 @@ class AuthRepositoryImpl @Inject constructor(
 
         return Result.failure(Exception("Login failed"))
     }
+
 
 
     override suspend fun loginWithGoogle(token: TokenResponse): Result<TokenResponse> {
@@ -117,6 +129,7 @@ class AuthRepositoryImpl @Inject constructor(
         val result = appPreference.authToken?.let {
             appPreference.deleteUserToken()
             appPreference.isUserLoggedIn = false
+            appPreference.deleteUserId()
         }
         if (result != null) {
             Log.d("AuthRepositoryImpl", "logout: $result")

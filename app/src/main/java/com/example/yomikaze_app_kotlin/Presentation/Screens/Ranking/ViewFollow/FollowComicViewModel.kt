@@ -15,14 +15,14 @@ import javax.inject.Inject
 @HiltViewModel
 class FollowComicViewModel @Inject constructor(
     private val getComicByFollowRankingUC: GetComicByFollowRankingUC,
-    appPreference: AppPreference
+    private val appPreference: AppPreference
 ):ViewModel() {
     private val _state = MutableStateFlow(FollowComicState())
     val state: StateFlow<FollowComicState> get() = _state
 
     //navController
     private var navController: NavController? = null
-    private val appPreference = appPreference
+
 
     //set navController
     fun setNavController(navController: NavController){
@@ -48,6 +48,7 @@ class FollowComicViewModel @Inject constructor(
 
     fun getComicByFollowRanking(page: Int? = 1){
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             val size = _state.value.size
@@ -71,12 +72,14 @@ class FollowComicViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         listComicByFollowRanking = state.value.listComicByFollowRanking + results,
                     )
+                    _state.value = _state.value.copy(isLoading = false)
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
 
                 },
                 onFailure = { exception ->
                     // Xử lý kết quả thất bại
+                    _state.value = _state.value.copy(isLoading = false)
                     Log.e("FollowComicViewModel", exception.message.toString())
                 }
             )

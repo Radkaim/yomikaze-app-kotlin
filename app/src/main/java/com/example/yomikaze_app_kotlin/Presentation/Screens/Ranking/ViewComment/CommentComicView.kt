@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,6 +34,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.Lot
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.R
 import kotlinx.coroutines.flow.collectLatest
 
@@ -77,23 +79,33 @@ fun CommentComicViewContent(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
         ) {
-            itemsIndexed(state.listComicByCommentRanking) { index, comic ->
-                RankingComicCard(
-                    comicId = comic.comicId,
-                    rankingNumber = index + 1,
-                    image = APIConfig.imageAPIURL.toString() + comic.cover,
-                    comicName = comic.name,
-                    status = comic.status,
-                    authorNames = comic.authors,
-                    publishedDate = comic.publicationDate,
-                    ratingScore = comic.averageRating,
-                    follows = comic.follows,
-                    views = comic.views,
-                    comments = comic.comments,
-                    backgroundColor = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier,
-                    onClicked = { commentComicViewModel.navigateToComicDetail(comic.comicId) }
-                )
+            if (state.isLoading) {
+                item {
+                    repeat(6) {
+                        NormalComicCardShimmerLoading()
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+            }
+            if (!state.isLoading && state.listComicByCommentRanking.isNotEmpty()) {
+                itemsIndexed(state.listComicByCommentRanking) { index, comic ->
+                    RankingComicCard(
+                        comicId = comic.comicId,
+                        rankingNumber = index + 1,
+                        image = APIConfig.imageAPIURL.toString() + comic.cover,
+                        comicName = comic.name,
+                        status = comic.status,
+                        authorNames = comic.authors,
+                        publishedDate = comic.publicationDate,
+                        ratingScore = comic.averageRating,
+                        follows = comic.follows,
+                        views = comic.views,
+                        comments = comic.comments,
+                        backgroundColor = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier,
+                        onClicked = { commentComicViewModel.navigateToComicDetail(comic.comicId) }
+                    )
+                }
             }
 
             // Hiển thị một mục tải dữ liệu khi cần

@@ -77,6 +77,7 @@ class HomeViewModel @Inject constructor(
         _state.value = _state.value.copy(totalResults = newValue)
     }
 
+
     /**
      * Get all history records
      */
@@ -94,7 +95,7 @@ class HomeViewModel @Inject constructor(
                         listHistoryRecords = results,
                         isHistoryListLoading = false
                     )
-                    Log.d("HomeViewModel", "getHistories: $results")
+//                    Log.d("HomeViewModel", "getHistories: $results")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -132,7 +133,7 @@ class HomeViewModel @Inject constructor(
                         listRankingComics = results,
                         isLoadingRanking = false
                     )
-                    Log.d("HomeViewModel", "getComicByFollowRanking: $results")
+//                    Log.d("HomeViewModel", "getComicByFollowRanking: $results")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi

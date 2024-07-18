@@ -70,6 +70,7 @@ fun HomeView(
 
     homeViewModel.setNavController(navController)
 
+
 //    // This will cause re-composition on every network state change
 //    val connection by connectivityState()
 //    val isConnected = connection === ConnectionState.Available
@@ -297,33 +298,6 @@ private fun SearchResultItem(
 }
 
 
-//fun getListCardComicWeekly(): List<CardComicItem> {
-//    val comicCard = listOf(
-//        CardComicItem(
-//            comicName = "Comic 1",
-//            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-//            comicAuth = "auth",
-//            comicChapter = "Chapter 1",
-//            averageRatingNumber = 4.5f
-//        ),
-//        CardComicItem(
-//            comicName = "Comic 2",
-//            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-//            comicAuth = "auth",
-//            comicChapter = "Chapter 2",
-//            averageRatingNumber = 4.5f
-//        ),
-//        CardComicItem(
-//            comicName = "Comic 3",
-//            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-//            comicAuth = "auth",
-//            comicChapter = "Chapter 3",
-//            averageRatingNumber = 4.5f
-//        )
-//    )
-//    return comicCard
-//}
-
 @Composable
 fun showComicCarouselByViewRanking(
     homeViewModel: HomeViewModel,
@@ -340,7 +314,7 @@ fun showComicCarouselByViewRanking(
         }
         images[comic.comicId] = imageUrl
     }
-    Log.d("HomeView", "Images: $images")
+
 
     Box(modifier = Modifier.padding(top = 60.dp)) {
         if (state.isCoverCarouselLoading) {
@@ -418,7 +392,7 @@ fun showHistoryCardComic(
     homeViewModel: HomeViewModel
 ) {
     val comics = state.listHistoryRecords
-    Log.d("HomeView", "History records: $comics")
+//    Log.d("HomeView", "History records: $comics")
     Row(
         modifier = Modifier
             .fillMaxSize()

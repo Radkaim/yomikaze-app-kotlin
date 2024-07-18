@@ -7,7 +7,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUc
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ class ProfileViewModel @Inject constructor(
     appPreference: AppPreference,
     private val logoutUC: LogoutUC,
     private val getUserInfoUC: GetUserInfoUC,
-    private val getProfileUc: GetProfileUc
+    private val getProfileUc: GetProfileUC
 ) : ViewModel() {
 
     private val appPreference = appPreference

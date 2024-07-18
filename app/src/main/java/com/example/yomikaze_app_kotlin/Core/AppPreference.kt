@@ -31,9 +31,9 @@ class AppPreference(context : Context) {
     }
 
     // save user id
-    var userId: String?
-        get() = encryptedPreferences.getString("user_id", null)
-        set(value) = encryptedPreferences.edit().putString("user_id", value).apply()
+    var userId: Long
+        get() = encryptedPreferences.getLong("user_id", 0)
+        set(value) = encryptedPreferences.edit().putLong("user_id", value).apply()
 
     // delete user id
     fun deleteUserId() {

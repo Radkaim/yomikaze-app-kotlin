@@ -3,15 +3,18 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicCommen
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
 
 data class ComicCommentState(
     //for comment
     val listComicComment: List<CommentResponse> = emptyList(),
-    val isListComicCommentLoading: Boolean = false,
+    val isListComicCommentLoading: Boolean = true,
     val totalCommentResults: MutableState<Int> = mutableStateOf(0),
     val currentPage: MutableState<Int> = mutableStateOf(0),
     val totalPages: MutableState<Int> = mutableStateOf(0),
     val page: Int = 1,
-    val size: Int = 7,
+    val size: Int = 9,
+
+    val profileResponse: ProfileResponse? = null,
 )
 

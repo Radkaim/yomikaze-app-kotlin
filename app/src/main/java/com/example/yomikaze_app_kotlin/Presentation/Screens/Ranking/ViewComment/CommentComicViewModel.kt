@@ -15,14 +15,14 @@ import javax.inject.Inject
 @HiltViewModel
 class CommentComicViewModel @Inject constructor(
     private val getComicByCommentsRankingUC: GetComicByCommentsRankingUC,
-    appPreference: AppPreference
+    private val appPreference: AppPreference
 ) : ViewModel() {
     private val _state = MutableStateFlow(CommentComicState())
     val state: StateFlow<CommentComicState> get() = _state
 
     //navController
     private var navController: NavController? = null
-    private val appPreference = appPreference
+
 
     //set navController
     fun setNavController(navController: NavController) {
@@ -48,6 +48,7 @@ class CommentComicViewModel @Inject constructor(
 
     fun getComicByCommentRanking(page: Int? = 1) {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             val size = _state.value.size
@@ -74,9 +75,11 @@ class CommentComicViewModel @Inject constructor(
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
 
+                    _state.value = _state.value.copy(isLoading = false)
                 },
                 onFailure = { exception ->
                     // Xử lý kết quả thất bại
+                    _state.value = _state.value.copy(isLoading = false)
                     Log.e("CommentComicViewModel", exception.message.toString())
                 }
             )

@@ -5,9 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 
 data class FollowComicState(
-    val isLoading: Boolean = false,
+
     val error: String? = null,
     val listComicByFollowRanking: List<ComicResponse> = emptyList(),
+    val isLoading: Boolean = true,
     val currentPage: MutableState<Int> = mutableStateOf(0),
     val totalPages: MutableState<Int> = mutableStateOf(0),
     val page: Int = 1,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -67,6 +68,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareCo
 import com.example.yomikaze_app_kotlin.Presentation.Components.Comment.CommentCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.CommentCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 import kotlinx.coroutines.flow.collectLatest
@@ -113,6 +115,7 @@ fun ComicCommentContent(
 
     var isSelected by remember { mutableStateOf(true) }
     var isReversed by remember { mutableStateOf(false) }
+    var isRefreshing by remember { mutableStateOf(false) }
 
 
     Scaffold(
@@ -183,18 +186,35 @@ fun ComicCommentContent(
                                 onOldSortClick = {
                                     isSelected = true
                                     isReversed = false
+
+                                    isRefreshing = false
+
+
                                     page.value = 1
                                     comicCommentViewModel.resetState()
                                 },
                                 onnNewSortClick = {
                                     isSelected = false
                                     isReversed = true
+
+
+                                    isRefreshing = true
+
                                     page.value = 1
                                     comicCommentViewModel.resetState()
                                 }
                             )
                         }
                     }
+                    if (state.isListComicCommentLoading) {
+                        item {
+                            repeat(6) {
+                                CommentCardShimmerLoading()
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
+                        }
+                    }
+                    if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
                         items(state.listComicComment) { comment ->
                             CommentCard(
                                 commentId = comment.id,
@@ -210,6 +230,8 @@ fun ComicCommentContent(
                                 onClicked = {}
                             )
                         }
+                    }
+
 
                     // Hiển thị một mục tải dữ liệu khi cần
                     item {
@@ -249,9 +271,9 @@ fun ComicCommentContent(
 
         LaunchedEffect(
             key1 = page.value,
-            key2 = isReversed
+            key2 = isReversed,
         ) {
-          Log.d("ComicCommentContent", "ComicCommentContent: ${page.value}")
+            Log.d("ComicCommentContent", "ComicCommentContent: ${page.value}")
             if (page.value > state.currentPage.value && !loading.value) {
                 loading.value = true
                 comicCommentViewModel.getAllComicCommentByComicId(
@@ -261,14 +283,16 @@ fun ComicCommentContent(
                 )
                 loading.value = false
             }
-
         }
         // Sử dụng SideEffect để phát hiện khi người dùng cuộn tới cuối danh sách
         LaunchedEffect(key1 = listState, key2 = isReversed, key3 = page.value) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collectLatest { lastVisibleItemIndex ->
                     if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicComment.size - 2) {
-                        Log.d("ComicCommentContent", "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicComment.size}")
+//                        Log.d(
+//                            "ComicCommentContent",
+//                            "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicComment.size}"
+//                        )
                         if (state.currentPage.value < state.totalPages.value) {
                             page.value++
                         }
@@ -286,7 +310,8 @@ fun ComicCommentContent(
                 .collectLatest { lastVisibleItemIndex ->
                     if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicComment.size && state.listComicComment.size > 5) {
                         if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
-                            Toast.makeText(context, "No comments left", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "No comments left", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 }
