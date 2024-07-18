@@ -34,7 +34,6 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Ranking
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.R
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -129,16 +128,16 @@ fun CommentComicViewContent(
         if (page.value > state.currentPage.value && !loading.value) {
             loading.value = true
             commentComicViewModel.getComicByCommentRanking(page.value)
-            delay(5000) // Simulate a network delay
             loading.value = false
         }
 
     }
     // Sử dụng SideEffect để phát hiện khi người dùng cuộn tới cuối danh sách
-    LaunchedEffect(listState) {
+    LaunchedEffect(key1 = listState, key2 = page.value) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
                 if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicByCommentRanking.size - 2) {
+                    Log.d("HotComicViewModel", "page2: ${state.listComicByCommentRanking.size}")
                     if (state.currentPage.value < state.totalPages.value) {
                         page.value++
 

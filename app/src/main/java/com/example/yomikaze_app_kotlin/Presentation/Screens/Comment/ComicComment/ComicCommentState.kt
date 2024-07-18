@@ -7,6 +7,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
 data class ComicCommentState(
     //for comment
     val listComicComment: List<CommentResponse> = emptyList(),
+    val isListComicCommentLoading: Boolean = false,
     val totalCommentResults: MutableState<Int> = mutableStateOf(0),
     val currentPage: MutableState<Int> = mutableStateOf(0),
     val totalPages: MutableState<Int> = mutableStateOf(0),

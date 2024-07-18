@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ComicCommentViewModel @Inject constructor(
     private val appPreference: AppPreference,
-    private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC
+    private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC,
+    private val postComicCommentByComicIdU: PostComicCommentByComicIdUC
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -33,6 +35,7 @@ class ComicCommentViewModel @Inject constructor(
     fun resetState() {
         _state.value = ComicCommentState()
     }
+
     /**
      * Todo: Implement get all comment of comic by comicId
      */
@@ -40,13 +43,10 @@ class ComicCommentViewModel @Inject constructor(
         comicId: Long,
         page: Int? = 1,
         orderBy: String? = "CreationTimeDesc",
-//        isRefresh: Boolean?,
-    ) {
 
+        ) {
         viewModelScope.launch(Dispatchers.IO) {
-//            if (isRefresh) {
-//                _state.value = ComicCommentState()
-//            }
+            _state.value = _state.value.copy(isListComicCommentLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val size = _state.value.size
 
@@ -72,13 +72,44 @@ class ComicCommentViewModel @Inject constructor(
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
                     _state.value.totalCommentResults.value = baseResponse.totals
+                    _state.value = _state.value.copy(isListComicCommentLoading = false)
 
                     Log.d("HotComicViewModel", "currentPage1: ${baseResponse.currentPage}")
                 },
 
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isListComicCommentLoading = false)
                     Log.e("HotComicViewModel", "getAllComicCommentByComicId: $exception")
+                }
+            )
+        }
+    }
+
+
+    /**
+     * Todo: Implement post comment of comic by comicId
+     */
+    fun postComicCommentByComicId(
+        token: String,
+        comicId: Long,
+        content: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = postComicCommentByComicIdU.postComicCommentByComicId(
+                token = token,
+                comicId = comicId,
+                content = content
+            )
+            result.fold(
+                onSuccess = { baseResponse ->
+                    // Xử lý kết quả thành công
+                    Log.d("HotComicViewModel", "postComicCommentByComicId: $baseResponse")
+                },
+
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("HotComicViewModel", "postComicCommentByComicId: $exception")
                 }
             )
         }

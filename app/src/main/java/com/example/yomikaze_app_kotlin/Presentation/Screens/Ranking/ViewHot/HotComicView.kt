@@ -142,7 +142,7 @@ fun HotComicViewContent(
 
     }
     // Sử dụng SideEffect để phát hiện khi người dùng cuộn tới cuối danh sách
-    LaunchedEffect(listState) {
+    LaunchedEffect(key1 = listState, key2 = page.value) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
                 if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicByViewRanking.size - 2) {

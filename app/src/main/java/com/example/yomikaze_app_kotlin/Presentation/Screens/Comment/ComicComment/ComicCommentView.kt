@@ -114,6 +114,7 @@ fun ComicCommentContent(
     var isSelected by remember { mutableStateOf(true) }
     var isReversed by remember { mutableStateOf(false) }
 
+
     Scaffold(
         topBar = {
             CustomAppBar(
@@ -194,21 +195,21 @@ fun ComicCommentContent(
                             )
                         }
                     }
-                    items(state.listComicComment) { comment ->
-                        CommentCard(
-                            commentId = comment.id,
-                            content = comment.content,
-                            authorName = comment.author.name,
-                            authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
-                                ?: "",
-                            roleName = comment.author.roles?.get(0) ?: "",
-                            creationTime = comment.creationTime,
-                            isOwnComment = true,//comment.author.id == 1L,
-                            onEditClicked = {},
-                            onDeleteClicked = {},
-                            onClicked = {}
-                        )
-                    }
+                        items(state.listComicComment) { comment ->
+                            CommentCard(
+                                commentId = comment.id,
+                                content = comment.content,
+                                authorName = comment.author.name,
+                                authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
+                                    ?: "",
+                                roleName = comment.author.roles?.get(0) ?: "",
+                                creationTime = comment.creationTime,
+                                isOwnComment = true,//comment.author.id == 1L,
+                                onEditClicked = {},
+                                onDeleteClicked = {},
+                                onClicked = {}
+                            )
+                        }
 
                     // Hiển thị một mục tải dữ liệu khi cần
                     item {
@@ -250,7 +251,7 @@ fun ComicCommentContent(
             key1 = page.value,
             key2 = isReversed
         ) {
-
+          Log.d("ComicCommentContent", "ComicCommentContent: ${page.value}")
             if (page.value > state.currentPage.value && !loading.value) {
                 loading.value = true
                 comicCommentViewModel.getAllComicCommentByComicId(
@@ -263,10 +264,11 @@ fun ComicCommentContent(
 
         }
         // Sử dụng SideEffect để phát hiện khi người dùng cuộn tới cuối danh sách
-        LaunchedEffect(key1 = listState, key2 = isReversed) {
+        LaunchedEffect(key1 = listState, key2 = isReversed, key3 = page.value) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collectLatest { lastVisibleItemIndex ->
                     if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicComment.size - 2) {
+                        Log.d("ComicCommentContent", "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicComment.size}")
                         if (state.currentPage.value < state.totalPages.value) {
                             page.value++
                         }
