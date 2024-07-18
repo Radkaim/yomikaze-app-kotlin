@@ -741,7 +741,7 @@ fun DescriptionInComicDetailView(
                             ?: "",
                         roleName = comment.author.roles?.get(0) ?: "",
                         creationTime = comment.creationTime,
-                        isOwnComment = true,//comment.author.id == 1L,
+                        isOwnComment = comicDetailViewModel.checkCanModifyComment(comment.author.id),
                         onEditClicked = {},
                         onDeleteClicked = {},
                         onClicked = {}

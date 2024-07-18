@@ -1,7 +1,9 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.API
 
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -29,6 +31,6 @@ interface ComicCommentApiService {
     suspend fun postComicCommentByComicId(
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,
-        @Query("Content") content: String,
+        @Body content: CommentRequest
     ): CommentResponse
 }

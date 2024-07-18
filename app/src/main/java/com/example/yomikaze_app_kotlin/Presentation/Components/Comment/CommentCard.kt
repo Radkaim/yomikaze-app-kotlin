@@ -55,7 +55,7 @@ fun CommentCard(
 
     roleName: String,
     creationTime: String,
-    isOwnComment: Boolean? = false,
+    isOwnComment: Boolean,
     onEditClicked: () -> Unit? = {},
     onDeleteClicked: () -> Unit? = {},
     onClicked: () -> Unit? = {}
@@ -181,102 +181,102 @@ fun CommentCard(
             MenuOptions("Report", "report_comment_route", R.drawable.ic_report),
             MenuOptions("Delete", "delete_comment_route", R.drawable.ic_delete),
         )
-        Box {
+        if (isOwnComment) {
+            Box {
 //            var iconOffset by remember { mutableStateOf(IntOffset.Zero) }
-            Row {
+                Row {
 
-                ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-//                        .padding(10.dp)
-                ) {
-                    val (iconButton, popUpMenu) = createRefs()
-                    IconButton(
-                        onClick = { showPopupMenu = true },
-                        modifier = Modifier
-                            .padding(start = 340.dp)
-                            //.offset(y = (10).dp)
-                            .constrainAs(iconButton) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                            }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_more),
-                            contentDescription = "More option menu",
-                        )
-                    }
-
-                    Box(
+                    ConstraintLayout(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .wrapContentHeight()
+//                        .padding(10.dp)
+                    ) {
+                        val (iconButton, popUpMenu) = createRefs()
+                        IconButton(
+                            onClick = { showPopupMenu = true },
+                            modifier = Modifier
+                                .padding(start = 340.dp)
+                                //.offset(y = (10).dp)
+                                .constrainAs(iconButton) {
+                                    top.linkTo(parent.top)
+                                    start.linkTo(parent.start)
+                                }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_more),
+                                contentDescription = "More option menu",
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
 //                            .height(120.dp)
 //                        .offset(y = (-100).dp)
-                            .padding(start = 180.dp)
+                                .padding(start = 180.dp)
 //                            .offset(y = (-100).dp)
-                            .constrainAs(popUpMenu) {
-                                top.linkTo(iconButton.top)
-                                start.linkTo(parent.end)
+                                .constrainAs(popUpMenu) {
+                                    top.linkTo(iconButton.top)
+                                    start.linkTo(parent.end)
 
-                            }
-                    ) {
-                        DropdownMenu(
-                            expanded = showPopupMenu,
-                            onDismissRequest = { showPopupMenu = false },
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.onSurface)
+                                }
                         ) {
-                            listTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                        showPopupMenu = false
-                                        when (menuOptions.route) {
-                                            "edit_comment_route" -> showDialog = 1
-                                            "report_comment_route" -> showDialog = 2
-                                            "delete_comment_route" -> showDialog = 3
+                            DropdownMenu(
+                                expanded = showPopupMenu,
+                                onDismissRequest = { showPopupMenu = false },
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.onSurface)
+                            ) {
+                                listTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            showPopupMenu = false
+                                            when (menuOptions.route) {
+                                                "edit_comment_route" -> showDialog = 1
+                                                "report_comment_route" -> showDialog = 2
+                                                "delete_comment_route" -> showDialog = 3
 
-                                        }
-                                    }) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(5.dp),
-                                        modifier = Modifier
-                                            .height(15.dp)
-                                            .width(125.dp)
-                                            .align(Alignment.CenterVertically)
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = menuOptions.icon),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onSecondary.copy(
-                                                alpha = 0.8f
-                                            ),
+                                            }
+                                        }) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(5.dp),
                                             modifier = Modifier
-                                                .width(17.dp)
-                                                .height(17.dp),
-                                        )
-                                        Text(
-                                            text = menuOptions.title,
-                                            color = MaterialTheme.colorScheme.inverseSurface,
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.Normal
+                                                .height(15.dp)
+                                                .width(125.dp)
+                                                .align(Alignment.CenterVertically)
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(id = menuOptions.icon),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onSecondary.copy(
+                                                    alpha = 0.8f
+                                                ),
+                                                modifier = Modifier
+                                                    .width(17.dp)
+                                                    .height(17.dp),
+                                            )
+                                            Text(
+                                                text = menuOptions.title,
+                                                color = MaterialTheme.colorScheme.inverseSurface,
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.Normal
+                                            )
+                                        }
+                                    }
+                                    if (index < listTitlesOfComicMenuOption.size - 1) {
+                                        Divider(
+                                            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                                            thickness = 1.dp
                                         )
                                     }
                                 }
-                                if (index < listTitlesOfComicMenuOption.size - 1) {
-                                    Divider(
-                                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                                        thickness = 1.dp
-                                    )
-                                }
                             }
-                        }
 
-//                }
-                        if (showDialog != null) {
-                            when (showDialog) {
-                                1 -> {
+                            if (showDialog != null) {
+                                when (showDialog) {
+                                    1 -> {
 //                        EditDialogComponent(
 //                            key = categoryId,
 //                            title = "Edit Personal Category ‘s Name",
@@ -284,11 +284,11 @@ fun CommentCard(
 //                            onDismiss = { showDialog = 0 },
 //                            viewModel = libraryViewModel
 //                        )
-                                }
+                                    }
 
-                                2 -> {}
+                                    2 -> {}
 
-                                3 -> {
+                                    3 -> {
 //                        DeleteConfirmDialogComponent(
 //                            key = categoryId,
 //                            value = value,
@@ -297,13 +297,14 @@ fun CommentCard(
 //                            viewModel = libraryViewModel
 //                        )
 
-                                }
+                                    }
 
+                                }
                             }
                         }
                     }
-                }
 
+                }
             }
         }
 

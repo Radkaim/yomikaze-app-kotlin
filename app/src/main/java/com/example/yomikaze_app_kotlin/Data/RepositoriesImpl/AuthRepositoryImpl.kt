@@ -31,7 +31,8 @@ class AuthRepositoryImpl @Inject constructor(
                 val profileResponse = profileRepository.getProfile(tokenResponse.token)
                 if (profileResponse.isSuccess) {
                     appPreference.userId = profileResponse.getOrNull()?.id!!
-                    Log.d("AuthRepositoryImpl", "login: ${profileResponse.getOrNull()}")
+                    appPreference.userRoles = profileResponse.getOrNull()?.roles
+                    Log.d("AuthRepositoryImpl", "login: ${appPreference.userRoles}")
                 }else{
                     Log.d("AuthRepositoryImpl", "login: ${profileResponse.exceptionOrNull()}")
                 }
@@ -68,6 +69,15 @@ class AuthRepositoryImpl @Inject constructor(
             if (tokenResponse?.token != null) {
                 appPreference.authToken = tokenResponse.token
                 appPreference.isUserLoggedIn = true
+                val profileResponse = profileRepository.getProfile(tokenResponse.token)
+                if (profileResponse.isSuccess) {
+                    appPreference.userId = profileResponse.getOrNull()?.id!!
+                    appPreference.userRoles = profileResponse.getOrNull()?.roles
+                    Log.d("AuthRepositoryImpl", "loginWithGoogle: ${appPreference.userRoles}")
+                }else{
+                    Log.d("AuthRepositoryImpl", "loginWithGoogle: ${profileResponse.exceptionOrNull()}")
+                }
+
                 return Result.success(tokenResponse)
             }
         }
@@ -130,9 +140,10 @@ class AuthRepositoryImpl @Inject constructor(
             appPreference.deleteUserToken()
             appPreference.isUserLoggedIn = false
             appPreference.deleteUserId()
+            appPreference.deleteUserRole()
         }
         if (result != null) {
-            Log.d("AuthRepositoryImpl", "logout: $result")
+            Log.d("AuthRepositoryImpl", "logout: Successfully!!!")
         }
     }
 

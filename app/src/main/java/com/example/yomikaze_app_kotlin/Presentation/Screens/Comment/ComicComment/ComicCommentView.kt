@@ -113,8 +113,8 @@ fun ComicCommentContent(
     val page = remember { mutableStateOf(1) }
     val loading = remember { mutableStateOf(false) }
 
-    var isSelected by remember { mutableStateOf(true) }
-    var isReversed by remember { mutableStateOf(false) }
+    var isSelected by remember { mutableStateOf(false) }
+    var isReversed by remember { mutableStateOf(true) }
     var isRefreshing by remember { mutableStateOf(false) }
 
 
@@ -224,7 +224,7 @@ fun ComicCommentContent(
                                     ?: "",
                                 roleName = comment.author.roles?.get(0) ?: "",
                                 creationTime = comment.creationTime,
-                                isOwnComment = true,//comment.author.id == 1L,
+                                isOwnComment = comicCommentViewModel.checkCanModifyComment(comment.author.id),
                                 onEditClicked = {},
                                 onDeleteClicked = {},
                                 onClicked = {}
@@ -265,13 +265,22 @@ fun ComicCommentContent(
                         end.linkTo(parent.end)
                     },
                 onSendChatClickListener = {
-
+                comicCommentViewModel.postComicCommentByComicId(
+                    comicId = comicId,
+                    content = it
+                )
                 })
+        }
+
+        LaunchedEffect(key1 = state.isPostComicCommentSuccess ){
+            page.value = 1
+            comicCommentViewModel.resetState()
         }
 
         LaunchedEffect(
             key1 = page.value,
             key2 = isReversed,
+//            key3 = state,
         ) {
             Log.d("ComicCommentContent", "ComicCommentContent: ${page.value}")
             if (page.value > state.currentPage.value && !loading.value) {
@@ -279,7 +288,7 @@ fun ComicCommentContent(
                 comicCommentViewModel.getAllComicCommentByComicId(
                     comicId = comicId,
                     page.value,
-                    orderBy = if (isReversed) "CreationTime" else "CreationTimeDesc"
+                    orderBy = if (isReversed) "CreationTimeDesc" else "CreationTime"
                 )
                 loading.value = false
             }
@@ -340,15 +349,30 @@ fun ChatBox(
                 chatBoxValue = newText
             },
 
-            label = {
-                if (chatBoxValue.text.length > 1024) {
-                    Text(
-                        text = "Max 100 characters",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                } else if (chatBoxValue.text.isEmpty()) {
-                    Text(
+//            label = {
+//                if (chatBoxValue.text.length > 1024) {
+//                    Text(
+//                        text = "Max 100 characters",
+//                        fontSize = 12.sp,
+//                        color = MaterialTheme.colorScheme.error
+//                    )
+//                } else if (chatBoxValue.text.isEmpty()) {
+//                    Text(
+//                        modifier = Modifier.alpha(ContentAlpha.medium),
+//                        text = "Say something...",
+//                        fontWeight = FontWeight.Medium,
+//                        fontStyle = FontStyle.Italic,
+//                        fontSize = 16.sp,
+//                        color = MaterialTheme.colorScheme.errorContainer
+//                    )
+//                }
+//                else{
+//                    //nothing
+//
+//                }
+//            },
+            placeholder = {
+                Text(
                         modifier = Modifier.alpha(ContentAlpha.medium),
                         text = "Say something...",
                         fontWeight = FontWeight.Medium,
@@ -356,8 +380,8 @@ fun ChatBox(
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.errorContainer
                     )
-                }
             },
+            isError = chatBoxValue.text.length > 1024,
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             ),

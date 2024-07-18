@@ -40,6 +40,16 @@ class AppPreference(context : Context) {
         encryptedPreferences.edit().remove("user_id").apply()
     }
 
+    //save userRole
+    var userRoles: List<String>?
+        get() = encryptedPreferences.getStringSet("user_role", null)?.toList()
+        set(value) = encryptedPreferences.edit().putStringSet("user_role", value?.toSet()).apply()
+
+    //delete userRole
+    fun deleteUserRole() {
+        encryptedPreferences.edit().remove("user_role").apply()
+    }
+
     // save isUserLoggedIn
     var isUserLoggedIn: Boolean
         get() = encryptedPreferences.getBoolean("is_user_logged_in", false)

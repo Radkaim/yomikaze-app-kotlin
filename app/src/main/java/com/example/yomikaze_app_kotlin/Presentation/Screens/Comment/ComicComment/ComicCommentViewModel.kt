@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,13 +44,20 @@ class ComicCommentViewModel @Inject constructor(
         _state.value.totalCommentResults.value = 0
     }
 
+    // check is that own user comment for set edit and delete button
+    fun checkCanModifyComment(userId: Long): Boolean {
+        val ownUserId = appPreference.userId
+        val userRoles = appPreference.userRoles
+        return ownUserId == userId || userRoles?.contains("Super") == true || userRoles?.contains("Administrator") == true
+    }
+
     /**
      * Todo: Implement get all comment of comic by comicId
      */
     fun getAllComicCommentByComicId(
         comicId: Long,
         page: Int? = 1,
-        orderBy: String? = "CreationTimeDesc",
+        orderBy: String? = "CreationTime",
 
         ) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -88,7 +96,7 @@ class ComicCommentViewModel @Inject constructor(
                 onFailure = { exception ->
                     // Xử lý lỗi
                     _state.value = _state.value.copy(isListComicCommentLoading = false)
-                    Log.e("HotComicViewModel", "getAllComicCommentByComicId: $exception")
+                    Log.e("ComicCommentViewModel", "getAllComicCommentByComicId: $exception")
                 }
             )
         }
@@ -103,31 +111,30 @@ class ComicCommentViewModel @Inject constructor(
         content: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isPostComicCommentSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = postComicCommentByComicIdU.postComicCommentByComicId(
                 token = token,
                 comicId = comicId,
-                content = content
+                content = CommentRequest(content = content)
             )
             result.fold(
                 onSuccess = { baseResponse ->
                     // Xử lý kết quả thành công
-
+                    _state.value = _state.value.copy(
+                        isPostComicCommentSuccess = true
+                    )
                 },
 
                 onFailure = { exception ->
                     // Xử lý lỗi
-                    Log.e("HotComicViewModel", "postComicCommentByComicId: $exception")
+                    _state.value = _state.value.copy(isPostComicCommentSuccess = false)
+                    Log.e("ComicCommentViewModel", "postComicCommentByComicId: $exception")
                 }
             )
         }
     }
 
-    // check is that own user comment for set edit and delete button
-    fun checkIsOwnUserComment(userId: Long): Boolean {
-        val ownUserId = appPreference.userId
-        return ownUserId == userId
-    }
 
 
 }

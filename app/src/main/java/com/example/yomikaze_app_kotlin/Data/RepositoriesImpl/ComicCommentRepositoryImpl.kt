@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicCommentApiService
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicCommentRepository
 import javax.inject.Inject
@@ -30,7 +31,7 @@ class ComicCommentRepositoryImpl @Inject constructor(
     override suspend fun postComicCommentByComicId(
         token: String,
         comicId: Long,
-        content: String
+        content: CommentRequest
     ): Result<CommentResponse> {
         return try {
             val response = api.postComicCommentByComicId("Bearer $token", comicId, content)

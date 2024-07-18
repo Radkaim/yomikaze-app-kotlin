@@ -70,6 +70,13 @@ class ComicDetailViewModel @Inject constructor(
         return appPreference.isUserLoggedIn
     }
 
+    // check is that own user comment for set edit and delete button
+    fun checkCanModifyComment(userId: Long): Boolean {
+        val ownUserId = appPreference.userId
+        val userRoles = appPreference.userRoles
+        return ownUserId == userId || userRoles?.contains("Super") == true || userRoles?.contains("Administrator") == true
+    }
+
     fun getComicDetailsFromApi(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val token =

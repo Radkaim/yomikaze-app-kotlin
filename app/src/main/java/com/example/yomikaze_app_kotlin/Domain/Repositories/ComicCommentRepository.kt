@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Domain.Repositories
 
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
 
 interface ComicCommentRepository {
@@ -22,7 +23,7 @@ interface ComicCommentRepository {
     suspend fun postComicCommentByComicId(
         token: String,
         comicId: Long,
-        content: String
+        content: CommentRequest
     ): Result<CommentResponse>
 
 

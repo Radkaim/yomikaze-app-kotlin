@@ -17,5 +17,8 @@ data class CommentResponse(
 
     @SerializedName("creationTime")
     val creationTime: String,
-
     )
+data class CommentRequest(
+    @SerializedName("content")
+    val content: String
+)
