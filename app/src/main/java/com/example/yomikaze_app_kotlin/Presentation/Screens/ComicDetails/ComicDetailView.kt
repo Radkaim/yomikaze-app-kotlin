@@ -550,7 +550,9 @@ fun ComicDetailContent(
             when (tabIndex) {
                 0 -> DescriptionInComicDetailView(
                     state = state,
-                    comicDetailViewModel = comicDetailViewModel
+                    comicDetailViewModel = comicDetailViewModel,
+                    comicId = comicId,
+                    comicName = state.comicResponse?.name ?: ""
                 )
 
                 1 -> ListChapterInComicDetailView(
@@ -571,7 +573,9 @@ fun ComicDetailContent(
 @Composable
 fun DescriptionInComicDetailView(
     state: ComicDetailState,
-    comicDetailViewModel: ComicDetailViewModel
+    comicDetailViewModel: ComicDetailViewModel,
+    comicId: Long,
+    comicName: String
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val description = state.comicResponse?.description
@@ -702,7 +706,8 @@ fun DescriptionInComicDetailView(
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { comicDetailViewModel.navigateToComicComment(comicId = comicId, comicName = comicName) }
                 ) {
                     Text(
                         text = "More",
@@ -780,13 +785,13 @@ fun ListChapterInComicDetailView(
 
         SortComponent(
             isOldestSelected = isSelected,
-            onnNewSortClick = {
-                isSelected = false
-                isReversed = true
-            },
             onOldSortClick = {
                 isSelected = true
                 isReversed = false
+            },
+            onnNewSortClick = {
+                isSelected = false
+                isReversed = true
             }
         )
     }

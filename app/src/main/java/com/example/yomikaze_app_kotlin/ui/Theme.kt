@@ -30,6 +30,7 @@ private val LightColorScheme = lightColorScheme(
 
     error = Orange600, //B22F24
     onError = Orange700, //831513
+    errorContainer = Orange300, //FBB69F
 
     background = Green100, //F2FFFD
     onBackground = GrayA07, //D9D9D9

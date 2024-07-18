@@ -11,7 +11,7 @@ interface ComicCommentRepository {
     suspend fun getAllComicCommentByComicId(
         token: String,
         comicId: Long,
-        orderBy: String,
+        orderBy: String? = null,
         page: Int? = null,
         size: Int? = null
     ): Result<BaseResponse<CommentResponse>>

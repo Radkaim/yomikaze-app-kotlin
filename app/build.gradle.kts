@@ -152,7 +152,8 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-json:2.3.1")
 
-
+    // constraint layout compose
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 }
 kapt {
     correctErrorTypes = true

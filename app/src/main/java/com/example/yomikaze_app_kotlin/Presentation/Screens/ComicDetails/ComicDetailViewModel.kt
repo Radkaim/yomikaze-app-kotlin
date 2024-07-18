@@ -59,6 +59,9 @@ class ComicDetailViewModel @Inject constructor(
     fun navigateToChooseChapterDownload(comicId: Long, comicName: String) {
         navController?.navigate("choose_chapter_download_route/$comicId/$comicName")
     }
+    fun navigateToComicComment(comicId: Long, comicName: String) {
+        navController?.navigate("comic_comment_route/$comicId/$comicName")
+    }
 
     /**
      * Todo: Implement check user is login
@@ -159,7 +162,6 @@ class ComicDetailViewModel @Inject constructor(
                 _state.value = _state.value.copy(isFollowComicSuccess = false)
                 Log.e("Rating", "rateComic: $result")
             }
-
         }
     }
 
@@ -177,7 +179,6 @@ class ComicDetailViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = { baseResponse ->
-
                     val results = baseResponse.results
 
                     // Xử lý kết quả thành công
@@ -234,7 +235,7 @@ class ComicDetailViewModel @Inject constructor(
         }
     }
 
-    // lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum
+
     /**
      * Todo: Implement get all comment of comic by comicId
      */

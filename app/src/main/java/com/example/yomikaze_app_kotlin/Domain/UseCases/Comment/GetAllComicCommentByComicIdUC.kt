@@ -11,7 +11,7 @@ class GetAllComicCommentByComicIdUC @Inject constructor(
     suspend fun getAllComicCommentByComicId(
         token: String,
         comicId: Long,
-        orderBy: String,
+        orderBy: String? = null,
         page: Int? = null,
         size: Int? = null
     ): Result<BaseResponse<CommentResponse>>{

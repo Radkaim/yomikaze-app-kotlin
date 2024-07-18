@@ -14,7 +14,7 @@ class ComicCommentRepositoryImpl @Inject constructor(
     override suspend fun getAllComicCommentByComicId(
         token: String,
         comicId: Long,
-        orderBy: String,
+        orderBy: String?,
         page: Int?,
         size: Int?
     ): Result<BaseResponse<CommentResponse>> {

@@ -9,6 +9,7 @@ import androidx.navigation.navDeepLink
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.RankingView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.AboutUs.AboutUsView
@@ -79,6 +80,14 @@ fun NavigationGraph(
                 navController = navController
             )
         }
+
+        //comic comment
+        composable("comic_comment_route/{comicId}/{comicName}") { navBackStackEntry ->
+            val comicId = navBackStackEntry.arguments?.getString("comicId")
+            val comicName = navBackStackEntry.arguments?.getString("comicName")
+            ComicCommentView(navController = navController, comicId = comicId?.toLong() ?: 0, comicName = comicName ?: "")
+        }
+
 
         composable("wifi_route") {
             NetworkDisconnectedDialog()
