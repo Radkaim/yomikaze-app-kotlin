@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -34,13 +33,16 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat2
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.R
 
@@ -52,6 +54,7 @@ fun CommentCard(
     authorImage: String,
 
     roleName: String,
+    creationTime: String,
     isOwnComment: Boolean? = false,
     onEditClicked: () -> Unit? = {},
     onDeleteClicked: () -> Unit? = {},
@@ -73,6 +76,7 @@ fun CommentCard(
             .clickable { onClicked() },
         color = MaterialTheme.colorScheme.onSurface,
     ) {
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -80,11 +84,11 @@ fun CommentCard(
                 .wrapContentHeight()
                 .padding(10.dp)
 
-
         ) {
             //image and role
             Column(
                 modifier = Modifier
+
                     .padding(5.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -148,27 +152,26 @@ fun CommentCard(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     overflow = TextOverflow.Ellipsis,
                     lineHeight = 15.sp,
-                    modifier = Modifier.width(265.dp).padding(top = 10.dp)
+                    modifier = Modifier
+                        .width(265.dp)
+                        .padding(top = 10.dp)
                 )
 
                 // created at and likes
-                Row (
+                Row(
                     modifier = Modifier.padding(top = 20.dp),
-                ){
+                ) {
 
                     Text(
-                        text = "1 day ago",
+                        text = changeDateTimeFormat2(creationTime),
                         style = MaterialTheme.typography.bodyMedium,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-
+                        fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.error.copy(alpha = 0.36f),
                     )
-
-
                 }
             }
-
 
         }
 
@@ -179,80 +182,101 @@ fun CommentCard(
             MenuOptions("Delete", "delete_comment_route", R.drawable.ic_delete),
         )
         Box {
-            IconButton(
-                onClick = { showPopupMenu = true },
-                modifier = Modifier
-                    .padding(start = 340.dp)
-                //.offset(y = (10).dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_more),
-                    contentDescription = "More option menu",
-                )
-            }
+//            var iconOffset by remember { mutableStateOf(IntOffset.Zero) }
+            Row {
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .offset(y = (-90).dp)
-                    .padding(start = 200.dp)
-            ) {
-                DropdownMenu(
-                    expanded = showPopupMenu,
-                    onDismissRequest = { showPopupMenu = false },
-                    modifier = Modifier.background(MaterialTheme.colorScheme.onSurface),
+                ConstraintLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+//                        .padding(10.dp)
                 ) {
-                    listTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
-                        DropdownMenuItem(
-                            onClick = {
-                                showPopupMenu = false
-                                when (menuOptions.route) {
-                                    "edit_comment_route" -> showDialog = 1
-                                    "report_comment_route" -> showDialog = 2
-                                    "delete_comment_route" -> showDialog = 3
+                    val (iconButton, popUpMenu) = createRefs()
+                    IconButton(
+                        onClick = { showPopupMenu = true },
+                        modifier = Modifier
+                            .padding(start = 340.dp)
+                            //.offset(y = (10).dp)
+                            .constrainAs(iconButton) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_more),
+                            contentDescription = "More option menu",
+                        )
+                    }
 
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+//                            .height(120.dp)
+//                        .offset(y = (-100).dp)
+                            .padding(start = 180.dp)
+//                            .offset(y = (-100).dp)
+                            .constrainAs(popUpMenu) {
+                                top.linkTo(iconButton.top)
+                                start.linkTo(parent.end)
+
+                            }
+                    ) {
+                        DropdownMenu(
+                            expanded = showPopupMenu,
+                            onDismissRequest = { showPopupMenu = false },
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.onSurface)
+                        ) {
+                            listTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        showPopupMenu = false
+                                        when (menuOptions.route) {
+                                            "edit_comment_route" -> showDialog = 1
+                                            "report_comment_route" -> showDialog = 2
+                                            "delete_comment_route" -> showDialog = 3
+
+                                        }
+                                    }) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                                        modifier = Modifier
+                                            .height(15.dp)
+                                            .width(125.dp)
+                                            .align(Alignment.CenterVertically)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = menuOptions.icon),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSecondary.copy(
+                                                alpha = 0.8f
+                                            ),
+                                            modifier = Modifier
+                                                .width(17.dp)
+                                                .height(17.dp),
+                                        )
+                                        Text(
+                                            text = menuOptions.title,
+                                            color = MaterialTheme.colorScheme.inverseSurface,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Normal
+                                        )
+                                    }
                                 }
-                            }) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(5.dp),
-                                modifier = Modifier
-                                    .height(15.dp)
-                                    .width(125.dp)
-                                    .align(Alignment.CenterVertically)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = menuOptions.icon),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSecondary.copy(
-                                        alpha = 0.8f
-                                    ),
-                                    modifier = Modifier
-                                        .width(17.dp)
-                                        .height(17.dp),
-                                )
-                                Text(
-                                    text = menuOptions.title,
-                                    color = MaterialTheme.colorScheme.inverseSurface,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Normal
-                                )
+                                if (index < listTitlesOfComicMenuOption.size - 1) {
+                                    Divider(
+                                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                                        thickness = 1.dp
+                                    )
+                                }
                             }
                         }
-                        if (index < listTitlesOfComicMenuOption.size - 1) {
-                            Divider(
-                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                                thickness = 1.dp
-                            )
-                        }
-                    }
-                }
 
-            }
-            if (showDialog != null) {
-                when (showDialog) {
-                    1 -> {
+//                }
+                        if (showDialog != null) {
+                            when (showDialog) {
+                                1 -> {
 //                        EditDialogComponent(
 //                            key = categoryId,
 //                            title = "Edit Personal Category ‘s Name",
@@ -260,11 +284,11 @@ fun CommentCard(
 //                            onDismiss = { showDialog = 0 },
 //                            viewModel = libraryViewModel
 //                        )
-                    }
+                                }
 
-                    2 -> {}
+                                2 -> {}
 
-                    3 -> {
+                                3 -> {
 //                        DeleteConfirmDialogComponent(
 //                            key = categoryId,
 //                            value = value,
@@ -273,10 +297,16 @@ fun CommentCard(
 //                            viewModel = libraryViewModel
 //                        )
 
-                    }
+                                }
 
+                            }
+                        }
+                    }
                 }
+
             }
         }
+
     }
 }
+

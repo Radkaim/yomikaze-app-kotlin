@@ -587,7 +587,7 @@ fun DescriptionInComicDetailView(
         modifier = Modifier
             .fillMaxSize()
             .wrapContentHeight()
-            .padding(top = 20.dp, start = 2.dp, end = 8.dp)
+            .padding(top = 20.dp, start = 2.dp, end = 8.dp),
     ) {
         //TODO: Description
         item {
@@ -623,10 +623,8 @@ fun DescriptionInComicDetailView(
                                 )
                             }
                         }
-
                     }
                 }
-
             }
         }
 
@@ -707,20 +705,25 @@ fun DescriptionInComicDetailView(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { comicDetailViewModel.navigateToComicComment(comicId = comicId, comicName = comicName) }
+                    modifier = Modifier.clickable {
+                        comicDetailViewModel.navigateToComicComment(
+                            comicId = comicId,
+                            comicName = comicName
+                        )
+                    }
                 ) {
                     Text(
                         text = "More",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Normal
                     )
-                     Icon(
-                         painterResource(id = R.drawable.ic_next),
-                         contentDescription = null,
-                         modifier = Modifier
-                             .width(10.dp)
-                             .height(10.dp),
-                     )
+                    Icon(
+                        painterResource(id = R.drawable.ic_next),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .width(10.dp)
+                            .height(10.dp),
+                    )
                 }
 
             }
@@ -737,6 +740,7 @@ fun DescriptionInComicDetailView(
                         authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
                             ?: "",
                         roleName = comment.author.roles?.get(0) ?: "",
+                        creationTime = comment.creationTime,
                         isOwnComment = true,//comment.author.id == 1L,
                         onEditClicked = {},
                         onDeleteClicked = {},

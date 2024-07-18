@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -201,6 +202,7 @@ fun ComicCommentContent(
                             authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
                                 ?: "",
                             roleName = comment.author.roles?.get(0) ?: "",
+                            creationTime = comment.creationTime,
                             isOwnComment = true,//comment.author.id == 1L,
                             onEditClicked = {},
                             onDeleteClicked = {},
@@ -336,13 +338,6 @@ fun ChatBox(
                 IconButton(
                     //  modifier = Modifier.alpha(ContentAlpha.medium),
                     onClick = {
-//                        if (searchText.isNotEmpty()) {
-//                            onTextChange("")
-//                        } else {
-//                            onCLoseClicked()
-//                            focusManager.clearFocus() // Clear focus to hide the keyboard
-//                            keyboardController?.hide() // Hide the keyboard
-//                        }
                         if (chatBoxValue.text.isNotEmpty()) {
                             chatBoxValue = TextFieldValue("")
                         } else {
@@ -392,7 +387,7 @@ fun ChatBox(
             onClick = {
                 if (chatBoxValue.text.isNotEmpty()) {
                     onSendChatClickListener(chatBoxValue.text)
-//                    Log.d("ChatBox", "ChatBox: ${chatBoxValue.text}")
+                    Log.d("ChatBox", "ChatBox: ${chatBoxValue.text}")
                     chatBoxValue = TextFieldValue("")
                 }
             },

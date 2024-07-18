@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -142,102 +144,125 @@ fun CategoryCard(
             MenuOptions("Delete", "delete_cate_route", R.drawable.ic_delete),
         )
         Box {
-            IconButton(
-                onClick = { showPopupMenu = true },
-                modifier = Modifier
-                    .padding(start = 340.dp)
-                //.offset(y = (10).dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_more),
-                    contentDescription = "More option menu",
-                )
-            }
+//            var iconOffset by remember { mutableStateOf(IntOffset.Zero) }
+            Row {
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .offset(y = (-90).dp)
-                    .padding(start = 200.dp)
-            ) {
-                DropdownMenu(
-                    expanded = showPopupMenu,
-                    onDismissRequest = { showPopupMenu = false },
-                    modifier = Modifier.background(MaterialTheme.colorScheme.onSurface),
+                ConstraintLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+//                        .padding(10.dp)
                 ) {
-                    listTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
-                        DropdownMenuItem(
-                            onClick = {
-                                showPopupMenu = false
-                                when (menuOptions.route) {
-                                    "edit_cate_route" -> showDialog = 1
-                                    "delete_cate_route" -> showDialog = 2
+                    val (iconButton, popUpMenu) = createRefs()
+                    IconButton(
+                        onClick = { showPopupMenu = true },
+                        modifier = Modifier
+                            .padding(start = 340.dp)
+                            //.offset(y = (10).dp)
+                            .constrainAs(iconButton) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_more),
+                            contentDescription = "More option menu",
+                        )
+                    }
 
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+//                            .height(120.dp)
+//                        .offset(y = (-100).dp)
+                            .padding(start = 180.dp)
+//                            .offset(y = (-100).dp)
+                            .constrainAs(popUpMenu) {
+                                top.linkTo(iconButton.top)
+                                start.linkTo(parent.end)
+
+                            }
+                    ) {
+                        DropdownMenu(
+                            expanded = showPopupMenu,
+                            onDismissRequest = { showPopupMenu = false },
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.onSurface)
+                        ) {
+                            listTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        showPopupMenu = false
+                                        when (menuOptions.route) {
+                                            "edit_cate_route" -> showDialog = 1
+                                            "delete_cate_route" -> showDialog = 2
+                                        }
+                                    }) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                                        modifier = Modifier
+                                            .height(15.dp)
+                                            .width(125.dp)
+                                            .align(Alignment.CenterVertically)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = menuOptions.icon),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSecondary.copy(
+                                                alpha = 0.8f
+                                            ),
+                                            modifier = Modifier
+                                                .width(17.dp)
+                                                .height(17.dp),
+                                        )
+                                        Text(
+                                            text = menuOptions.title,
+                                            color = MaterialTheme.colorScheme.inverseSurface,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Normal
+                                        )
+                                    }
                                 }
-                            }) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(5.dp),
-                                modifier = Modifier
-                                    .height(15.dp)
-                                    .width(125.dp)
-                                    .align(Alignment.CenterVertically)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = menuOptions.icon),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSecondary.copy(
-                                        alpha = 0.8f
-                                    ),
-                                    modifier = Modifier
-                                        .width(17.dp)
-                                        .height(17.dp),
-                                )
-                                Text(
-                                    text = menuOptions.title,
-                                    color = MaterialTheme.colorScheme.inverseSurface,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Normal
-                                )
+                                if (index < listTitlesOfComicMenuOption.size - 1) {
+                                    Divider(
+                                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                                        thickness = 1.dp
+                                    )
+                                }
                             }
                         }
-                        if (index < listTitlesOfComicMenuOption.size - 1) {
-                            Divider(
-                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                                thickness = 1.dp
-                            )
+
+                        if (showDialog != null) {
+                            when (showDialog) {
+                                1 -> {
+                                    EditDialogComponent(
+                                        key = categoryId,
+                                        title = "Edit Personal Category ‘s Name",
+                                        value = value,
+                                        onDismiss = { showDialog = 0 },
+                                        viewModel = libraryViewModel
+                                    )
+                                }
+
+                                2 -> {
+                                    DeleteConfirmDialogComponent(
+                                        key = categoryId,
+                                        value = value,
+                                        title = "Are you sure you want to delete this category?",
+                                        onDismiss = { showDialog = 0 },
+                                        viewModel = libraryViewModel
+                                    )
+
+                                }
+
+                            }
                         }
                     }
-                }
-
-            }
-            if (showDialog != null) {
-                when (showDialog) {
-                    1 -> {
-                        EditDialogComponent(
-                            key = categoryId,
-                            title = "Edit Personal Category ‘s Name",
-                            value = value,
-                            onDismiss = { showDialog = 0 },
-                            viewModel = libraryViewModel
-                        )
-                    }
-
-                    2 -> {
-                        DeleteConfirmDialogComponent(
-                            key = categoryId,
-                            value = value,
-                            title = "Are you sure you want to delete this category?",
-                            onDismiss = { showDialog = 0 },
-                            viewModel = libraryViewModel
-                        )
-
-                    }
-
                 }
             }
         }
-
     }
 }
+
+

@@ -330,3 +330,28 @@ fun changeDateTimeFormat(dateTime: String): String {
     // Nếu không có định dạng nào thành công, trả về chuỗi gốc
     return dateTime
 }
+
+fun changeDateTimeFormat2(dateTime: String): String {
+    // Danh sách các định dạng đầu vào
+    val inputFormatters = listOf(
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSXXX"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX"),
+        DateTimeFormatter.ISO_DATE_TIME // định dạng ISO 8601
+    )
+
+    // Định dạng đầu ra
+    val outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+
+    // Thử phân tích chuỗi ngày giờ theo từng định dạng trong danh sách
+    for (inputFormatter in inputFormatters) {
+        try {
+            val parsedDateTime = ZonedDateTime.parse(dateTime, inputFormatter)
+            return parsedDateTime.format(outputFormatter)
+        } catch (e: DateTimeParseException) {
+            // Bỏ qua và thử định dạng tiếp theo
+        }
+    }
+
+    // Nếu không có định dạng nào thành công, trả về chuỗi gốc
+    return dateTime
+}
