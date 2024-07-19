@@ -6,9 +6,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,7 @@ class ComicCommentViewModel @Inject constructor(
     private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC,
     private val postComicCommentByComicIdU: PostComicCommentByComicIdUC,
     private val deleteComicCommentByComicIdUC: DeleteComicCommentByComicIdUC,
+    private  val updateComicCommentByComicIdUC: UpdateComicCommentByComicIdUC
 ) : ViewModel(), StatefulViewModel<ComicCommentState> {
     //navController
     private var navController: NavController? = null
@@ -32,7 +35,13 @@ class ComicCommentViewModel @Inject constructor(
 
     override val isUpdateSuccess: Boolean = _state.value.isUpdateCommentSuccess
     override val isDeleteSuccess: Boolean = _state.value.isDeleteCommentSuccess
-    override fun update(key: Long, value: String) {}
+    override fun update(key: Long, key2: Long?, value: String) {
+        updateComicCommentByComicId(
+            comicId = key,
+            commentId = key2!!,
+            content = value
+        )
+    }
     override fun delete(key: Long, key2:Long?, isDeleteAll: Boolean?) {
         deleteComicCommentByComicId(
             comicId = key,
@@ -184,5 +193,38 @@ class ComicCommentViewModel @Inject constructor(
             }
         }
     }
+
+    /**
+     * Todo: Implement update comic comment by comicId and commentId
+     */
+    fun updateComicCommentByComicId(
+        comicId: Long,
+        commentId: Long,
+        content: String,
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isUpdateCommentSuccess = false)
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            //log content
+            Log.d("ComicCommentViewModel", "updateComicCommentByComicId: $content")
+            val listPathRequest = listOf(
+                PathRequest(content, "/content", "replace")
+            )
+            val result = updateComicCommentByComicIdUC.updateComicComment(
+                token = token,
+                comicId = comicId,
+                commentId = commentId,
+                pathRequest = listPathRequest
+            )
+            if (result.code() == 204) {
+                Log.d("ComicCommentViewModel", "updateComicCommentByComicId: $result")
+                _state.value = _state.value.copy(isUpdateCommentSuccess = true)
+            } else {
+                _state.value = _state.value.copy(isUpdateCommentSuccess = false)
+                Log.e("ComicCommentViewModel", "updateComicCommentByComicId: $result")
+            }
+        }
+    }
+
 
 }

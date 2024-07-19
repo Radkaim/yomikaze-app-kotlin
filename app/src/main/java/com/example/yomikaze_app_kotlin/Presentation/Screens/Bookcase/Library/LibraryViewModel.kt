@@ -245,7 +245,7 @@ class LibraryViewModel @Inject constructor(
     /**
      * Todo: Implement edit category of StatefulViewModel
      */
-    override fun update(key: Long, value: String) {
+    override fun update(key: Long, key2: Long?, value: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isUpdateCategoryNameSuccess = false)
             val token =

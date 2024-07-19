@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface StatefulViewModel<T> {
 
     val state: StateFlow<T>
-    fun update(key: Long, value: String)
+    fun update(key: Long, key2: Long?, value: String)
     val isUpdateSuccess: Boolean?
 
     fun delete(key: Long, key2: Long? = null, isDeleteAll: Boolean? = null)

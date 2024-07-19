@@ -592,7 +592,10 @@ fun DescriptionInComicDetailView(
     val description = state.comicResponse?.description
     val comicCommentState by comicCommentViewModel.state.collectAsState()
 
-    LaunchedEffect(key1 = comicCommentState.isDeleteCommentSuccess) {
+    LaunchedEffect(
+        key1 = comicCommentState.isDeleteCommentSuccess,
+        key2 = comicCommentState.isUpdateCommentSuccess
+    ) {
         comicDetailViewModel.getAllComicCommentByComicId(comicId = comicId)
     }
 
@@ -622,7 +625,7 @@ fun DescriptionInComicDetailView(
                     Text(
                         text = description ?: "Description",
                         maxLines = maxLine,
-                          overflow = TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     if (isExpanded) {
                         Text(
@@ -705,7 +708,7 @@ fun DescriptionInComicDetailView(
         }
 
         item { Spacer(modifier = Modifier.height(30.dp)) }
-        if(state.listComicComment!!.isNotEmpty()) {
+        if (state.listComicComment!!.isNotEmpty()) {
             item {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -771,8 +774,6 @@ fun DescriptionInComicDetailView(
                         creationTime = comment.creationTime,
                         isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author.id),
                         isAdmin = comicCommentViewModel.checkIsAdmin(),
-                        onEditClicked = {},
-                        onDeleteClicked = {},
                         onClicked = {},
                         comicCommentViewModel = comicCommentViewModel
                     )

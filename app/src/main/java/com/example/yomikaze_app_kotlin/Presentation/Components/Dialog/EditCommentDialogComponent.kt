@@ -1,10 +1,13 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Dialog
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +25,8 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,22 +46,27 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.ViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 
 @Composable
-fun EditCommentDialogComponent(
+fun <T, VM> EditCommentDialogComponent(
     title: String,
-    content: String,
-    onDismiss: () -> Unit,
-    onConfirmClick: (String) -> Unit
-) {
+    key: Long,
+    key2: Long? = null,
+    value: String, //name
+    viewModel: VM,
+    onDismiss: () -> Unit
+) where VM : ViewModel, VM : StatefulViewModel<T> {
+
     val context = LocalContext.current
-    var chatBoxValue by remember { mutableStateOf(TextFieldValue(content)) }
+    var value by remember { mutableStateOf((value)) }
+    var isError by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val textSize = 1024
@@ -78,8 +88,9 @@ fun EditCommentDialogComponent(
                 shape = MaterialTheme.shapes.small,
                 color = MaterialTheme.colorScheme.background,
                 modifier = Modifier
-                    .height(180.dp)
+                    .height(280.dp)
                     .width(380.dp)
+
                     .align(Alignment.Center)
             ) {
                 Column(
@@ -93,25 +104,27 @@ fun EditCommentDialogComponent(
                         color = MaterialTheme.colorScheme.primaryContainer,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(start = 40.dp)
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     TextField(
-                        value = chatBoxValue,
+                        value = value,
                         onValueChange = { newText ->
-                            chatBoxValue = newText
+                            value = newText
                         },
 
                         label = {
-                            if (chatBoxValue.text.length > textSize) {
+                            if (value.length > textSize) {
+                                isError = true
                                 Text(
                                     text = "Your comment is too long",
                                     fontSize = 12.sp,
                                     color = MaterialTheme.colorScheme.error
                                 )
-                            } else if (chatBoxValue.text.isEmpty()) {
+                            } else if (value.isEmpty()) {
+                                isError = true
                                 Text(
                                     modifier = Modifier.alpha(ContentAlpha.medium),
                                     text = "Say something...",
@@ -121,6 +134,7 @@ fun EditCommentDialogComponent(
                                     color = MaterialTheme.colorScheme.errorContainer
                                 )
                             } else {
+                                isError = false
                                 Text(
                                     modifier = Modifier.alpha(ContentAlpha.medium),
                                     text = "",
@@ -139,8 +153,8 @@ fun EditCommentDialogComponent(
                             IconButton(
                                 //  modifier = Modifier.alpha(ContentAlpha.medium),
                                 onClick = {
-                                    if (chatBoxValue.text.isNotEmpty()) {
-                                        chatBoxValue = TextFieldValue("")
+                                    if (value.isNotEmpty()) {
+                                        value = ("")
                                     } else {
                                         focusManager.clearFocus() // Clear focus to hide the keyboard
                                         keyboardController?.hide() // Hide the keyboard
@@ -155,18 +169,18 @@ fun EditCommentDialogComponent(
                             }
                         },
                         keyboardOptions = KeyboardOptions(
-                            imeAction = if (chatBoxValue.text.isEmpty()) ImeAction.Done else ImeAction.Default
+                            imeAction = if (value.isNotEmpty()) ImeAction.Done else ImeAction.Default
                         ),
                         keyboardActions = KeyboardActions(
                             // enter a new line when press enter
-                            onDone = {
-                                if (chatBoxValue.text.isEmpty()) {
-                                    focusManager.clearFocus() // Clear focus to hide the keyboard
-                                    keyboardController?.hide() // Hide the keyboard
-                                }
-                            }
+//                            onDone = {
+//                                if (value.isEmpty()) {
+//                                    focusManager.clearFocus() // Clear focus to hide the keyboard
+//                                    keyboardController?.hide() // Hide the keyboard
+//                                }
+//                            }
                         ),
-                        isError = chatBoxValue.text.length > textSize,   //check if the length of text is over 256 characters
+                        isError = value.length > textSize,   //check if the length of text is over 256 characters
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = MaterialTheme.colorScheme.onSecondaryContainer,
                             backgroundColor = MaterialTheme.colorScheme.onSurface,
@@ -180,9 +194,11 @@ fun EditCommentDialogComponent(
                             errorLabelColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
                             errorTrailingIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
                         ),
+                        maxLines = 5,
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
+                            .height(400.dp)
                             .padding(8.dp)
                             .clip(RoundedCornerShape(30.dp))
                             .border(
@@ -191,6 +207,39 @@ fun EditCommentDialogComponent(
                                 shape = RoundedCornerShape(30.dp)
                             )
                     )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp, end = 20.dp),
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Button(
+                            onClick = {
+                                if (value.isEmpty() || value.length > textSize) {
+                                    isError = true
+                                } else {
+                                    viewModel.update(key, key2, value)
+                                    if (viewModel.isUpdateSuccess!!) {
+                                        Toast.makeText(
+                                            context,
+                                            "Update successfully",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        onDismiss()
+                                    }
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.onSecondary,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                            ),
+                            shape = MaterialTheme.shapes.medium,
+                        ) {
+                            Text(text = "Save")
+                        }
+                    }
                 }
             }
         }

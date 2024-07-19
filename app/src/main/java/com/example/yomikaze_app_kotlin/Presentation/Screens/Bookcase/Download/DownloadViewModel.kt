@@ -37,7 +37,7 @@ class DownloadViewModel @Inject constructor(
     override val isDeleteSuccess: Boolean = _state.value.isDeleteByIdSuccess
 
     //for StatefulViewModel
-    override fun update(key: Long, value: String) {}
+    override fun update(key: Long, key2: Long?,value: String) {}
 
 
     fun setNavController(navController: NavController) {

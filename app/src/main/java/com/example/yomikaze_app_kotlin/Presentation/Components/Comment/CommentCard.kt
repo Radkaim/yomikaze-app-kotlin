@@ -45,6 +45,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat2
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConfirmDialogComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.EditCommentDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
 import com.example.yomikaze_app_kotlin.R
@@ -56,13 +57,12 @@ fun CommentCard(
     content: String,
     authorName: String,
     authorImage: String,
-
-    roleName: String,
     creationTime: String,
+    roleName: String,
+
     isOwnComment: Boolean,
     isAdmin: Boolean,
-    onEditClicked: () -> Unit? = {},
-    onDeleteClicked: () -> Unit? = {},
+
     onClicked: () -> Unit? = {},
     comicCommentViewModel: ComicCommentViewModel
 ) {
@@ -302,13 +302,14 @@ fun CommentCard(
                         if (showDialog != null) {
                             when (showDialog) {
                                 1 -> {
-//                        EditDialogComponent(
-//                            key = categoryId,
-//                            title = "Edit Personal Category ‘s Name",
-//                            value = value,
-//                            onDismiss = { showDialog = 0 },
-//                            viewModel = libraryViewModel
-//                        )
+                                    EditCommentDialogComponent(
+                                        key = comicId,
+                                        key2 = commentId,
+                                        value = content,
+                                        title = "Edit Comment",
+                                        onDismiss = { showDialog = 0 },
+                                       viewModel = comicCommentViewModel,
+                                    )
                                 }
 
                                 2 -> {}

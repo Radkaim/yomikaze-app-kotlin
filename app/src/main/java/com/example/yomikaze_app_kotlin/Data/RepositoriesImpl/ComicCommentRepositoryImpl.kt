@@ -121,6 +121,7 @@ class ComicCommentRepositoryImpl @Inject constructor(
                 // Xử lý các mã lỗi khác
                 else -> {
                     // Xử lý mặc định cho các mã lỗi khác
+                    Log.e("CommentComicRepositoryImpl", "Failed to update comic comment $httpCode")
                 }
             }
             Result.failure(Exception("Failed to rate comic"))
