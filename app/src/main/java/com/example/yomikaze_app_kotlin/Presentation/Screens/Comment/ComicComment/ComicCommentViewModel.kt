@@ -10,7 +10,6 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommen
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -31,6 +30,13 @@ class ComicCommentViewModel @Inject constructor(
     //set navController
     fun setNavController(navController: NavController) {
         this.navController = navController
+    }
+
+    /**
+     * Todo: Implement check user is login
+     */
+    fun checkUserIsLogin(): Boolean {
+        return appPreference.isUserLoggedIn
     }
 
     // reset state
@@ -87,7 +93,7 @@ class ComicCommentViewModel @Inject constructor(
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
                     _state.value.totalCommentResults.value = baseResponse.totals
-                    delay(1000)
+//                    delay(1000)
                     _state.value = _state.value.copy(isListComicCommentLoading = false)
 
                     Log.d("HotComicViewModel", "currentPage1: ${baseResponse.currentPage}")

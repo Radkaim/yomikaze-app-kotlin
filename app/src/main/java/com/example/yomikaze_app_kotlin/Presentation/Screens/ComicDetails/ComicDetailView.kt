@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -70,6 +69,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -582,12 +582,13 @@ fun DescriptionInComicDetailView(
 
     //for tag genre
     val listTag = state.listTagGenres ?: emptyList()
-
+//    val ofsety = if (state.listComicComment!!.isNotEmpty()) 0.dp else -70.dp
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .wrapContentHeight()
-            .padding(top = 20.dp, start = 2.dp, end = 8.dp),
+//            .wrapContentHeight()
+//            .offset(y = ofsety)
+            .padding(top = 10.dp, start = 2.dp, end = 8.dp),
     ) {
         //TODO: Description
         item {
@@ -688,49 +689,50 @@ fun DescriptionInComicDetailView(
         }
         //   for commment
         item { Spacer(modifier = Modifier.height(30.dp)) }
-        item {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp)
-            ) {
-                Text(
-                    text = "New Comments",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.secondaryContainer
-                )
+        if (state.listComicComment!!.isNotEmpty()) {
+            item {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable {
-                        comicDetailViewModel.navigateToComicComment(
-                            comicId = comicId,
-                            comicName = comicName
-                        )
-                    }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp)
                 ) {
                     Text(
-                        text = "More",
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Normal
+                        text = "New Comments",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
-                    Icon(
-                        painterResource(id = R.drawable.ic_next),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .width(10.dp)
-                            .height(10.dp),
-                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable {
+                            comicDetailViewModel.navigateToComicComment(
+                                comicId = comicId,
+                                comicName = comicName
+                            )
+                        }
+                    ) {
+                        Text(
+                            text = "More",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Icon(
+                            painterResource(id = R.drawable.ic_next),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .width(10.dp)
+                                .height(10.dp),
+                        )
+                    }
                 }
-
             }
-
         }
         item { Spacer(modifier = Modifier.height(30.dp)) }
-        if (state.listComicComment != null) {
+        if (state.listComicComment!!.isNotEmpty()) {
             item {
                 state.listComicComment.forEach { comment ->
                     CommentCard(
@@ -747,6 +749,34 @@ fun DescriptionInComicDetailView(
                         onClicked = {}
                     )
                     Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+        } else {
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .offset(y = (-20).dp)
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_comment),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                            .width(20.dp)
+                            .height(20.dp),
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "Drop the first comment on this comic!",
+                        fontSize = 15.sp,
+                        fontStyle = FontStyle.Italic,
+                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                    )
                 }
             }
         }

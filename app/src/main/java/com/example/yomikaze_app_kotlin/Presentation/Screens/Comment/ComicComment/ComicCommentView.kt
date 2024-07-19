@@ -135,118 +135,119 @@ fun ComicCommentContent(
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (header, messages, chatBox) = createRefs()
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(top = 5.dp)
-                        .constrainAs(header) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Total Comments: ${state.totalCommentResults.value}",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.padding(8.dp)
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(top = 5.dp)
+                    .constrainAs(header) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Total Comments: ${state.totalCommentResults.value}",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(8.dp)
 
-                    )
+                )
 
-                    SortComponent(
-                        isOldestSelected = isSelected,
-                        onOldSortClick = {
-                            isSelected = true
-                            isReversed = false
+                SortComponent(
+                    isOldestSelected = isSelected,
+                    onOldSortClick = {
+                        isSelected = true
+                        isReversed = false
 
-                            isRefreshing = false
-
-
-                            page.value = 1
-                            comicCommentViewModel.resetState()
-                        },
-                        onnNewSortClick = {
-                            isSelected = false
-                            isReversed = true
+                        isRefreshing = false
 
 
-                            isRefreshing = true
+                        page.value = 1
+                        comicCommentViewModel.resetState()
+                    },
+                    onnNewSortClick = {
+                        isSelected = false
+                        isReversed = true
 
-                            page.value = 1
-                            comicCommentViewModel.resetState()
-                        }
-                    )
-                }
 
-                LazyColumn(
-                    state = listState,
-                    verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
-                    modifier = Modifier.fillMaxWidth()
-                        .constrainAs(messages) {
-                            top.linkTo(header.bottom)
-                            bottom.linkTo(chatBox.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            height = Dimension.fillToConstraints
-                        }
+                        isRefreshing = true
 
-                ) {
+                        page.value = 1
+                        comicCommentViewModel.resetState()
+                    }
+                )
+            }
+
+            LazyColumn(
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(messages) {
+                        top.linkTo(header.bottom)
+                        bottom.linkTo(chatBox.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        height = Dimension.fillToConstraints
+                    }
+
+            ) {
 //                    stickyHeader {
 //
 //                    }
-                    if (state.isListComicCommentLoading) {
-                        item {
-                            repeat(6) {
-                                CommentCardShimmerLoading()
-                                Spacer(modifier = Modifier.height(10.dp))
-                            }
-                        }
-                    }
-                    if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
-                        items(state.listComicComment) { comment ->
-                            CommentCard(
-                                commentId = comment.id,
-                                content = comment.content,
-                                authorName = comment.author.name,
-                                authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
-                                    ?: "",
-                                roleName = comment.author.roles?.get(0) ?: "",
-                                creationTime = comment.creationTime,
-                                isOwnComment = comicCommentViewModel.checkCanModifyComment(comment.author.id),
-                                onEditClicked = {},
-                                onDeleteClicked = {},
-                                onClicked = {}
-                            )
-                        }
-                    }
-
-
-                    // Hiển thị một mục tải dữ liệu khi cần
+                if (state.isListComicCommentLoading) {
                     item {
-                        if (loading.value) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(100.dp)
-                                    .padding(10.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                LottieAnimationComponent(
-                                    animationFileName = R.raw.loading, // Replace with your animation file name
-                                    loop = true,
-                                    autoPlay = true,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .scale(1.15f)
-                                )
-                            }
+                        repeat(6) {
+                            CommentCardShimmerLoading()
+                            Spacer(modifier = Modifier.height(10.dp))
                         }
                     }
                 }
+                if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
+                    items(state.listComicComment) { comment ->
+                        CommentCard(
+                            commentId = comment.id,
+                            content = comment.content,
+                            authorName = comment.author.name,
+                            authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
+                                ?: "",
+                            roleName = comment.author.roles?.get(0) ?: "",
+                            creationTime = comment.creationTime,
+                            isOwnComment = comicCommentViewModel.checkCanModifyComment(comment.author.id),
+                            onEditClicked = {},
+                            onDeleteClicked = {},
+                            onClicked = {}
+                        )
+                    }
+                }
+
+
+                // Hiển thị một mục tải dữ liệu khi cần
+                item {
+                    if (loading.value) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                                .padding(10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LottieAnimationComponent(
+                                animationFileName = R.raw.loading, // Replace with your animation file name
+                                loop = true,
+                                autoPlay = true,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .scale(1.15f)
+                            )
+                        }
+                    }
+                }
+            }
 
             ChatBox(
                 modifier = Modifier
@@ -257,14 +258,16 @@ fun ComicCommentContent(
                         end.linkTo(parent.end)
                     },
                 onSendChatClickListener = {
-                comicCommentViewModel.postComicCommentByComicId(
-                    comicId = comicId,
-                    content = it
-                )
-                })
+                    comicCommentViewModel.postComicCommentByComicId(
+                        comicId = comicId,
+                        content = it,
+                    )
+                },
+                isLogin = comicCommentViewModel.checkUserIsLogin()
+            )
         }
 
-        LaunchedEffect(key1 = state.isPostComicCommentSuccess ){
+        LaunchedEffect(key1 = state.isPostComicCommentSuccess) {
             page.value = 1
             comicCommentViewModel.resetState()
         }
@@ -318,15 +321,16 @@ fun ComicCommentContent(
                 }
         }
     }
-
 }
 
 @Composable
 fun ChatBox(
     onSendChatClickListener: (String) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    isLogin: Boolean,
 ) {
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
+    val canPost by remember { mutableStateOf(isLogin) }
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -358,8 +362,7 @@ fun ChatBox(
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.errorContainer
                     )
-                }
-                else{
+                } else {
                     Text(
                         modifier = Modifier.alpha(ContentAlpha.medium),
                         text = "",
@@ -371,16 +374,6 @@ fun ChatBox(
 
                 }
             },
-//            placeholder = {
-//                Text(
-//                        modifier = Modifier.alpha(ContentAlpha.medium),
-//                        text = "Say something...",
-//                        fontWeight = FontWeight.Medium,
-//                        fontStyle = FontStyle.Italic,
-//                        fontSize = 16.sp,
-//                        color = MaterialTheme.colorScheme.errorContainer
-//                    )
-//            },
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             ),
@@ -400,7 +393,7 @@ fun ChatBox(
                         imageVector = Icons.Filled.Close,
                         contentDescription = "Close",
 
-                    )
+                        )
                 }
             },
             keyboardOptions = KeyboardOptions(
@@ -442,11 +435,22 @@ fun ChatBox(
         )
         IconButton(
             onClick = {
-                if (chatBoxValue.text.isNotEmpty() && chatBoxValue.text.length <= 256) {
+                if (chatBoxValue.text.isNotEmpty() && chatBoxValue.text.length <= 256 && canPost) {
                     onSendChatClickListener(chatBoxValue.text)
                     Log.d("ChatBox", "ChatBox: ${chatBoxValue.text}")
-                }else if (chatBoxValue.text.length > 256){
-                    Toast.makeText(context, "Please comment less than 256 characters", Toast.LENGTH_SHORT).show()
+                } else if (chatBoxValue.text.length > 256 && canPost) {
+                    Toast.makeText(
+                        context,
+                        "Please comment less than 256 characters",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@IconButton
+                }else if (!canPost){
+                    Toast.makeText(
+                        context,
+                        "Please sign in to comment",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@IconButton
                 }
                 chatBoxValue = TextFieldValue("")
