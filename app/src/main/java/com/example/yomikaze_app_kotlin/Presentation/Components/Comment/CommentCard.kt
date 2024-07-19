@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Comment
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,11 +44,14 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat2
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConfirmDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun CommentCard(
+    comicId: Long,
     commentId: Long,
     content: String,
     authorName: String,
@@ -56,9 +60,11 @@ fun CommentCard(
     roleName: String,
     creationTime: String,
     isOwnComment: Boolean,
+    isAdmin: Boolean,
     onEditClicked: () -> Unit? = {},
     onDeleteClicked: () -> Unit? = {},
-    onClicked: () -> Unit? = {}
+    onClicked: () -> Unit? = {},
+    comicCommentViewModel: ComicCommentViewModel
 ) {
     var showPopupMenu by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf<Int?>(null) }
@@ -176,107 +182,126 @@ fun CommentCard(
         }
 
         //Options Icon
-        val listTitlesOfComicMenuOption = listOf(
+        val listTitlesOfComicMenuOptionAdmin = listOf(
+            MenuOptions("Report", "report_comment_route", R.drawable.ic_report),
+            MenuOptions("Delete", "delete_comment_route", R.drawable.ic_delete),
+        )
+
+        val listTitlesOfComicMenuOptionUserNotLogin = listOf(
+            MenuOptions("Report", "report_comment_route", R.drawable.ic_report),
+        )
+
+        val listTitlesOfComicMenuOptionOwnUserLogin = listOf(
             MenuOptions("Edit", "edit_comment_route", R.drawable.ic_edit),
             MenuOptions("Report", "report_comment_route", R.drawable.ic_report),
             MenuOptions("Delete", "delete_comment_route", R.drawable.ic_delete),
         )
-        if (isOwnComment) {
-            Box {
-//            var iconOffset by remember { mutableStateOf(IntOffset.Zero) }
-                Row {
+        val finalListTitlesOfComicMenuOption = if (isOwnComment) {
+            listTitlesOfComicMenuOptionOwnUserLogin
+        } else {
+            if (isAdmin) {
+                listTitlesOfComicMenuOptionAdmin
+            } else {
+                Log.d("CommentCard", "CommentCard: $isAdmin")
+                listTitlesOfComicMenuOptionUserNotLogin
+            }
+        }
 
-                    ConstraintLayout(
+        Box {
+//            var iconOffset by remember { mutableStateOf(IntOffset.Zero) }
+            Row {
+
+                ConstraintLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+//                        .padding(10.dp)
+                ) {
+                    val (iconButton, popUpMenu) = createRefs()
+                    IconButton(
+                        onClick = { showPopupMenu = true },
+                        modifier = Modifier
+                            .padding(start = 340.dp)
+                            //.offset(y = (10).dp)
+                            .constrainAs(iconButton) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_more),
+                            contentDescription = "More option menu",
+                        )
+                    }
+
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .wrapContentHeight()
-//                        .padding(10.dp)
-                    ) {
-                        val (iconButton, popUpMenu) = createRefs()
-                        IconButton(
-                            onClick = { showPopupMenu = true },
-                            modifier = Modifier
-                                .padding(start = 340.dp)
-                                //.offset(y = (10).dp)
-                                .constrainAs(iconButton) {
-                                    top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
-                                }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_more),
-                                contentDescription = "More option menu",
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
 //                            .height(120.dp)
 //                        .offset(y = (-100).dp)
-                                .padding(start = 180.dp)
+                            .padding(start = 180.dp)
 //                            .offset(y = (-100).dp)
-                                .constrainAs(popUpMenu) {
-                                    top.linkTo(iconButton.top)
-                                    start.linkTo(parent.end)
+                            .constrainAs(popUpMenu) {
+                                top.linkTo(iconButton.top)
+                                start.linkTo(parent.end)
 
-                                }
+                            }
+                    ) {
+                        DropdownMenu(
+                            expanded = showPopupMenu,
+                            onDismissRequest = { showPopupMenu = false },
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.onSurface)
                         ) {
-                            DropdownMenu(
-                                expanded = showPopupMenu,
-                                onDismissRequest = { showPopupMenu = false },
-                                modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.onSurface)
-                            ) {
-                                listTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            showPopupMenu = false
-                                            when (menuOptions.route) {
-                                                "edit_comment_route" -> showDialog = 1
-                                                "report_comment_route" -> showDialog = 2
-                                                "delete_comment_route" -> showDialog = 3
+                            finalListTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        showPopupMenu = false
+                                        when (menuOptions.route) {
+                                            "edit_comment_route" -> showDialog = 1
+                                            "report_comment_route" -> showDialog = 2
+                                            "delete_comment_route" -> showDialog = 3
 
-                                            }
-                                        }) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.spacedBy(5.dp),
-                                            modifier = Modifier
-                                                .height(15.dp)
-                                                .width(125.dp)
-                                                .align(Alignment.CenterVertically)
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(id = menuOptions.icon),
-                                                contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.onSecondary.copy(
-                                                    alpha = 0.8f
-                                                ),
-                                                modifier = Modifier
-                                                    .width(17.dp)
-                                                    .height(17.dp),
-                                            )
-                                            Text(
-                                                text = menuOptions.title,
-                                                color = MaterialTheme.colorScheme.inverseSurface,
-                                                fontSize = 14.sp,
-                                                fontWeight = FontWeight.Normal
-                                            )
                                         }
-                                    }
-                                    if (index < listTitlesOfComicMenuOption.size - 1) {
-                                        Divider(
-                                            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                                            thickness = 1.dp
+                                    }) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                                        modifier = Modifier
+                                            .height(15.dp)
+                                            .width(125.dp)
+                                            .align(Alignment.CenterVertically)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = menuOptions.icon),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSecondary.copy(
+                                                alpha = 0.8f
+                                            ),
+                                            modifier = Modifier
+                                                .width(17.dp)
+                                                .height(17.dp),
+                                        )
+                                        Text(
+                                            text = menuOptions.title,
+                                            color = MaterialTheme.colorScheme.inverseSurface,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Normal
                                         )
                                     }
                                 }
+                                if (index < finalListTitlesOfComicMenuOption.size - 1) {
+                                    Divider(
+                                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                                        thickness = 1.dp
+                                    )
+                                }
                             }
+                        }
 
-                            if (showDialog != null) {
-                                when (showDialog) {
-                                    1 -> {
+                        if (showDialog != null) {
+                            when (showDialog) {
+                                1 -> {
 //                        EditDialogComponent(
 //                            key = categoryId,
 //                            title = "Edit Personal Category ‘s Name",
@@ -284,30 +309,27 @@ fun CommentCard(
 //                            onDismiss = { showDialog = 0 },
 //                            viewModel = libraryViewModel
 //                        )
-                                    }
+                                }
 
-                                    2 -> {}
+                                2 -> {}
 
-                                    3 -> {
-//                        DeleteConfirmDialogComponent(
-//                            key = categoryId,
-//                            value = value,
-//                            title = "Are you sure you want to delete this category?",
-//                            onDismiss = { showDialog = 0 },
-//                            viewModel = libraryViewModel
-//                        )
-
-                                    }
-
+                                3 -> {
+                                    DeleteConfirmDialogComponent(
+                                        key = comicId,
+                                        key2 = commentId,
+                                        value = "",
+                                        title = "Are you sure you want to delete this comment?",
+                                        onDismiss = { showDialog = 0 },
+                                        viewModel = comicCommentViewModel
+                                    )
                                 }
                             }
                         }
                     }
-
                 }
+
             }
         }
-
     }
 }
 

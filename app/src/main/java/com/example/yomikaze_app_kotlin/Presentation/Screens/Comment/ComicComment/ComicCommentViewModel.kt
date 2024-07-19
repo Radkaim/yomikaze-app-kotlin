@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,12 +22,24 @@ class ComicCommentViewModel @Inject constructor(
     private val appPreference: AppPreference,
     private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC,
     private val postComicCommentByComicIdU: PostComicCommentByComicIdUC,
-) : ViewModel() {
+    private val deleteComicCommentByComicIdUC: DeleteComicCommentByComicIdUC,
+) : ViewModel(), StatefulViewModel<ComicCommentState> {
     //navController
     private var navController: NavController? = null
 
     private val _state = MutableStateFlow(ComicCommentState())
-    val state: StateFlow<ComicCommentState> get() = _state
+    override val state: StateFlow<ComicCommentState> get() = _state
+
+    override val isUpdateSuccess: Boolean = _state.value.isUpdateCommentSuccess
+    override val isDeleteSuccess: Boolean = _state.value.isDeleteCommentSuccess
+    override fun update(key: Long, value: String) {}
+    override fun delete(key: Long, key2:Long?, isDeleteAll: Boolean?) {
+        deleteComicCommentByComicId(
+            comicId = key,
+            commentId = key2!!
+        )
+    }
+
 
     //set navController
     fun setNavController(navController: NavController) {
@@ -51,10 +65,15 @@ class ComicCommentViewModel @Inject constructor(
     }
 
     // check is that own user comment for set edit and delete button
-    fun checkCanModifyComment(userId: Long): Boolean {
+    fun checkIsOwnComment(userId: Long): Boolean {
         val ownUserId = appPreference.userId
         val userRoles = appPreference.userRoles
-        return ownUserId == userId || userRoles?.contains("Super") == true || userRoles?.contains("Administrator") == true
+        return ownUserId == userId
+    }
+
+    fun checkIsAdmin(): Boolean {
+        val userRoles = appPreference.userRoles
+        return userRoles?.contains("Super") == true || userRoles?.contains("Administrator") == true
     }
 
     /**
@@ -124,23 +143,37 @@ class ComicCommentViewModel @Inject constructor(
                 comicId = comicId,
                 content = CommentRequest(content = content)
             )
-            result.fold(
-                onSuccess = { baseResponse ->
-                    // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(
-                        isPostComicCommentSuccess = true
-                    )
-                },
-
-                onFailure = { exception ->
-                    // Xử lý lỗi
-                    _state.value = _state.value.copy(isPostComicCommentSuccess = false)
-                    Log.e("ComicCommentViewModel", "postComicCommentByComicId: $exception")
-                }
-            )
+            if (result.code() == 201) {
+                _state.value = _state.value.copy(isPostComicCommentSuccess = true)
+            } else {
+                _state.value = _state.value.copy(isPostComicCommentSuccess = false)
+                Log.e("ComicCommentViewModel", "postComicCommentByComicId: $result")
+            }
         }
     }
 
-
+    /**
+     * Todo: Implement delete comic comment by comicId and commentId
+     */
+    fun deleteComicCommentByComicId(
+        comicId: Long,
+        commentId: Long
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isDeleteCommentSuccess = false)
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = deleteComicCommentByComicIdUC.deleteComicCommentByComicId(
+                token = token,
+                comicId = comicId,
+                commentId = commentId
+            )
+            if (result.code() == 204) {
+                _state.value = _state.value.copy(isDeleteCommentSuccess = true)
+            } else {
+                _state.value = _state.value.copy(isDeleteCommentSuccess = false)
+                Log.e("ComicCommentViewModel", "deleteComicCommentByComicId: $result")
+            }
+        }
+    }
 
 }

@@ -8,9 +8,9 @@ data class FollowComicState(
 
     val error: String? = null,
     val listComicByFollowRanking: List<ComicResponse> = emptyList(),
-    val isLoading: Boolean = true,
+    val isLoadingFollow: Boolean = true,
     val currentPage: MutableState<Int> = mutableStateOf(0),
     val totalPages: MutableState<Int> = mutableStateOf(0),
     val page: Int = 1,
-    val size: Int = 7,
+    val size: Int = 9,
 )

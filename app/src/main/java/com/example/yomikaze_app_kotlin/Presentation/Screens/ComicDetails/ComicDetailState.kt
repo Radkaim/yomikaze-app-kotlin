@@ -29,5 +29,6 @@ data class ComicDetailState(
 
     //for comment
     val listComicComment: List<CommentResponse>? = emptyList(),
+    val isListComicCommentLoading: Boolean = true,
 
     )

@@ -210,6 +210,7 @@ fun ComicCommentContent(
                 if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
                     items(state.listComicComment) { comment ->
                         CommentCard(
+                            comicId = comicId,
                             commentId = comment.id,
                             content = comment.content,
                             authorName = comment.author.name,
@@ -217,10 +218,12 @@ fun ComicCommentContent(
                                 ?: "",
                             roleName = comment.author.roles?.get(0) ?: "",
                             creationTime = comment.creationTime,
-                            isOwnComment = comicCommentViewModel.checkCanModifyComment(comment.author.id),
+                            isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author.id),
+                            isAdmin = comicCommentViewModel.checkIsAdmin(),
                             onEditClicked = {},
                             onDeleteClicked = {},
-                            onClicked = {}
+                            onClicked = {},
+                            comicCommentViewModel = comicCommentViewModel
                         )
                     }
                 }
@@ -267,9 +270,23 @@ fun ComicCommentContent(
             )
         }
 
-        LaunchedEffect(key1 = state.isPostComicCommentSuccess) {
+        LaunchedEffect(
+            key1 = state.isPostComicCommentSuccess,
+            key2 = state.isDeleteCommentSuccess
+        ) {
+            // refresh new comment
+            isSelected = false
+            isReversed = true
+
+            isRefreshing = true
             page.value = 1
+
             comicCommentViewModel.resetState()
+            comicCommentViewModel.getAllComicCommentByComicId(
+                comicId = comicId,
+                page.value,
+                orderBy = if (isReversed) "CreationTimeDesc" else "CreationTime"
+            )
         }
 
         LaunchedEffect(
@@ -293,10 +310,10 @@ fun ComicCommentContent(
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collectLatest { lastVisibleItemIndex ->
                     if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicComment.size - 2) {
-//                        Log.d(
-//                            "ComicCommentContent",
-//                            "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicComment.size}"
-//                        )
+                        Log.d(
+                            "ComicCommentContent",
+                            "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicComment.size}"
+                        )
                         if (state.currentPage.value < state.totalPages.value) {
                             page.value++
                         }
@@ -445,7 +462,7 @@ fun ChatBox(
                         Toast.LENGTH_SHORT
                     ).show()
                     return@IconButton
-                }else if (!canPost){
+                } else if (!canPost) {
                     Toast.makeText(
                         context,
                         "Please sign in to comment",
@@ -461,7 +478,7 @@ fun ChatBox(
                 painterResource(id = R.drawable.ic_send_cmt),
                 contentDescription = "Send",
                 tint = MaterialTheme.colorScheme.secondaryContainer,
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(25.dp)
             )
         }
     }

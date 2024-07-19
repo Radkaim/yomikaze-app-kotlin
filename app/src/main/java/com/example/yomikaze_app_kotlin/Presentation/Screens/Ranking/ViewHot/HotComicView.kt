@@ -72,6 +72,7 @@ fun HotComicViewContent(
     val context = LocalContext.current
     val page = remember { mutableStateOf(1) }
     val loading = remember { mutableStateOf(false) }
+    val listComicByViewRanking = remember { state.listComicByViewRanking }
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
         modifier = Modifier
@@ -89,7 +90,7 @@ fun HotComicViewContent(
             verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
         ) {
 
-            if (state.isLoading) {
+            if (state.isLoadingHot) {
                 item {
                     repeat(6) {
                         NormalComicCardShimmerLoading()
@@ -97,7 +98,7 @@ fun HotComicViewContent(
                     }
                 }
             }
-            if (!state.isLoading && state.listComicByViewRanking.isNotEmpty()) {
+            if (!state.isLoadingHot && state.listComicByViewRanking.isNotEmpty()) {
                 itemsIndexed(state.listComicByViewRanking) { index, comic ->
                     RankingComicCard(
                         comicId = comic.comicId,
@@ -144,9 +145,8 @@ fun HotComicViewContent(
 
     LaunchedEffect(
         key1 = page.value,
-        //key2 = state.totalPages
     ) {
-        Log.d("HotComicViewModel", "page1: ${page.value}")
+        Log.d("ComicCommentContent", "page1: ${page.value}")
         if (page.value > state.currentPage.value && !loading.value) {
             loading.value = true
             hotComicViewModel.getComicByViewRanking(page.value)
@@ -159,7 +159,12 @@ fun HotComicViewContent(
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
                 if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicByViewRanking.size - 2) {
+                    Log.d(
+                        "ComicCommentContent",
+                        "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicByViewRanking.size}"
+                    )
                     if (state.currentPage.value < state.totalPages.value) {
+                        Log.d("HotComicViewModel", "page2: ${state.currentPage.value}")
                         page.value++
 
                     }
@@ -175,7 +180,7 @@ fun HotComicViewContent(
     ) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByViewRanking.size && state.listComicByViewRanking.size > 5) {
+                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByViewRanking.size && listComicByViewRanking.size > 5) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
                         Toast.makeText(context, "No comics left", Toast.LENGTH_SHORT).show()
                     }

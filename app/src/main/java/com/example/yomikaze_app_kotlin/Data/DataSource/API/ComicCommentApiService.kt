@@ -3,7 +3,9 @@ package com.example.yomikaze_app_kotlin.Data.DataSource.API
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
+import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -32,5 +34,16 @@ interface ComicCommentApiService {
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,
         @Body content: CommentRequest
-    ): CommentResponse
+    ): Response<Unit>
+
+    /**
+     * TODO: use for delete comic comment by comicId and commentId
+     */
+    @DELETE("comics/{comicId}/comments/{commentId}")
+    suspend fun deleteComicCommentByComicId(
+        @Header("Authorization") token: String,
+        @Path("comicId") comicId: Long,
+        @Path("commentId") commentId: Long
+    ): Response<Unit>
+
 }

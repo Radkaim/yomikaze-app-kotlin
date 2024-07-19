@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -48,7 +49,7 @@ class FollowComicViewModel @Inject constructor(
 
     fun getComicByFollowRanking(page: Int? = 1){
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
+
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             val size = _state.value.size
@@ -72,14 +73,15 @@ class FollowComicViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         listComicByFollowRanking = state.value.listComicByFollowRanking + results,
                     )
-                    _state.value = _state.value.copy(isLoading = false)
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
+                    delay(200)
+                    _state.value = _state.value.copy(isLoadingFollow = false)
 
                 },
                 onFailure = { exception ->
                     // Xử lý kết quả thất bại
-                    _state.value = _state.value.copy(isLoading = false)
+                    _state.value = _state.value.copy(isLoadingFollow = false)
                     Log.e("FollowComicViewModel", exception.message.toString())
                 }
             )

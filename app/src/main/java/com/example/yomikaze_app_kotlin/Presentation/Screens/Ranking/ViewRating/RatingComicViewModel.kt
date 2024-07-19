@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByRatingRankingUC
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -49,7 +50,7 @@ class RatingComicViewModel @Inject constructor(
 
     fun getComicByRatingRanking(page: Int? = 1) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
+
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             val size = _state.value.size
@@ -75,11 +76,12 @@ class RatingComicViewModel @Inject constructor(
                     )
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
-                    _state.value = _state.value.copy(isLoading = false)
+                    delay(200)
+                    _state.value = _state.value.copy(isLoadingRating = false)
                 },
                 onFailure = { exception ->
                     // Xử lý kết quả thất bại
-                    _state.value = _state.value.copy(isLoading = false)
+                    _state.value = _state.value.copy(isLoadingRating = false)
                     Log.e("RatingComicViewModel", exception.message.toString())
                 }
             )

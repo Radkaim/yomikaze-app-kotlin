@@ -45,6 +45,9 @@ class ComicDetailViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(ComicDetailState())
     val state: StateFlow<ComicDetailState> get() = _state
+//
+//    private val _comicCommentState = MutableStateFlow(ComicCommentState())
+//    val comicCommentState: StateFlow<ComicCommentState> get() = _comicCommentState
 
     //set navController
     fun setNavController(navController: NavController) {
@@ -70,12 +73,16 @@ class ComicDetailViewModel @Inject constructor(
         return appPreference.isUserLoggedIn
     }
 
-    // check is that own user comment for set edit and delete button
-    fun checkCanModifyComment(userId: Long): Boolean {
-        val ownUserId = appPreference.userId
-        val userRoles = appPreference.userRoles
-        return ownUserId == userId || userRoles?.contains("Super") == true || userRoles?.contains("Administrator") == true
-    }
+//    // check is that own user comment for set edit and delete button
+//    fun checkIsOwnComment(userId: Long): Boolean {
+//        val ownUserId = appPreference.userId
+//        val userRoles = appPreference.userRoles
+//        return ownUserId == userId
+//    }
+//    fun checkIsAdmin(): Boolean {
+//        val userRoles = appPreference.userRoles
+//        return userRoles?.contains("Super") == true || userRoles?.contains("Administrator") == true
+//    }
 
     fun getComicDetailsFromApi(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -248,6 +255,7 @@ class ComicDetailViewModel @Inject constructor(
      */
     fun getAllComicCommentByComicId(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isListComicCommentLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = getAllComicCommentByComicIdUC.getAllComicCommentByComicId(
                 token = token,
@@ -261,12 +269,14 @@ class ComicDetailViewModel @Inject constructor(
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(
                         listComicComment = baseResponse.results,
+                        isListComicCommentLoading = false
                         )
                     Log.d("ComicDetailViewModel", "getAllComicCommentByComicId: $result")
                 },
 
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isListComicCommentLoading = false)
                     Log.e("ComicDetailViewModel", "getAllComicCommentByComicId: $exception")
                 }
             )

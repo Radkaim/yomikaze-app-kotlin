@@ -48,6 +48,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFrom
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
@@ -542,6 +543,17 @@ object UseCaseModule {
         comicCommentRepository: ComicCommentRepository
     ): PostComicCommentByComicIdUC {
         return PostComicCommentByComicIdUC(comicCommentRepository)
+    }
+
+    /**
+     * TODO: use for delete comic comment by comicId and commentId
+     */
+    @Provides
+    @Singleton
+    fun provideDeleteComicCommentByComicIdUC(
+        comicCommentRepository: ComicCommentRepository
+    ): DeleteComicCommentByComicIdUC {
+        return DeleteComicCommentByComicIdUC(comicCommentRepository)
     }
 
     /**

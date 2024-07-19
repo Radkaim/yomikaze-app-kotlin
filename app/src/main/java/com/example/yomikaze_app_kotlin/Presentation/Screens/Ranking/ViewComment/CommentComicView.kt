@@ -79,7 +79,7 @@ fun CommentComicViewContent(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
         ) {
-            if (state.isLoading) {
+            if (state.isLoadingComment) {
                 item {
                     repeat(6) {
                         NormalComicCardShimmerLoading()
@@ -87,7 +87,7 @@ fun CommentComicViewContent(
                     }
                 }
             }
-            if (!state.isLoading && state.listComicByCommentRanking.isNotEmpty()) {
+            if (!state.isLoadingComment && state.listComicByCommentRanking.isNotEmpty()) {
                 itemsIndexed(state.listComicByCommentRanking) { index, comic ->
                     RankingComicCard(
                         comicId = comic.comicId,
@@ -134,7 +134,6 @@ fun CommentComicViewContent(
 
     LaunchedEffect(
         key1 = page.value,
-        //key2 = state.totalPages
     ) {
         Log.d("HotComicViewModel", "page1: ${page.value}")
         if (page.value > state.currentPage.value && !loading.value) {

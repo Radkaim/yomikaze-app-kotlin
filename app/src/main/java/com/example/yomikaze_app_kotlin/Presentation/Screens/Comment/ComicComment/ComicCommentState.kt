@@ -16,5 +16,7 @@ data class ComicCommentState(
 
 
     val isPostComicCommentSuccess: Boolean = false,
+    val isUpdateCommentSuccess: Boolean = true,
+    val isDeleteCommentSuccess: Boolean = true,
 )
 

@@ -1,19 +1,17 @@
 package com.example.yomikaze_app_kotlin.Domain.UseCases.Comment
 
-import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicCommentRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class PostComicCommentByComicIdUC @Inject constructor(
+class DeleteComicCommentByComicIdUC @Inject constructor(
     private val comicCommentRepository: ComicCommentRepository
 ) {
-    suspend fun postComicCommentByComicId(
+    suspend fun deleteComicCommentByComicId(
         token: String,
         comicId: Long,
-        content: CommentRequest
+        commentId: Long
     ): Response<Unit> {
-        return comicCommentRepository.postComicCommentByComicId(token, comicId, content)
+        return comicCommentRepository.deleteComicCommentByComicId(token, comicId, commentId)
     }
-
 }

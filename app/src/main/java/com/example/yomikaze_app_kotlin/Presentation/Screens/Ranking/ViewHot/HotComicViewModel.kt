@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByViewRankingUC
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ class HotComicViewModel @Inject constructor(
 
     fun getComicByViewRanking(page: Int? = 1) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true)
+
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             val size = _state.value.size
@@ -76,13 +77,14 @@ class HotComicViewModel @Inject constructor(
                     )
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
-                    _state.value = _state.value.copy(isLoading = false)
-                    Log.d("HotComicViewModel", "Hung")
+                    delay(200)
+                    _state.value = _state.value.copy(isLoadingHot = false)
+//                    Log.d("HotComicViewModel", "result: $results")
 
                 },
                 onFailure = { exception ->
                     // Xử lý kết quả thất bại
-                    _state.value = _state.value.copy(isLoading = false)
+                    _state.value = _state.value.copy(isLoadingHot = false)
                     Log.e("HotComicViewModel", exception.message.toString())
                 }
             )

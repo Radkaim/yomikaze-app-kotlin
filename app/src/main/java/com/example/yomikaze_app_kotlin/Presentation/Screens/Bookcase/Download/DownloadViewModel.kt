@@ -56,9 +56,10 @@ class DownloadViewModel @Inject constructor(
     fun getAllComicsDownloadedDB() {
         viewModelScope.launch(Dispatchers.IO) {
             getAllComicInDBUC.getAllComicsDownloadedDB().onSuccess {
-                withContext(Dispatchers.IO){
+                withContext(Dispatchers.IO) {
                     it.forEach { comic ->
-                        val chaptersInDB = getChaptersByComicIdDBUC.getChaptersByComicIdDB(comic.comicId)
+                        val chaptersInDB =
+                            getChaptersByComicIdDBUC.getChaptersByComicIdDB(comic.comicId)
                         val totalMbs = chaptersInDB.sumOf { it.size }
                         updateTotalMbsOfComicDBUC.updateTotalMbsOfComicDB(comic.comicId, totalMbs)
                     }
@@ -69,7 +70,7 @@ class DownloadViewModel @Inject constructor(
         }
     }
 
-    override fun delete(key: Long, isDeleteAll: Boolean?) {
+    override fun delete(key: Long, key2: Long?, isDeleteAll: Boolean?) {
         if (isDeleteAll == true) {
             //  deleteAllComicsDB()
         } else {

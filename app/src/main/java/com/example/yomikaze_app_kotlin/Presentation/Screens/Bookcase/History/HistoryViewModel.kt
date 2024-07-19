@@ -33,6 +33,7 @@ class HistoryViewModel @Inject constructor(
 
     override val isUpdateSuccess: Boolean? = null
     override val isDeleteSuccess: Boolean = _state.value.isDeleteHistoryRecordSuccess
+
     //for StatefulViewModel
     override fun update(key: Long, value: String) {}
 
@@ -62,6 +63,7 @@ class HistoryViewModel @Inject constructor(
     fun checkUserIsLogin(): Boolean {
         return appPreference.isUserLoggedIn
     }
+
     fun onHistoryComicClicked(comicId: Long, chapterNumber: Int) {
         navController?.navigate("view_chapter_route/$comicId/$chapterNumber")
     }
@@ -70,7 +72,7 @@ class HistoryViewModel @Inject constructor(
     /**
      * Delete a history record
      */
-    override fun delete(key: Long, isDeleteAll: Boolean?) {
+    override fun delete(key: Long, key2: Long?, isDeleteAll: Boolean?) {
         if (isDeleteAll == true) {
             deleteAllHistoryRecords()
             return
@@ -121,7 +123,7 @@ class HistoryViewModel @Inject constructor(
     /**
      * Delete all history records
      */
-   private fun deleteAllHistoryRecords() {
+    private fun deleteAllHistoryRecords() {
         viewModelScope.launch(Dispatchers.IO) {
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val response = deleteAllHistoryUC.deleteAllHistories(token)

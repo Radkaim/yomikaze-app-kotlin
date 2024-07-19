@@ -95,7 +95,9 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.Menu
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangleLineLong
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
@@ -575,10 +577,16 @@ fun DescriptionInComicDetailView(
     state: ComicDetailState,
     comicDetailViewModel: ComicDetailViewModel,
     comicId: Long,
-    comicName: String
+    comicName: String,
+    comicCommentViewModel: ComicCommentViewModel = hiltViewModel()
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val description = state.comicResponse?.description
+    val comicCommentState by comicCommentViewModel.state.collectAsState()
+
+    LaunchedEffect(key1 = comicCommentState.isDeleteCommentSuccess) {
+        comicDetailViewModel.getAllComicCommentByComicId(comicId = comicId)
+    }
 
     //for tag genre
     val listTag = state.listTagGenres ?: emptyList()
@@ -588,7 +596,7 @@ fun DescriptionInComicDetailView(
             .fillMaxSize()
 //            .wrapContentHeight()
 //            .offset(y = ofsety)
-            .padding(top = 10.dp, start = 2.dp, end = 8.dp),
+            .padding(top = 10.dp, start = 2.dp, end = 8.dp, bottom = 10.dp),
     ) {
         //TODO: Description
         item {
@@ -606,12 +614,12 @@ fun DescriptionInComicDetailView(
                     Text(
                         text = description ?: "Description",
                         maxLines = maxLine,
-                        //  overflow = TextOverflow,
+                          overflow = TextOverflow.Ellipsis,
                     )
                     if (isExpanded) {
                         Text(
                             text = "Less",
-                            color = MaterialTheme.colorScheme.error,
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                             fontSize = 14.sp,
                         )
                     } else {
@@ -619,7 +627,7 @@ fun DescriptionInComicDetailView(
                             if (description.length > 70) {
                                 Text(
                                     text = "More",
-                                    color = MaterialTheme.colorScheme.error,
+                                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                                     fontSize = 14.sp,
                                 )
                             }
@@ -687,9 +695,9 @@ fun DescriptionInComicDetailView(
                 }
             }
         }
-        //   for commment
+
         item { Spacer(modifier = Modifier.height(30.dp)) }
-        if (state.listComicComment!!.isNotEmpty()) {
+        if(state.listComicComment!!.isNotEmpty()) {
             item {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -732,10 +740,20 @@ fun DescriptionInComicDetailView(
             }
         }
         item { Spacer(modifier = Modifier.height(30.dp)) }
-        if (state.listComicComment!!.isNotEmpty()) {
+        //   for commment
+        if (state.isListComicCommentLoading) {
+            item {
+                repeat(3) {
+                    NormalComicCardShimmerLoading()
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+            }
+        }
+        if (!state.isListComicCommentLoading && state.listComicComment!!.isNotEmpty()) {
             item {
                 state.listComicComment.forEach { comment ->
                     CommentCard(
+                        comicId = comicId,
                         commentId = comment.id,
                         content = comment.content,
                         authorName = comment.author.name,
@@ -743,10 +761,12 @@ fun DescriptionInComicDetailView(
                             ?: "",
                         roleName = comment.author.roles?.get(0) ?: "",
                         creationTime = comment.creationTime,
-                        isOwnComment = comicDetailViewModel.checkCanModifyComment(comment.author.id),
+                        isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author.id),
+                        isAdmin = comicCommentViewModel.checkIsAdmin(),
                         onEditClicked = {},
                         onDeleteClicked = {},
-                        onClicked = {}
+                        onClicked = {},
+                        comicCommentViewModel = comicCommentViewModel
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
@@ -759,6 +779,12 @@ fun DescriptionInComicDetailView(
                     modifier = Modifier
                         .fillMaxWidth()
                         .offset(y = (-20).dp)
+                        .clickable {
+                            comicDetailViewModel.navigateToComicComment(
+                                comicId = comicId,
+                                comicName = comicName
+                            )
+                        }
                 ) {
                     Icon(
                         painterResource(id = R.drawable.ic_comment),

@@ -80,7 +80,7 @@ fun RatingComicViewContent(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
         ) {
-            if (state.isLoading) {
+            if (state.isLoadingRating) {
                 item {
                     repeat(6) {
                         NormalComicCardShimmerLoading()
@@ -88,7 +88,7 @@ fun RatingComicViewContent(
                     }
                 }
             }
-            if (!state.isLoading && state.listComicByRatingRanking.isNotEmpty()) {
+            if (!state.isLoadingRating && state.listComicByRatingRanking.isNotEmpty()) {
                 itemsIndexed(state.listComicByRatingRanking) { index, comic ->
                     RankingComicCard(
                         comicId = comic.comicId,
@@ -134,7 +134,6 @@ fun RatingComicViewContent(
 
     LaunchedEffect(
         key1 = page.value,
-        //key2 = state.totalPages
     ) {
         Log.d("HotComicViewModel", "page1: ${page.value}")
         if (page.value > state.currentPage.value && !loading.value) {
@@ -151,7 +150,6 @@ fun RatingComicViewContent(
                 if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicByRatingRanking.size - 2) {
                     if (state.currentPage.value < state.totalPages.value) {
                         page.value++
-
                     }
                 }
             }

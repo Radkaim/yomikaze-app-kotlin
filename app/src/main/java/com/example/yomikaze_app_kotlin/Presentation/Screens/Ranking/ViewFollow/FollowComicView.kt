@@ -146,7 +146,7 @@ fun FollowComicViewContent(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
         ) {
-            if (state.isLoading) {
+            if (state.isLoadingFollow) {
                 item {
                     repeat(6) {
                         NormalComicCardShimmerLoading()
@@ -154,7 +154,7 @@ fun FollowComicViewContent(
                     }
                 }
             }
-            if (!state.isLoading && state.listComicByFollowRanking.isNotEmpty()) {
+            if (!state.isLoadingFollow && state.listComicByFollowRanking.isNotEmpty()) {
                 itemsIndexed(state.listComicByFollowRanking) { index, comic ->
                     RankingComicCard(
                         comicId = comic.comicId,
@@ -201,7 +201,6 @@ fun FollowComicViewContent(
 
     LaunchedEffect(
         key1 = page.value,
-        //key2 = state.totalPages
     ) {
         Log.d("HotComicViewModel", "page1: ${page.value}")
         if (page.value > state.currentPage.value && !loading.value) {
