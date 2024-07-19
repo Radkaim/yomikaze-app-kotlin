@@ -14,13 +14,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HotComicViewModel @Inject constructor(
+class HotComicRankingViewModel @Inject constructor(
     private val getComicByViewRankingUC: GetComicByViewRankingUC,
     private val appPreference: AppPreference
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(HotComicState())
-    val state: StateFlow<HotComicState> get() = _state
+    private val _state = MutableStateFlow(HotComicRankingState())
+    val state: StateFlow<HotComicRankingState> get() = _state
 
     //navController
     private var navController: NavController? = null
@@ -39,7 +39,7 @@ class HotComicViewModel @Inject constructor(
 
     // Reset state
     private fun resetState() {
-        _state.value = HotComicState()
+        _state.value = HotComicRankingState()
     }
 
     override fun onCleared() {
