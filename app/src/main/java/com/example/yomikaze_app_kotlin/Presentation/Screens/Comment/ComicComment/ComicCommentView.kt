@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -136,76 +134,70 @@ fun ComicCommentContent(
         },
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (messages, chatBox) = createRefs()
-            Column(
-                verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
-                modifier = Modifier
-                    .padding(
-                        top = 15.dp,
-                        start = 4.dp,
-                        end = 4.dp,
-                        bottom = 4.dp
-                    ) // Optional padding for the entire list
-                    .background(MaterialTheme.colorScheme.background)
-                    .wrapContentSize(Alignment.Center)
-                    .fillMaxWidth()
-                    .constrainAs(messages) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(chatBox.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        height = Dimension.fillToConstraints
-                    }
-            ) {
+            val (header, messages, chatBox) = createRefs()
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(top = 5.dp)
+                        .constrainAs(header) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Total Comments: ${state.totalCommentResults.value}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(8.dp)
+
+                    )
+
+                    SortComponent(
+                        isOldestSelected = isSelected,
+                        onOldSortClick = {
+                            isSelected = true
+                            isReversed = false
+
+                            isRefreshing = false
+
+
+                            page.value = 1
+                            comicCommentViewModel.resetState()
+                        },
+                        onnNewSortClick = {
+                            isSelected = false
+                            isReversed = true
+
+
+                            isRefreshing = true
+
+                            page.value = 1
+                            comicCommentViewModel.resetState()
+                        }
+                    )
+                }
+
                 LazyColumn(
                     state = listState,
                     verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
-//                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
+                        .constrainAs(messages) {
+                            top.linkTo(header.bottom)
+                            bottom.linkTo(chatBox.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            height = Dimension.fillToConstraints
+                        }
 
                 ) {
-                    stickyHeader {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.background)
-                                .padding(top = 5.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Total Chapter: ${state.totalCommentResults.value}",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.padding(8.dp)
-
-                            )
-
-                            SortComponent(
-                                isOldestSelected = isSelected,
-                                onOldSortClick = {
-                                    isSelected = true
-                                    isReversed = false
-
-                                    isRefreshing = false
-
-
-                                    page.value = 1
-                                    comicCommentViewModel.resetState()
-                                },
-                                onnNewSortClick = {
-                                    isSelected = false
-                                    isReversed = true
-
-
-                                    isRefreshing = true
-
-                                    page.value = 1
-                                    comicCommentViewModel.resetState()
-                                }
-                            )
-                        }
-                    }
+//                    stickyHeader {
+//
+//                    }
                     if (state.isListComicCommentLoading) {
                         item {
                             repeat(6) {
@@ -255,7 +247,7 @@ fun ComicCommentContent(
                         }
                     }
                 }
-            }
+
             ChatBox(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -338,6 +330,7 @@ fun ChatBox(
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -349,30 +342,15 @@ fun ChatBox(
                 chatBoxValue = newText
             },
 
-//            label = {
-//                if (chatBoxValue.text.length > 1024) {
-//                    Text(
-//                        text = "Max 100 characters",
-//                        fontSize = 12.sp,
-//                        color = MaterialTheme.colorScheme.error
-//                    )
-//                } else if (chatBoxValue.text.isEmpty()) {
-//                    Text(
-//                        modifier = Modifier.alpha(ContentAlpha.medium),
-//                        text = "Say something...",
-//                        fontWeight = FontWeight.Medium,
-//                        fontStyle = FontStyle.Italic,
-//                        fontSize = 16.sp,
-//                        color = MaterialTheme.colorScheme.errorContainer
-//                    )
-//                }
-//                else{
-//                    //nothing
-//
-//                }
-//            },
-            placeholder = {
-                Text(
+            label = {
+                if (chatBoxValue.text.length > 256) {
+                    Text(
+                        text = "Your comment is too long",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                } else if (chatBoxValue.text.isEmpty()) {
+                    Text(
                         modifier = Modifier.alpha(ContentAlpha.medium),
                         text = "Say something...",
                         fontWeight = FontWeight.Medium,
@@ -380,8 +358,29 @@ fun ChatBox(
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.errorContainer
                     )
+                }
+                else{
+                    Text(
+                        modifier = Modifier.alpha(ContentAlpha.medium),
+                        text = "",
+                        fontWeight = FontWeight.Medium,
+                        fontStyle = FontStyle.Italic,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.errorContainer
+                    )
+
+                }
             },
-            isError = chatBoxValue.text.length > 1024,
+//            placeholder = {
+//                Text(
+//                        modifier = Modifier.alpha(ContentAlpha.medium),
+//                        text = "Say something...",
+//                        fontWeight = FontWeight.Medium,
+//                        fontStyle = FontStyle.Italic,
+//                        fontSize = 16.sp,
+//                        color = MaterialTheme.colorScheme.errorContainer
+//                    )
+//            },
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             ),
@@ -400,7 +399,7 @@ fun ChatBox(
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.7f)
+
                     )
                 }
             },
@@ -416,31 +415,41 @@ fun ChatBox(
                     }
                 }
             ),
+            isError = chatBoxValue.text.length > 256,   //check if the length of text is over 256 characters
             colors = TextFieldDefaults.textFieldColors(
                 textColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 backgroundColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                focusedIndicatorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.1f),
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                cursorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                trailingIconColor = MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.7f),
+                //for error
+                errorCursorColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
+                errorIndicatorColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
+                errorLabelColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
+                errorTrailingIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
             ),
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
                 .padding(8.dp)
-                .clip(RoundedCornerShape(20.dp))
+                .clip(RoundedCornerShape(30.dp))
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.error.copy(alpha = 0.5f),
-                    shape = RoundedCornerShape(50.dp)
+                    shape = RoundedCornerShape(30.dp)
                 )
         )
         IconButton(
             onClick = {
-                if (chatBoxValue.text.isNotEmpty()) {
+                if (chatBoxValue.text.isNotEmpty() && chatBoxValue.text.length <= 256) {
                     onSendChatClickListener(chatBoxValue.text)
                     Log.d("ChatBox", "ChatBox: ${chatBoxValue.text}")
-                    chatBoxValue = TextFieldValue("")
+                }else if (chatBoxValue.text.length > 256){
+                    Toast.makeText(context, "Please comment less than 256 characters", Toast.LENGTH_SHORT).show()
+                    return@IconButton
                 }
+                chatBoxValue = TextFieldValue("")
             },
 //            modifier = Modifier.padding(top = 15.dp)
         ) {
