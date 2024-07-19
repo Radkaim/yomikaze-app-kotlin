@@ -18,8 +18,8 @@ class FollowComicViewModel @Inject constructor(
     private val getComicByFollowRankingUC: GetComicByFollowRankingUC,
     private val appPreference: AppPreference
 ):ViewModel() {
-    private val _state = MutableStateFlow(FollowComicState())
-    val state: StateFlow<FollowComicState> get() = _state
+    private val _state = MutableStateFlow(FollowComicRankingState())
+    val state: StateFlow<FollowComicRankingState> get() = _state
 
     //navController
     private var navController: NavController? = null
@@ -38,7 +38,7 @@ class FollowComicViewModel @Inject constructor(
 
     // Reset state
     private fun resetState() {
-        _state.value = FollowComicState()
+        _state.value = FollowComicRankingState()
     }
 
     override fun onCleared() {

@@ -1,14 +1,13 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewFollow
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewComment
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 
-data class FollowComicState(
-
+data class CommentComicRankingState(
     val error: String? = null,
-    val listComicByFollowRanking: List<ComicResponse> = emptyList(),
-    val isLoadingFollow: Boolean = true,
+    val listComicByCommentRanking: List<ComicResponse> = emptyList(),
+    val isLoadingComment: Boolean = true,
     val currentPage: MutableState<Int> = mutableStateOf(0),
     val totalPages: MutableState<Int> = mutableStateOf(0),
     val page: Int = 1,

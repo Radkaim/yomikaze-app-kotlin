@@ -14,13 +14,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RatingComicViewModel @Inject constructor(
+class RatingComicRankingViewModel @Inject constructor(
     private val appPreference: AppPreference,
     private val getComicByRatingRankingUC: GetComicByRatingRankingUC
 
 ) : ViewModel() {
-    private val _state = MutableStateFlow(RatingComicState())
-    val state: StateFlow<RatingComicState> get() = _state
+    private val _state = MutableStateFlow(RatingComicRankingState())
+    val state: StateFlow<RatingComicRankingState> get() = _state
 
     //navController
     private var navController: NavController? = null
@@ -37,7 +37,7 @@ class RatingComicViewModel @Inject constructor(
 
     // Reset state
     private fun resetState() {
-        _state.value = RatingComicState()
+        _state.value = RatingComicRankingState()
     }
 
 

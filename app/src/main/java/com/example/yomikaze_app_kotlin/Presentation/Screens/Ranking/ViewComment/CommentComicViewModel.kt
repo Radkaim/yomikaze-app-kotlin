@@ -18,8 +18,8 @@ class CommentComicViewModel @Inject constructor(
     private val getComicByCommentsRankingUC: GetComicByCommentsRankingUC,
     private val appPreference: AppPreference
 ) : ViewModel() {
-    private val _state = MutableStateFlow(CommentComicState())
-    val state: StateFlow<CommentComicState> get() = _state
+    private val _state = MutableStateFlow(CommentComicRankingState())
+    val state: StateFlow<CommentComicRankingState> get() = _state
 
     //navController
     private var navController: NavController? = null
@@ -38,7 +38,7 @@ class CommentComicViewModel @Inject constructor(
 
     // Reset state
     private fun resetState() {
-        _state.value = CommentComicState()
+        _state.value = CommentComicRankingState()
     }
 
     override fun onCleared() {

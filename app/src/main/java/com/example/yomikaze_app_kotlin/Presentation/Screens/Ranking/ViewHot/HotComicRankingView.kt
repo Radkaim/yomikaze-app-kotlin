@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewFollow
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Ranking.ViewHot
 
 import android.util.Log
 import android.widget.Toast
@@ -39,97 +39,40 @@ import com.example.yomikaze_app_kotlin.R
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun FollowComicView(
-    followComicViewModel: FollowComicViewModel = hiltViewModel(),
-    navController: NavController
+fun HotComicView(
+    hotComicViewModel: HotComicRankingViewModel = hiltViewModel(),
+    navController: NavController,
 ) {
-    val state by followComicViewModel.state.collectAsState()
+
+    //state
+    val state by hotComicViewModel.state.collectAsState()
+
+
     //set navController for viewModel
-    followComicViewModel.setNavController(navController)
+    hotComicViewModel.setNavController(navController)
+
 
     if (CheckNetwork()) {
-        FollowComicViewContent(followComicViewModel = followComicViewModel, state = state)
+        HotComicViewContent(
+            hotComicViewModel = hotComicViewModel,
+            state = state,
+        )
     } else {
         UnNetworkScreen()
     }
 
-//
-//    /**
-//     * Test Normal comic for library
-//     */
-//    Column(
-//        verticalArrangement = Arrangement.spacedBy(15.dp), // 8.dp space between each card
-//        modifier = Modifier
-//            .padding(
-//                top = 15.dp,
-//                start = 4.dp,
-//                end = 4.dp,
-//                bottom = 4.dp
-//            ) // Optional padding for the entire list
-//            .background(MaterialTheme.colorScheme.background)
-//            .wrapContentSize(Alignment.Center)
-//    ) {
-//
-//        // consume the NormalComicCard composable
-//        NormalComicCard(
-//            comicId = 1,
-//            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-//            comicName = "Hunter X Hunter",
-//            status = "On Going",
-//            authorNames = listOf("as",""),
-//            publishedDate = "1998-03-03",
-//            ratingScore = 9.5f,
-//            follows = 100,
-//            views = 100,
-//            comments = 100,
-//            isDeleted = false,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(119.dp)
-//                .border(
-//                    width = 1.dp,
-//                    color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
-//                    shape = MaterialTheme.shapes.small
-//                ),
-//
-//            )
-//        NormalComicCard(
-//            comicId = 2,
-//            image = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.6HUddKnrAhVipChl6084pwHaLH%26pid%3DApi&f=1&ipt=303f06472dd41f68d97f5684dc0d909190ecc880e7648ec47be6ca6009cbb2d1&ipo=images",
-//            comicName = "Hunter X Hunter67677667",
-//            status = "On Going",
-//            authorNames = listOf("as",""),
-//            publishedDate = "1998-03-03",
-//            ratingScore = 9.5f,
-//            follows = 100,
-//            views = 100,
-//            comments = 100,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(126.dp)
-//                .border(
-//                    width = 1.dp,
-//                    color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
-//                    shape = MaterialTheme.shapes.small
-//                ),
-//        )
-//    }
-//
-
-
-
 }
 
-
 @Composable
-fun FollowComicViewContent(
-    followComicViewModel: FollowComicViewModel,
-    state: FollowComicState,
+fun HotComicViewContent(
+    hotComicViewModel: HotComicRankingViewModel,
+    state: HotComicRankingState,
 ) {
     val listState = rememberLazyListState()
     val context = LocalContext.current
     val page = remember { mutableStateOf(1) }
     val loading = remember { mutableStateOf(false) }
+    val listComicByViewRanking = remember { state.listComicByViewRanking }
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
         modifier = Modifier
@@ -146,7 +89,8 @@ fun FollowComicViewContent(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
         ) {
-            if (state.isLoadingFollow) {
+
+            if (state.isLoadingHot) {
                 item {
                     repeat(6) {
                         NormalComicCardShimmerLoading()
@@ -154,8 +98,8 @@ fun FollowComicViewContent(
                     }
                 }
             }
-            if (!state.isLoadingFollow && state.listComicByFollowRanking.isNotEmpty()) {
-                itemsIndexed(state.listComicByFollowRanking) { index, comic ->
+            if (!state.isLoadingHot && state.listComicByViewRanking.isNotEmpty()) {
+                itemsIndexed(state.listComicByViewRanking) { index, comic ->
                     RankingComicCard(
                         comicId = comic.comicId,
                         rankingNumber = index + 1,
@@ -170,7 +114,7 @@ fun FollowComicViewContent(
                         comments = comic.comments,
                         backgroundColor = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier,
-                        onClicked = { followComicViewModel.navigateToComicDetail(comic.comicId) }
+                        onClicked = { hotComicViewModel.navigateToComicDetail(comic.comicId) }
                     )
                 }
             }
@@ -202,10 +146,10 @@ fun FollowComicViewContent(
     LaunchedEffect(
         key1 = page.value,
     ) {
-        Log.d("HotComicViewModel", "page1: ${page.value}")
+        Log.d("ComicCommentContent", "page1: ${page.value}")
         if (page.value > state.currentPage.value && !loading.value) {
             loading.value = true
-            followComicViewModel.getComicByFollowRanking(page.value)
+            hotComicViewModel.getComicByViewRanking(page.value)
             loading.value = false
         }
 
@@ -214,8 +158,13 @@ fun FollowComicViewContent(
     LaunchedEffect(key1 = listState, key2 = page.value) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
-                if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicByFollowRanking.size - 2) {
+                if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicByViewRanking.size - 2) {
+                    Log.d(
+                        "ComicCommentContent",
+                        "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicByViewRanking.size}"
+                    )
                     if (state.currentPage.value < state.totalPages.value) {
+                        Log.d("HotComicViewModel", "page2: ${state.currentPage.value}")
                         page.value++
 
                     }
@@ -231,7 +180,7 @@ fun FollowComicViewContent(
     ) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
-                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByFollowRanking.size && state.listComicByFollowRanking.size > 5) {
+                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicByViewRanking.size && listComicByViewRanking.size > 5) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
                         Toast.makeText(context, "No comics left", Toast.LENGTH_SHORT).show()
                     }

@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun RatingComicView(
     navController: NavController,
-    ratingComicViewModel: RatingComicViewModel = hiltViewModel()
+    ratingComicViewModel: RatingComicRankingViewModel = hiltViewModel()
 ) {
     //create listOf comics
     val state by ratingComicViewModel.state.collectAsState()
@@ -57,8 +57,8 @@ fun RatingComicView(
 
 @Composable
 fun RatingComicViewContent(
-    ratingComicViewModel: RatingComicViewModel,
-    state: RatingComicState,
+    ratingComicViewModel: RatingComicRankingViewModel,
+    state: RatingComicRankingState,
 ) {
     val listState = rememberLazyListState()
     val context = LocalContext.current
