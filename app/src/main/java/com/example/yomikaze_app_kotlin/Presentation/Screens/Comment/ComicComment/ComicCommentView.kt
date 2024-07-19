@@ -123,6 +123,7 @@ fun ComicCommentContent(
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
+                        comicCommentViewModel.resetState1()
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -282,19 +283,15 @@ fun ComicCommentContent(
             page.value = 1
 
             comicCommentViewModel.resetState()
-            comicCommentViewModel.getAllComicCommentByComicId(
-                comicId = comicId,
-                page.value,
-                orderBy = if (isReversed) "CreationTimeDesc" else "CreationTime"
-            )
+
         }
 
         LaunchedEffect(
             key1 = page.value,
             key2 = isReversed,
-//            key3 = state,
+           key3 = state,
         ) {
-            Log.d("ComicCommentContent", "ComicCommentContent: ${page.value}")
+            Log.d("ComicCommentContent", "page: ${page.value}")
             if (page.value > state.currentPage.value && !loading.value) {
                 loading.value = true
                 comicCommentViewModel.getAllComicCommentByComicId(
@@ -348,7 +345,7 @@ fun ChatBox(
 ) {
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
     val canPost by remember { mutableStateOf(isLogin) }
-
+    val textSize: Int = 1024
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -364,7 +361,7 @@ fun ChatBox(
             },
 
             label = {
-                if (chatBoxValue.text.length > 256) {
+                if (chatBoxValue.text.length > textSize) {
                     Text(
                         text = "Your comment is too long",
                         fontSize = 12.sp,
@@ -425,7 +422,7 @@ fun ChatBox(
                     }
                 }
             ),
-            isError = chatBoxValue.text.length > 256,   //check if the length of text is over 256 characters
+            isError = chatBoxValue.text.length > textSize,   //check if the length of text is over 256 characters
             colors = TextFieldDefaults.textFieldColors(
                 textColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 backgroundColor = MaterialTheme.colorScheme.onSurface,
@@ -452,13 +449,13 @@ fun ChatBox(
         )
         IconButton(
             onClick = {
-                if (chatBoxValue.text.isNotEmpty() && chatBoxValue.text.length <= 256 && canPost) {
+                if (chatBoxValue.text.isNotEmpty() && chatBoxValue.text.length <= textSize && canPost) {
                     onSendChatClickListener(chatBoxValue.text)
                     Log.d("ChatBox", "ChatBox: ${chatBoxValue.text}")
-                } else if (chatBoxValue.text.length > 256 && canPost) {
+                } else if (chatBoxValue.text.length > textSize && canPost) {
                     Toast.makeText(
                         context,
-                        "Please comment less than 256 characters",
+                        "Please comment less than $textSize characters",
                         Toast.LENGTH_SHORT
                     ).show()
                     return@IconButton

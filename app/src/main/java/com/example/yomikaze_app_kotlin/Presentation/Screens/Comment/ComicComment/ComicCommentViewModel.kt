@@ -75,6 +75,15 @@ class ComicCommentViewModel @Inject constructor(
         val userRoles = appPreference.userRoles
         return userRoles?.contains("Super") == true || userRoles?.contains("Administrator") == true
     }
+    fun resetState1(){
+        _state.value = ComicCommentState()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        // Reset page and size if needed
+        resetState1()
+    }
 
     /**
      * Todo: Implement get all comment of comic by comicId
@@ -115,7 +124,7 @@ class ComicCommentViewModel @Inject constructor(
 //                    delay(1000)
                     _state.value = _state.value.copy(isListComicCommentLoading = false)
 
-                    Log.d("HotComicViewModel", "currentPage1: ${baseResponse.currentPage}")
+                    Log.d("ComicCommentContent", "listComicComment: ${state.value.listComicComment}")
                 },
 
                 onFailure = { exception ->

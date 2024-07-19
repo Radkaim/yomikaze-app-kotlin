@@ -12,7 +12,7 @@ data class ComicCommentState(
     val currentPage: MutableState<Int> = mutableStateOf(0),
     val totalPages: MutableState<Int> = mutableStateOf(0),
     val page: Int = 1,
-    val size: Int = 9,
+    val size: Int = 18,
 
 
     val isPostComicCommentSuccess: Boolean = false,

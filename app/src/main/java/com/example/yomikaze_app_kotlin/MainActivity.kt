@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
@@ -35,15 +36,16 @@ import io.paperdb.Paper
 class MainActivity : ComponentActivity() {
 
     private val loginViewModel: LoginViewModel by viewModels()
+
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         Paper.init(this) // use paperdb show paper.init should be called before any other method
 
         super.onCreate(savedInstanceState)
-      //  WindowCompat.setDecorFitsSystemWindows(window, false)
+        //  WindowCompat.setDecorFitsSystemWindows(window, false)
 
-      //  window.statusBarColor = Color.White.toArgb()
-     //   window.navigationBarColor = Color.White.toArgb()
+        //  window.statusBarColor = Color.White.toArgb()
+        //   window.navigationBarColor = Color.White.toArgb()
 
         val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
 
@@ -54,7 +56,7 @@ class MainActivity : ComponentActivity() {
             checkAndChangeStatusBarColor(viewModel.stateApp.theme, windowInsetsController, window)
             YomikazeappkotlinTheme(appTheme = viewModel.stateApp.theme) {
                 // A surface container using the 'background' color from the theme
-                Surface (
+                Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 )
@@ -85,6 +87,30 @@ class MainActivity : ComponentActivity() {
                             ComicDetailsView(comicId = comicId?.toLong() ?: 0, navController)
                         }
 
+                        composable(
+                            route = "view_chapter_route/{comicId}/{chapterNumber}",
+                            deepLinks = listOf(
+                                navDeepLink {
+                                    uriPattern = "https://yomikaze.org/view_chapter/{comicId}/{chapterNumber}"
+                                    action = Intent.ACTION_VIEW
+                                }
+                            ),
+                            arguments = listOf(
+                                navArgument("comicId") { defaultValue = "0" },
+                                navArgument("chapterNumber") { defaultValue = "0" }
+                            )
+                        ) { navBackStackEntry ->
+                            val comicId = navBackStackEntry.arguments?.getString("comicId")
+                            val chapterNumber =
+                                navBackStackEntry.arguments?.getString("chapterNumber")
+
+                            ViewChapter(
+                                comicId = comicId?.toLong()!!,
+                                chapterNumber = chapterNumber?.toInt() ?: 0,
+                                navController = navController
+                            )
+                        }
+
                     }
                     // Handle deep link intent
                     handleDeepLinkIntent(intent, navController)
@@ -92,39 +118,55 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     private fun handleDeepLinkIntent(intent: Intent?, navController: NavController) {
         intent?.data?.let { uri ->
             val pathSegments = uri.pathSegments
-            if (pathSegments.size > 1 && pathSegments[0] == "comic_detail") {
-                val comicId = pathSegments[1]
-                Log.d("DeepLink", "comicId: $comicId")
-                navController.navigate("comic_detail_route/$comicId")
-            }else{
-                navController.navigate("main_screen_route")
+            when {
+                pathSegments.size > 2 && pathSegments[0] == "comic_detail" && pathSegments[2] == "chapter" -> {
+                    val comicId = pathSegments[1]
+                    val chapterId = pathSegments[3]
+                    Log.d("DeepLink", "comicId: $comicId, chapterId: $chapterId")
+                    navController.navigate("view_chapter_route/$comicId/$chapterId")
+                }
+                pathSegments.size > 1 && pathSegments[0] == "comic_detail" -> {
+                    val comicId = pathSegments[1]
+                    Log.d("DeepLink", "comicId: $comicId")
+                    navController.navigate("comic_detail_route/$comicId")
+                }
+                else -> {
+                    navController.navigate("main_graph_route")
+                }
             }
         }
     }
 }
 
-fun checkAndChangeStatusBarColor(theme: AppTheme, windowInsetsController: WindowInsetsControllerCompat, window: android.view.Window) {
+fun checkAndChangeStatusBarColor(
+    theme: AppTheme,
+    windowInsetsController: WindowInsetsControllerCompat,
+    window: android.view.Window
+) {
 
-    if (theme == AppTheme.DEFAULT){
+    if (theme == AppTheme.DEFAULT) {
         window.statusBarColor = Color.White.toArgb()
         window.navigationBarColor = Color.White.toArgb()
-        windowInsetsController.isAppearanceLightStatusBars = true // Điều này sẽ đặt biểu tượng status bar màu tối trên nền sáng
+        windowInsetsController.isAppearanceLightStatusBars =
+            true // Điều này sẽ đặt biểu tượng status bar màu tối trên nền sáng
     }
     if (theme == AppTheme.LIGHT) {
         window.statusBarColor = Color.White.toArgb()
         window.navigationBarColor = Color.White.toArgb()
-        windowInsetsController.isAppearanceLightStatusBars = true // Điều này sẽ đặt biểu tượng status bar màu tối trên nền sáng
+        windowInsetsController.isAppearanceLightStatusBars =
+            true // Điều này sẽ đặt biểu tượng status bar màu tối trên nền sáng
     }
-    if(theme == AppTheme.DARK) {
+    if (theme == AppTheme.DARK) {
         window.statusBarColor = Color.Black.toArgb()
         window.navigationBarColor = Color.Black.toArgb()
-        windowInsetsController.isAppearanceLightStatusBars = false // Điều này sẽ đặt biểu tượng status bar màu sáng trên nền tối
+        windowInsetsController.isAppearanceLightStatusBars =
+            false // Điều này sẽ đặt biểu tượng status bar màu sáng trên nền tối
     }
 }
-
 
 
 //@Preview(showBackground = true)

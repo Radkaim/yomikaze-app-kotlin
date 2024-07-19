@@ -3,11 +3,13 @@ package com.example.yomikaze_app_kotlin.Data.DataSource.API
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -44,6 +46,17 @@ interface ComicCommentApiService {
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,
         @Path("commentId") commentId: Long
+    ): Response<Unit>
+
+    /**
+     * TODO: use for update comic comment by comicId and commentId
+     */
+    @PATCH("comics/{comicId}/comments/{commentId}")
+    suspend fun updateComicCommentByComicId(
+        @Header("Authorization") token: String,
+        @Path("comicId") comicId: Long,
+        @Path("commentId") commentId: Long,
+        @Body pathRequest: List<PathRequest>,
     ): Response<Unit>
 
 }

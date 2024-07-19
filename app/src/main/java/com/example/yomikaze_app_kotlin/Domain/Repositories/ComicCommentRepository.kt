@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Domain.Repositories
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import retrofit2.Response
 
 interface ComicCommentRepository {
@@ -34,6 +35,16 @@ interface ComicCommentRepository {
         token: String,
         comicId: Long,
         commentId: Long
+    ): Response<Unit>
+
+    /**
+     * TODO: use for update comic comment by comicId and commentId
+     */
+    suspend fun updateComicCommentByComicId(
+        token: String,
+        comicId: Long,
+        commentId: Long,
+        pathRequest: List<PathRequest>
     ): Response<Unit>
 
 }

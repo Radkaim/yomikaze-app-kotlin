@@ -112,6 +112,9 @@ fun ComicDetailsView(
 
     //set navController for viewModel
     comicDetailViewModel.setNavController(navController)
+//    LaunchedEffect(Unit){
+//        comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+//    }
 
 
     // comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
@@ -234,11 +237,16 @@ fun ComicDetailContent(
                             || previousRoute?.startsWith("notification_route") == true
                             || previousRoute?.startsWith("ranking_route") == true
                             || previousRoute?.startsWith("download_detail_route") == true
+
                         ) {
+                            Log.d("ComicDetailsView", "previousRoute1: Hung1")
                             navController.popBackStack()
                         } else {
-                            navController.popBackStack("home_route", inclusive = false)
+                            Log.d("ComicDetailsView", "previousRoute2: Hung2")
+                            navController.navigate("main_screen_route")
                         }
+                        // check if start as intent
+
                     }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
