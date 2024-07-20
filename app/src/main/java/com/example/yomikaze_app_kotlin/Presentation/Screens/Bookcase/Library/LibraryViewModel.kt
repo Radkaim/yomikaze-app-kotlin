@@ -10,6 +10,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
+import com.example.yomikaze_app_kotlin.Domain.Models.LibraryRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.AddComicToLibraryFirstTimeUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.AddComicToLibrarySecondTimeUC
@@ -98,7 +99,15 @@ class LibraryViewModel @Inject constructor(
     fun checkUserIsLogin(): Boolean {
         return appPreference.isUserLoggedIn
     }
+    //reset state
+    fun resetState() { // khi chuyển qua màn hình khác thì reset state
+        _state.value = LibraryState()
+    }
 
+    override fun onCleared() {
+        resetState()
+        super.onCleared()
+    }
 
     fun onNavigateComicDetail(comicId: Long) {
         navController?.navigate("comic_detail_route/$comicId")
@@ -143,16 +152,16 @@ class LibraryViewModel @Inject constructor(
             )
         }
     }
-    init {
-        getAllCategory()
-    }
+//    init {
+//        getAllCategory()
+//    }
 
     /**
      * Todo: Implement get all Category
      */
     fun getAllCategory() {
-        _state.value = _state.value.copy(isCategoryLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isCategoryLoading = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
 
@@ -169,7 +178,7 @@ class LibraryViewModel @Inject constructor(
                         category.firstCoverImage = coverImage
                         category.totalComics = totalsComics
                     }
-                    Log.d("LibraryViewModel", "Get All Categories: $results")
+//                    Log.d("LibraryViewModel", "Get All Categories: $results")
 
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(totalCategoryResults = baseResponse.totals)
@@ -202,11 +211,11 @@ class LibraryViewModel @Inject constructor(
             result.fold(
                 onSuccess = { baseResponse ->
                     totalComics = baseResponse.totals
-                    totalComics
+                    totalComics?:0
                 },
                 onFailure = { exception ->
                     Log.d("LibraryViewModel", "Get Comics In Category: $exception")
-                    totalComics
+                    totalComics?:0
                 }
             )
         }
@@ -322,7 +331,6 @@ class LibraryViewModel @Inject constructor(
      */
     fun getCategoriesOfComic(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = getCategoriesOfComicUC.getCategoriesOfComic(token, comicId)
@@ -333,7 +341,7 @@ class LibraryViewModel @Inject constructor(
                     _state.value =
                         _state.value.copy(listCateComicIsIn = listCateComicIsIn!!)
 
-                    Log.d("LibraryViewModel", "getCategoriesOfComic: $result")
+//                    Log.d("LibraryViewModel", "getCategoriesOfComic: $result")
 
                 },
 
@@ -343,7 +351,99 @@ class LibraryViewModel @Inject constructor(
                 }
             )
         }
+    }
 
+
+    /**
+     * TODO: Implement the function to add a comic to library category the first time they follow the comic
+     */
+    fun addComicToLibraryFirstTime(comicId: Long, categoriesId: List<Long>) {
+        _state.value = _state.value.copy(isAddComicToCategoryFirstTimeSuccess = false)
+        viewModelScope.launch(Dispatchers.IO) {
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = addComicToLibraryFirstTimeUC.addComicToLibraryFirstTime(
+                token,
+                LibraryRequest(comicId, categoriesId)
+            )
+            if (result.code() == 201) {
+                Log.d("LibraryViewModel", "addComicToLibraryFirstTime: $result")
+                _state.value = _state.value.copy(isAddComicToCategoryFirstTimeSuccess = true)
+            } else {
+                Log.e("LibraryViewModel", "addComicToLibraryFirstTime: $result")
+                _state.value = _state.value.copy(isAddComicToCategoryFirstTimeSuccess = false)
+            }
+        }
+    }
+
+    /**
+     * TODO: Implement the function to add a comic to library category
+     * in the second time they have followed the comic and want to add
+     */
+    fun addComicToLibrarySecondTime(comicId: Long, categoriesId: List<Long>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isAddComicToCategorySecondTimeSuccess = false)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = addComicToLibrarySecondTimeUC.addComicToLibrarySecondTime(
+                token,
+                comicId,
+                categoriesId
+            )
+            if (result.code() == 201) {
+                Log.d("LibraryViewModel", "addComicToLibrarySecondTime: $result")
+                _state.value = _state.value.copy(isAddComicToCategorySecondTimeSuccess = true)
+            } else {
+                Log.e("LibraryViewModel", "addComicToLibrarySecondTime: $result")
+                _state.value = _state.value.copy(isAddComicToCategorySecondTimeSuccess = false)
+            }
+        }
+    }
+
+    /**
+     * TODO: Implement the function to remove a comic from library category
+     */
+    fun removeComicFromCategory(comicId: Long, categoriesId: List<Long>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isRemoveComicFromCategorySuccess = false)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = removeComicFromCategoryUC.removeComicFromCategory(
+                token,
+                comicId,
+                categoriesId
+            )
+            if (result.code() == 200) {
+                Log.d("LibraryViewModel", "removeComicFromCategory: $result")
+                _state.value = _state.value.copy(isRemoveComicFromCategorySuccess = true)
+            } else {
+                Log.e("LibraryViewModel", "removeComicFromCategory: $result")
+                _state.value = _state.value.copy(isRemoveComicFromCategorySuccess = false)
+            }
+        }
+    }
+
+    /**
+     * TODO: Implement the function to remove a comic from library category
+     * when they unfollow the comic or remove a comic from all category and library
+     */
+    fun unfollowComicFromLibrary(comicId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isUnFollowComicSuccess = false)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = unfollowComicFromLibraryUC.unfollowComicFromLibrary(
+                token,
+                comicId
+            )
+            if (result.code() == 204) {
+                Log.d("LibraryViewModel", "unfollowComicFromLibrary: $result")
+                _state.value = _state.value.copy(isUnFollowComicSuccess = true)
+            } else {
+                Log.e("LibraryViewModel", "unfollowComicFromLibrary: $result")
+                _state.value = _state.value.copy(isUnFollowComicSuccess = false)
+            }
+        }
     }
 
 }

@@ -333,6 +333,7 @@ fun ComicDetailContent(
                                     comicId = comicId,
                                     comicDetailViewModel = comicDetailViewModel,
                                     state = state,
+                                    isFollowed = state.comicResponse?.isFollowing ?: false,
                                     onDismiss = { showDialog = null })
 
                                 3 -> RatingComicDialog(
@@ -955,44 +956,20 @@ fun AddToLibraryDialog(
     comicDetailViewModel: ComicDetailViewModel,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
     state: ComicDetailState,
+    isFollowed: Boolean,
     onDismiss: () -> Unit
 ) {
 //    val libraryViewModel = hiltViewModel<LibraryViewModel>()
     val libraryState by libraryViewModel.state.collectAsState()
 
-//    LaunchedEffect(Unit) {
-//        libraryViewModel.getAllCategory()
-//    }
+    LaunchedEffect(Unit) {
+        libraryViewModel.getAllCategory()
+    }
     LaunchedEffect(Unit) {
         libraryViewModel.getCategoriesOfComic(comicId = comicId)
 
     }
 
-
-//    //val categories = state.categoryList.map { it.name }
-//    val categories = libraryState.categoryList
-//    var selectedCategory by remember { mutableStateOf<String?>(null) }
-//    var selectedCategories by remember { mutableStateOf(listOf<Long>()) }
-//
-//    val userCategories = libraryState.categoryList
-//    val comicCategories = libraryState.comicCategoryList // danh sách các danh mục đã thêm vào truyện
-//    var selectedCategoriesToAdd by remember { mutableStateOf(listOf<Long>()) }
-//    var selectedCategoriesToRemove by remember { mutableStateOf(listOf<Long>()) }
-
-//    if ( libraryState.listCateComicIsIn.isEmpty()) {
-//        Box(modifier = Modifier.fillMaxWidth()){}
-////        return
-//
-//    } else{
-    // Kiểm tra nếu dữ liệu chưa sẵn sàng
-//    if (libraryState.categoryList.isNullOrEmpty() && libraryState.listCateComicIsIn.isNullOrEmpty()
-//        || libraryState.categoryList.isNotEmpty() && libraryState.listCateComicIsIn.isNullOrEmpty()
-//        ) {
-//        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-////            CircularProgressIndicator()
-//        }
-//        return
-//    }
 
     val userCategories = (libraryState.categoryList!!)
 //    Log.d("AddToLibraryDialog", "User categories1: $userCategories")
@@ -1020,6 +997,22 @@ fun AddToLibraryDialog(
         libraryViewModel.getAllCategory()
     }
 
+    LaunchedEffect(key1 = libraryState.isRemoveComicFromCategorySuccess) {
+        libraryViewModel.getAllCategory()
+    }
+
+    LaunchedEffect(key1 = libraryState.isAddComicToCategoryFirstTimeSuccess) {
+        libraryViewModel.getAllCategory()
+    }
+
+    LaunchedEffect(key1 = libraryState.isAddComicToCategorySecondTimeSuccess) {
+        libraryViewModel.getAllCategory()
+    }
+
+    LaunchedEffect(key1 = libraryState.isUnFollowComicSuccess) {
+        libraryViewModel.getAllCategory()
+    }
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -1031,7 +1024,11 @@ fun AddToLibraryDialog(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Gray.copy(alpha = 0.7f))
-                .clickable { onDismiss() }
+                .clickable {
+                    onDismiss()
+                    libraryViewModel.resetState()
+                    comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+                }
         ) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
@@ -1084,10 +1081,12 @@ fun AddToLibraryDialog(
                                     .clickable {
                                         if (isSelected) {
                                             selectedCategories = selectedCategories - category.id
-                                            deselectedCategories.value = deselectedCategories.value + category.id
+                                            deselectedCategories.value =
+                                                deselectedCategories.value + category.id
                                         } else {
                                             selectedCategories = selectedCategories + category.id
-                                            deselectedCategories.value = deselectedCategories.value - category.id
+                                            deselectedCategories.value =
+                                                deselectedCategories.value - category.id
                                         }
                                         isSelected = !isSelected
                                     }
@@ -1168,6 +1167,7 @@ fun AddToLibraryDialog(
                             )
                         }
                     }
+
                     Spacer(modifier = Modifier.height(10.dp))
                     Button(
                         onClick = {
@@ -1176,14 +1176,42 @@ fun AddToLibraryDialog(
                             /**
                             fixme
                              */
-                            Log.d("AddToLibraryDialog", "Selected categories: $selectedCategories")
-                            Log.d(
-                                "AddToLibraryDialog",
-                                "Deselected categories: ${deselectedCategories.value}"
-                            )
+                            if (!isFollowed
+                                && selectedCategories.isNotEmpty()
+                                && deselectedCategories.value.isEmpty()
+                            ) {
+                                libraryViewModel.addComicToLibraryFirstTime(
+                                    comicId,
+                                    selectedCategories
+                                )
+                            }
 
-//                            comicDetailViewModel.followComic(comicId, selectedCategories) -> chuyeenr sangs cho library view model
+                            if (isFollowed && selectedCategories.isNotEmpty()) {
+                                libraryViewModel.addComicToLibrarySecondTime(
+                                    comicId,
+                                    selectedCategories
+                                )
+                            }
+
+                            if (deselectedCategories.value.isNotEmpty()
+                            ) {
+                                libraryViewModel.removeComicFromCategory(
+                                    comicId,
+                                    deselectedCategories.value
+                                )
+                            }
+
+                            // if deselectedCategories.value.isNotEmpty() and deselectedCategories  = comicCategoryIds
+                            // unFollowComic
+                            if (deselectedCategories.value.isNotEmpty() && deselectedCategories.value.size == comicCategoryIds.size
+                                && deselectedCategories.value.containsAll(comicCategoryIds) && selectedCategories.isEmpty()
+                            ) {
+                                libraryViewModel.unfollowComicFromLibrary(comicId)
+                            }
                             onDismiss()
+                            libraryViewModel.resetState()
+                            comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
+//
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f),

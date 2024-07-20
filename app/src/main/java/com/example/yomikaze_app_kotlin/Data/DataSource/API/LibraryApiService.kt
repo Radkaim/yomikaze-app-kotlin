@@ -7,6 +7,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -68,7 +69,7 @@ interface LibraryApiService {
      * TODO: Implement the function to remove a comic from library category
      * when they remove a comic from a category
      */
-    @DELETE("library/{comicId}/categories")
+    @HTTP(method = "DELETE", path = "library/{comicId}/categories", hasBody = true)
     suspend fun removeComicFromCategory(
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,
