@@ -141,11 +141,13 @@ class LibraryRepositoryImpl @Inject constructor(
     override suspend fun getCategoriesOfComic(
         token: String,
         comicId: Long
-    ): Result<BaseResponse<LibraryEntry>> {
+    ): Result<LibraryEntry> {
         return try {
             val response = api.getCategoriesOfComic("Bearer $token", comicId)
+            Log.d("LibraryRepositoryImpl", "getCategoriesOfComic: $response")
             Result.success(response)
         } catch (e: Exception) {
+            Log.e("LibraryRepositoryImpl", "getCategoriesOfComic: $e")
             Result.failure(e)
         }
     }

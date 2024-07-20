@@ -79,5 +79,5 @@ interface LibraryRepository {
     suspend fun getCategoriesOfComic(
         token: String,
         comicId: Long,
-    ): Result<BaseResponse<LibraryEntry>>
+    ): Result<LibraryEntry>
 }

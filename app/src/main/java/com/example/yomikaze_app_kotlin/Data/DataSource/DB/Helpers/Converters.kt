@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Data.DataSource.DB.Helpers
 
 import androidx.room.TypeConverter
 import com.example.yomikaze_app_kotlin.Domain.Models.Category
+import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Tag
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -18,37 +19,6 @@ class Converters {
     fun toStringList(value: String?): List<String>? {
         return value?.split(",")?.map { it.trim() }
     }
-
-//    @TypeConverter
-//    fun fromTagList(tags: List<Tag>?): String? {
-//        return if (tags == null) {
-//            null
-//        } else {
-//            Gson().toJson(tags)
-//        }
-//    }
-//
-//    @TypeConverter
-//    fun toTagList(tagsString: String?): List<Tag>? {
-//        return if (tagsString == null) {
-//            null
-//        } else {
-//            val listType = object : TypeToken<List<Tag>>() {}.type
-//            Gson().fromJson(tagsString, listType)
-//        }
-//    }
-
-//    @TypeConverter
-//    fun fromTagList(tags: List<Tag>?): String? {
-//        return tags?.joinToString(",") { it.tagId.toString() }
-//    }
-//
-//    @TypeConverter
-//    fun toTagList(tags: String?): List<Tag>? {
-//        return tags?.split(",")?.map {
-//            Tag(it.toLong(), "", "", "",null )
-//        }
-//    }
 
 
     @TypeConverter
@@ -73,13 +43,13 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromCategoryList(categories: List<Category>): String {
+    fun fromCategoryList(categories: List<LibraryCategoryResponse>): String {
         return Gson().toJson(categories)
     }
 
     @TypeConverter
-    fun toCategoryList(data: String): List<Category> {
-        val listType: Type = object : TypeToken<List<Category>>() {}.type
+    fun toCategoryList(data: String): List<LibraryCategoryResponse> {
+        val listType: Type = object : TypeToken<List<LibraryCategoryResponse>>() {}.type
         return Gson().fromJson(data, listType)
     }
 //    @TypeConverter

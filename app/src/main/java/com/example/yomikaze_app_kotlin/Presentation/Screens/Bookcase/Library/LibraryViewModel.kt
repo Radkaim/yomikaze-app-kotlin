@@ -11,11 +11,16 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryEntry
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.AddComicToLibraryFirstTimeUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.AddComicToLibrarySecondTimeUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.CreateLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.DeleteCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetCategoriesOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComicsInCateUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.RemoveComicFromCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UnfollowComicFromLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.SearchWidgetState
@@ -35,7 +40,12 @@ class LibraryViewModel @Inject constructor(
     private val createLibraryCategoryUC: CreateLibraryCategoryUC,
     private val updateCateNameUC: UpdateCateNameUC,
     private val deleteCategoryUC: DeleteCategoryUC,
-    private val getComicsInCateUC: GetComicsInCateUC
+    private val getComicsInCateUC: GetComicsInCateUC,
+    private val addComicToLibraryFirstTimeUC: AddComicToLibraryFirstTimeUC,
+    private val addComicToLibrarySecondTimeUC: AddComicToLibrarySecondTimeUC,
+    private val removeComicFromCategoryUC: RemoveComicFromCategoryUC,
+    private val unfollowComicFromLibraryUC: UnfollowComicFromLibraryUC,
+    private val getCategoriesOfComicUC: GetCategoriesOfComicUC,
 ) : ViewModel(), StatefulViewModel<LibraryState> {
 
     private var navController: NavController? = null
@@ -82,6 +92,22 @@ class LibraryViewModel @Inject constructor(
         _state.value = _state.value.copy(isSearchResult = newValue)
     }
 
+    /**
+     * Todo: Implement check user is login
+     */
+    fun checkUserIsLogin(): Boolean {
+        return appPreference.isUserLoggedIn
+    }
+
+
+    fun onNavigateComicDetail(comicId: Long) {
+        navController?.navigate("comic_detail_route/$comicId")
+    }
+
+    fun onNavigateCategoryDetail(categoryId: Long, categoryName: String) {
+        navController?.navigate("category_detail_route/$categoryId/$categoryName")
+    }
+
     @SuppressLint("SuspiciousIndentation")
     fun searchComic(comicNameQuery: String) {
         _state.value.searchResult.value = emptyList() // for clear search result for search again
@@ -117,6 +143,9 @@ class LibraryViewModel @Inject constructor(
             )
         }
     }
+    init {
+        getAllCategory()
+    }
 
     /**
      * Todo: Implement get all Category
@@ -132,8 +161,8 @@ class LibraryViewModel @Inject constructor(
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results.toMutableList()
-
-                    // Lấy ảnh bìa cho mỗi danh mục
+//                     Lấy ảnh bìa cho mỗi danh mục
+                    _state.value = _state.value.copy(categoryList = baseResponse.results)
                     results.forEach { category ->
                         val coverImage = getCoverImage(category.id)
                         val totalsComics = getTotalsComicsInCate(category.id)
@@ -144,8 +173,9 @@ class LibraryViewModel @Inject constructor(
 
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(totalCategoryResults = baseResponse.totals)
-                    _state.value = _state.value.copy(categoryList = results)
+
                     _state.value = _state.value.copy(isCategoryLoading = false)
+
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -156,7 +186,6 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    //  * fixme**********fixme*****
     private suspend fun getTotalsComicsInCate(categoryId: Long): Int {
         var totalComics = 0
         val token =
@@ -285,20 +314,36 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
+
+
     /**
-     * Todo: Implement check user is login
+     * TODO: Implement the function to get
+     * list category which comic is in
      */
-    fun checkUserIsLogin(): Boolean {
-        return appPreference.isUserLoggedIn
-    }
+    fun getCategoriesOfComic(comicId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
 
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = getCategoriesOfComicUC.getCategoriesOfComic(token, comicId)
 
-    fun onNavigateComicDetail(comicId: Long) {
-        navController?.navigate("comic_detail_route/$comicId")
-    }
+            result.fold(
+                onSuccess = { libraryEntry ->
+                    val listCateComicIsIn = libraryEntry.categories
+                    _state.value =
+                        _state.value.copy(listCateComicIsIn = listCateComicIsIn!!)
 
-    fun onNavigateCategoryDetail(categoryId: Long, categoryName: String) {
-        navController?.navigate("category_detail_route/$categoryId/$categoryName")
+                    Log.d("LibraryViewModel", "getCategoriesOfComic: $result")
+
+                },
+
+                onFailure = { exception ->
+
+                    Log.d("LibraryViewModel", "getCategoriesOfComic: $exception")
+                }
+            )
+        }
+
     }
 
 }

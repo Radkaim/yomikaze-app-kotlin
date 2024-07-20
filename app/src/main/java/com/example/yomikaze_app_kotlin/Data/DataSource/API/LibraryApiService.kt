@@ -95,6 +95,6 @@ interface LibraryApiService {
     suspend fun getCategoriesOfComic(
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,
-    ): BaseResponse<LibraryEntry>
+    ): LibraryEntry
 
 }

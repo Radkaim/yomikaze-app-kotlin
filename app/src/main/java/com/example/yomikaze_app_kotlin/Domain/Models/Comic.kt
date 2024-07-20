@@ -95,12 +95,6 @@ data class ComicResponse(
     @ColumnInfo(name = "tags")
     val tags: List<Tag>,
 
-    //categories
-    @SerializedName("categories")
-    @TypeConverters(Converters::class)
-    @ColumnInfo(name = "categories")
-    val categories: List<Category>? = null,
-
     @ColumnInfo(name = "tagDB")
     val tagDB: List<String>?,
 

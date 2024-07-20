@@ -19,10 +19,19 @@ data class LibraryState(
     val isCategoryLoading: Boolean = true,
     val comicList: List<LibraryEntry> = emptyList(),
 
+    // danh sách các danh mục đã thêm vào truyện
+    val listCateComicIsIn: List<LibraryCategoryResponse> = emptyList(),
+
+
+
     //create category
     val isCreateCategorySuccess: Boolean = true,
     val isUpdateCategoryNameSuccess: Boolean = true,
     val isDeleteCategorySuccess: Boolean = true,
 
     val imageCoverOfCate: String = "",
+
+
+    //for follow
+//    val listCateComicIsIn: List<LibraryCategoryResponse> = emptyList(),
 )
