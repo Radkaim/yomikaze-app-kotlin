@@ -271,8 +271,8 @@ fun ComicCommentContent(
 
         LaunchedEffect(
             key1 = state.isPostComicCommentSuccess,
-            key2 = state.isDeleteCommentSuccess,
-            key3 = state.isUpdateCommentSuccess
+//            key2 = state.isDeleteCommentSuccess,
+//            key2 = state.isUpdateCommentSuccess
         ) {
             // refresh new comment
             isSelected = false

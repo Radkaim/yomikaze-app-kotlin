@@ -7,7 +7,7 @@ data class CommentResponse(
     val id: Long,
 
     @SerializedName("content")
-    val content: String,
+    var content: String,
 
     @SerializedName("author")
     val author: ProfileResponse,

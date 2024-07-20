@@ -187,6 +187,11 @@ class ComicCommentViewModel @Inject constructor(
             )
             if (result.code() == 204) {
                 _state.value = _state.value.copy(isDeleteCommentSuccess = true)
+                //remove item from list
+             val list = _state.value.listComicComment.toMutableList()
+                list.removeIf { it.id == commentId }
+                _state.value = _state.value.copy(listComicComment = list)
+
             } else {
                 _state.value = _state.value.copy(isDeleteCommentSuccess = false)
                 Log.e("ComicCommentViewModel", "deleteComicCommentByComicId: $result")
@@ -219,6 +224,14 @@ class ComicCommentViewModel @Inject constructor(
             if (result.code() == 204) {
                 Log.d("ComicCommentViewModel", "updateComicCommentByComicId: $result")
                 _state.value = _state.value.copy(isUpdateCommentSuccess = true)
+                // update it content
+                val list = _state.value.listComicComment.toMutableList()
+                list.forEach {
+                    if (it.id == commentId) {
+                        it.content = content
+                    }
+                }
+                _state.value = _state.value.copy(listComicComment = list)
             } else {
                 _state.value = _state.value.copy(isUpdateCommentSuccess = false)
                 Log.e("ComicCommentViewModel", "updateComicCommentByComicId: $result")
