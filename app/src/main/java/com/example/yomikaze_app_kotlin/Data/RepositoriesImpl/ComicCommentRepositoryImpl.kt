@@ -62,6 +62,68 @@ class ComicCommentRepositoryImpl @Inject constructor(
     }
 
     /**
+     * TODO: use for post reply comment by comicId and commentId
+     */
+    override suspend fun postReplyCommentByComicId(
+        token: String,
+        comicId: Long,
+        commentId: Long,
+        content: CommentRequest
+    ): Response<Unit> {
+        val response = api.postReplyCommentByComicId("Bearer $token", comicId, commentId, content)
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            val httpCode = response.code()
+            when (httpCode) {
+                400 -> {
+                    // Xử lý lỗi 400 (Bad Request)
+                    Log.e("CommentComicRepositoryImpl", "Bad Request")
+                }
+
+                401 -> {
+                    // Xử lý lỗi 401 (Unauthorized)
+                    Log.e("CommentComicRepositoryImpl", "Unauthorized")
+                }
+                // Xử lý các mã lỗi khác
+                else -> {
+                    // Xử lý mặc định cho các mã lỗi khác
+                }
+            }
+            Result.failure(Exception("Failed to rate comic"))
+        }
+        return response
+    }
+
+    /**
+     * TODO: use for get all reply comment by comicId and commentId
+     */
+    override suspend fun getAllReplyCommentByComicId(
+        token: String,
+        comicId: Long,
+        commentId: Long,
+        orderBy: String?,
+        page: Int?,
+        size: Int?
+    ): Result<BaseResponse<CommentResponse>> {
+        return try {
+            val response =
+                api.getAllReplyCommentByComicId(
+                    "Bearer $token",
+                    comicId,
+                    commentId,
+                    orderBy,
+                    page,
+                    size
+                )
+            Result.success(response)
+        } catch (e: Exception) {
+            Log.e("CommentComicRepositoryImpl", "getAllReplyCommentByComicId: $e")
+            Result.failure(e)
+        }
+    }
+
+    /**
      * TODO: use for delete comic comment by comicId and commentId
      */
     override suspend fun deleteComicCommentByComicId(
@@ -103,7 +165,8 @@ class ComicCommentRepositoryImpl @Inject constructor(
         commentId: Long,
         pathRequest: List<PathRequest>
     ): Response<Unit> {
-        val response = api.updateComicCommentByComicId("Bearer $token", comicId, commentId, pathRequest)
+        val response =
+            api.updateComicCommentByComicId("Bearer $token", comicId, commentId, pathRequest)
         if (response.isSuccessful) {
             Result.success(Unit)
         } else {

@@ -48,6 +48,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConf
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.EditCommentDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyCommentDetail.RelyCommentDetailViewModel
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
@@ -64,7 +65,9 @@ fun CommentCard(
     isAdmin: Boolean,
 
     onClicked: () -> Unit? = {},
-    comicCommentViewModel: ComicCommentViewModel
+    comicCommentViewModel: ComicCommentViewModel? = null,
+    relyCommentDetailViewModel: RelyCommentDetailViewModel? = null
+
 ) {
     var showPopupMenu by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf<Int?>(null) }
@@ -300,35 +303,61 @@ fun CommentCard(
                         }
 
                         if (showDialog != null) {
-                            when (showDialog) {
-                                1 -> {
-                                    EditCommentDialogComponent(
-                                        key = comicId,
-                                        key2 = commentId,
-                                        value = content,
-                                        title = "Edit Comment",
-                                        onDismiss = { showDialog = 0 },
-                                       viewModel = comicCommentViewModel,
-                                    )
+                            if (comicCommentViewModel != null) {
+                                when (showDialog) {
+
+                                    1 -> {
+                                        EditCommentDialogComponent(
+                                            key = comicId,
+                                            key2 = commentId,
+                                            value = content,
+                                            title = "Edit Comment",
+                                            onDismiss = { showDialog = 0 },
+                                            viewModel = comicCommentViewModel
+                                        )
+                                    }
+
+                                    3 -> {
+                                        DeleteConfirmDialogComponent(
+                                            key = comicId,
+                                            key2 = commentId,
+                                            value = "",
+                                            title = "Are you sure you want to delete this comment?",
+                                            onDismiss = { showDialog = 0 },
+                                            viewModel = comicCommentViewModel
+                                        )
+
+                                    }
                                 }
+                            } else {
+                                when (showDialog) {
+                                    1 -> {
+                                        EditCommentDialogComponent(
+                                            key = comicId,
+                                            key2 = commentId,
+                                            value = content,
+                                            title = "Edit Comment",
+                                            onDismiss = { showDialog = 0 },
+                                            viewModel = relyCommentDetailViewModel!!
+                                        )
+                                    }
 
-                                2 -> {}
+                                    3 -> {
+                                        DeleteConfirmDialogComponent(
+                                            key = comicId,
+                                            key2 = commentId,
+                                            value = "",
+                                            title = "Are you sure you want to delete this comment?",
+                                            onDismiss = { showDialog = 0 },
+                                            viewModel = relyCommentDetailViewModel!!
+                                        )
 
-                                3 -> {
-                                    DeleteConfirmDialogComponent(
-                                        key = comicId,
-                                        key2 = commentId,
-                                        value = "",
-                                        title = "Are you sure you want to delete this comment?",
-                                        onDismiss = { showDialog = 0 },
-                                        viewModel = comicCommentViewModel
-                                    )
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
             }
         }
     }

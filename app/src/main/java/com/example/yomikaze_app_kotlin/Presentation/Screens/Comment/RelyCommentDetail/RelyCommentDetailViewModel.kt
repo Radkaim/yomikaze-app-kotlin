@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyCommentDetail
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -8,8 +8,8 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,18 +20,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ComicCommentViewModel @Inject constructor(
+class RelyCommentDetailViewModel @Inject constructor(
     private val appPreference: AppPreference,
-    private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC,
-    private val postComicCommentByComicIdU: PostComicCommentByComicIdUC,
+    private val getAllReplyCommentByComicIdUC: GetAllReplyCommentByComicIdUC,
+    private val postReplyCommentByComicIdUC: PostReplyCommentByComicIdUC,
     private val deleteComicCommentByComicIdUC: DeleteComicCommentByComicIdUC,
     private val updateComicCommentByComicIdUC: UpdateComicCommentByComicIdUC
-) : ViewModel(), StatefulViewModel<ComicCommentState> {
+) : ViewModel(), StatefulViewModel<RelyCommentDetailState> {
     //navController
     private var navController: NavController? = null
 
-    private val _state = MutableStateFlow(ComicCommentState())
-    override val state: StateFlow<ComicCommentState> get() = _state
+    private val _state = MutableStateFlow(RelyCommentDetailState())
+    override val state: StateFlow<RelyCommentDetailState> get() = _state
 
     override val isUpdateSuccess: Boolean = _state.value.isUpdateCommentSuccess
     override val isDeleteSuccess: Boolean = _state.value.isDeleteCommentSuccess
@@ -54,10 +54,6 @@ class ComicCommentViewModel @Inject constructor(
     //set navController
     fun setNavController(navController: NavController) {
         this.navController = navController
-    }
-
-    fun onNavigateToReplyCommentDetail(commentId: Long, comicId: Long, authorName: String) {
-        navController?.navigate("reply_comment_detail_route/$comicId/$commentId/$authorName")
     }
 
     /**
@@ -91,7 +87,7 @@ class ComicCommentViewModel @Inject constructor(
     }
 
     fun resetState1() {
-        _state.value = ComicCommentState()
+        _state.value = RelyCommentDetailState()
     }
 
     override fun onCleared() {
@@ -103,8 +99,9 @@ class ComicCommentViewModel @Inject constructor(
     /**
      * Todo: Implement get all comment of comic by comicId
      */
-    fun getAllComicCommentByComicId(
+    fun getAllReplyCommentByComicId(
         comicId: Long,
+        commentId: Long,
         page: Int? = 1,
         orderBy: String? = "CreationTime",
 
@@ -119,9 +116,10 @@ class ComicCommentViewModel @Inject constructor(
 
             if (currentPage >= totalPages && totalPages != 0) return@launch
 
-            val result = getAllComicCommentByComicIdUC.getAllComicCommentByComicId(
+            val result = getAllReplyCommentByComicIdUC.getAllReplyCommentByComicId(
                 token = token,
                 comicId = comicId,
+                commentId = commentId,
                 orderBy = orderBy,
                 page = page,
                 size = size
@@ -140,15 +138,15 @@ class ComicCommentViewModel @Inject constructor(
                     _state.value = _state.value.copy(isListComicCommentLoading = false)
 
                     Log.d(
-                        "ComicCommentContent",
-                        "listComicComment: ${state.value.listComicComment}"
+                        "ReplyCommentDetailViewModel",
+                        "getAllReplyCommentByComicId: $baseResponse"
                     )
                 },
 
                 onFailure = { exception ->
                     // Xử lý lỗi
                     _state.value = _state.value.copy(isListComicCommentLoading = false)
-                    Log.e("ComicCommentViewModel", "getAllComicCommentByComicId: $exception")
+                    Log.e("ReplyCommentDetailViewModel", "getAllReplyCommentByComicId: $exception")
                 }
             )
         }
@@ -158,22 +156,26 @@ class ComicCommentViewModel @Inject constructor(
     /**
      * Todo: Implement post comment of comic by comicId
      */
-    fun postComicCommentByComicId(
+    fun postReplyComicCommentByComicId(
         comicId: Long,
+        commentId: Long,
         content: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isPostComicCommentSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = postComicCommentByComicIdU.postComicCommentByComicId(
+            val result = postReplyCommentByComicIdUC.postReply(
                 token = token,
                 comicId = comicId,
+                commentId = commentId,
                 content = CommentRequest(content = content)
             )
             if (result.code() == 201) {
                 _state.value = _state.value.copy(isPostComicCommentSuccess = true)
                 // add new item to list
-                val list = _state.value.listComicComment.toMutableList()
+//                val list = _state.value.listComicComment.toMutableList()
+//                list.add(result.body())
+//                _state.value = _state.value.copy(listComicComment = list)
 
             } else {
                 _state.value = _state.value.copy(isPostComicCommentSuccess = false)

@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyCommentDetail
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -72,23 +72,25 @@ import com.example.yomikaze_app_kotlin.R
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun ComicCommentView(
+fun RelyCommentDetailView(
     navController: NavController,
     comicId: Long,
-    comicName: String,
-    comicCommentViewModel: ComicCommentViewModel = hiltViewModel()
+    commentId: Long,
+    authorName: String,
+    relyCommentDetailViewModel: RelyCommentDetailViewModel = hiltViewModel()
 ) {
-    val state by comicCommentViewModel.state.collectAsState()
+    val state by relyCommentDetailViewModel.state.collectAsState()
 
     //set navController for viewModel
-    comicCommentViewModel.setNavController(navController)
+    relyCommentDetailViewModel.setNavController(navController)
     if (CheckNetwork()) {
-        ComicCommentContent(
+        RelyCommentDetailContent(
             navController = navController,
-            comicName = comicName,
+            authorName = authorName,
             state = state,
-            comicCommentViewModel = comicCommentViewModel,
-            comicId = comicId
+            relyCommentDetailViewModel = relyCommentDetailViewModel,
+            comicId = comicId,
+            commentId = commentId
         )
     } else {
         UnNetworkScreen()
@@ -98,12 +100,13 @@ fun ComicCommentView(
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ComicCommentContent(
+fun RelyCommentDetailContent(
     navController: NavController,
-    comicName: String,
+    authorName: String,
     comicId: Long,
-    state: ComicCommentState,
-    comicCommentViewModel: ComicCommentViewModel
+    commentId: Long,
+    state: RelyCommentDetailState,
+    relyCommentDetailViewModel: RelyCommentDetailViewModel
 ) {
 
     val listState = rememberLazyListState()
@@ -119,11 +122,11 @@ fun ComicCommentContent(
     Scaffold(
         topBar = {
             CustomAppBar(
-                title = comicName,
+                title = authorName,
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
-                        comicCommentViewModel.resetState1()
+                        relyCommentDetailViewModel.resetState1()
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -168,7 +171,7 @@ fun ComicCommentContent(
 
 
                         page.value = 1
-                        comicCommentViewModel.resetState()
+                        relyCommentDetailViewModel.resetState()
                     },
                     onnNewSortClick = {
                         isSelected = false
@@ -178,7 +181,7 @@ fun ComicCommentContent(
                         isRefreshing = true
 
                         page.value = 1
-                        comicCommentViewModel.resetState()
+                        relyCommentDetailViewModel.resetState()
                     }
                 )
             }
@@ -219,14 +222,10 @@ fun ComicCommentContent(
                                 ?: "",
                             roleName = comment.author.roles?.get(0) ?: "",
                             creationTime = comment.creationTime,
-                            isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author.id),
-                            isAdmin = comicCommentViewModel.checkIsAdmin(),
-                            onClicked = {comicCommentViewModel.onNavigateToReplyCommentDetail(
-                                commentId = comment.id,
-                                comicId = comicId,
-                                authorName = comment.author.name
-                            )},
-                            comicCommentViewModel = comicCommentViewModel
+                            isOwnComment = relyCommentDetailViewModel.checkIsOwnComment(comment.author.id),
+                            isAdmin = relyCommentDetailViewModel.checkIsAdmin(),
+                            onClicked = {},
+                            relyCommentDetailViewModel = relyCommentDetailViewModel
                         )
                     }
                 }
@@ -264,12 +263,13 @@ fun ComicCommentContent(
                         end.linkTo(parent.end)
                     },
                 onSendChatClickListener = {
-                    comicCommentViewModel.postComicCommentByComicId(
+                    relyCommentDetailViewModel.postReplyComicCommentByComicId(
                         comicId = comicId,
+                        commentId = commentId,
                         content = it,
                     )
                 },
-                isLogin = comicCommentViewModel.checkUserIsLogin()
+                isLogin = relyCommentDetailViewModel.checkUserIsLogin()
             )
         }
 
@@ -285,20 +285,21 @@ fun ComicCommentContent(
             isRefreshing = true
             page.value = 1
 
-            comicCommentViewModel.resetState()
+            relyCommentDetailViewModel.resetState()
 
         }
 
         LaunchedEffect(
             key1 = page.value,
             key2 = isReversed,
-           key3 = state,
+            key3 = state,
         ) {
             Log.d("ComicCommentContent", "page: ${page.value}")
             if (page.value > state.currentPage.value && !loading.value) {
                 loading.value = true
-                comicCommentViewModel.getAllComicCommentByComicId(
+                relyCommentDetailViewModel.getAllReplyCommentByComicId(
                     comicId = comicId,
+                    commentId = commentId,
                     page.value,
                     orderBy = if (isReversed) "CreationTimeDesc" else "CreationTime"
                 )
@@ -341,7 +342,7 @@ fun ComicCommentContent(
 }
 
 @Composable
-fun ChatBox(
+private fun ChatBox(
     onSendChatClickListener: (String) -> Unit,
     modifier: Modifier,
     isLogin: Boolean,

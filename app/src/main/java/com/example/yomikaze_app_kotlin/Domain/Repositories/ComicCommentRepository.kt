@@ -29,6 +29,28 @@ interface ComicCommentRepository {
     ): Response<Unit>
 
     /**
+     * TODO: use for post reply comment by comicId and commentId
+     */
+    suspend fun postReplyCommentByComicId(
+        token: String,
+        comicId: Long,
+        commentId: Long,
+        content: CommentRequest
+    ): Response<Unit>
+
+    /**
+     * TODO: use for get all reply comment by comicId and commentId
+     */
+    suspend fun getAllReplyCommentByComicId(
+        token: String,
+        comicId: Long,
+        commentId: Long,
+        orderBy: String? = null,
+        page: Int? = null,
+        size: Int? = null
+    ): Result<BaseResponse<CommentResponse>>
+
+    /**
      * TODO: use for delete comic comment by comicId and commentId
      */
     suspend fun deleteComicCommentByComicId(

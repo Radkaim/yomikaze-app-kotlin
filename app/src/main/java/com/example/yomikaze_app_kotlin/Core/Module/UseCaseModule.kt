@@ -54,7 +54,9 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
@@ -587,6 +589,28 @@ object UseCaseModule {
         comicCommentRepository: ComicCommentRepository
     ): PostComicCommentByComicIdUC {
         return PostComicCommentByComicIdUC(comicCommentRepository)
+    }
+
+    /**
+     * TODO: Provide the post reply comment by comicId and commentId use case
+     */
+    @Provides
+    @Singleton
+    fun providePostReplyCommentByComicIdUC(
+        comicCommentRepository: ComicCommentRepository
+    ): PostReplyCommentByComicIdUC {
+        return PostReplyCommentByComicIdUC(comicCommentRepository)
+    }
+
+    /**
+     * TODO: Provide the get all reply comment by comicId and commentId use case
+     */
+    @Provides
+    @Singleton
+    fun provideGetAllReplyCommentByComicIdUC(
+        comicCommentRepository: ComicCommentRepository
+    ): GetAllReplyCommentByComicIdUC {
+        return GetAllReplyCommentByComicIdUC(comicCommentRepository)
     }
 
     /**

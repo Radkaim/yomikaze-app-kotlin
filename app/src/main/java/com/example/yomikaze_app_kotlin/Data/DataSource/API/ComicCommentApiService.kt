@@ -39,13 +39,37 @@ interface ComicCommentApiService {
     ): Response<Unit>
 
     /**
+     * TODO: use for post reply comment by comicId and commentId
+     */
+    @POST("comics/{comicId}/comments/{commentId}/replies")
+    suspend fun postReplyCommentByComicId(
+        @Header("Authorization") token: String,
+        @Path("comicId") comicId: Long,
+        @Path("commentId") commentId: Long,
+        @Body content: CommentRequest
+    ): Response<Unit>
+
+    /**
+     * TODO: use for get all reply comment by comicId and commentId
+     */
+    @GET("comics/{comicId}/comments/{commentId}/replies")
+    suspend fun getAllReplyCommentByComicId(
+        @Header("Authorization") token: String,
+        @Path("comicId") comicId: Long,
+        @Path("commentId") commentId: Long,
+        @Query("OrderBy") orderBy: String? = null,
+        @Query("Page") page: Int? = null,
+        @Query("Size") size: Int? = null,
+    ): BaseResponse<CommentResponse>
+
+    /**
      * TODO: use for delete comic comment by comicId and commentId
      */
     @DELETE("comics/{comicId}/comments/{commentId}")
     suspend fun deleteComicCommentByComicId(
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,
-        @Path("commentId") commentId: Long
+        @Path("commentId") commentId: Long,
     ): Response<Unit>
 
     /**
