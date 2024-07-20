@@ -44,6 +44,7 @@ fun ComicCateCard(
     publishedDate: String,
     backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
     isDeleted: Boolean = false,
+    onDeleteClicked: () -> Unit? = {},
     modifier: Modifier,
     onClicked: () -> Unit? = {}
 ) {
@@ -89,6 +90,7 @@ fun ComicCateCard(
                             .height(17.dp)
                             .clickable {
                                 //TODO: Implement delete comic
+                                onDeleteClicked()
                             }
                     )
                 }

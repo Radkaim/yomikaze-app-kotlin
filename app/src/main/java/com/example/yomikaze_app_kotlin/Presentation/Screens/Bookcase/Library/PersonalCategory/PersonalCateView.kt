@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -40,6 +41,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.Lot
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ComicCateCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 import kotlinx.coroutines.flow.collectLatest
@@ -101,6 +103,8 @@ fun PersonalCategoryViewContent(
     val context = LocalContext.current
     val page = remember { mutableStateOf(1) }
     val loading = remember { mutableStateOf(false) }
+    
+
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
         modifier = Modifier
@@ -115,8 +119,19 @@ fun PersonalCategoryViewContent(
     ) {
         LazyColumn(
             state = listState,
-            verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
+            verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
         ) {
+
+            if (state.isLoadingComicCate) {
+                item {
+                    repeat(6) {
+                        NormalComicCardShimmerLoading()
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+            }
+
             itemsIndexed(state.listComics) { index, comic ->
                 ComicCateCard(
                     comicId = comic.libraryEntry.comicId,
@@ -126,6 +141,7 @@ fun PersonalCategoryViewContent(
                     authorNames = comic.libraryEntry.authors,
                     publishedDate = comic.libraryEntry.publicationDate,
                     isDeleted = true,
+                    onDeleteClicked = {personalCategoryViewModel.removeComicFromCategory(comic.libraryEntry.comicId, listOf(categoryId))},
                     backgroundColor = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -168,7 +184,6 @@ fun PersonalCategoryViewContent(
         key1 = page.value,
         //key2 = state.totalPages
     ) {
-
         if (page.value > state.currentPage.value && !loading.value) {
             loading.value = true
             personalCategoryViewModel.getComicsInCate(page.value, categoryId = categoryId)

@@ -287,7 +287,7 @@ fun LibraryContent(
                     value = category.name,
                     name = category.name,
                     createAt = category.creationTime,
-                    totalComics = category.totalComics,
+                    totalComics = category.totalComics ?: 0,
                     image = APIConfig.imageAPIURL.toString() + category.firstCoverImage,
                     onClick = {
                         libraryViewModel.onNavigateCategoryDetail(
