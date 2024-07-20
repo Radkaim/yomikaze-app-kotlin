@@ -149,6 +149,7 @@ fun BasicComicCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
+                    if (isDelete == true) {
                     IconButton(
                         content = {
                             Icon(
@@ -160,7 +161,7 @@ fun BasicComicCard(
                             )
                         },
                         onClick = { showDialog = 1 })
-                    if (isDelete == true) {
+
                         IconButton(
                             content = {
                                 Icon(
