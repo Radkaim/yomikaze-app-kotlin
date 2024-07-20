@@ -9,7 +9,6 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
-import com.example.yomikaze_app_kotlin.Domain.Models.FollowComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
@@ -187,18 +186,6 @@ class ComicRepositoryImpl @Inject constructor(
             Result.failure(Exception("Failed to rate comic"))
         }
         return response
-    }
-
-    /**
-     * TODO: Implement the function to follow a comic
-     */
-    override suspend fun followComic(token: String, comicId: Long): Result<FollowComicResponse> {
-        return try {
-            val response = api.followComic("Bearer $token", comicId)
-            Result.success(response)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
     }
 
 

@@ -35,6 +35,7 @@ interface LibraryCategoryApiService {
 
     /**
      * TODO: Implement the function to get comics in category
+     * fixme**********fixme*****
      */
     @GET("library")
     suspend fun getComicsInCategory(
@@ -44,17 +45,6 @@ interface LibraryCategoryApiService {
         @Query("Page") page: Int? = null,
         @Query("Size") size: Int? = null,
     ): BaseResponse<LibraryEntry>
-
-    /**
-     * TODO: Implement the function to add comic to category
-     */
-    @PATCH("library/{libraryId}")
-    suspend fun addComicToCategory(
-        @Header("Authorization") token: String,
-        @Path("libraryId") libraryEntryId: Long,
-        @Body pathRequest: List<PathRequest>,
-    ): Response<Unit>
-
 
     /**
      * TODO: Implement the function to delete a category in library

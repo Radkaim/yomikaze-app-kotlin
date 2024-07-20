@@ -34,7 +34,7 @@ class PersonalCategoryViewModel @Inject constructor(
         navController?.navigate("comic_detail_route/$comicId")
     }
 
-    fun getComicsInCate(page: Int? = 1, categoryName: String) {
+    fun getComicsInCate(page: Int? = 1, categoryId: Long) {
         viewModelScope.launch {
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
 
@@ -48,7 +48,7 @@ class PersonalCategoryViewModel @Inject constructor(
             val result =
                 getComicsInCateUC.getComicsInCate(
                     token = token,
-                    categoryName = categoryName,
+                    categoryId = categoryId,
                     orderBy = "CreationTime",
                     page = page,
                     size = size

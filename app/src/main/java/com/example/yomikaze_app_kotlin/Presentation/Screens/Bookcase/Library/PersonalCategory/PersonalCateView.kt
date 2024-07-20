@@ -77,6 +77,7 @@ fun PersonalCateView(
     {
         if (CheckNetwork()) {
             PersonalCategoryViewContent(
+                categoryId = categoryId,
                 categoryName = categoryName,
                 personalCategoryViewModel = personalCategoryViewModel,
                 state = state
@@ -91,6 +92,7 @@ fun PersonalCateView(
 
 @Composable
 fun PersonalCategoryViewContent(
+    categoryId: Long,
     categoryName: String,
     personalCategoryViewModel: PersonalCategoryViewModel,
     state: PersonalCategoryState
@@ -169,7 +171,7 @@ fun PersonalCategoryViewContent(
 
         if (page.value > state.currentPage.value && !loading.value) {
             loading.value = true
-            personalCategoryViewModel.getComicsInCate(page.value, categoryName = categoryName)
+            personalCategoryViewModel.getComicsInCate(page.value, categoryId = categoryId)
             loading.value = false
         }
 

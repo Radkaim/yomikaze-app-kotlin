@@ -189,6 +189,11 @@ fun ComicDetailContent(
         MenuOptions("Report", "report_dialog_route", R.drawable.ic_report),
         MenuOptions("Share", "share_dialog_route", R.drawable.ic_share),
     )
+    val imagePath = if (CheckNetwork()) APIConfig.imageAPIURL.toString() else { "" }
+    var isNetworkAvailable by remember {
+        mutableStateOf(true)
+    }
+    isNetworkAvailable = CheckNetwork()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -204,7 +209,7 @@ fun ComicDetailContent(
             ///data/user/0/com.example.yomikaze_app_kotlin/files/image_1719475024110.jpg
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(APIConfig.imageAPIURL.toString() + state.comicResponse?.banner)
+                    .data(imagePath + state.comicResponse?.banner)
                     .memoryCachePolicy(CachePolicy.ENABLED)
                     .build(),
                 placeholder = painterResource(R.drawable.placeholder_430_184),
@@ -245,6 +250,9 @@ fun ComicDetailContent(
                             Log.d("ComicDetailsView", "previousRoute2: Hung2")
                             navController.navigate("main_screen_route")
                         }
+//                        if(!isNetworkAvailable){
+//                            navController.navigate("main_screen_route")
+//                        }
                         // check if start as intent
 
                     }) {
@@ -373,7 +381,7 @@ fun ComicDetailContent(
                         }
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data(APIConfig.imageAPIURL.toString() + state.comicResponse?.cover)
+                                .data(imagePath + state.comicResponse?.cover)
                                 .memoryCachePolicy(CachePolicy.ENABLED)
                                 .build(),
                             placeholder = painterResource(R.drawable.placeholder),
@@ -1115,7 +1123,10 @@ fun AddToLibraryDialog(
                         onClick = {
                             //viewModel.addToLibrary(selectedCategories)
                             // Log.d("AddToLibraryDialog", "Selected categories: $selectedCategories")
-                            comicDetailViewModel.followComic(comicId, selectedCategories)
+                            /**
+                            fixme
+                             */
+//                            comicDetailViewModel.followComic(comicId, selectedCategories) -> chuyeenr sangs cho library view model
                             onDismiss()
                         },
                         colors = ButtonDefaults.buttonColors(

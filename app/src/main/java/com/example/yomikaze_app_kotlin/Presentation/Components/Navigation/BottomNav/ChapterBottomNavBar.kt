@@ -51,6 +51,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCa
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPagerOrientation
+import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapterModel
 import com.example.yomikaze_app_kotlin.R
@@ -71,6 +72,9 @@ fun ChapterBottomNavBar(
     viewChapterModel: ViewChapterModel,
 
     ) {
+    var isNetworkAvailable by remember { mutableStateOf(true) }
+    isNetworkAvailable = CheckNetwork()
+
 
     val items = listOf(
         BottomChapterNavItems.PreviousChapter,
@@ -79,6 +83,7 @@ fun ChapterBottomNavBar(
         BottomChapterNavItems.Setting,
         BottomChapterNavItems.NextChapter
     )
+
 
     BottomNavigation(
         backgroundColor = MaterialTheme.colorScheme.tertiary,
@@ -89,6 +94,9 @@ fun ChapterBottomNavBar(
         var currentRoute by remember { mutableStateOf<String?>(null) }
         var showPopupMenu by remember { mutableStateOf(false) }
         var showDialog by remember { mutableStateOf<Int?>(null) }
+
+
+
 
         items.forEach { item ->
             val isSelected = currentRoute == item.screen_route
@@ -139,9 +147,22 @@ fun ChapterBottomNavBar(
 //                                comicId,
 //                                viewChapterModel.state.value.currentChapterNumber - 1)
 //                            currentRoute = null
-                            val previousChapterNumber = viewChapterModel.getPreviousChapterNumber(viewChapterModel.state.value.currentChapterNumber)
+                            val previousChapterNumber =
+                                viewChapterModel.getPreviousChapterNumber(viewChapterModel.state.value.currentChapterNumber)
+
                             if (previousChapterNumber != null) {
-                                viewChapterModel.getPagesByChapterNumberOfComic(comicId, previousChapterNumber)
+                                if (isNetworkAvailable) {
+                                    viewChapterModel.getPagesByChapterNumberOfComic(
+                                        comicId,
+                                        previousChapterNumber
+                                    )
+                                } else {
+                                    viewChapterModel.getPageByComicIdAndChapterNumberInDB(
+                                        comicId,
+                                        previousChapterNumber
+                                    )
+                                }
+
                                 currentRoute = null
                             }
                         }
@@ -158,9 +179,20 @@ fun ChapterBottomNavBar(
 //                                comicId,
 //                                nextChapter)
 //                            currentRoute = null
-                            val nextChapterNumber = viewChapterModel.getNextChapterNumber(viewChapterModel.state.value.currentChapterNumber)
+                            val nextChapterNumber =
+                                viewChapterModel.getNextChapterNumber(viewChapterModel.state.value.currentChapterNumber)
                             if (nextChapterNumber != null) {
-                                viewChapterModel.getPagesByChapterNumberOfComic(comicId, nextChapterNumber)
+                                if (isNetworkAvailable) {
+                                    viewChapterModel.getPagesByChapterNumberOfComic(
+                                        comicId,
+                                        nextChapterNumber
+                                    )
+                                } else {
+                                    viewChapterModel.getPageByComicIdAndChapterNumberInDB(
+                                        comicId,
+                                        nextChapterNumber
+                                    )
+                                }
                                 currentRoute = null
                             }
                         }
@@ -419,8 +451,16 @@ fun ViewListChapterDialog(
     viewChapterModel: ViewChapterModel,
     onDismiss: () -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        viewChapterModel.getListChapterByComicId(comicId = comicId)
+    var isNetworkAvailable by remember { mutableStateOf(true) }
+    isNetworkAvailable = CheckNetwork()
+    if (isNetworkAvailable) {
+        LaunchedEffect(Unit) {
+            viewChapterModel.getListChapterByComicId(comicId = comicId)
+        }
+    } else {
+        LaunchedEffect(Unit) {
+            viewChapterModel.getChaptersFromDBByComicId(comicId = comicId)
+        }
     }
     var isSelected by remember { mutableStateOf(true) }
     var isReversed by remember { mutableStateOf(false) }
@@ -504,10 +544,17 @@ fun ViewListChapterDialog(
                                         selectedChapter = chapter
                                         showDialog = true
                                     } else {
-                                        viewChapterModel.getPagesByChapterNumberOfComic(
-                                            comicId,
-                                            chapter.number
-                                        )
+                                        if (isNetworkAvailable) {
+                                            viewChapterModel.getPagesByChapterNumberOfComic(
+                                                comicId,
+                                                chapter.number
+                                            )
+                                        } else {
+                                            viewChapterModel.getPageByComicIdAndChapterNumberInDB(
+                                                comicId,
+                                                chapter.number
+                                            )
+                                        }
                                         onDismiss()
                                     }
                                 },
@@ -533,5 +580,15 @@ fun ViewListChapterDialog(
                 }
             }
         }
+    }
+}
+
+//fun for return offline mode choose or online mode choose
+@Composable
+fun getPageByMode(): Unit {
+    if (CheckNetwork()) {
+        //getPagesByChapterNumberOfComic
+    } else {
+        //getPageByComicIdAndChapterNumberInDB
     }
 }

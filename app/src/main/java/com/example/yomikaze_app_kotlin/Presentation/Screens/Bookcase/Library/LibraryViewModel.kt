@@ -131,13 +131,12 @@ class LibraryViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = { baseResponse ->
-
                     val results = baseResponse.results.toMutableList()
 
                     // Lấy ảnh bìa cho mỗi danh mục
                     results.forEach { category ->
-                        val coverImage = getCoverImage(category.name)
-                        val totalsComics = getTotalsComicsInCate(category.name)
+                        val coverImage = getCoverImage(category.id)
+                        val totalsComics = getTotalsComicsInCate(category.id)
                         category.firstCoverImage = coverImage
                         category.totalComics = totalsComics
                     }
@@ -157,14 +156,15 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTotalsComicsInCate(categoryName: String): Int {
+    //  * fixme**********fixme*****
+    private suspend fun getTotalsComicsInCate(categoryId: Long): Int {
         var totalComics = 0
         val token =
             if (appPreference.authToken == null) "" else appPreference.authToken!!
         return withContext(Dispatchers.IO) {
             val result = getComicsInCateUC.getComicsInCate(
                 token = token,
-                categoryName = categoryName,
+                categoryId = categoryId,
                 orderBy = "CreationTime",
                 page = 1,
                 size = 1
@@ -185,7 +185,7 @@ class LibraryViewModel @Inject constructor(
 
 
     private suspend fun getCoverImage(
-        categoryName: String,
+        categoryId: Long,
     ): String? {
         var coverImage: String? = ""
         val token =
@@ -193,7 +193,7 @@ class LibraryViewModel @Inject constructor(
         return withContext(Dispatchers.IO) {
             val result = getComicsInCateUC.getComicsInCate(
                 token = token,
-                categoryName = categoryName,
+                categoryId = categoryId,
                 orderBy = "CreationTime",
                 page = 1,
                 size = 1
@@ -216,6 +216,7 @@ class LibraryViewModel @Inject constructor(
 
     /**
      * Todo: Implement add new category
+     *
      */
     fun addNewCategory(categoryName: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -267,6 +268,7 @@ class LibraryViewModel @Inject constructor(
 
     /**
      * Todo: Implement delete category of StatefulViewModel
+     *   * fixme**********fixme*****
      */
     override fun delete(key: Long, key2: Long?, isDeleteAll: Boolean?) {
         viewModelScope.launch(Dispatchers.IO) {

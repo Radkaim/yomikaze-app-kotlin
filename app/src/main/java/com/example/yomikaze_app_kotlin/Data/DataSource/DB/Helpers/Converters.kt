@@ -71,6 +71,17 @@ class Converters {
     fun toCategory(data: String): Category {
         return Gson().fromJson(data, Category::class.java)
     }
+
+    @TypeConverter
+    fun fromCategoryList(categories: List<Category>): String {
+        return Gson().toJson(categories)
+    }
+
+    @TypeConverter
+    fun toCategoryList(data: String): List<Category> {
+        val listType: Type = object : TypeToken<List<Category>>() {}.type
+        return Gson().fromJson(data, listType)
+    }
 //    @TypeConverter
 //    fun fromTagList(value: List<Tag>?): String? {
 //        val gson = Gson()

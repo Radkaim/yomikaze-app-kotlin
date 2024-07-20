@@ -7,12 +7,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
-import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.AddComicToCategoryUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.FollowComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
@@ -33,8 +30,8 @@ class ComicDetailViewModel @Inject constructor(
     private val ratingComicUC: RatingComicUC,
     private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC,
     private val getLibraryCategoryUC: GetLibraryCategoryUC,
-    private val followComicUC: FollowComicUC,
-    private val addComicToCategoryUC: AddComicToCategoryUC,
+//    private val followComicUC: FollowComicUC,
+//    private val addComicToCategoryUC: AddComicToCategoryUC,
     private val getComicByIdDBUC: GetComicByIdDBUC,
 
     private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC
@@ -130,54 +127,54 @@ class ComicDetailViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Todo: Implement follow comic in comic detail view
-     */
-    fun followComic(comicId: Long, categoryId: List<Long>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = followComicUC.followComic(token, comicId)
-            result.fold(
-                onSuccess = {
-                    // Xử lý kết quả thành công
-                    addComicToCategory(it.id, categoryId)
-                },
-                onFailure = { exception ->
-                    // Xử lý lỗi
-                    Log.e("ComicDetailViewModel", "FollowComic: $exception")
-                }
-            )
-        }
-    }
-
-    /**
-     * Todo: Implement unfollow comic in comic detail view
-     */
-
-    /**
-     * Todo: Implement add comic to category in comic detail view
-     */
-    fun addComicToCategory(libraryEntryId: Long, categoryId: List<Long>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _state.value = _state.value.copy(isFollowComicSuccess = false)
-            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-
-            //create list path request
-            val pathRequest = mutableListOf<PathRequest>()
-
-            categoryId.forEach { id ->
-                pathRequest.add(PathRequest(id.toString(), "/categoryIds/0", "add"))
-            }
-            Log.d("ComicDetailViewModel", "addComicToCategory2: $pathRequest")
-            val result = addComicToCategoryUC.addComicToCategory(token, libraryEntryId, pathRequest)
-            if (result.code() == 204) {
-                _state.value = _state.value.copy(isFollowComicSuccess = true)
-            } else {
-                _state.value = _state.value.copy(isFollowComicSuccess = false)
-                Log.e("Rating", "rateComic: $result")
-            }
-        }
-    }
+//    /**
+//     * Todo: Implement follow comic in comic detail view
+//     */
+//    fun followComic(comicId: Long, categoryId: List<Long>) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+//            val result = followComicUC.followComic(token, comicId)
+//            result.fold(
+//                onSuccess = {
+//                    // Xử lý kết quả thành công
+//                    addComicToCategory(it.id, categoryId)
+//                },
+//                onFailure = { exception ->
+//                    // Xử lý lỗi
+//                    Log.e("ComicDetailViewModel", "FollowComic: $exception")
+//                }
+//            )
+//        }
+//    }
+//
+//    /**
+//     * Todo: Implement unfollow comic in comic detail view
+//     */
+//
+//    /**
+//     * Todo: Implement add comic to category in comic detail view
+//     */
+//    fun addComicToCategory(libraryEntryId: Long, categoryId: List<Long>) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _state.value = _state.value.copy(isFollowComicSuccess = false)
+//            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+//
+//            //create list path request
+//            val pathRequest = mutableListOf<PathRequest>()
+//
+//            categoryId.forEach { id ->
+//                pathRequest.add(PathRequest(id.toString(), "/categoryIds/0", "add"))
+//            }
+//            Log.d("ComicDetailViewModel", "addComicToCategory2: $pathRequest")
+//            val result = addComicToCategoryUC.addComicToCategory(token, libraryEntryId, pathRequest)
+//            if (result.code() == 204) {
+//                _state.value = _state.value.copy(isFollowComicSuccess = true)
+//            } else {
+//                _state.value = _state.value.copy(isFollowComicSuccess = false)
+//                Log.e("Rating", "rateComic: $result")
+//            }
+//        }
+//    }
 
 
     /**

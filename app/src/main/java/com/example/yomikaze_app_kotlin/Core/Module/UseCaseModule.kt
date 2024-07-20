@@ -33,16 +33,19 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteAl
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteHistoryRecordUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetHistoriesUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.UpdateLastReadPageUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.AddComicToLibraryFirstTimeUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.AddComicToLibrarySecondTimeUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.CreateLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.DeleteCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetCategoriesOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComicsInCateUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.RemoveComicFromCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UnfollowComicFromLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetCoinPricingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetPaymentSheetResponseUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.AddComicToCategoryUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.FollowComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetChapterDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
@@ -202,15 +205,6 @@ object UseCaseModule {
     }
 
     /**
-     * Todo: Provide the follow comic use case
-     */
-    @Provides
-    @Singleton
-    fun provideFollowComicUC(comicRepository: ComicRepository): FollowComicUC {
-        return FollowComicUC(comicRepository)
-    }
-
-    /**
      *---------------------------------------------------------------------------------------------
      * TODO Comic In DATABASE (Download) Use Cases
      */
@@ -342,14 +336,6 @@ object UseCaseModule {
      * TODO LibraryCategory Use Cases
      */
 
-    /**
-     * Todo: Provide the AddComicToCategoryUC
-     */
-    @Provides
-    @Singleton
-    fun provideAddComicToCategoryUC(libraryCategoryRepository: LibraryCategoryRepository): AddComicToCategoryUC {
-        return AddComicToCategoryUC(libraryCategoryRepository)
-    }
 
     /**
      * Todo: Provide the create category in library
@@ -374,8 +360,8 @@ object UseCaseModule {
      */
     @Provides
     @Singleton
-    fun provideGetComicsInCateUC(libraryCategoryRepository: LibraryCategoryRepository): GetComicsInCateUC {
-        return GetComicsInCateUC(libraryCategoryRepository)
+    fun provideGetComicsInCateUC(libraryRepository: LibraryRepository): GetComicsInCateUC {
+        return GetComicsInCateUC(libraryRepository)
     }
 
     /**
@@ -446,6 +432,52 @@ object UseCaseModule {
     fun provideSearchComicInLibraryUC(libraryRepository: LibraryRepository): SearchInLibraryUC {
         return SearchInLibraryUC(libraryRepository)
     }
+
+    /**
+     * Todo: Provide the AddComicToLibraryFirstTimeUC
+     */
+    @Provides
+    @Singleton
+    fun provideAddComicToLibraryFirstTimeUC(libraryRepository: LibraryRepository): AddComicToLibraryFirstTimeUC {
+        return AddComicToLibraryFirstTimeUC(libraryRepository)
+    }
+
+    /**
+     * Todo: Provide the AddComicToLibrarySecondTimeUC
+     */
+    @Provides
+    @Singleton
+    fun provideAddComicToLibrarySecondTimeUC(libraryRepository: LibraryRepository): AddComicToLibrarySecondTimeUC {
+        return AddComicToLibrarySecondTimeUC(libraryRepository)
+    }
+
+    /**
+     * Todo: Provide the RemoveComicFromCategoryUC
+     */
+    @Provides
+    @Singleton
+    fun provideRemoveComicFromCategoryUC(libraryRepository: LibraryRepository): RemoveComicFromCategoryUC {
+        return RemoveComicFromCategoryUC(libraryRepository)
+    }
+    /**
+     * TODO: Provide the UnfollowComicFromLibraryUC
+     */
+    @Provides
+    @Singleton
+    fun provideUnfollowComicFromLibraryUC(libraryRepository: LibraryRepository): UnfollowComicFromLibraryUC {
+        return UnfollowComicFromLibraryUC(libraryRepository)
+    }
+
+    /**
+     * TODO: Provide the GetCategoriesOfComicUC
+     */
+    @Provides
+    @Singleton
+    fun provideGetCategoriesOfComicUC(libraryRepository: LibraryRepository): GetCategoriesOfComicUC {
+        return GetCategoriesOfComicUC(libraryRepository)
+    }
+
+
 
 
     /**

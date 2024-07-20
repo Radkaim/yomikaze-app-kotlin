@@ -10,7 +10,7 @@ data class ViewChapterState(
     val pagesImage: List<String> = emptyList(),
     val pageResponse: Page? = null,
 
-    val isPagesExistInDB: Boolean = true,
+    val isPagesExistInDB: Boolean = false,
 
     val listChapters: List<Chapter>? = emptyList(),
     val canPreviousChapter: Boolean = false,
@@ -21,4 +21,6 @@ data class ViewChapterState(
 
     val isChapterNeedToUnlock: Boolean = false,
     val chapterUnlockNumber: Int = 0,
+
+
 )

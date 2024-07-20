@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
-import com.example.yomikaze_app_kotlin.Domain.Models.FollowComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import retrofit2.Response
 
@@ -88,13 +87,6 @@ interface ComicRepository {
         rating: RatingRequest
     ): Response<Unit>
 
-    /**
-     * TODO: use for follow a comic
-     */
-    suspend fun followComic(
-        token: String,
-        comicId: Long,
-    ): Result<FollowComicResponse>
 
     /**
      * ---------------------------------------------------------------------------------------------------

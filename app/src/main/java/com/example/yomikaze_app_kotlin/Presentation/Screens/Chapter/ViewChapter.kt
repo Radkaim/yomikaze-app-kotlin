@@ -51,7 +51,6 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPage
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPagerOrientation
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.ChapterBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
-import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 import kotlinx.coroutines.delay
@@ -72,7 +71,10 @@ fun ViewChapter(
     viewChapterModel.setNavController(navController)
 
     //get pages by chapter number of comic
-    val isNetworkAvailable = CheckNetwork()
+    var isNetworkAvailable by remember {
+        mutableStateOf(true)
+    }
+    isNetworkAvailable = CheckNetwork()
     LaunchedEffect(Unit) {
         if (isNetworkAvailable) {
             Log.e("ViewChapter", "Network Available")
@@ -83,9 +85,8 @@ fun ViewChapter(
         }
     }
 
-    if (!isNetworkAvailable && !state.isPagesExistInDB) {
-        NoNetworkAvailable()
-    } else {
+    if (isNetworkAvailable) {
+
         ViewChapterContent(
             comicId = comicId,
             state = state,
@@ -110,8 +111,14 @@ fun ViewChapterContent(
     val appPreference = AppPreference(context)
 
 
-    LaunchedEffect(Unit){
-        viewChapterModel.getListChapterByComicId(comicId)
+    if (CheckNetwork()) {
+        LaunchedEffect(Unit) {
+            viewChapterModel.getListChapterByComicId(comicId = comicId)
+        }
+    } else {
+        LaunchedEffect(Unit) {
+            viewChapterModel.getChaptersFromDBByComicId(comicId = comicId)
+        }
     }
     var canGoToPreviousChapter by remember {
         mutableStateOf(false)
@@ -120,19 +127,33 @@ fun ViewChapterContent(
         mutableStateOf(false)
     }
 
-    LaunchedEffect(key1 = state.isGetPageApiSuccess){
-       canGoToPreviousChapter = viewChapterModel.canGoToPreviousChapter(state.currentChapterNumber)
-       canGoToNextChapter = viewChapterModel.canGoToNextChapter(state.currentChapterNumber)
+    if (CheckNetwork()) {
+        //online mode
+        LaunchedEffect(key1 = state.isGetPageApiSuccess) {
+            canGoToPreviousChapter =
+                viewChapterModel.canGoToPreviousChapter(state.currentChapterNumber)
+            canGoToNextChapter = viewChapterModel.canGoToNextChapter(state.currentChapterNumber)
 
-        Log.e("ViewChapterContent", "canGoToPreviousChapter: $canGoToPreviousChapter")
-        Log.e("ViewChapterContent", "canGoToNextChapter: $canGoToNextChapter")
+            Log.e("ViewChapterContent", "canGoToPreviousChapter1: $canGoToPreviousChapter")
+            Log.e("ViewChapterContent", "canGoToNextChapter1: $canGoToNextChapter")
+        }
+    } else {
+        //offline mode
+        LaunchedEffect(key1 = state.pagesImage) {
+            canGoToPreviousChapter =
+                viewChapterModel.canGoToPreviousChapter(state.currentChapterNumber)
+            canGoToNextChapter = viewChapterModel.canGoToNextChapter(state.currentChapterNumber)
+
+            Log.e("ViewChapterContent", "canGoToPreviousChapter2: $canGoToPreviousChapter")
+            Log.e("ViewChapterContent", "canGoToNextChapter2: $canGoToNextChapter")
+        }
     }
 
     var showDialog by remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(key1 = state.isChapterNeedToUnlock){
-        if (state.isChapterNeedToUnlock){
+    LaunchedEffect(key1 = state.isChapterNeedToUnlock) {
+        if (state.isChapterNeedToUnlock) {
             showDialog = true
         }
     }
@@ -161,7 +182,7 @@ fun ViewChapterContent(
 
     val currentPage = pagerState.currentPage + 1
     val currentPageScroll = scrollState.firstVisibleItemIndex + 1
-    val imagePath = if (CheckNetwork()) APIConfig.imageAPIURL.toString() else {
+    var imagePath = if (CheckNetwork()) APIConfig.imageAPIURL.toString() else {
         ""
     }
 
@@ -195,8 +216,8 @@ fun ViewChapterContent(
 
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.navigate("comic_detail_route/${comicId}"){
-                            popUpTo("view_chapter_route/${comicId}/${chapterNumber}"){
+                        navController.navigate("comic_detail_route/${comicId}") {
+                            popUpTo("view_chapter_route/${comicId}/${chapterNumber}") {
                                 inclusive = true
                             }
                         }
@@ -254,7 +275,7 @@ fun ViewChapterContent(
                     },
                     checkAutoScroll = { autoScroll = it },
                     viewChapterModel = viewChapterModel,
-                    )
+                )
             }
         }
     )
@@ -273,6 +294,7 @@ fun ViewChapterContent(
                     onDismiss = { showDialog = false }
                 )
             }
+
             else -> {
                 // Show comic images
             }
