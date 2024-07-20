@@ -2,17 +2,27 @@ package com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookca
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -28,23 +38,30 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.cutAuthorName
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.processNameByComma
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.AddToLibraryDialog
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
 fun BasicComicCard(
     comicName: String,
+    comicId: Long,
     image: String,
     comicChapter: String? = null,
     isLibrarySearchComicCard: Boolean = false,
     authorName: List<String>? = null,
     // averageRatingNumber: Float,
+    isDelete: Boolean? = false,
+    onDeletedClicked: () -> Unit? = {},
+    onAddClicked: () -> Unit? = {},
+
     onClick: () -> Unit
 ) {
-
+    var height = 170.dp
+    if (isDelete == true) height = 190.dp else height = 170.dp
     Surface(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
-            .height(170.dp) // Adjusted height for better visual balance
+            .height(height) // Adjusted height for better visual balance
             .width(90.dp)
             .border(
                 width = 1.dp,
@@ -73,6 +90,7 @@ fun BasicComicCard(
                     )
             ) {
                 //Comic Image
+                var showDialog by remember { mutableStateOf<Int?>(null) }
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(image)
@@ -115,7 +133,7 @@ fun BasicComicCard(
                 } else {
                     //history
                     Text(
-                        text ="Last: Ch.$comicChapter",
+                        text = "Last: Ch.$comicChapter",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         maxLines = 1,
@@ -123,7 +141,48 @@ fun BasicComicCard(
                         modifier = Modifier.padding(start = 3.dp, top = 10.dp)
                     )
                 }
-            }
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .offset(x = -(8).dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    IconButton(
+                        content = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_add_library),
+                                contentDescription = "add",
+                                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                                modifier = Modifier
+                                    .size(15.dp)
+                            )
+                        },
+                        onClick = { showDialog = 1 })
+                    if (isDelete == true) {
+                        IconButton(
+                            content = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_delete),
+                                    contentDescription = "delete",
+                                    tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                                    modifier = Modifier
+                                        .size(15.dp)
+                                )
+                            },
+                            onClick = { onDeletedClicked() })
+                    }
+                }
+                if (showDialog != null) {
+                    when (showDialog) {
+                        1 -> AddToLibraryDialog(
+                            comicId = comicId,
+                            isInComic = false,
+                            isFollowed = true,
+                            onDismiss = { showDialog = null })
+                    }
+                }
 
 //            Box(
 //                modifier = Modifier
@@ -142,6 +201,7 @@ fun BasicComicCard(
 //                )
 //            }
 
+            }
         }
     }
 }

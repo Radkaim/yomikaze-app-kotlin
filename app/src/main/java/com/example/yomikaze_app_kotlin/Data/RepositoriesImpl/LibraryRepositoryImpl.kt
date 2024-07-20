@@ -36,7 +36,7 @@ class LibraryRepositoryImpl @Inject constructor(
     override suspend fun getComicsByCategoryId(
         token: String,
         category: Long,
-        orderBy: String? ,
+        orderBy: String?,
         page: Int?,
         size: Int?
     ): Result<BaseResponse<LibraryEntry>> {
@@ -56,11 +56,11 @@ class LibraryRepositoryImpl @Inject constructor(
         token: String,
         libraryRequest: LibraryRequest,
     ): Response<Unit> {
-            val response = api.addComicToLibraryFirstTime("Bearer $token", libraryRequest)
+        val response = api.addComicToLibraryFirstTime("Bearer $token", libraryRequest)
 
         if (response.isSuccessful) {
-            Result.success(Unit)}
-        else {
+            Result.success(Unit)
+        } else {
             val httpCode = response.code()
             when (httpCode) {
                 400 -> {
@@ -118,11 +118,11 @@ class LibraryRepositoryImpl @Inject constructor(
     }
 
     /**
-    * TODO: Implement the function to remove a comic from library category
-    * when they unfollow the comic or remove a comic from all category
-    * and remove the comic from library
-    * unFollowComic
-    */
+     * TODO: Implement the function to remove a comic from library category
+     * when they unfollow the comic or remove a comic from all category
+     * and remove the comic from library
+     * unFollowComic
+     */
     override suspend fun unfollowComicFromLibrary(
         token: String,
         comicId: Long
@@ -151,4 +151,26 @@ class LibraryRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+
+    /**
+     * TODO: Implement the function to get default comic that not in which category
+     */
+    override suspend fun getDefaultComicsInLibrary(
+        token: String,
+        orderBy: String?,
+        page: Int?,
+        size: Int?
+    ): Result<BaseResponse<LibraryEntry>> {
+        return try {
+            val response = api.getDefaultComicInLibrary("Bearer $token", orderBy, page, size)
+            Log.d("LibraryRepositoryImpl", "getDefaultComicsInLibrary: $response")
+            Result.success(response)
+        } catch (e: Exception) {
+            Log.e("LibraryRepositoryImpl", "getDefaultComicsInLibrary: $e")
+            Result.failure(e)
+        }
+    }
+
+
 }

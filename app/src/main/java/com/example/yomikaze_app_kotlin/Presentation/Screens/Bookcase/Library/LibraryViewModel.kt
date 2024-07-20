@@ -18,6 +18,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.CreateLi
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.DeleteCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetCategoriesOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComicsInCateUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetDefaultComicsInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.RemoveComicFromCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
@@ -47,6 +48,7 @@ class LibraryViewModel @Inject constructor(
     private val removeComicFromCategoryUC: RemoveComicFromCategoryUC,
     private val unfollowComicFromLibraryUC: UnfollowComicFromLibraryUC,
     private val getCategoriesOfComicUC: GetCategoriesOfComicUC,
+    private val getDefaultComicsInLibraryUC: GetDefaultComicsInLibraryUC
 ) : ViewModel(), StatefulViewModel<LibraryState> {
 
     private var navController: NavController? = null
@@ -99,6 +101,7 @@ class LibraryViewModel @Inject constructor(
     fun checkUserIsLogin(): Boolean {
         return appPreference.isUserLoggedIn
     }
+
     //reset state
     fun resetState() { // khi chuyển qua màn hình khác thì reset state
         _state.value = LibraryState()
@@ -152,9 +155,7 @@ class LibraryViewModel @Inject constructor(
             )
         }
     }
-//    init {
-//        getAllCategory()
-//    }
+
 
     /**
      * Todo: Implement get all Category
@@ -165,7 +166,7 @@ class LibraryViewModel @Inject constructor(
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
 
-            val result = getLibraryCategoryUC.getLibraryCategory(token)
+            val result = getLibraryCategoryUC.getLibraryCategory(token, 1, 500)
 
             result.fold(
                 onSuccess = { baseResponse ->
@@ -178,7 +179,6 @@ class LibraryViewModel @Inject constructor(
                         category.firstCoverImage = coverImage
                         category.totalComics = totalsComics
                     }
-//                    Log.d("LibraryViewModel", "Get All Categories: $results")
 
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(totalCategoryResults = baseResponse.totals)
@@ -205,17 +205,17 @@ class LibraryViewModel @Inject constructor(
                 categoryId = categoryId,
                 orderBy = "CreationTime",
                 page = 1,
-                size = 1
+                size = 500
             )
 
             result.fold(
                 onSuccess = { baseResponse ->
                     totalComics = baseResponse.totals
-                    totalComics?:0
+                    totalComics ?: 0
                 },
                 onFailure = { exception ->
                     Log.d("LibraryViewModel", "Get Comics In Category: $exception")
-                    totalComics?:0
+                    totalComics ?: 0
                 }
             )
         }
@@ -306,7 +306,7 @@ class LibraryViewModel @Inject constructor(
 
     /**
      * Todo: Implement delete category of StatefulViewModel
-     *   * fixme**********fixme*****
+     *
      */
     override fun delete(key: Long, key2: Long?, isDeleteAll: Boolean?) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -322,7 +322,6 @@ class LibraryViewModel @Inject constructor(
             }
         }
     }
-
 
 
     /**
@@ -390,7 +389,7 @@ class LibraryViewModel @Inject constructor(
                 comicId,
                 categoriesId
             )
-            if (result.code() == 201) {
+            if (result.code() == 200) {
                 Log.d("LibraryViewModel", "addComicToLibrarySecondTime: $result")
                 _state.value = _state.value.copy(isAddComicToCategorySecondTimeSuccess = true)
             } else {
@@ -446,4 +445,34 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
+    /**
+     * TODO: Implement the function to get default comic that not in which category
+     */
+    fun getDefaultComicsInLibrary() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isDefaultComicLoading = true)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result =
+                getDefaultComicsInLibraryUC.getDefaultComicsInLibrary(token, "CreationTime", 1, 500)
+
+            result.fold(
+                onSuccess = { baseResponse ->
+                    val results = baseResponse.results
+                        // Xử lý kết quả thành công
+                        _state.value =
+                            _state.value.copy(totalDefaultComicResults = baseResponse.totals)
+                        _state.value = _state.value.copy(defaultComicResult = results)
+                        _state.value = _state.value.copy(isDefaultComicLoading = false)
+
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    _state.value = _state.value.copy(isDefaultComicLoading = false)
+                    _state.value = _state.value.copy(totalDefaultComicResults = 0)
+                    Log.d("LibraryViewModel", "getDefaultComicsInLibrary: $exception")
+                }
+            )
+        }
+    }
 }

@@ -8,8 +8,11 @@ import javax.inject.Inject
 class GetLibraryCategoryUC @Inject constructor(
     private val libraryCategoryRepository: LibraryCategoryRepository
 ) {
-    suspend fun getLibraryCategory(token: String): Result<BaseResponse<LibraryCategoryResponse>> {
-        return libraryCategoryRepository.getCategories(token)
+    suspend fun getLibraryCategory(
+        token: String,
+        page: Int? = null,
+        size: Int? = null
+        ): Result<BaseResponse<LibraryCategoryResponse>> {
+        return libraryCategoryRepository.getCategories(token, page, size)
     }
-
 }

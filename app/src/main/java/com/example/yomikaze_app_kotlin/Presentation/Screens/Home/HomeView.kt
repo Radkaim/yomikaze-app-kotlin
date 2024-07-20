@@ -403,6 +403,7 @@ fun showHistoryCardComic(
 
         comics.forEach { historyRecord ->
             BasicComicCard(
+                comicId = historyRecord.comic.comicId,
                 image = APIConfig.imageAPIURL.toString() + historyRecord.comic.cover,
                 comicName = historyRecord.comic.name,
                 comicChapter = historyRecord.chapter.number.toString(),

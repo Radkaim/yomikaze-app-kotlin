@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -102,6 +103,21 @@ fun LibraryContent(
     LaunchedEffect(Unit) { // should be called only once
         libraryViewModel.getAllCategory()
     }
+    LaunchedEffect(Unit){
+        libraryViewModel.getDefaultComicsInLibrary()
+    }
+
+    LaunchedEffect(key1 = state.isUnFollowComicSuccess) {
+        libraryViewModel.getDefaultComicsInLibrary()
+    }
+    LaunchedEffect(key1 = state.isAddComicToCategorySecondTimeSuccess) {
+        Log.d("LibraryView", "Add comic to category second time success")
+        libraryViewModel.getDefaultComicsInLibrary()
+    }
+    LaunchedEffect(key1 = state.isDeleteCategorySuccess) {
+        libraryViewModel.getDefaultComicsInLibrary()
+    }
+
     LaunchedEffect(
         key1 = state.isCreateCategorySuccess,
         key2 = state.isUpdateCategoryNameSuccess,
@@ -160,6 +176,39 @@ fun LibraryContent(
                         }
                     }
                     SearchResultItem(
+                        libraryViewModel = libraryViewModel,
+                        comic = comic
+                    )
+                }
+            }
+        }
+
+        //TODO Default comic not in category
+        item {
+            if (state.totalDefaultComicResults != 0 || state.isDefaultComicResult) {
+                // if total > 1 comics then comic
+                val text = if (state.totalDefaultComicResults!! > 1) "Comics" else "Comic"
+                Text(
+                    text = "Default $text: " + state.totalDefaultComicResults.toString(),
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+                )
+            }
+            LazyRow(
+                modifier = Modifier.padding(start = 10.dp, top = 20.dp, end = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+
+                items(state.defaultComicResult) { comic ->
+                    if (state.isDefaultComicLoading) {
+                        repeat(4) {
+                            BasicComicCardShimmerLoading()
+                            Spacer(modifier = Modifier.width(20.dp))
+                        }
+                    }
+                    DefaultComicItem(
                         libraryViewModel = libraryViewModel,
                         comic = comic
                     )
@@ -260,10 +309,28 @@ private fun SearchResultItem(
     comic: LibraryEntry
 ) {
     BasicComicCard(
+        comicId = comic.libraryEntry.comicId,
         comicName = comic.libraryEntry.name,
         image = APIConfig.imageAPIURL.toString() + comic.libraryEntry.cover,
         isLibrarySearchComicCard = true,
         authorName = comic.libraryEntry.authors,
+        onClick = { libraryViewModel.onNavigateComicDetail(comic.libraryEntry.comicId) }
+    )
+}
+
+@Composable
+private fun DefaultComicItem(
+    libraryViewModel: LibraryViewModel,
+    comic: LibraryEntry
+) {
+    BasicComicCard(
+        comicId = comic.libraryEntry.comicId,
+        comicName = comic.libraryEntry.name,
+        image = APIConfig.imageAPIURL.toString() + comic.libraryEntry.cover,
+        isLibrarySearchComicCard = true,
+        authorName = comic.libraryEntry.authors,
+        isDelete = true,
+        onDeletedClicked = { libraryViewModel.unfollowComicFromLibrary(comic.libraryEntry.comicId) },
         onClick = { libraryViewModel.onNavigateComicDetail(comic.libraryEntry.comicId) }
     )
 }

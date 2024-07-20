@@ -19,7 +19,11 @@ interface LibraryCategoryRepository {
     /**
      * TODO: Implement the function to get all categories in library
      */
-    suspend fun getCategories(token: String): Result<BaseResponse<LibraryCategoryResponse>>
+    suspend fun getCategories(
+        token: String,
+        page: Int? = null,
+        size: Int? = null
+    ): Result<BaseResponse<LibraryCategoryResponse>>
 
 
     /**

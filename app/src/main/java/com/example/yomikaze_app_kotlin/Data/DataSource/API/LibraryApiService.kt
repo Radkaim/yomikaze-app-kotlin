@@ -98,4 +98,17 @@ interface LibraryApiService {
         @Path("comicId") comicId: Long,
     ): LibraryEntry
 
+
+    /**
+     * TODO: Implement the function to get default comic that not in which category
+     */
+    @GET("library/category/default")
+    suspend fun getDefaultComicInLibrary(
+        @Header("Authorization") token: String,
+        @Query("OrderBy") orderBy: String? = null,
+        @Query("Page") page: Int? = null,
+        @Query("Size") size: Int? = null,
+    ): BaseResponse<LibraryEntry>
+
+
 }

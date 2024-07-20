@@ -26,9 +26,13 @@ class LibraryCategoryRepositoryImpl @Inject constructor(
     /**
      * Todo: Implement the function to get all categories in library
      */
-    override suspend fun getCategories(token: String): Result<BaseResponse<LibraryCategoryResponse>> {
+    override suspend fun getCategories(
+        token: String,
+        page: Int?,
+        size: Int?
+    ): Result<BaseResponse<LibraryCategoryResponse>> {
         return try {
-            val response = api.getCategories("Bearer $token")
+            val response = api.getCategories("Bearer $token", page, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

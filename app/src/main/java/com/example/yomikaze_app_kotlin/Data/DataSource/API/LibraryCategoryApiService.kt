@@ -31,6 +31,8 @@ interface LibraryCategoryApiService {
     @GET("library/categories")
     suspend fun getCategories(
         @Header("Authorization") token: String,
+        @Query("Page") page: Int? = null,
+        @Query("Size") size: Int? = null,
     ): BaseResponse<LibraryCategoryResponse>
 
     /**

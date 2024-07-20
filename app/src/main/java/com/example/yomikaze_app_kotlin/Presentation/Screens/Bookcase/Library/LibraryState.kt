@@ -37,6 +37,13 @@ data class LibraryState(
     val isUnFollowComicSuccess: Boolean = false,
 
 
+    //default comic not in category
+    val defaultComicResult: List<LibraryEntry> = emptyList(),
+    val isDefaultComicResult: Boolean = false,
+    val totalDefaultComicResults: Int? = 0,
+    val isDefaultComicLoading: Boolean = false,
+
+
     //for follow
 //    val listCateComicIsIn: List<LibraryCategoryResponse> = emptyList(),
 )

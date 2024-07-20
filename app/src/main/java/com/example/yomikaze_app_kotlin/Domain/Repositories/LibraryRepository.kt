@@ -80,4 +80,15 @@ interface LibraryRepository {
         token: String,
         comicId: Long,
     ): Result<LibraryEntry>
+
+
+    /**
+     * TODO: Implement the function to get default comic that not in which category
+     */
+    suspend fun getDefaultComicsInLibrary(
+        token: String,
+        orderBy: String? = null,
+        page: Int? = null,
+        size: Int? = null
+    ): Result<BaseResponse<LibraryEntry>>
 }

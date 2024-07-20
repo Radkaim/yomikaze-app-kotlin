@@ -39,6 +39,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.CreateLi
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.DeleteCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetCategoriesOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetComicsInCateUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetDefaultComicsInLibraryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.RemoveComicFromCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.SearchInLibraryUC
@@ -475,6 +476,16 @@ object UseCaseModule {
     @Singleton
     fun provideGetCategoriesOfComicUC(libraryRepository: LibraryRepository): GetCategoriesOfComicUC {
         return GetCategoriesOfComicUC(libraryRepository)
+    }
+
+
+    /**
+     * TODO: Implement the function to get default comic that not in which category
+     */
+    @Provides
+    @Singleton
+    fun provideGetDefaultComicsInLibraryUC(libraryRepository: LibraryRepository): GetDefaultComicsInLibraryUC {
+        return GetDefaultComicsInLibraryUC(libraryRepository)
     }
 
 
