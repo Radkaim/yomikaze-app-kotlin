@@ -64,7 +64,6 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
 
-
     override suspend fun loginWithGoogle(token: TokenResponse): Result<TokenResponse> {
         val result = api.loginWithGoogle(token)
         if (result.isSuccessful) {
@@ -130,22 +129,25 @@ class AuthRepositoryImpl @Inject constructor(
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
             appPreference.isUserLoggedIn = true
+
+            val profileResponse = profileRepository.getProfile(result.body()?.token!!)
+            if (profileResponse.isSuccess) {
+                appPreference.userId = profileResponse.getOrNull()?.id!!
+                appPreference.userRoles = profileResponse.getOrNull()?.roles
+                appPreference.userAvatar = profileResponse.getOrNull()?.avatar
+                appPreference.userName = profileResponse.getOrNull()?.name
+                appPreference.userBalance = profileResponse.getOrNull()?.balance ?: 0
+                Log.d("AuthRepositoryImpl", "loginWithGoogle: ${appPreference.userRoles}")
+            } else {
+                Log.d(
+                    "AuthRepositoryImpl",
+                    "loginWithGoogle: ${profileResponse.exceptionOrNull()}"
+                )
+            }
+
             return Result.success(result.body()!!)
         }
-        val profileResponse = profileRepository.getProfile(result.body()?.token!!)
-        if (profileResponse.isSuccess) {
-            appPreference.userId = profileResponse.getOrNull()?.id!!
-            appPreference.userRoles = profileResponse.getOrNull()?.roles
-            appPreference.userAvatar = profileResponse.getOrNull()?.avatar
-            appPreference.userName = profileResponse.getOrNull()?.name
-            appPreference.userBalance = profileResponse.getOrNull()?.balance ?: 0
-            Log.d("AuthRepositoryImpl", "loginWithGoogle: ${appPreference.userRoles}")
-        } else {
-            Log.d(
-                "AuthRepositoryImpl",
-                "loginWithGoogle: ${profileResponse.exceptionOrNull()}"
-            )
-        }
+
         Log.d("AuthRepositoryImpl", "register: ${result.errorBody()?.string()}")
         return failure(Exception("Register failed"))
     }
