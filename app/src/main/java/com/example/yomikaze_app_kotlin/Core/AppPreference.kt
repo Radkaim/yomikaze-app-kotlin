@@ -80,6 +80,7 @@ class AppPreference(context : Context) {
         encryptedPreferences.edit().remove("user_balance").apply()
     }
 
+
     // save isUserLoggedIn
     var isUserLoggedIn: Boolean
         get() = encryptedPreferences.getBoolean("is_user_logged_in", false)
