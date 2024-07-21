@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetListChaptersByComicIdUC @Inject constructor(
     private val chapterRepository: ChapterRepository
 ) {
-    suspend fun getListChapters(comicId: Long): Result<List<Chapter>> {
-        return chapterRepository.getListChaptersByComicId(comicId)
+    suspend fun getListChapters(token: String, comicId: Long): Result<List<Chapter>> {
+        return chapterRepository.getListChaptersByComicId(token, comicId)
     }
 }

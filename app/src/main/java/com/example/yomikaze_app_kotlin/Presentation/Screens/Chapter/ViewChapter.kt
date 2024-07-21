@@ -134,8 +134,8 @@ fun ViewChapterContent(
                 viewChapterModel.canGoToPreviousChapter(state.currentChapterNumber)
             canGoToNextChapter = viewChapterModel.canGoToNextChapter(state.currentChapterNumber)
 
-            Log.e("ViewChapterContent", "canGoToPreviousChapter1: $canGoToPreviousChapter")
-            Log.e("ViewChapterContent", "canGoToNextChapter1: $canGoToNextChapter")
+//            Log.e("ViewChapterContent", "canGoToPreviousChapter1: $canGoToPreviousChapter")
+//            Log.e("ViewChapterContent", "canGoToNextChapter1: $canGoToNextChapter")
         }
     } else {
         //offline mode
@@ -144,8 +144,8 @@ fun ViewChapterContent(
                 viewChapterModel.canGoToPreviousChapter(state.currentChapterNumber)
             canGoToNextChapter = viewChapterModel.canGoToNextChapter(state.currentChapterNumber)
 
-            Log.e("ViewChapterContent", "canGoToPreviousChapter2: $canGoToPreviousChapter")
-            Log.e("ViewChapterContent", "canGoToNextChapter2: $canGoToNextChapter")
+//            Log.e("ViewChapterContent", "canGoToPreviousChapter2: $canGoToPreviousChapter")
+//            Log.e("ViewChapterContent", "canGoToNextChapter2: $canGoToNextChapter")
         }
     }
 
@@ -158,6 +158,15 @@ fun ViewChapterContent(
         }
     }
 
+
+    LaunchedEffect(key1 = state.isUnlockChapterSuccess) {
+        if (state.isUnlockChapterSuccess) {
+//            Log.e("ViewChapterContent", "Unlock Chapter Success")
+//            Log.e("ViewChapterContent", "Unlock Chapter Number: ${state.chapterUnlockNumber}")
+            viewChapterModel.getPagesByChapterNumberOfComic(comicId, state.chapterUnlockNumber)
+            viewChapterModel.resetChapterUnlockNumberAndIsChapterNeedToUnlock()
+        }
+    }
 
 //    var isScrollMode by remember {
 //        mutableStateOf(true)
@@ -200,6 +209,7 @@ fun ViewChapterContent(
         }
     }
 
+
     var (selectedTabIndex, setSelectedTabIndex) = remember {
         mutableStateOf(
             when {
@@ -216,6 +226,7 @@ fun ViewChapterContent(
 
                 navigationIcon = {
                     IconButton(onClick = {
+                        viewChapterModel.resetState()
                         navController.navigate("comic_detail_route/${comicId}") {
                             popUpTo("view_chapter_route/${comicId}/${chapterNumber}") {
                                 inclusive = true
@@ -235,12 +246,6 @@ fun ViewChapterContent(
             Column(
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally,
-//                modifier = Modifier
-//                    .clip(RoundedCornerShape(10.dp))
-//                    .background(
-//                        color = MaterialTheme.colorScheme.surface.copy(0.2f),
-//                        shape = RoundedCornerShape(10.dp)
-//                    ),
             ) {
                 // Add the dynamic title above the bottom bar
                 Box(
@@ -286,12 +291,19 @@ fun ViewChapterContent(
                     title = "Do you want to unlock this chapter?",
                     chapterNumber = state.chapterUnlockNumber,
                     totalCoin = 100,
-                    coinOfUserAvailable = 200,
+                    coinOfUserAvailable = appPreference.userBalance ?: 0,
                     onConfirmClick = {
                         //UnlockUC
                         //if(state.success) {navigateToViewChapter}
+                        viewChapterModel.unlockAChapter(comicId, state.chapterUnlockNumber, state.priceToUnlockChapter.toLong())
                     },
-                    onDismiss = { showDialog = false }
+                    onDismiss = {
+                        showDialog = false
+                    },
+                    onBuyCoinsClick = {
+                        //navigateToBuyCoins
+                        viewChapterModel.navigateToCoinShop()
+                    }
                 )
             }
 

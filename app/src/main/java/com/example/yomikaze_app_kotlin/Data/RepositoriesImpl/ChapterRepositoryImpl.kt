@@ -1,9 +1,11 @@
 package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 
+import android.util.Log
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
+import retrofit2.Response
 import javax.inject.Inject
 
 class ChapterRepositoryImpl @Inject constructor(
@@ -14,9 +16,10 @@ class ChapterRepositoryImpl @Inject constructor(
     /**
      * TODO: get list of chapters by comic id
      */
-    override suspend fun getListChaptersByComicId(comicId: Long): Result<List<Chapter>> {
+    override suspend fun getListChaptersByComicId(
+        token: String,comicId: Long): Result<List<Chapter>> {
         return try {
-            val response = api.getListChaptersByComicId(comicId)
+            val response = api.getListChaptersByComicId("Bearer $token", comicId)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -75,6 +78,74 @@ class ChapterRepositoryImpl @Inject constructor(
      */
     override suspend fun deleteChapterByChapterIdDB(chapterId: Long) {
         chapterDao.deleteChapterByChapterId(chapterId)
+    }
+
+    /**
+     * TODO : unlockAChapter
+     */
+    override suspend fun unlockAChapter(
+        token: String,
+        comicId: Long,
+        chapterNumber: Int
+    ) :Response<Unit> {
+        val response =  api.unlockAChapter("Bearer $token", comicId, chapterNumber)
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            val httpCode = response.code()
+            when (httpCode) {
+                400 -> {
+                    // Xử lý lỗi 400 (Bad Request)
+                    Log.e("ChapterRepositoryImpl", "Bad Request")
+                }
+
+                401 -> {
+                    // Xử lý lỗi 401 (Unauthorized)
+                    Log.e("ChapterRepositoryImpl", "Unauthorized")
+                }
+                // Xử lý các mã lỗi khác
+                else -> {
+                    // Xử lý mặc định cho các mã lỗi khác
+                    Log.e("ChapterRepositoryImpl", "Failed to unlock chapter $httpCode")
+                }
+            }
+            Result.failure(Exception("Failed to unlock chapter"))
+        }
+        return response
+    }
+
+    /**
+     * TODO : unlockManyChapters
+     */
+    override suspend fun unlockManyChapters(
+        token: String,
+        comicId: Long,
+        chapterNumbers: List<Int>
+    ) :Response<Unit> {
+        val response =  api.unlockManyChapters("Bearer $token", comicId, chapterNumbers)
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            val httpCode = response.code()
+            when (httpCode) {
+                400 -> {
+                    // Xử lý lỗi 400 (Bad Request)
+                    Log.e("ChapterRepositoryImpl", "Bad Request")
+                }
+
+                401 -> {
+                    // Xử lý lỗi 401 (Unauthorized)
+                    Log.e("ChapterRepositoryImpl", "Unauthorized")
+                }
+                // Xử lý các mã lỗi khác
+                else -> {
+                    // Xử lý mặc định cho các mã lỗi khác
+                    Log.e("ChapterRepositoryImpl", "Failed to unlock chapters $httpCode")
+                }
+            }
+            Result.failure(Exception("Failed to unlock chapters"))
+        }
+        return response
     }
 
 }

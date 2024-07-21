@@ -77,6 +77,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
@@ -92,6 +93,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.Menu
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapterModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
 import com.example.yomikaze_app_kotlin.R
 
@@ -174,6 +176,7 @@ fun ComicDetailContent(
     // for tab layout description and list chapter
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Description", "Chapter")
+    val context = LocalContext.current
 
     var hasShared by remember { mutableStateOf(false) }
 
@@ -245,7 +248,7 @@ fun ComicDetailContent(
                             navController.popBackStack()
                         } else {
                             Log.d("ComicDetailsView", "previousRoute2: Hung2")
-                            navController.navigate("main_screen_route")
+                            navController.navigate("home_route")
                         }
 //                        if(!isNetworkAvailable){
 //                            navController.navigate("main_screen_route")
@@ -276,7 +279,19 @@ fun ComicDetailContent(
                                     onClick = {
                                         showPopupMenu = false
                                         when (menuOptions.route) {
-                                            "add_to_library_dialog_route" -> showDialog = 1
+                                            "add_to_library_dialog_route" -> {
+                                                if (!comicDetailViewModel.checkUserIsLogin()) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Please sign in to use this feature",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+                                                } else {
+                                                    showDialog = 1
+                                                }
+                                            }
+
                                             "choose_chapter_download_route" -> {
                                                 comicDetailViewModel.navigateToChooseChapterDownload(
                                                     comicId = comicId,
@@ -284,8 +299,31 @@ fun ComicDetailContent(
                                                 )
                                             }
 
-                                            "rating_dialog_route" -> showDialog = 3
-                                            "report_dialog_route" -> showDialog = 4
+                                            "rating_dialog_route" -> {
+                                                if (!comicDetailViewModel.checkUserIsLogin()) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Please sign in to use this feature",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+                                                } else {
+                                                    showDialog = 3
+                                                }
+                                            }
+                                            "report_dialog_route" ->
+                                            {
+                                                if (!comicDetailViewModel.checkUserIsLogin()) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Please sign in to use this feature",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+                                                } else {
+                                                    showDialog = 4
+                                                }
+                                            }
                                             "share_dialog_route" -> showDialog = 5
                                         }
                                     }) {
@@ -596,8 +634,8 @@ fun DescriptionInComicDetailView(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val description = state.comicResponse?.description
-    val comicCommentState by comicCommentViewModel.state.collectAsState()
 
+    val comicCommentState by comicCommentViewModel.state.collectAsState()
     LaunchedEffect(
         key1 = comicCommentState.isDeleteCommentSuccess,
         key2 = comicCommentState.isUpdateCommentSuccess
@@ -773,12 +811,12 @@ fun DescriptionInComicDetailView(
                         comicId = comicId,
                         commentId = comment.id,
                         content = comment.content,
-                        authorName = comment.author.name,
-                        authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
+                        authorName = comment.author?.name ?: "",
+                        authorImage = (APIConfig.imageAPIURL.toString() + comment.author?.avatar)
                             ?: "",
-                        roleName = comment.author.roles?.get(0) ?: "",
+                        roleName = comment.author?.roles?.get(0) ?: "",
                         creationTime = comment.creationTime,
-                        isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author.id),
+                        isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author!!.id),
                         isAdmin = comicCommentViewModel.checkIsAdmin(),
                         onClicked = {},
                         comicCommentViewModel = comicCommentViewModel
@@ -828,12 +866,20 @@ fun DescriptionInComicDetailView(
 @Composable
 fun ListChapterInComicDetailView(
     comicDetailViewModel: ComicDetailViewModel,
-    comicId: Long
+    comicId: Long,
+    viewChapterModel: ViewChapterModel = hiltViewModel()
 ) {
-
+    val context = LocalContext.current
+    val appPreference = AppPreference(context)
+//    val viewChapterModel = hiltViewModel<ViewChapterModel>()
+    val viewChapterState = viewChapterModel.state.collectAsState()
     LaunchedEffect(Unit) {
         comicDetailViewModel.getListChapterByComicId(comicId = comicId)
     }
+
+
+
+
     var isSelected by remember { mutableStateOf(true) }
     var isReversed by remember { mutableStateOf(false) }
 
@@ -881,22 +927,39 @@ fun ListChapterInComicDetailView(
         listChapter?.let { // means if listChapter is not null
             val sortedList = if (isReversed) it.reversed() else it
             items(sortedList) { chapter ->
+                LaunchedEffect(key1 = viewChapterState.value.isUnlockChapterSuccess) {
+                    if (viewChapterState.value.isUnlockChapterSuccess) {
+                        comicDetailViewModel.navigateToViewChapter(
+                            comicId = comicId,
+                            chapterNumber = selectedChapter?.number!!
+                        )
+                    }
+                }
                 ChapterCard(
                     chapterNumber = chapter.number,
                     title = chapter.name,
                     views = chapter.views,
                     comments = chapter.comments,
                     publishedDate = chapter.creationTime,
-                    isLocked = chapter.hasLock,
+                    isLocked = if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock,
                     onClick = {
-                        if (chapter.hasLock) {
-                            selectedChapter = chapter
-                            showDialog = true
+                        if (!comicDetailViewModel.checkUserIsLogin()) {
+                            Toast.makeText(
+                                context,
+                                "Please sign in to unlock this chapter",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
                         } else {
-                            comicDetailViewModel.navigateToViewChapter(
-                                comicId,
-                                chapter.number
-                            )
+                            if (if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock) {
+                                selectedChapter = chapter
+                                showDialog = true
+                            } else {
+                                comicDetailViewModel.navigateToViewChapter(
+                                    comicId,
+                                    chapter.number
+                                )
+                            }
                         }
                     },
                     onReportClick = {}
@@ -904,19 +967,27 @@ fun ListChapterInComicDetailView(
 
             }
         }
-
     }
     if (showDialog) {
+
         UnlockChapterDialogComponent(
             title = "Do you want to unlock this chapter?",
             chapterNumber = selectedChapter?.number!!,
-            totalCoin = 100,
-            coinOfUserAvailable = 200,
+            totalCoin = selectedChapter?.price?.toLong() ?: 0,
+            coinOfUserAvailable = appPreference.userBalance,
             onConfirmClick = {
                 //UnlockUC
                 //if(state.success) {navigateToViewChapter}
+                viewChapterModel.unlockAChapter(
+                    comicId = comicId,
+                    chapterNumber = selectedChapter?.number!!,
+                    price = selectedChapter?.price?.toLong() ?: 0
+                )
             },
-            onDismiss = { showDialog = false }
+            onDismiss = { showDialog = false },
+            onBuyCoinsClick = {
+             comicDetailViewModel.navigateToCoinShop()
+            }
         )
     }
 }

@@ -52,6 +52,8 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFrom
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockAChapterUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockManyChaptersUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
@@ -408,6 +410,24 @@ object UseCaseModule {
     @Singleton
     fun provideGetChapterDetailUC(chapterRepository: ChapterRepository): GetChapterDetailUC {
         return GetChapterDetailUC(chapterRepository)
+    }
+
+    /**
+     * TODO: provide UnlockAChapterUC
+     */
+    @Provides
+    @Singleton
+    fun provideUnlockAChapterUC(chapterRepository: ChapterRepository): UnlockAChapterUC {
+        return UnlockAChapterUC(chapterRepository)
+    }
+
+    /**
+     * TODO: provide unlock many chapters
+     */
+    @Provides
+    @Singleton
+    fun provideUnlockManyChaptersUC(chapterRepository: ChapterRepository): UnlockManyChaptersUC {
+        return UnlockManyChaptersUC(chapterRepository)
     }
 
 

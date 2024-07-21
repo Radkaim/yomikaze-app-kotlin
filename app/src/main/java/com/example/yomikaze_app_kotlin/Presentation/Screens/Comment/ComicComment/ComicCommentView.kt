@@ -122,8 +122,8 @@ fun ComicCommentContent(
                 title = comicName,
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()
                         comicCommentViewModel.resetState1()
+                        navController.popBackStack()
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -164,21 +164,11 @@ fun ComicCommentContent(
                         isSelected = true
                         isReversed = false
 
-                        isRefreshing = false
-
-
-                        page.value = 1
-                        comicCommentViewModel.resetState()
                     },
                     onnNewSortClick = {
                         isSelected = false
                         isReversed = true
 
-
-                        isRefreshing = true
-
-                        page.value = 1
-                        comicCommentViewModel.resetState()
                     }
                 )
             }
@@ -197,9 +187,7 @@ fun ComicCommentContent(
                     }
 
             ) {
-//                    stickyHeader {
-//
-//                    }
+
                 if (state.isListComicCommentLoading) {
                     item {
                         repeat(6) {
@@ -209,7 +197,12 @@ fun ComicCommentContent(
                     }
                 }
                 if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
-                    items(state.listComicComment) { comment ->
+                    val sortedList = if (isReversed) {
+                        state.listComicComment.sortedByDescending { it.creationTime }
+                    } else {
+                        state.listComicComment.sortedBy { it.creationTime }
+                    }
+                    items(sortedList) { comment ->
                         CommentCard(
                             comicId = comicId,
                             commentId = comment.id,
@@ -221,11 +214,13 @@ fun ComicCommentContent(
                             creationTime = comment.creationTime,
                             isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author.id),
                             isAdmin = comicCommentViewModel.checkIsAdmin(),
-                            onClicked = {comicCommentViewModel.onNavigateToReplyCommentDetail(
-                                commentId = comment.id,
-                                comicId = comicId,
-                                authorName = comment.author.name
-                            )},
+                            onClicked = {
+                                comicCommentViewModel.onNavigateToReplyCommentDetail(
+                                    commentId = comment.id,
+                                    comicId = comicId,
+                                    authorName = comment.author.name
+                                )
+                            },
                             comicCommentViewModel = comicCommentViewModel
                         )
                     }
@@ -274,26 +269,12 @@ fun ComicCommentContent(
         }
 
         LaunchedEffect(
-            key1 = state.isPostComicCommentSuccess,
-//            key2 = state.isDeleteCommentSuccess,
-//            key2 = state.isUpdateCommentSuccess
-        ) {
-            // refresh new comment
-            isSelected = false
-            isReversed = true
-
-            isRefreshing = true
-            page.value = 1
-
-            comicCommentViewModel.resetState()
-
-        }
-
-        LaunchedEffect(
             key1 = page.value,
             key2 = isReversed,
-           key3 = state,
+            key3 = state
         ) {
+
+
             Log.d("ComicCommentContent", "page: ${page.value}")
             if (page.value > state.currentPage.value && !loading.value) {
                 loading.value = true
@@ -314,7 +295,7 @@ fun ComicCommentContent(
                             "ComicCommentContent",
                             "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicComment.size}"
                         )
-                        if (state.currentPage.value < state.totalPages.value && state.listComicComment.size > 8) {
+                        if (state.currentPage.value < state.totalPages.value) {
                             page.value++
                         }
                     }

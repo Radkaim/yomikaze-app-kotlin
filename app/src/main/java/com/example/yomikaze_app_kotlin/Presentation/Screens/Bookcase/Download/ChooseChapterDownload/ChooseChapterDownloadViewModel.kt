@@ -125,7 +125,9 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     fun getListChapterByComicId(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = state.value.copy(isListNumberLoading = true)
-            val result = getListChaptersByComicIdUC.getListChapters(comicId)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = getListChaptersByComicIdUC.getListChapters(token, comicId)
 
             result.fold(
                 onSuccess = { listChapter ->

@@ -135,6 +135,7 @@ class CoinShopViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         profileResponse = profileResponse
                     )
+                    appPreference.userBalance = profileResponse.balance
                     Log.d("CoinShopViewModel", "getProfile: $profileResponse")
                     _state.value = _state.value.copy(isGetProfileLoading = false)
                 },

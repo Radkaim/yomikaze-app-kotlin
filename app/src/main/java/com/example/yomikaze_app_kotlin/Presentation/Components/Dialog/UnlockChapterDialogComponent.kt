@@ -41,10 +41,14 @@ fun UnlockChapterDialogComponent(
     coinOfUserAvailable: Long, // coin of user available
     chapterNumber: Number,
     onDismiss: () -> Unit,
-    onConfirmClick: () -> Unit
+    onConfirmClick: () -> Unit,
+    onBuyCoinsClick: () -> Unit
 ) {
     //get context
     val context = LocalContext.current
+
+
+
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -68,108 +72,112 @@ fun UnlockChapterDialogComponent(
                     .width(380.dp)
                     .align(Alignment.Center)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(start = 20.dp, top = 5.dp)
-                        .align(Alignment.Center)
-                ) {
-                    Text(
-                        text = title,
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(start = 30.dp)
-                    )
-                    Box {
-                        Text(
-                            text = "Chapter $chapterNumber",
-                            fontSize = 12.sp,
-                            maxLines = 2,
-                            lineHeight = 16.sp,
-                            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                            fontStyle = FontStyle.Italic,
-                            overflow = TextOverflow.Ellipsis,
-                            softWrap = true,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .padding(start = 40.dp, top = 3.dp)
-                                .align(Alignment.Center)
-                                .width(250.dp)
-                        )
-
-                    }
-
-                    Text(
-                        text = buildAnnotatedString {
-                            append("Using ")
-                            withStyle(
-                                style = SpanStyle(
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 15.sp,
-                                    fontStyle = FontStyle.Italic
-                                )
-                            ) {
-                                append("$totalCoin coins")
-                            }
-                            append(" to unlock")
-                        },
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(start = 80.dp, top = 5.dp)
-                    )
-
-                    Text(
-                        text = buildAnnotatedString {
-                            append("Available: ")
-                            withStyle(
-                                style = SpanStyle(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 15.sp,
-                                    fontStyle = FontStyle.Italic
-                                )
-                            ) {
-                                append("$coinOfUserAvailable")
-                                append(if (coinOfUserAvailable > 1) " coins" else " coin")
-                            }
-                            append(" in your account")
-                        },
-
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.run { padding(start = 60.dp, top = 10.dp) }
-                    )
 
 
-                    Row(
+                if (checkUserBalanceEnough(totalCoin, coinOfUserAvailable)) {
+                    //TODO for unlock chapter
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 20.dp, end = 20.dp),
-                        horizontalArrangement = Arrangement.Center,
+                            .padding(start = 20.dp, top = 5.dp)
+                            .align(Alignment.Center)
                     ) {
-                        Button(
-                            onClick = { onDismiss() },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onPrimary,
-                                contentColor = MaterialTheme.colorScheme.onSurface,
-                            ),
-                            shape = MaterialTheme.shapes.medium
-                        ) {
-                            Text(text = "Cancel")
+                        Text(
+                            text = title,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(start = 30.dp)
+                        )
+                        Box {
+                            Text(
+                                text = "Chapter $chapterNumber",
+                                fontSize = 12.sp,
+                                maxLines = 2,
+                                lineHeight = 16.sp,
+                                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                                fontStyle = FontStyle.Italic,
+                                overflow = TextOverflow.Ellipsis,
+                                softWrap = true,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .padding(start = 40.dp, top = 3.dp)
+                                    .align(Alignment.Center)
+                                    .width(250.dp)
+                            )
+
                         }
 
-                        Spacer(modifier = Modifier.width(20.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                append("Using ")
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                ) {
+                                    append("$totalCoin coins")
+                                }
+                                append(" to unlock")
+                            },
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(start = 80.dp, top = 5.dp)
+                        )
 
-                        Button(
-                            onClick = {
-                                onConfirmClick()
-                                onDismiss()
+                        Text(
+                            text = buildAnnotatedString {
+                                append("Available: ")
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                ) {
+                                    append("$coinOfUserAvailable")
+                                    append(if (coinOfUserAvailable > 1) " coins" else " coin")
+                                }
+                                append(" in your account")
+                            },
+
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.run { padding(start = 60.dp, top = 10.dp) }
+                        )
+
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp, end = 20.dp),
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            Button(
+                                onClick = { onDismiss() },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                                    contentColor = MaterialTheme.colorScheme.onSurface,
+                                ),
+                                shape = MaterialTheme.shapes.medium
+                            ) {
+                                Text(text = "Cancel")
+                            }
+
+                            Spacer(modifier = Modifier.width(20.dp))
+
+                            Button(
+                                onClick = {
+                                    onConfirmClick()
+                                    onDismiss()
 //                                viewModel.delete(key, isDeleteAll)
 //                                if (viewModel.isDeleteSuccess!!) {
 //                                    Toast.makeText(
@@ -179,18 +187,117 @@ fun UnlockChapterDialogComponent(
 //                                    ).show()
 //                                    onDismiss()
 //                                }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.onSecondary,
+                                    contentColor = MaterialTheme.colorScheme.onSurface,
+                                ),
+                                shape = MaterialTheme.shapes.medium,
+                            ) {
+                                Text(text = "Unlock")
+                            }
+                        }
+                    }
+
+
+                } else {
+
+                    //TODO for not enough coin
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 20.dp, top = 5.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        Text(
+                            text = buildAnnotatedString {
+                                append("Not enough")
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                ) {
+                                    append(" Coins")
+                                }
+                                append(" for unlock chapters? ")
                             },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onSecondary,
-                                contentColor = MaterialTheme.colorScheme.onSurface,
-                            ),
-                            shape = MaterialTheme.shapes.medium,
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(start = 50.dp, top = 10.dp)
+                        )
+
+
+                        Text(
+                            text = buildAnnotatedString {
+                                append("Available: ")
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                ) {
+                                    append("$coinOfUserAvailable")
+                                    append(if (coinOfUserAvailable > 1) " coins" else " coin")
+                                }
+                                append(" in your account")
+                            },
+
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.run { padding(start = 50.dp, top = 25.dp) }
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 30.dp, end = 20.dp),
+                            horizontalArrangement = Arrangement.Center,
                         ) {
-                            Text(text = "Unlock")
+                            Button(
+                                onClick = {
+                                    onDismiss()
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                                    contentColor = MaterialTheme.colorScheme.onSurface,
+                                ),
+                                shape = MaterialTheme.shapes.medium,
+                            ) {
+                                Text(text = "Cancel")
+                            }
+
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Button(
+                                onClick = {
+                                    onBuyCoinsClick()
+                                    onDismiss()
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.onSecondary,
+                                    contentColor = MaterialTheme.colorScheme.onSurface,
+                                ),
+                                shape = MaterialTheme.shapes.medium
+                            ) {
+                                Text(text = "Buy coins")
+                            }
+
                         }
                     }
                 }
+
             }
         }
     }
+}
+
+private fun checkUserBalanceEnough(totalCoin: Long, coinOfUserAvailable: Long): Boolean {
+    return totalCoin <= coinOfUserAvailable
 }

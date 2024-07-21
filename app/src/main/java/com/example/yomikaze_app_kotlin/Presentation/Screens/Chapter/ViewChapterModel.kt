@@ -8,6 +8,7 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChaptersByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetPageByComicIdAndChapterNumberDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockAChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,7 @@ class ViewChapterModel @Inject constructor(
     private val getPageByComicIdAndChapterNumberDBUC: GetPageByComicIdAndChapterNumberDBUC,
     private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC,
     private val getChaptersByComicIdDBUC: GetChaptersByComicIdDBUC,
+    private val unlockAChapterUC: UnlockAChapterUC
 ) : ViewModel() {
 
 
@@ -36,16 +38,35 @@ class ViewChapterModel @Inject constructor(
     fun setNavController(navController: NavController) {
         this.navController = navController
     }
-
-    //update can previous chapter
-    fun updateCanPreviousChapter(canPreviousChapter: Boolean) {
-        _state.value = _state.value.copy(canPreviousChapter = canPreviousChapter)
+    fun navigateToCoinShop() {
+        navController?.navigate("coins_shop_route")
     }
 
-    //update can next chapter
-    fun updateCanNextChapter(canNextChapter: Boolean) {
-        _state.value = _state.value.copy(canNextChapter = canNextChapter)
+    //reset state
+    fun resetState() {
+        _state.value = ViewChapterState()
     }
+
+    override fun onCleared() {
+        resetState()
+        super.onCleared()
+    }
+
+    //get user balance
+    fun getUserBalance(): Long {
+        return appPreference.userBalance
+    }
+
+    //reset chapter unlock number
+//    fun resetChapterUnlockNumber() {
+//        _state.value = _state.value.copy(chapterUnlockNumber = -1)
+//    }
+
+    //reset chapter unlock number
+    fun resetChapterUnlockNumberAndIsChapterNeedToUnlock() {
+        _state.value = _state.value.copy(chapterUnlockNumber = -1, isChapterNeedToUnlock = false)
+    }
+
 
     fun canGoToPreviousChapter(currentChapterNumber: Int): Boolean {
         val currentIndex =
@@ -111,11 +132,18 @@ class ViewChapterModel @Inject constructor(
 
                     // catch 403 code
                     if (exception.message == "403") {
+
                         _state.value = _state.value.copy(isChapterNeedToUnlock = true)
                         _state.value = _state.value.copy(chapterUnlockNumber = chapterNumber)
+
+                        //for each list chapter get price by chapter number
+                        val chapter = state.value.listChapters!!.find { it.number == chapterNumber }
+                        if (chapter != null) {
+                            _state.value = _state.value.copy(priceToUnlockChapter = chapter.price)
+                        }
                         Log.e(
                             "ViewChapterModel",
-                            "getPagesByChapterNumberOfComic: Chapter is locked (403)"
+                            "getPagesByChapterNumberOfComic: Chapter is locked (403) $chapterNumber"
                         )
                     }
 
@@ -170,7 +198,9 @@ class ViewChapterModel @Inject constructor(
     fun getListChapterByComicId(comicId: Long) {
         _state.value = _state.value.copy(listChapters = emptyList())
         viewModelScope.launch(Dispatchers.IO) {
-            val result = getListChaptersByComicIdUC.getListChapters(comicId)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = getListChaptersByComicIdUC.getListChapters(token, comicId)
             result.fold(
                 onSuccess = { listChapter ->
                     // Xử lý kết quả thành công
@@ -184,6 +214,33 @@ class ViewChapterModel @Inject constructor(
                     Log.e("ComicDetailViewModel", "getListChapterByComicId: $exception")
                 }
             )
+        }
+    }
+
+
+    /**
+     * Todo: Implement unlock a chapter in comic detail view
+     */
+    fun unlockAChapter(comicId: Long, chapterNumber: Int, price: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isUnlockChapterSuccess = false)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+                _state.value = _state.value.copy(isUserNeedToLogin = true)
+                return@launch
+            }
+            val result = unlockAChapterUC.unlockAChapter(token, comicId, chapterNumber)
+            if (result.isSuccessful) {
+//                navController?.navigateUp()
+//                getPagesByChapterNumberOfComic(comicId, chapterNumber)
+                _state.value = _state.value.copy(isUnlockChapterSuccess = true)
+//                Log.d("ViewChapterModel", "unlockAChapter: ${result.body()}")
+                appPreference.userBalance = appPreference.userBalance - price
+            }else{
+                _state.value = _state.value.copy(isUnlockChapterSuccess = false)
+                Log.e("ViewChapterModel", "unlockAChapter: ${result.errorBody()?.string()}")
+            }
         }
     }
 

@@ -21,6 +21,9 @@ data class ViewChapterState(
 
     val isChapterNeedToUnlock: Boolean = false,
     val chapterUnlockNumber: Int = 0,
+    val priceToUnlockChapter: Int = 0,
+
+    val isUnlockChapterSuccess: Boolean = false,
 
 
 )

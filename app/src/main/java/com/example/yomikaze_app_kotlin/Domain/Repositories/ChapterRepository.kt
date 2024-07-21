@@ -1,13 +1,17 @@
 package com.example.yomikaze_app_kotlin.Domain.Repositories
 
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
+import retrofit2.Response
 
 interface ChapterRepository {
 
     /**
      * TODO: Get list of chapters by comic id
      */
-    suspend fun getListChaptersByComicId(comicId: Long): Result<List<Chapter>>
+    suspend fun getListChaptersByComicId(
+        token: String,
+        comicId: Long
+    ): Result<List<Chapter>>
 
     /**
      * TODO: Get chapter detail by comic id and chapter number
@@ -42,4 +46,23 @@ interface ChapterRepository {
      * TODO: Delete chapter downloaded in database by chapter id
      */
     suspend fun deleteChapterByChapterIdDB(chapterId: Long)
+
+
+    /**
+     * TODO : unlockAChapter
+     */
+    suspend fun unlockAChapter(
+        token: String,
+        comicId: Long,
+        chapterNumber: Int
+    ): Response<Unit>
+
+    /**
+     * TODO : unlockManyChapters
+     */
+    suspend fun unlockManyChapters(
+        token: String,
+        comicId: Long,
+        chapterNumbers: List<Int>
+    ): Response<Unit>
 }

@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -156,6 +159,7 @@ fun ChapterBottomNavBar(
                                         comicId,
                                         previousChapterNumber
                                     )
+
                                 } else {
                                     viewChapterModel.getPageByComicIdAndChapterNumberInDB(
                                         comicId,
@@ -397,7 +401,6 @@ fun SelectedModeComponent(
     onModeSelected: () -> Unit,
     isSelected: Boolean,
 ) {
-
     IconButton(
         onClick = {
             onModeSelected()
@@ -419,7 +422,6 @@ fun SelectedModeComponent(
                 ),
                 shape = RoundedCornerShape(10.dp)
             )
-
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -451,6 +453,12 @@ fun ViewListChapterDialog(
     viewChapterModel: ViewChapterModel,
     onDismiss: () -> Unit
 ) {
+
+    val context = LocalContext.current
+    val appPreference = AppPreference(context)
+
+    val viewChapterState = viewChapterModel.state.collectAsState()
+
     var isNetworkAvailable by remember { mutableStateOf(true) }
     isNetworkAvailable = CheckNetwork()
     if (isNetworkAvailable) {
@@ -532,31 +540,62 @@ fun ViewListChapterDialog(
                     listChapter?.let { // means if listChapter is not null
                         val sortedList = if (isReversed) it.reversed() else it
                         items(sortedList) { chapter ->
+                            LaunchedEffect(key1 =viewChapterState.value.isUnlockChapterSuccess) {
+                                if (viewChapterState.value.isUnlockChapterSuccess) {
+                                    if (isNetworkAvailable && selectedChapter != null) {
+                                        viewChapterModel.getPagesByChapterNumberOfComic(
+                                            comicId,
+                                            selectedChapter?.number!!
+                                        )
+                                        onDismiss()
+                                    }
+//                                    } else {
+//                                        viewChapterModel.getPageByComicIdAndChapterNumberInDB(
+//                                            comicId,
+//                                            selectedChapter?.number!!
+//                                        )
+//                                    }
+                                }
+                            }
                             ChapterCard(
                                 chapterNumber = chapter.number,
                                 title = chapter.name,
                                 views = chapter.views,
                                 comments = chapter.comments,
                                 publishedDate = chapter.creationTime,
-                                isLocked = chapter.hasLock,
+                                isLocked = if (appPreference.isUserLoggedIn) !chapter.isUnlocked else chapter.hasLock,
                                 onClick = {
-                                    if (chapter.hasLock) {
-                                        selectedChapter = chapter
-                                        showDialog = true
+//                                    if (chapter.hasLock) {
+//                                        selectedChapter = chapter
+//                                        showDialog = true
+//                                    } else {
+
+                                    if (!appPreference.isUserLoggedIn) {
+                                        Toast.makeText(
+                                            context,
+                                            "Please sign in to unlock this chapter",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
                                     } else {
-                                        if (isNetworkAvailable) {
-                                            viewChapterModel.getPagesByChapterNumberOfComic(
-                                                comicId,
-                                                chapter.number
-                                            )
+                                        if (if (appPreference.isUserLoggedIn) !chapter.isUnlocked else chapter.hasLock) {
+                                            selectedChapter = chapter
+                                            showDialog = true
                                         } else {
-                                            viewChapterModel.getPageByComicIdAndChapterNumberInDB(
-                                                comicId,
-                                                chapter.number
-                                            )
+                                            if (isNetworkAvailable) {
+                                                viewChapterModel.getPagesByChapterNumberOfComic(
+                                                    comicId,
+                                                    chapter.number
+                                                )
+                                            } else {
+                                                viewChapterModel.getPageByComicIdAndChapterNumberInDB(
+                                                    comicId,
+                                                    chapter.number
+                                                )
+                                            }
                                         }
-                                        onDismiss()
                                     }
+//                                    onDismiss()
                                 },
                                 onReportClick = {}
                             )
@@ -569,13 +608,22 @@ fun ViewListChapterDialog(
                     UnlockChapterDialogComponent(
                         title = "Do you want to unlock this chapter?",
                         chapterNumber = selectedChapter?.number!!,
-                        totalCoin = 100,
-                        coinOfUserAvailable = 200,
+                        totalCoin = selectedChapter?.price?.toLong()!!,
+                        coinOfUserAvailable = appPreference.userBalance,
                         onConfirmClick = {
                             //UnlockUC
                             //if(state.success) {navigateToViewChapter}
+                            viewChapterModel.unlockAChapter(
+                                comicId = comicId,
+                                chapterNumber = selectedChapter?.number!!,
+                                price = selectedChapter?.price?.toLong() ?: 0
+                            )
                         },
-                        onDismiss = { showDialog = false }
+                        onDismiss = { showDialog = false },
+                        onBuyCoinsClick = {
+                            //navigateToBuyCoins
+                            viewChapterModel.navigateToCoinShop()
+                        }
                     )
                 }
             }

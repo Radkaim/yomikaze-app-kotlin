@@ -50,6 +50,36 @@ class AppPreference(context : Context) {
         encryptedPreferences.edit().remove("user_role").apply()
     }
 
+    // save user avatar
+    var userAvatar: String?
+        get() = encryptedPreferences.getString("user_avatar", null)
+        set(value) = encryptedPreferences.edit().putString("user_avatar", value).apply()
+
+    // delete user avatar
+    fun deleteUserAvatar() {
+        encryptedPreferences.edit().remove("user_avatar").apply()
+    }
+
+    //save user name
+    var userName: String?
+        get() = encryptedPreferences.getString("user_name", null)
+        set(value) = encryptedPreferences.edit().putString("user_name", value).apply()
+
+    // delete user name
+    fun deleteUserName() {
+        encryptedPreferences.edit().remove("user_name").apply()
+    }
+
+    //save user balance
+    var userBalance: Long
+        get() = encryptedPreferences.getLong("user_balance", 0)
+        set(value) = encryptedPreferences.edit().putLong("user_balance", value).apply()
+
+    // delete user balance
+    fun deleteUserBalance() {
+        encryptedPreferences.edit().remove("user_balance").apply()
+    }
+
     // save isUserLoggedIn
     var isUserLoggedIn: Boolean
         get() = encryptedPreferences.getBoolean("is_user_logged_in", false)

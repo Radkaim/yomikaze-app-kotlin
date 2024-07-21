@@ -63,6 +63,10 @@ class ComicDetailViewModel @Inject constructor(
         navController?.navigate("comic_comment_route/$comicId/$comicName")
     }
 
+    fun navigateToCoinShop() {
+        navController?.navigate("coins_shop_route")
+    }
+
     /**
      * Todo: Implement check user is login
      */
@@ -212,7 +216,9 @@ class ComicDetailViewModel @Inject constructor(
      */
     fun getListChapterByComicId(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = getListChaptersByComicIdUC.getListChapters(comicId)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = getListChaptersByComicIdUC.getListChapters(token, comicId)
             result.fold(
                 onSuccess = { listChapter ->
                     // Xử lý kết quả thành công
@@ -220,6 +226,9 @@ class ComicDetailViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         listChapters = listChapter.sortedBy { it.number }
                     )
+                    listChapter.forEach() {
+                        Log.d("ComicDetailViewModel", "getListChapterByComicId: $it")
+                    }
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi

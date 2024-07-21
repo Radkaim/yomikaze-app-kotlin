@@ -32,8 +32,11 @@ class AuthRepositoryImpl @Inject constructor(
                 if (profileResponse.isSuccess) {
                     appPreference.userId = profileResponse.getOrNull()?.id!!
                     appPreference.userRoles = profileResponse.getOrNull()?.roles
-                    Log.d("AuthRepositoryImpl", "login: ${appPreference.userRoles}")
-                }else{
+                    appPreference.userAvatar = profileResponse.getOrNull()?.avatar
+                    appPreference.userName = profileResponse.getOrNull()?.name
+                    appPreference.userBalance = profileResponse.getOrNull()?.balance ?: 0
+//                    Log.d("AuthRepositoryImpl", "login: ${appPreference.userId}")
+                } else {
                     Log.d("AuthRepositoryImpl", "login: ${profileResponse.exceptionOrNull()}")
                 }
                 return Result.success(tokenResponse)
@@ -61,7 +64,6 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
 
-
     override suspend fun loginWithGoogle(token: TokenResponse): Result<TokenResponse> {
         val result = api.loginWithGoogle(token)
         if (result.isSuccessful) {
@@ -73,9 +75,15 @@ class AuthRepositoryImpl @Inject constructor(
                 if (profileResponse.isSuccess) {
                     appPreference.userId = profileResponse.getOrNull()?.id!!
                     appPreference.userRoles = profileResponse.getOrNull()?.roles
+                    appPreference.userAvatar = profileResponse.getOrNull()?.avatar
+                    appPreference.userName = profileResponse.getOrNull()?.name
+                    appPreference.userBalance = profileResponse.getOrNull()?.balance ?: 0
                     Log.d("AuthRepositoryImpl", "loginWithGoogle: ${appPreference.userRoles}")
-                }else{
-                    Log.d("AuthRepositoryImpl", "loginWithGoogle: ${profileResponse.exceptionOrNull()}")
+                } else {
+                    Log.d(
+                        "AuthRepositoryImpl",
+                        "loginWithGoogle: ${profileResponse.exceptionOrNull()}"
+                    )
                 }
 
                 return Result.success(tokenResponse)
@@ -123,6 +131,20 @@ class AuthRepositoryImpl @Inject constructor(
             appPreference.isUserLoggedIn = true
             return Result.success(result.body()!!)
         }
+        val profileResponse = profileRepository.getProfile(result.body()?.token!!)
+        if (profileResponse.isSuccess) {
+            appPreference.userId = profileResponse.getOrNull()?.id!!
+            appPreference.userRoles = profileResponse.getOrNull()?.roles
+            appPreference.userAvatar = profileResponse.getOrNull()?.avatar
+            appPreference.userName = profileResponse.getOrNull()?.name
+            appPreference.userBalance = profileResponse.getOrNull()?.balance ?: 0
+            Log.d("AuthRepositoryImpl", "loginWithGoogle: ${appPreference.userRoles}")
+        } else {
+            Log.d(
+                "AuthRepositoryImpl",
+                "loginWithGoogle: ${profileResponse.exceptionOrNull()}"
+            )
+        }
         Log.d("AuthRepositoryImpl", "register: ${result.errorBody()?.string()}")
         return failure(Exception("Register failed"))
     }
@@ -138,9 +160,12 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun logout() {
         val result = appPreference.authToken?.let {
             appPreference.deleteUserToken()
-            appPreference.isUserLoggedIn = false
+            appPreference.deleteIsUserLoggedIn()
             appPreference.deleteUserId()
             appPreference.deleteUserRole()
+            appPreference.deleteUserAvatar()
+            appPreference.deleteUserName()
+            appPreference.deleteUserBalance()
         }
         if (result != null) {
             Log.d("AuthRepositoryImpl", "logout: Successfully!!!")
