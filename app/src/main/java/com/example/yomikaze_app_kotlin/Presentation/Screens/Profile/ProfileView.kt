@@ -97,7 +97,7 @@ fun ProfileContent(
     navController: NavController,
     viewModel: MainViewModel
 ) {
-    profileViewModel.getUserInfo(CheckNetwork())
+//    profileViewModel.getUserInfo(CheckNetwork())
 
     LaunchedEffect(Unit) {
         profileViewModel.getProfile()

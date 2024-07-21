@@ -36,7 +36,7 @@ interface ComicCommentApiService {
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,
         @Body content: CommentRequest
-    ): Response<Unit>
+    ): Response<CommentResponse>
 
     /**
      * TODO: use for post reply comment by comicId and commentId
@@ -47,7 +47,7 @@ interface ComicCommentApiService {
         @Path("comicId") comicId: Long,
         @Path("commentId") commentId: Long,
         @Body content: CommentRequest
-    ): Response<Unit>
+    ): Response<CommentResponse>
 
     /**
      * TODO: use for get all reply comment by comicId and commentId

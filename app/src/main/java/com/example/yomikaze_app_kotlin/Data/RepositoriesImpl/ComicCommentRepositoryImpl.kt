@@ -35,27 +35,28 @@ class ComicCommentRepositoryImpl @Inject constructor(
         token: String,
         comicId: Long,
         content: CommentRequest
-    ): Response<Unit> {
+    ): Response<CommentResponse> {
         val response = api.postComicCommentByComicId("Bearer $token", comicId, content)
         if (response.isSuccessful) {
+            Log.d("CommentComicRepositoryImpl", "postComicCommentByComicId: ${response.body()}")
             Result.success(Unit)
         } else {
-            val httpCode = response.code()
-            when (httpCode) {
-                400 -> {
-                    // Xử lý lỗi 400 (Bad Request)
-                    Log.e("CommentComicRepositoryImpl", "Bad Request")
-                }
-
-                401 -> {
-                    // Xử lý lỗi 401 (Unauthorized)
-                    Log.e("CommentComicRepositoryImpl", "Unauthorized")
-                }
-                // Xử lý các mã lỗi khác
-                else -> {
-                    // Xử lý mặc định cho các mã lỗi khác
-                }
-            }
+//            val httpCode = response.code()
+//            when (httpCode) {
+//                400 -> {
+//                    // Xử lý lỗi 400 (Bad Request)
+//                    Log.e("CommentComicRepositoryImpl", "Bad Request")
+//                }
+//
+//                401 -> {
+//                    // Xử lý lỗi 401 (Unauthorized)
+//                    Log.e("CommentComicRepositoryImpl", "Unauthorized")
+//                }
+//                // Xử lý các mã lỗi khác
+//                else -> {
+//                    // Xử lý mặc định cho các mã lỗi khác
+//                }
+//            }
             Result.failure(Exception("Failed to rate comic"))
         }
         return response
@@ -69,7 +70,7 @@ class ComicCommentRepositoryImpl @Inject constructor(
         comicId: Long,
         commentId: Long,
         content: CommentRequest
-    ): Response<Unit> {
+    ): Response<CommentResponse> {
         val response = api.postReplyCommentByComicId("Bearer $token", comicId, commentId, content)
         if (response.isSuccessful) {
             Result.success(Unit)

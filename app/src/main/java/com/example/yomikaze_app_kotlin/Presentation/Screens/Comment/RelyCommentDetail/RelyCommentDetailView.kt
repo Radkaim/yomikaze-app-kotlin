@@ -125,8 +125,8 @@ fun RelyCommentDetailContent(
                 title = authorName,
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()
                         relyCommentDetailViewModel.resetState1()
+                        navController.popBackStack()
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -167,21 +167,14 @@ fun RelyCommentDetailContent(
                         isSelected = true
                         isReversed = false
 
-                        isRefreshing = false
 
-
-                        page.value = 1
-                        relyCommentDetailViewModel.resetState()
                     },
                     onnNewSortClick = {
                         isSelected = false
                         isReversed = true
 
 
-                        isRefreshing = true
 
-                        page.value = 1
-                        relyCommentDetailViewModel.resetState()
                     }
                 )
             }
@@ -212,7 +205,12 @@ fun RelyCommentDetailContent(
                     }
                 }
                 if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
-                    items(state.listComicComment) { comment ->
+                    val sortedList = if (isReversed) {
+                        state.listComicComment.sortedByDescending { it.creationTime }
+                    } else {
+                        state.listComicComment.sortedBy { it.creationTime }
+                    }
+                    items(sortedList) { comment ->
                         CommentCard(
                             comicId = comicId,
                             commentId = comment.id,
@@ -273,21 +271,7 @@ fun RelyCommentDetailContent(
             )
         }
 
-        LaunchedEffect(
-            key1 = state.isPostComicCommentSuccess,
-//            key2 = state.isDeleteCommentSuccess,
-//            key2 = state.isUpdateCommentSuccess
-        ) {
-            // refresh new comment
-            isSelected = false
-            isReversed = true
 
-            isRefreshing = true
-            page.value = 1
-
-            relyCommentDetailViewModel.resetState()
-
-        }
 
         LaunchedEffect(
             key1 = page.value,
@@ -315,7 +299,7 @@ fun RelyCommentDetailContent(
                             "ComicCommentContent",
                             "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicComment.size}"
                         )
-                        if (state.currentPage.value < state.totalPages.value && state.listComicComment.size > 8) {
+                        if (state.currentPage.value < state.totalPages.value) {
                             page.value++
                         }
                     }

@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Domain.UseCases.Comment
 
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicCommentRepository
 import retrofit2.Response
 import javax.inject.Inject
@@ -13,7 +14,7 @@ class PostReplyCommentByComicIdUC @Inject constructor(
         comicId: Long,
         commentId: Long,
         content: CommentRequest
-    ): Response<Unit> {
+    ): Response<CommentResponse> {
         return comicCommentRepository.postReplyCommentByComicId(
             token = token,
             comicId = comicId,

@@ -32,7 +32,9 @@ class AuthRepositoryImpl @Inject constructor(
                 if (profileResponse.isSuccess) {
                     appPreference.userId = profileResponse.getOrNull()?.id!!
                     appPreference.userRoles = profileResponse.getOrNull()?.roles
-                    Log.d("AuthRepositoryImpl", "login: ${appPreference.userRoles}")
+                    appPreference.userAvatar = profileResponse.getOrNull()?.avatar
+                    appPreference.userName = profileResponse.getOrNull()?.name
+                    Log.d("AuthRepositoryImpl", "login: ${appPreference.userId}")
                 }else{
                     Log.d("AuthRepositoryImpl", "login: ${profileResponse.exceptionOrNull()}")
                 }

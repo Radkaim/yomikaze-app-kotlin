@@ -596,8 +596,8 @@ fun DescriptionInComicDetailView(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val description = state.comicResponse?.description
-    val comicCommentState by comicCommentViewModel.state.collectAsState()
 
+    val comicCommentState by comicCommentViewModel.state.collectAsState()
     LaunchedEffect(
         key1 = comicCommentState.isDeleteCommentSuccess,
         key2 = comicCommentState.isUpdateCommentSuccess
@@ -773,12 +773,12 @@ fun DescriptionInComicDetailView(
                         comicId = comicId,
                         commentId = comment.id,
                         content = comment.content,
-                        authorName = comment.author.name,
-                        authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
+                        authorName = comment.author?.name ?: "",
+                        authorImage = (APIConfig.imageAPIURL.toString() + comment.author?.avatar)
                             ?: "",
-                        roleName = comment.author.roles?.get(0) ?: "",
+                        roleName = comment.author?.roles?.get(0) ?: "",
                         creationTime = comment.creationTime,
-                        isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author.id),
+                        isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author!!.id),
                         isAdmin = comicCommentViewModel.checkIsAdmin(),
                         onClicked = {},
                         comicCommentViewModel = comicCommentViewModel

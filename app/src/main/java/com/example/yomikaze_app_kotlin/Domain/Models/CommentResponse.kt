@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName
 
 data class CommentResponse(
     @SerializedName("id")
-    val id: Long,
+    var id: Long,
 
     @SerializedName("content")
     var content: String,
 
     @SerializedName("author")
-    val author: ProfileResponse,
+    var author: ProfileResponse,
 
     @SerializedName("replies")
     val replies: List<CommentResponse>? = null,
 
     @SerializedName("creationTime")
-    val creationTime: String,
+    var creationTime: String,
     )
 data class CommentRequest(
     @SerializedName("content")

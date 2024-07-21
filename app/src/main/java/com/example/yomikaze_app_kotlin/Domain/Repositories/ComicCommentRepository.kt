@@ -26,7 +26,7 @@ interface ComicCommentRepository {
         token: String,
         comicId: Long,
         content: CommentRequest
-    ): Response<Unit>
+    ): Response<CommentResponse>
 
     /**
      * TODO: use for post reply comment by comicId and commentId
@@ -36,7 +36,7 @@ interface ComicCommentRepository {
         comicId: Long,
         commentId: Long,
         content: CommentRequest
-    ): Response<Unit>
+    ): Response<CommentResponse>
 
     /**
      * TODO: use for get all reply comment by comicId and commentId

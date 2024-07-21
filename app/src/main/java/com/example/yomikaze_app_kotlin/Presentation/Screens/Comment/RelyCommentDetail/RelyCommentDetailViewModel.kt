@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
@@ -77,7 +78,6 @@ class RelyCommentDetailViewModel @Inject constructor(
     // check is that own user comment for set edit and delete button
     fun checkIsOwnComment(userId: Long): Boolean {
         val ownUserId = appPreference.userId
-        val userRoles = appPreference.userRoles
         return ownUserId == userId
     }
 
@@ -90,11 +90,7 @@ class RelyCommentDetailViewModel @Inject constructor(
         _state.value = RelyCommentDetailState()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        // Reset page and size if needed
-        resetState1()
-    }
+
 
     /**
      * Todo: Implement get all comment of comic by comicId
@@ -138,8 +134,8 @@ class RelyCommentDetailViewModel @Inject constructor(
                     _state.value = _state.value.copy(isListComicCommentLoading = false)
 
                     Log.d(
-                        "ReplyCommentDetailViewModel",
-                        "getAllReplyCommentByComicId: $baseResponse"
+                        "ComicCommentContent",
+                        "listComicComment: ${state.value.listComicComment.size}"
                     )
                 },
 
@@ -173,9 +169,26 @@ class RelyCommentDetailViewModel @Inject constructor(
             if (result.code() == 201) {
                 _state.value = _state.value.copy(isPostComicCommentSuccess = true)
                 // add new item to list
-//                val list = _state.value.listComicComment.toMutableList()
-//                list.add(result.body())
-//                _state.value = _state.value.copy(listComicComment = list)
+                val newComment = result.body() ?: return@launch
+                Log.d("ComicCommentViewModel", "postComicCommentByComicId: $newComment")
+                var newCommentResponse = newComment
+                newCommentResponse.author = ProfileResponse(
+                    id = appPreference.userId,
+                    name = appPreference.userName!!,
+                    avatar = appPreference.userAvatar,
+                    balance = 0,
+                    roles = appPreference.userRoles
+                )
+                Log.d("ComicCommentViewModel", "postComicCommentByComicId: $newCommentResponse")
+                val list = _state.value.listComicComment.toMutableList()
+                if (!list.any { it.id == newComment.id }) {
+                    list.add(newCommentResponse)
+                    _state.value = _state.value.copy(
+                        listComicComment = list,
+                        isPostComicCommentSuccess = true,
+                    )
+                    _state.value.totalCommentResults.value = _state.value.totalCommentResults.value + 1
+                }
 
             } else {
                 _state.value = _state.value.copy(isPostComicCommentSuccess = false)
@@ -205,6 +218,7 @@ class RelyCommentDetailViewModel @Inject constructor(
                 val list = _state.value.listComicComment.toMutableList()
                 list.removeIf { it.id == commentId }
                 _state.value = _state.value.copy(listComicComment = list)
+                _state.value.totalCommentResults.value = _state.value.totalCommentResults.value - 1
 
             } else {
                 _state.value = _state.value.copy(isDeleteCommentSuccess = false)

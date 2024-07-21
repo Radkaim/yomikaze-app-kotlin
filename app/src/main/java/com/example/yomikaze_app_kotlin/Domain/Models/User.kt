@@ -94,22 +94,22 @@ data class UserInfoResponse(
 data class ProfileResponse(
 
     @SerializedName("id")
-    val id: Long,
+    var id: Long,
 
     @SerializedName("name")
-    val name: String,
+    var name: String,
 
     @SerializedName("balance")
-    val balance: Long,
+    var balance: Long,
 
     @SerializedName("avatar")
-    val avatar: String? = null,
+    var avatar: String? = null,
 
     @SerializedName("roles")
-    val roles: List<String>? = null,
+    var roles: List<String>? = null,
 
     @SerializedName("birthday")
-    val birthday: String,
+    var birthday: String = "",
 )
 
 data class DataUser(
