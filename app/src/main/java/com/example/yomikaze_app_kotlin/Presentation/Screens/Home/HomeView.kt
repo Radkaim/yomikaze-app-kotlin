@@ -431,7 +431,8 @@ fun showHistoryCardComic(
                 onClick = {
                     homeViewModel.onHistoryComicClicked(
                         historyRecord.comic.comicId,
-                        historyRecord.chapter.number
+                        historyRecord.chapter.number,
+                        historyRecord.pageNumber
                     )
                 },
                 // averageRatingNumber = comic.averageRatingNumber

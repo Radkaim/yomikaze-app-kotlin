@@ -9,6 +9,7 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetContinueReadingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
@@ -30,10 +31,8 @@ class ComicDetailViewModel @Inject constructor(
     private val ratingComicUC: RatingComicUC,
     private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC,
     private val getLibraryCategoryUC: GetLibraryCategoryUC,
-//    private val followComicUC: FollowComicUC,
-//    private val addComicToCategoryUC: AddComicToCategoryUC,
     private val getComicByIdDBUC: GetComicByIdDBUC,
-
+    private val getContinueReadingUC: GetContinueReadingUC,
     private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC
 ) : ViewModel() {
     //navController
@@ -53,7 +52,7 @@ class ComicDetailViewModel @Inject constructor(
 
     //navigate to view chapter
     fun navigateToViewChapter(comicId: Long, chapterNumber: Int) {
-        navController?.navigate("view_chapter_route/$comicId/$chapterNumber")
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber/0")
     }
 
     fun navigateToChooseChapterDownload(comicId: Long, comicName: String) {
@@ -225,6 +224,36 @@ class ComicDetailViewModel @Inject constructor(
                     // Xử lý lỗi
                     _state.value = _state.value.copy(isListComicCommentLoading = false)
                     Log.e("ComicDetailViewModel", "getAllComicCommentByComicId: $exception")
+                }
+            )
+        }
+    }
+
+    /**
+     * Todo: Implement start reading first time
+     */
+    fun onStartReading(comicId: Long, chapterNumber: Int? = 0,  lastPageNumber : Int? = 0){
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber/$lastPageNumber")
+    }
+
+
+    /**
+     * Todo: Implement get continue reading
+     */
+    fun getContinueReading(comicId: Long) {
+        viewModelScope.launch(Dispatchers.Main) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = getContinueReadingUC.getContinueReading(token, comicId)
+            result.fold(
+                onSuccess = { continueReadingResponse ->
+                    // Xử lý kết quả thành công
+//
+                    navController?.navigate("view_chapter_route/${comicId}/${continueReadingResponse.chapter.number}/${continueReadingResponse.pageNumber}")
+                    Log.d("ComicDetailViewModel", "getContinueReading: $result")
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicDetailViewModel", "getContinueReading: $exception")
                 }
             )
         }

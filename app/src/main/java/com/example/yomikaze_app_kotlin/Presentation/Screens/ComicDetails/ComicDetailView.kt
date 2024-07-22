@@ -1,16 +1,12 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
-import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,14 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -45,14 +35,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
@@ -65,36 +53,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
-import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
-import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.processNameByComma
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconicDataComicDetail
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
-import com.example.yomikaze_app_kotlin.Presentation.Components.Comment.CommentCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.AddToLibraryDialog
-import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.RatingComicDialog
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.ShareDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
-import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapterModel
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
@@ -305,8 +283,8 @@ fun ComicDetailContent(
                                                     showDialog = 3
                                                 }
                                             }
-                                            "report_dialog_route" ->
-                                            {
+
+                                            "report_dialog_route" -> {
                                                 if (!comicDetailViewModel.checkUserIsLogin()) {
                                                     Toast.makeText(
                                                         context,
@@ -318,6 +296,7 @@ fun ComicDetailContent(
                                                     showDialog = 4
                                                 }
                                             }
+
                                             "share_dialog_route" -> showDialog = 5
                                         }
                                     }) {
@@ -375,7 +354,7 @@ fun ComicDetailContent(
 
                                 4 -> CustomDialog4(onDismiss = { showDialog = null })
                                 5 -> {
-                                    Share(
+                                    ShareDialog(
                                         text = "https://yomikaze.org/comic_detail/$comicId",
                                         context = context
                                     )
@@ -614,525 +593,10 @@ fun ComicDetailContent(
 }
 
 
-/**
- * TODO: Description and List Chapter view
- */
-
-@Composable
-fun DescriptionInComicDetailView(
-    state: ComicDetailState,
-    comicDetailViewModel: ComicDetailViewModel,
-    comicId: Long,
-    comicName: String,
-    comicCommentViewModel: ComicCommentViewModel = hiltViewModel()
-) {
-    var isExpanded by remember { mutableStateOf(false) }
-    val description = state.comicResponse?.description
-
-    val comicCommentState by comicCommentViewModel.state.collectAsState()
-    LaunchedEffect(
-        key1 = comicCommentState.isDeleteCommentSuccess,
-        key2 = comicCommentState.isUpdateCommentSuccess
-    ) {
-        comicDetailViewModel.getAllComicCommentByComicId(comicId = comicId)
-    }
-
-    //for tag genre
-    val listTag = state.listTagGenres ?: emptyList()
-//    val ofsety = if (state.listComicComment!!.isNotEmpty()) 0.dp else -70.dp
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-//            .wrapContentHeight()
-//            .offset(y = ofsety)
-            .padding(top = 10.dp, start = 2.dp, end = 8.dp, bottom = 10.dp),
-    ) {
-        //TODO: Description
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp)
-                    .clickable { isExpanded = !isExpanded }
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    val maxLine: Int = if (isExpanded) 25 else 3
-                    Text(
-                        text = description ?: "Description",
-                        maxLines = maxLine,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    if (isExpanded) {
-                        Text(
-                            text = "Less",
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
-                            fontSize = 14.sp,
-                        )
-                    } else {
-                        if (description != null) {
-                            if (description.length > 70) {
-                                Text(
-                                    text = "More",
-                                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
-                                    fontSize = 14.sp,
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        item {
-            LazyRow(
-                contentPadding = PaddingValues(start = 2.dp, top = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(listTag) { tag ->
-                    TagComponent(status = tag.name)
-                }
-            }
-        }
-
-        item {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp)
-            ) {
-                Button(
-                    modifier = Modifier
-                        .width(250.dp)
-                        .height(40.dp)
-                        .shadow(4.dp, shape = RoundedCornerShape(8.dp))
-                        .clip(RoundedCornerShape(20.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colorScheme.onSecondary,
-                        contentColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    onClick = {
-                        //TODO
-                        //    comicDetailViewModel.downloadComic(state.comicResponse!!)
-                    }) {
-                    if (state.comicResponse?.isRead ?: false) {
-                        Text(
-                            text = "Continue Reading",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    } else {
-                        Log.d(
-                            "DescriptionInComicDetailView",
-                            "DescriptionInComicDetailView: ${state.comicResponse?.isRead}"
-                        )
-                        Text(
-                            text = "Start Reading",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-
-                    }
-                }
-            }
-        }
-
-        item { Spacer(modifier = Modifier.height(30.dp)) }
-        if (state.listComicComment!!.isNotEmpty()) {
-            item {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp)
-                ) {
-                    Text(
-                        text = "New Comments",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.secondaryContainer
-                    )
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable {
-                            comicDetailViewModel.navigateToComicComment(
-                                comicId = comicId,
-                                comicName = comicName
-                            )
-                        }
-                    ) {
-                        Text(
-                            text = "More",
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Icon(
-                            painterResource(id = R.drawable.ic_next),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .width(10.dp)
-                                .height(10.dp),
-                        )
-                    }
-                }
-            }
-        }
-        item { Spacer(modifier = Modifier.height(30.dp)) }
-        //   for commment
-        if (state.isListComicCommentLoading) {
-            item {
-                repeat(3) {
-                    NormalComicCardShimmerLoading()
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-            }
-        }
-        if (!state.isListComicCommentLoading && state.listComicComment!!.isNotEmpty()) {
-            item {
-                state.listComicComment.forEach { comment ->
-                    CommentCard(
-                        comicId = comicId,
-                        commentId = comment.id,
-                        content = comment.content,
-                        authorName = comment.author?.name ?: "",
-                        authorImage = (APIConfig.imageAPIURL.toString() + comment.author?.avatar)
-                            ?: "",
-                        roleName = comment.author?.roles?.get(0) ?: "",
-                        creationTime = comment.creationTime,
-                        isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author!!.id),
-                        isAdmin = comicCommentViewModel.checkIsAdmin(),
-                        onClicked = {},
-                        comicCommentViewModel = comicCommentViewModel
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-            }
-        } else {
-            item {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(y = (-20).dp)
-                        .clickable {
-                            comicDetailViewModel.navigateToComicComment(
-                                comicId = comicId,
-                                comicName = comicName
-                            )
-                        }
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_comment),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .width(20.dp)
-                            .height(20.dp),
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = "Drop the first comment on this comic!",
-                        fontSize = 15.sp,
-                        fontStyle = FontStyle.Italic,
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun ListChapterInComicDetailView(
-    comicDetailViewModel: ComicDetailViewModel,
-    comicId: Long,
-    viewChapterModel: ViewChapterModel = hiltViewModel()
-) {
-    val context = LocalContext.current
-    val appPreference = AppPreference(context)
-//    val viewChapterModel = hiltViewModel<ViewChapterModel>()
-    val viewChapterState = viewChapterModel.state.collectAsState()
-    LaunchedEffect(Unit) {
-        comicDetailViewModel.getListChapterByComicId(comicId = comicId)
-    }
-
-
-
-
-    var isSelected by remember { mutableStateOf(true) }
-    var isReversed by remember { mutableStateOf(false) }
-
-    val listChapter = comicDetailViewModel.state.value.listChapters
-
-    var showDialog by remember { mutableStateOf(false) }
-    var selectedChapter by remember { mutableStateOf<Chapter?>(null) }
-
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "Total Chapter: ${listChapter?.size}",
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier.padding(8.dp)
-
-        )
-
-        SortComponent(
-            isOldestSelected = isSelected,
-            onOldSortClick = {
-                isSelected = true
-                isReversed = false
-            },
-            onnNewSortClick = {
-                isSelected = false
-                isReversed = true
-            }
-        )
-    }
-    //list Chapter
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 15.dp, bottom = 15.dp)
-            .offset(x = (-4).dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp) // 8.dp space between each item
-    ) {
-        listChapter?.let { // means if listChapter is not null
-            val sortedList = if (isReversed) it.reversed() else it
-            items(sortedList) { chapter ->
-                LaunchedEffect(key1 = viewChapterState.value.isUnlockChapterSuccess) {
-                    if (viewChapterState.value.isUnlockChapterSuccess) {
-                        comicDetailViewModel.navigateToViewChapter(
-                            comicId = comicId,
-                            chapterNumber = selectedChapter?.number!!
-                        )
-                    }
-                }
-                ChapterCard(
-                    chapterNumber = chapter.number,
-                    title = chapter.name,
-                    views = chapter.views,
-                    comments = chapter.comments,
-                    publishedDate = chapter.creationTime,
-                    isLocked = if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock,
-                    onClick = {
-                        if (!comicDetailViewModel.checkUserIsLogin() && chapter.hasLock) {
-                            Toast.makeText(
-                                context,
-                                "Please sign in to unlock this chapter",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                        } else {
-                            if (if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock) {
-                                selectedChapter = chapter
-                                showDialog = true
-                            } else {
-                                comicDetailViewModel.navigateToViewChapter(
-                                    comicId,
-                                    chapter.number
-                                )
-                            }
-                        }
-                    },
-                    onReportClick = {}
-                )
-
-            }
-        }
-    }
-    if (showDialog) {
-
-        UnlockChapterDialogComponent(
-            title = "Do you want to unlock this chapter?",
-            chapterNumber = selectedChapter?.number!!,
-            totalCoin = selectedChapter?.price?.toLong() ?: 0,
-            coinOfUserAvailable = appPreference.userBalance,
-            onConfirmClick = {
-                //UnlockUC
-                //if(state.success) {navigateToViewChapter}
-                viewChapterModel.unlockAChapter(
-                    comicId = comicId,
-                    chapterNumber = selectedChapter?.number!!,
-                    price = selectedChapter?.price?.toLong() ?: 0
-                )
-            },
-            onDismiss = { showDialog = false },
-            onBuyCoinsClick = {
-             comicDetailViewModel.navigateToCoinShop()
-            }
-        )
-    }
-}
-
-
 // change color for tab layout
 @Composable
 fun changeColorForTabComicDetail(tabIndex: Int, index: Int): Color {
     return if (tabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer
-}
-
-@Composable
-fun Share(text: String, context: Context) {
-
-    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-        putExtra(Intent.EXTRA_TEXT, text)
-        type = "text/plain"
-    }
-    val shareIntent = Intent.createChooser(sendIntent, null)
-//        startActivity(context, shareIntent, null)
-
-    context.startActivity(shareIntent)
-
-}
-
-//
-
-/**
- * TODO : dialog for menu option
- */
-
-
-//}
-
-
-@Composable
-fun RatingComicDialog(
-    comicId: Long,
-    state: ComicDetailState,
-    comicDetailViewModel: ComicDetailViewModel,
-    onDismiss: () -> Unit
-) {
-    // Remember the state of the stars
-    val starState = remember { mutableStateListOf(false, false, false, false, false) }
-    val context = LocalContext.current
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            decorFitsSystemWindows = true
-        )
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Gray.copy(alpha = 0.7f)) // Màu xám với độ mờ
-                .offset(y = (100).dp)
-                .clickable { onDismiss() }
-        ) {
-            Surface(
-                shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier
-                    .width(200.dp)
-                    .height(137.dp)
-                    .align(Alignment.Center)
-                    .offset(y = (-100).dp)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Row(
-                        modifier = Modifier.padding(top = 16.dp)
-                    ) {
-                        Text(
-                            text = "Rating Comic",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onError,
-                            textAlign = TextAlign.Center
-
-                        )
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        // Display stars
-                        starState.forEachIndexed { index, isSelected ->
-                            Icon(
-                                painter = painterResource(id = if (isSelected) R.drawable.ic_star_fill else R.drawable.ic_star),
-                                contentDescription = "Star $index",
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .clickable {
-                                        for (i in 0..index) {
-                                            starState[i] = true
-                                        }
-                                        for (i in index + 1 until starState.size) {
-                                            starState[i] = false
-                                        }
-                                    },
-                                tint = if (isSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface
-                            )
-                        }
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(top = 8.dp)
-                    ) {
-
-                        Button(
-                            modifier = Modifier
-                                .width(80.dp)
-                                .height(30.dp)
-                                .shadow(4.dp, shape = RoundedCornerShape(8.dp))
-                                .clip(RoundedCornerShape(20.dp)),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = MaterialTheme.colorScheme.onSecondary,
-                                contentColor = MaterialTheme.colorScheme.onSurface
-                            ),
-                            onClick = {
-                                val selectedStars = starState.count { it }
-                                comicDetailViewModel.rateComic(comicId, selectedStars)
-                                Log.d("RatingComicDialog", "Selected stars: $selectedStars")
-                                if (state.isRatingComicSuccess) {
-                                    Toast.makeText(
-                                        context,
-                                        "Rating successfully",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    onDismiss()
-                                } else {
-                                    onDismiss()
-                                }
-//
-                            }) {
-                            Text(
-                                text = "Vote",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 

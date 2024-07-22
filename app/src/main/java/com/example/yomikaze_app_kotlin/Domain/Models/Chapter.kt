@@ -106,6 +106,6 @@ data class ContinueReadingResponse(
     @SerializedName("pageNumber")
     val pageNumber: Int,
 
-    @SerializedName("chapterId")
-    val chapterId: Long,
+    @SerializedName("chapter")
+    val chapter :Chapter
 )

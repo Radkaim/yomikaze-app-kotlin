@@ -71,13 +71,15 @@ fun NavigationGraph(
         }
 
         //view chapter screen
-        composable("view_chapter_route/{comicId}/{chapterNumber}") { navBackStackEntry ->
+        composable("view_chapter_route/{comicId}/{chapterNumber}/{lastPageNumber}") { navBackStackEntry ->
             val comicId = navBackStackEntry.arguments?.getString("comicId")
             val chapterNumber = navBackStackEntry.arguments?.getString("chapterNumber")
+            val lastPageNumber = navBackStackEntry.arguments?.getString("lastPageNumber") ?: "0"
 
             ViewChapter(
                 comicId = comicId?.toLong()!!,
                 chapterNumber = chapterNumber?.toInt() ?: 0,
+                lastPageNumber = lastPageNumber.toInt(),
                 navController = navController
             )
         }

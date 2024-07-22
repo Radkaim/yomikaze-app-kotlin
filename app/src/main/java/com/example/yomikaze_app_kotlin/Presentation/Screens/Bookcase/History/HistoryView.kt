@@ -196,7 +196,8 @@ fun HistoryContent(
                 onClicked={
                     historyViewModel.onHistoryComicClicked(
                         historyRecord.comic.comicId,
-                        historyRecord.chapter.number
+                        historyRecord.chapter.number,
+                        historyRecord.pageNumber
                     )
                 },
                 onDeleteClicked = {

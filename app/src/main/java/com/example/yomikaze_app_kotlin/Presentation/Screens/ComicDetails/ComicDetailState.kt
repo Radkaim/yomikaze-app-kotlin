@@ -31,4 +31,7 @@ data class ComicDetailState(
     val listComicComment: List<CommentResponse>? = emptyList(),
     val isListComicCommentLoading: Boolean = true,
 
+    // continue reading
+//    val continueReadingResponse: ContinueReadingResponse? = null,
+
     )

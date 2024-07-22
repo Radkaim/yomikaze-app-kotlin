@@ -61,6 +61,7 @@ import kotlinx.coroutines.delay
 fun ViewChapter(
     comicId: Long,
     chapterNumber: Int,
+    lastPageNumber: Int,
     navController: NavController,
     viewChapterModel: ViewChapterModel = hiltViewModel()
 ) {
@@ -90,9 +91,10 @@ fun ViewChapter(
 
         ViewChapterContent(
             comicId = comicId,
+            chapterNumber = chapterNumber,
+            lastPageNumber = lastPageNumber,
             state = state,
             navController = navController,
-            chapterNumber = chapterNumber,
             viewChapterModel = viewChapterModel
         )
     }
@@ -103,9 +105,10 @@ fun ViewChapter(
 @Composable
 fun ViewChapterContent(
     comicId: Long,
+    chapterNumber: Int,
+    lastPageNumber: Int,
     state: ViewChapterState,
     navController: NavController,
-    chapterNumber: Int,
     viewChapterModel: ViewChapterModel
 ) {
     val context = LocalContext.current
@@ -197,11 +200,52 @@ fun ViewChapterContent(
 
     val scrollState = rememberLazyListState()
 
-    val currentPage = pagerState.currentPage + 1
+
+
+    val currentPageFlip = pagerState.currentPage + 1
+
     val currentPageScroll = scrollState.firstVisibleItemIndex + 1
     var imagePath = if (CheckNetwork()) APIConfig.imageAPIURL.toString() else {
         ""
     }
+    var finalLastPageNumber by remember {
+        mutableStateOf(lastPageNumber)
+    }
+    LaunchedEffect(key1 = lastPageNumber, key2 = state.isGetPageApiSuccess) {
+        if (finalLastPageNumber != 0 && state.isGetPageApiSuccess) {
+            Log.e("ViewChapterContent", "Last Page Number1: $finalLastPageNumber")
+
+            if (isScrollMode) {
+                delay(200)
+                scrollState.animateScrollToItem(lastPageNumber - 1)
+                finalLastPageNumber = 0
+            } else {
+                pagerState.animateScrollToPage(lastPageNumber - 1)
+                finalLastPageNumber = 0
+            }
+        }
+        else{
+            if (isScrollMode) {
+                Log.e("ViewChapterContent", "Last Page Number2: $finalLastPageNumber")
+                scrollState.animateScrollToItem(0)
+            } else {
+                pagerState.animateScrollToPage(0)
+            }
+        }
+    }
+
+
+//    LaunchedEffect(key1 = state.isGetPageApiSuccess){
+//        if (state.isGetPageApiSuccess && lastPageNumber == 0) {
+//            if (isScrollMode) {
+//                Log.e("ViewChapterContent", "Last Page Number: $lastPageNumber")
+//                scrollState.animateScrollToItem(0)
+//            } else {
+//                pagerState.animateScrollToPage(0)
+//            }
+//
+//        }
+//    }
 
     LaunchedEffect(key1 = autoScroll) {
         if (autoScroll && isScrollMode) {
@@ -227,6 +271,20 @@ fun ViewChapterContent(
             }
         )
     }
+
+    var updateLast by remember {
+        mutableStateOf(false)
+    }
+//    LaunchedEffect(key1 = state.isGetPageApiSuccess) {
+//        if (state.isGetPageApiSuccess) {
+//            viewChapterModel.updateLastReadPage(
+//                comicId = comicId,
+//                chapterNumber = state.currentChapterNumber,
+//                page = if (isScrollMode) currentPageScroll else currentPageFlip
+//            )
+//        }
+//    }
+
     Scaffold(
         topBar = {
             CustomAppBar(
@@ -234,10 +292,17 @@ fun ViewChapterContent(
 
                 navigationIcon = {
                     IconButton(onClick = {
+//                        viewChapterModel.resetStateIsGetPageApiSuccess()
+                        viewChapterModel.updateLastReadPage(
+                            comicId = comicId,
+                            chapterNumber = state.currentChapterNumber,
+                            page = if (isScrollMode) currentPageScroll else currentPageFlip
+                        )
+//                        Log.e("ViewChapterContent", "Last Read Page: $currentPageScroll")
                         viewChapterModel.resetState()
                         navController.navigate("comic_detail_route/${comicId}") {
                             popUpTo("view_chapter_route/${comicId}/${chapterNumber}") {
-                                inclusive = true
+                                inclusive = false
                             }
                         }
                     }) {
@@ -268,7 +333,7 @@ fun ViewChapterContent(
                     Text(
                         text = if (isScrollMode)
                             "($currentPageScroll / ${images.size})"
-                        else "($currentPage / ${images.size})",
+                        else "($currentPageFlip / ${images.size})",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -288,6 +353,13 @@ fun ViewChapterContent(
                     },
                     checkAutoScroll = { autoScroll = it },
                     viewChapterModel = viewChapterModel,
+                    onUpdateClick = {
+                        viewChapterModel.updateLastReadPage(
+                            comicId = comicId,
+                            chapterNumber = state.currentChapterNumber,
+                            page = if (isScrollMode) currentPageScroll else currentPageFlip
+                        )
+                    }
                 )
             }
         }
@@ -303,7 +375,11 @@ fun ViewChapterContent(
                     onConfirmClick = {
                         //UnlockUC
                         //if(state.success) {navigateToViewChapter}
-                        viewChapterModel.unlockAChapter(comicId, state.chapterUnlockNumber, state.priceToUnlockChapter.toLong())
+                        viewChapterModel.unlockAChapter(
+                            comicId,
+                            state.chapterUnlockNumber,
+                            state.priceToUnlockChapter.toLong()
+                        )
                     },
                     onDismiss = {
                         showDialog = false

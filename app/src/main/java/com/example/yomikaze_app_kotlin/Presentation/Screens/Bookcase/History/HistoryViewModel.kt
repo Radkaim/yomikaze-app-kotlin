@@ -41,11 +41,6 @@ class HistoryViewModel @Inject constructor(
         this.navController = navController
     }
 
-    fun onHistoryComicClicked(chapterId: Long) {
-        navController?.navigate("view_chapter_route/$chapterId")
-    }
-
-
     // Reset state
     private fun resetState() {
         _state.value = HistoryState()
@@ -64,8 +59,9 @@ class HistoryViewModel @Inject constructor(
         return appPreference.isUserLoggedIn
     }
 
-    fun onHistoryComicClicked(comicId: Long, chapterNumber: Int) {
-        navController?.navigate("view_chapter_route/$comicId/$chapterNumber")
+    fun onHistoryComicClicked(comicId: Long, chapterNumber: Int, lastPageNumber : Int? = 0) {
+        Log.d("ViewChapterContent", "onHistoryComicClicked: $lastPageNumber")
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber/$lastPageNumber")
     }
 
 

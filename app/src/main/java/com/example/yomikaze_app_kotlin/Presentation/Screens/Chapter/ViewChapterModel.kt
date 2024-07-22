@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChaptersByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetPageByComicIdAndChapterNumberDBUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.UpdateLastReadPageUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockAChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
@@ -24,7 +26,8 @@ class ViewChapterModel @Inject constructor(
     private val getPageByComicIdAndChapterNumberDBUC: GetPageByComicIdAndChapterNumberDBUC,
     private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC,
     private val getChaptersByComicIdDBUC: GetChaptersByComicIdDBUC,
-    private val unlockAChapterUC: UnlockAChapterUC
+    private val unlockAChapterUC: UnlockAChapterUC,
+    private val updateLastReadPageUC: UpdateLastReadPageUC
 ) : ViewModel() {
 
 
@@ -38,6 +41,7 @@ class ViewChapterModel @Inject constructor(
     fun setNavController(navController: NavController) {
         this.navController = navController
     }
+
     fun navigateToCoinShop() {
         navController?.navigate("coins_shop_route")
     }
@@ -52,15 +56,6 @@ class ViewChapterModel @Inject constructor(
         super.onCleared()
     }
 
-    //get user balance
-    fun getUserBalance(): Long {
-        return appPreference.userBalance
-    }
-
-    //reset chapter unlock number
-//    fun resetChapterUnlockNumber() {
-//        _state.value = _state.value.copy(chapterUnlockNumber = -1)
-//    }
 
     //reset chapter unlock number
     fun resetChapterUnlockNumberAndIsChapterNeedToUnlock() {
@@ -93,11 +88,16 @@ class ViewChapterModel @Inject constructor(
         return if (currentIndex >= 0 && currentIndex < state.value.listChapters!!.size - 1) state.value.listChapters!![currentIndex + 1].number else null
     }
 
+    //rest stateisgetpageapisuccess
+    fun resetStateIsGetPageApiSuccess() {
+        _state.value = _state.value.copy(isGetPageApiSuccess = false)
+    }
 
     // get pages by chapter number of comic
     fun getPagesByChapterNumberOfComic(comicId: Long, chapterNumber: Int) {
         _state.value = _state.value.copy(isGetPageApiSuccess = false)
         _state.value = _state.value.copy(isUserNeedToLogin = false)
+        _state.value = _state.value.copy(pagesImage = emptyList())
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -129,6 +129,7 @@ class ViewChapterModel @Inject constructor(
                 onFailure = { exception ->
                     // Xử lý lỗi
                     _state.value = _state.value.copy(isGetPageApiSuccess = false)
+                    _state.value = _state.value.copy(pagesImage = emptyList())
                     Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: $exception")
 
                     // catch 403 code
@@ -238,7 +239,7 @@ class ViewChapterModel @Inject constructor(
                 _state.value = _state.value.copy(isUnlockChapterSuccess = true)
 //                Log.d("ViewChapterModel", "unlockAChapter: ${result.body()}")
                 appPreference.userBalance = appPreference.userBalance - price
-            }else{
+            } else {
                 _state.value = _state.value.copy(isUnlockChapterSuccess = false)
                 Log.e("ViewChapterModel", "unlockAChapter: ${result.errorBody()?.string()}")
             }
@@ -252,6 +253,31 @@ class ViewChapterModel @Inject constructor(
             _state.value = _state.value.copy(
                 listChapters = chapters.sortedBy { it.number }
             )
+        }
+    }
+
+    fun updateLastReadPage(comicId: Long, chapterNumber: Int, page: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+                return@launch
+            }
+            val listPathRequest = listOf(
+                PathRequest(page.toString(), "/pageNumber", "replace")
+            )
+            val result = updateLastReadPageUC.updateLastReadPage(
+                token,
+                comicId,
+                chapterNumber,
+                listPathRequest
+            )
+            Log.d("ViewChapterModel", "updateLastReadPage: $result")
+            if (result.isSuccessful) {
+                Log.d("ViewChapterModel", "updateLastReadPage: ${result.body()}")
+            } else {
+                Log.e("ViewChapterModel", "updateLastReadPage: ${result.errorBody()?.string()}")
+            }
         }
     }
 

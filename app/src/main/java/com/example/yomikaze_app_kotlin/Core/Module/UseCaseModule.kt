@@ -31,6 +31,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.Downloa
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.GetAllComicInDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteAllHistoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.DeleteHistoryRecordUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetContinueReadingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetHistoriesUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.UpdateLastReadPageUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.AddComicToLibraryFirstTimeUC
@@ -535,6 +536,15 @@ object UseCaseModule {
     @Singleton
     fun provideUpdateLastReadPageUseCase(historyRepository: HistoryRepository): UpdateLastReadPageUC {
         return UpdateLastReadPageUC(historyRepository)
+    }
+
+    /**
+     * TODO: Provide continue reading UC
+     */
+    @Provides
+    @Singleton
+    fun provideContinueReadingUC(historyRepository: HistoryRepository): GetContinueReadingUC {
+        return GetContinueReadingUC(historyRepository)
     }
 
     /**

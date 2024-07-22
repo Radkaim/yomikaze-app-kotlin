@@ -307,8 +307,8 @@ class HomeViewModel @Inject constructor(
         navController?.navigate("ranking_route/$tabIndex")
     }
 
-    fun onHistoryComicClicked(comicId: Long, chapterNumber: Int) {
-        navController?.navigate("view_chapter_route/$comicId/$chapterNumber")
+    fun onHistoryComicClicked(comicId: Long, chapterNumber: Int, lastReadPageNumber: Int? = 0) {
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber/$lastReadPageNumber")
     }
 
     fun onNavigateComicDetail(comicId: Long) {

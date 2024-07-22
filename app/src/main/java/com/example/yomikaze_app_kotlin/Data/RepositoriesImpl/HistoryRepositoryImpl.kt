@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.HistoryApiService
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.ContinueReadingResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.HistoryResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
@@ -127,5 +128,20 @@ class HistoryRepositoryImpl @Inject constructor(
             Result.failure(Exception("Failed to delete history record"))
         }
         return response
+    }
+
+    /**
+     * TODO: continue reading
+     */
+    override suspend fun continueReading(
+        token: String,
+        comicId: Long
+    ): Result<ContinueReadingResponse> {
+        return try {
+            val response = api.continueReading("Bearer $token", comicId)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

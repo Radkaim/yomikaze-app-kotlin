@@ -5,7 +5,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.Page
 
 data class ViewChapterState(
     val isLoading: Boolean = false,
-    val isGetPageApiSuccess: Boolean = false,
+    val isGetPageApiSuccess: Boolean = true,
 
     val pagesImage: List<String> = emptyList(),
     val pageResponse: Page? = null,

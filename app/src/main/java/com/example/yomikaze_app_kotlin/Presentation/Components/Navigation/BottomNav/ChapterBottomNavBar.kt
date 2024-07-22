@@ -1,6 +1,5 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -73,6 +72,9 @@ fun ChapterBottomNavBar(
     checkAutoScroll: (Boolean) -> Unit,
 
     viewChapterModel: ViewChapterModel,
+
+    onUpdateClick: () -> Unit,
+
 
     ) {
     var isNetworkAvailable by remember { mutableStateOf(true) }
@@ -155,6 +157,7 @@ fun ChapterBottomNavBar(
 
                             if (previousChapterNumber != null) {
                                 if (isNetworkAvailable) {
+                                    onUpdateClick()
                                     viewChapterModel.getPagesByChapterNumberOfComic(
                                         comicId,
                                         previousChapterNumber
@@ -187,6 +190,7 @@ fun ChapterBottomNavBar(
                                 viewChapterModel.getNextChapterNumber(viewChapterModel.state.value.currentChapterNumber)
                             if (nextChapterNumber != null) {
                                 if (isNetworkAvailable) {
+                                    onUpdateClick()
                                     viewChapterModel.getPagesByChapterNumberOfComic(
                                         comicId,
                                         nextChapterNumber
@@ -201,7 +205,6 @@ fun ChapterBottomNavBar(
                             }
                         }
                     }
-                    Log.d("ChapterBottomNavBar", "onClick: ${item.screen_route}")
                 },
                 modifier = if (isSelected) Modifier.offset(y = (-2).dp) else Modifier
             )
@@ -221,7 +224,8 @@ fun ChapterBottomNavBar(
                         onDismiss = {
                             showDialog = null
                             currentRoute = null
-                        }
+                        },
+                        onUpdateClick = {onUpdateClick()}
                     )
                 }
 
@@ -451,6 +455,8 @@ fun SelectedModeComponent(
 fun ViewListChapterDialog(
     comicId: Long,
     viewChapterModel: ViewChapterModel,
+    onUpdateClick: () -> Unit,
+
     onDismiss: () -> Unit
 ) {
 
@@ -540,7 +546,7 @@ fun ViewListChapterDialog(
                     listChapter?.let { // means if listChapter is not null
                         val sortedList = if (isReversed) it.reversed() else it
                         items(sortedList) { chapter ->
-                            LaunchedEffect(key1 =viewChapterState.value.isUnlockChapterSuccess) {
+                            LaunchedEffect(key1 = viewChapterState.value.isUnlockChapterSuccess) {
                                 if (viewChapterState.value.isUnlockChapterSuccess) {
                                     if (isNetworkAvailable && selectedChapter != null) {
                                         viewChapterModel.getPagesByChapterNumberOfComic(
@@ -572,10 +578,12 @@ fun ViewListChapterDialog(
                                             showDialog = true
                                         } else {
                                             if (isNetworkAvailable) {
+                                                onUpdateClick()
                                                 viewChapterModel.getPagesByChapterNumberOfComic(
                                                     comicId,
                                                     chapter.number
                                                 )
+                                                onDismiss()
                                             } else {
                                                 viewChapterModel.getPageByComicIdAndChapterNumberInDB(
                                                     comicId,
@@ -584,7 +592,7 @@ fun ViewListChapterDialog(
                                             }
                                         }
                                     }
-//                                    onDismiss()
+
                                 },
                                 onReportClick = {}
                             )

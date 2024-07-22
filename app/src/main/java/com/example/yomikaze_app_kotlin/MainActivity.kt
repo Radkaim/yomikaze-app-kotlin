@@ -88,10 +88,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = "view_chapter_route/{comicId}/{chapterNumber}",
+                            route = "view_chapter_route/{comicId}/{chapterNumber}/{lastPageNumber}",
                             deepLinks = listOf(
                                 navDeepLink {
-                                    uriPattern = "https://yomikaze.org/view_chapter/{comicId}/{chapterNumber}"
+                                    uriPattern =
+                                        "https://yomikaze.org/view_chapter/{comicId}/{chapterNumber}"
                                     action = Intent.ACTION_VIEW
                                 }
                             ),
@@ -103,10 +104,13 @@ class MainActivity : ComponentActivity() {
                             val comicId = navBackStackEntry.arguments?.getString("comicId")
                             val chapterNumber =
                                 navBackStackEntry.arguments?.getString("chapterNumber")
+                            val lastPageNumber =
+                                navBackStackEntry.arguments?.getString("lastPageNumber") ?: "0"
 
                             ViewChapter(
                                 comicId = comicId?.toLong()!!,
                                 chapterNumber = chapterNumber?.toInt() ?: 0,
+                                lastPageNumber = lastPageNumber.toInt(),
                                 navController = navController
                             )
                         }
@@ -129,11 +133,13 @@ class MainActivity : ComponentActivity() {
                     Log.d("DeepLink", "comicId: $comicId, chapterId: $chapterId")
                     navController.navigate("view_chapter_route/$comicId/$chapterId")
                 }
+
                 pathSegments.size > 1 && pathSegments[0] == "comic_detail" -> {
                     val comicId = pathSegments[1]
                     Log.d("DeepLink", "comicId: $comicId")
                     navController.navigate("comic_detail_route/$comicId")
                 }
+
                 else -> {
                     navController.navigate("main_graph_route")
                 }
