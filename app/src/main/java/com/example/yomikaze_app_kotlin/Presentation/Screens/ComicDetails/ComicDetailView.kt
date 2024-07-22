@@ -109,13 +109,7 @@ fun ComicDetailsView(
 
     //set navController for viewModel
     comicDetailViewModel.setNavController(navController)
-//    LaunchedEffect(Unit){
-//        comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
-//    }
 
-
-    // comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
-    //comicDetailViewModel.downloadComic(state.comicResponse ?: return)
     if (CheckNetwork()) {
         LaunchedEffect(Unit) {
             Log.d("ComicDetailsView", "launchedEffect:1")
@@ -920,7 +914,7 @@ fun ListChapterInComicDetailView(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 15.dp)
+            .padding(top = 15.dp, bottom = 15.dp)
             .offset(x = (-4).dp),
         verticalArrangement = Arrangement.spacedBy(4.dp) // 8.dp space between each item
     ) {
@@ -943,7 +937,7 @@ fun ListChapterInComicDetailView(
                     publishedDate = chapter.creationTime,
                     isLocked = if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock,
                     onClick = {
-                        if (!comicDetailViewModel.checkUserIsLogin()) {
+                        if (!comicDetailViewModel.checkUserIsLogin() && chapter.hasLock) {
                             Toast.makeText(
                                 context,
                                 "Please sign in to unlock this chapter",

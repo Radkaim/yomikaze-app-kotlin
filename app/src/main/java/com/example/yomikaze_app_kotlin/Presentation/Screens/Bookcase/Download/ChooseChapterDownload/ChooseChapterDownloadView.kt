@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.C
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,15 +36,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.LottieAnimationComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
@@ -107,6 +111,27 @@ fun ChooseChapterDownloadContent(
 ) {
 
     val chapterList = state.listChapterForDownloaded.sortedBy { it.number }
+    var selectedChapter by remember { mutableStateOf<Chapter?>(null) }
+    var totalPrice by remember { mutableStateOf(0) }
+
+    val context = LocalContext.current
+    val appPreference = AppPreference(context)
+    var showDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = state.isUnlockChapterSuccess) {
+        if (state.isUnlockChapterSuccess) {
+            chooseChapterDownloadViewModel.getComicDetailsAndDownload(
+                comicId
+            )
+            Toast
+                .makeText(
+                    context,
+                    "Downloaded successfully, please wait a moment",
+                    Toast.LENGTH_SHORT
+                )
+                .show()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -153,11 +178,14 @@ fun ChooseChapterDownloadContent(
                         //total selected chapters
                         val totalSelectedChapters =
                             chooseChapterDownloadViewModel.getSelectedChapters().size
-                        Text( text = "Have chosen: $totalSelectedChapters ${if (totalSelectedChapters > 1) "chapters" else "chapter"}",
+                        Text(
+                            text = "Have chosen: $totalSelectedChapters ${if (totalSelectedChapters > 1) "chapters" else "chapter"}",
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.W300,
                             color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier.align(Alignment.Center).padding(start = 70.dp)
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(start = 70.dp)
                         )
                     }
                 }
@@ -218,10 +246,51 @@ fun ChooseChapterDownloadContent(
                         modifier = Modifier
                             .padding(end = 40.dp)
                             .clickable {
-                               chooseChapterDownloadViewModel.getComicDetailsAndDownload(comicId)
-                                val se =
-                                    chooseChapterDownloadViewModel.getTotalPriceOfSelectedChapters()
-                                Log.d("ChooseChapterDownload", "ChooseChapterDownloadContent: $se")
+                                //check if selected chapter contain isLocked = true
+                                val selectedChaptersContainLock =
+                                    chooseChapterDownloadViewModel.getSelectedChaptersContainIsUnlocked()
+                                Log.d(
+                                    "ChooseChapterDownload",
+                                    "Selected chapters contain lock: $selectedChaptersContainLock"
+                                )
+                                if (selectedChaptersContainLock != null) {
+                                    if (appPreference.isUserLoggedIn) {
+                                        totalPrice =
+                                            chooseChapterDownloadViewModel.getTotalPriceOfSelectedChaptersContainLock()
+                                        showDialog = true
+                                    } else if (selectedChaptersContainLock.isEmpty()) {
+                                        chooseChapterDownloadViewModel.getComicDetailsAndDownload(
+                                            comicId
+                                        )
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                "Downloaded successfully, please wait a moment",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
+                                    } else {
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                "You need to login to unlock this chapter",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
+                                        return@clickable
+                                    }
+                                } else {
+                                    chooseChapterDownloadViewModel.getComicDetailsAndDownload(
+                                        comicId
+                                    )
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "Downloaded successfully, please wait a moment",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
+                                }
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -247,7 +316,6 @@ fun ChooseChapterDownloadContent(
                             )
                         }
                     }
-
                 }
             }
         }
@@ -301,23 +369,37 @@ fun ChooseChapterDownloadContent(
                         BoxSelectedDownload(
                             chapter = chapter,
                             isSelected = chapter.isSelected,
-                            onClicked = { chooseChapterDownloadViewModel.toggleChapterSelection(chapter) }
+                            appPreference = appPreference,
+                            onClicked = {
+                                chooseChapterDownloadViewModel.toggleChapterSelection(
+                                    chapter
+                                )
+                            }
                         )
                     }
-
                 }
-//                val sortedList = if (isReversed) it.reversed() else it
-//                items(chapterList.size) { index ->
-//
-//                    val chapter = chapterList[index]
-//                    BoxSelectedDownload(
-//                        chapter = chapter,
-//                        isSelected = chapter.isSelected,
-//                        onClicked = { chooseChapterDownloadViewModel.toggleChapterSelection(chapter) }
-//                    )
-//                }
-
             }
+        }
+        if (showDialog) {
+            UnlockChapterDialogComponent(
+                title = "Do you want to unlock this chapter?",
+                totalCoin = totalPrice.toLong(),
+                coinOfUserAvailable = appPreference.userBalance,
+                onConfirmClick = {
+                    //UnlockUC
+                    //if(state.success) {navigateToViewChapter}
+                    chooseChapterDownloadViewModel.unlockManyChapters(
+                        comicId = comicId,
+                        listChapterNumbers = chooseChapterDownloadViewModel.getChapterNumberOfSelectedChaptersContainingLockedChapter(),
+                        totalPrice = totalPrice
+                    )
+                },
+                onDismiss = { showDialog = false },
+                onBuyCoinsClick = {
+                    //navigateToBuyCoins
+                    chooseChapterDownloadViewModel.navigateToCoinShop()
+                }
+            )
         }
     }
 }
@@ -326,9 +408,11 @@ fun ChooseChapterDownloadContent(
 fun BoxSelectedDownload(
     chapter: Chapter,
     isSelected: Boolean,
+    appPreference: AppPreference,
     onClicked: () -> Unit
-
 ) {
+
+
     Box(
         modifier = Modifier
             .height(50.dp)
@@ -364,7 +448,7 @@ fun BoxSelectedDownload(
                     .offset(x = 4.dp)
             )
         }
-        if (chapter.hasLock && !chapter.isDownloaded) {
+        if (if (appPreference.isUserLoggedIn) !chapter.isUnlocked else chapter.hasLock && !chapter.isDownloaded) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_lock),
                 contentDescription = "lock",
@@ -378,7 +462,6 @@ fun BoxSelectedDownload(
             )
         }
 
-        // Chapter number in the center
         Box(
             modifier = Modifier.align(Alignment.Center)
         ) {
@@ -389,5 +472,6 @@ fun BoxSelectedDownload(
                 modifier = Modifier.align(Alignment.Center)
             )
         }
+
     }
 }

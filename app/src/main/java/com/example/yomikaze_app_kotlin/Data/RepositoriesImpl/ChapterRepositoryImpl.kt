@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
+import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import retrofit2.Response
@@ -17,7 +18,7 @@ class ChapterRepositoryImpl @Inject constructor(
      * TODO: get list of chapters by comic id
      */
     override suspend fun getListChaptersByComicId(
-        token: String,comicId: Long): Result<List<Chapter>> {
+        token: String,comicId: Long): Result<BaseResponse<Chapter>> {
         return try {
             val response = api.getListChaptersByComicId("Bearer $token", comicId)
             Result.success(response)
@@ -35,7 +36,7 @@ class ChapterRepositoryImpl @Inject constructor(
         chapterNumber: Int
     ): Result<Chapter> {
         return try {
-            val response = api.getChapterDetail(token, comicId, chapterNumber)
+            val response = api.getChapterDetail("Bearer $token", comicId, chapterNumber)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

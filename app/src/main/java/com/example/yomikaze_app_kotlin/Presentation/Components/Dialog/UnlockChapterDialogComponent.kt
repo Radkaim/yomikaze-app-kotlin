@@ -39,7 +39,7 @@ fun UnlockChapterDialogComponent(
     title: String, // title of dialog
     totalCoin: Long, // total coin for unlock
     coinOfUserAvailable: Long, // coin of user available
-    chapterNumber: Number,
+    chapterNumber: Number? = null,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
     onBuyCoinsClick: () -> Unit
@@ -89,23 +89,24 @@ fun UnlockChapterDialogComponent(
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(start = 30.dp)
                         )
-                        Box {
-                            Text(
-                                text = "Chapter $chapterNumber",
-                                fontSize = 12.sp,
-                                maxLines = 2,
-                                lineHeight = 16.sp,
-                                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
-                                fontStyle = FontStyle.Italic,
-                                overflow = TextOverflow.Ellipsis,
-                                softWrap = true,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .padding(start = 40.dp, top = 3.dp)
-                                    .align(Alignment.Center)
-                                    .width(250.dp)
-                            )
-
+                        if (chapterNumber != null) {
+                            Box {
+                                Text(
+                                    text = "Chapter $chapterNumber",
+                                    fontSize = 12.sp,
+                                    maxLines = 2,
+                                    lineHeight = 16.sp,
+                                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                                    fontStyle = FontStyle.Italic,
+                                    overflow = TextOverflow.Ellipsis,
+                                    softWrap = true,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .padding(start = 40.dp, top = 3.dp)
+                                        .align(Alignment.Center)
+                                        .width(250.dp)
+                                )
+                            }
                         }
 
                         Text(
@@ -216,18 +217,39 @@ fun UnlockChapterDialogComponent(
                                         color = MaterialTheme.colorScheme.onPrimary,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 15.sp,
-                                        fontStyle = FontStyle.Italic
+//                                        fontStyle = FontStyle.Italic
                                     )
                                 ) {
                                     append(" Coins")
                                 }
-                                append(" for unlock chapters? ")
+                                append(" to unlock chapters? ")
                             },
                             fontSize = 13.sp,
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(start = 50.dp, top = 10.dp)
+                        )
+                        Text(
+                            text = buildAnnotatedString {
+                                append("You need ")
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                ) {
+                                    append("$totalCoin coins")
+                                }
+                                append(" to unlock")
+                            },
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(start = 80.dp, top = 20.dp)
                         )
 
 
@@ -252,7 +274,7 @@ fun UnlockChapterDialogComponent(
                             color = MaterialTheme.colorScheme.primaryContainer,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.run { padding(start = 50.dp, top = 25.dp) }
+                            modifier = Modifier.run { padding(start = 50.dp, top = 10.dp) }
                         )
 
                         Row(

@@ -7,5 +7,7 @@ data class ChooseChapterDownloadState (
     val isListNumberLoading : Boolean = true,
 
     val listChapterForDownloaded: List<Chapter> = emptyList(),
-    val isPrepareForDownload: Boolean = false
+    val isPrepareForDownload: Boolean = false,
+
+    val isUnlockChapterSuccess: Boolean = false,
 )

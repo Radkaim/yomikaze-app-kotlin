@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Domain.Repositories
 
+import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import retrofit2.Response
 
@@ -11,7 +12,7 @@ interface ChapterRepository {
     suspend fun getListChaptersByComicId(
         token: String,
         comicId: Long
-    ): Result<List<Chapter>>
+    ): Result<BaseResponse<Chapter>>
 
     /**
      * TODO: Get chapter detail by comic id and chapter number

@@ -549,12 +549,6 @@ fun ViewListChapterDialog(
                                         )
                                         onDismiss()
                                     }
-//                                    } else {
-//                                        viewChapterModel.getPageByComicIdAndChapterNumberInDB(
-//                                            comicId,
-//                                            selectedChapter?.number!!
-//                                        )
-//                                    }
                                 }
                             }
                             ChapterCard(
@@ -565,12 +559,7 @@ fun ViewListChapterDialog(
                                 publishedDate = chapter.creationTime,
                                 isLocked = if (appPreference.isUserLoggedIn) !chapter.isUnlocked else chapter.hasLock,
                                 onClick = {
-//                                    if (chapter.hasLock) {
-//                                        selectedChapter = chapter
-//                                        showDialog = true
-//                                    } else {
-
-                                    if (!appPreference.isUserLoggedIn) {
+                                    if (!appPreference.isUserLoggedIn && chapter.hasLock) {
                                         Toast.makeText(
                                             context,
                                             "Please sign in to unlock this chapter",
@@ -599,11 +588,10 @@ fun ViewListChapterDialog(
                                 },
                                 onReportClick = {}
                             )
-
                         }
                     }
-
                 }
+
                 if (showDialog) {
                     UnlockChapterDialogComponent(
                         title = "Do you want to unlock this chapter?",

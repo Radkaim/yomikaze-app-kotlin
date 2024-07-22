@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.API
 
+import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import retrofit2.Response
 import retrofit2.http.Body
@@ -7,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * ChapterApiService is an interface that defines the API endpoints for the chapter service.
@@ -16,8 +18,9 @@ interface ChapterApiService {
     @GET("comics/{comicId}/chapters")
     suspend fun getListChaptersByComicId(
         @Header("Authorization") token: String,
-        @Path("comicId") comicId: Long
-    ): List<Chapter>
+        @Path("comicId") comicId: Long,
+        @Query("Pagination") pagination: Boolean = false,
+    ): BaseResponse<Chapter>
 
     @GET("comics/{comicId}/chapters/{chapterNumber}")
     suspend fun getChapterDetail(

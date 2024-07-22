@@ -97,6 +97,7 @@ class ViewChapterModel @Inject constructor(
     // get pages by chapter number of comic
     fun getPagesByChapterNumberOfComic(comicId: Long, chapterNumber: Int) {
         _state.value = _state.value.copy(isGetPageApiSuccess = false)
+        _state.value = _state.value.copy(isUserNeedToLogin = false)
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -206,7 +207,7 @@ class ViewChapterModel @Inject constructor(
                     // Xử lý kết quả thành công
                     //_state.value.listChapters.value = listChapter
                     _state.value = _state.value.copy(
-                        listChapters = listChapter.sortedBy { it.number }
+                        listChapters = listChapter.results.sortedBy { it.number }
                     )
                 },
                 onFailure = { exception ->

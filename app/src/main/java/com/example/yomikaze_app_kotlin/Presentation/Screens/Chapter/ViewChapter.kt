@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -165,6 +166,13 @@ fun ViewChapterContent(
 //            Log.e("ViewChapterContent", "Unlock Chapter Number: ${state.chapterUnlockNumber}")
             viewChapterModel.getPagesByChapterNumberOfComic(comicId, state.chapterUnlockNumber)
             viewChapterModel.resetChapterUnlockNumberAndIsChapterNeedToUnlock()
+        }
+    }
+
+    LaunchedEffect(key1 = state.isUserNeedToLogin) {
+        if (state.isUserNeedToLogin) {
+            Toast.makeText(context, "Please sign in  to unlock this chapter", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

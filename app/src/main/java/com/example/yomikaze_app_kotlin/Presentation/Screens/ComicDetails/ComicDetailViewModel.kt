@@ -224,9 +224,9 @@ class ComicDetailViewModel @Inject constructor(
                     // Xử lý kết quả thành công
                     //_state.value.listChapters.value = listChapter
                     _state.value = _state.value.copy(
-                        listChapters = listChapter.sortedBy { it.number }
+                        listChapters = listChapter.results.sortedBy { it.number }
                     )
-                    listChapter.forEach() {
+                    listChapter.results.forEach() {
                         Log.d("ComicDetailViewModel", "getListChapterByComicId: $it")
                     }
                 },
