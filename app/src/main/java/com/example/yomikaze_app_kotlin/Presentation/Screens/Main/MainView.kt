@@ -52,7 +52,7 @@ fun MainView(viewModel: MainViewModel) {
         bottomBar = {
             when (currentDestination?.route) {
            //     "view_chapter_route/{comicId}/{chapterNumber}" -> ChapterBottomNavBar(navController = navController)
-                "home_route", "bookcase_route", "notification_route", "profile_route" -> HomeBottomNavBar(
+                 "bookcase_route", "notification_route", "profile_route" -> HomeBottomNavBar(
                     navController = navController
                 )
 

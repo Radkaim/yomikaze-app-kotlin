@@ -69,8 +69,11 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     //fun get selectedCapterContainIsUnlocked
     fun getSelectedChaptersContainIsUnlocked(): List<Chapter> {
         Log.d("ChooseChapterDownloadViewModel", "getSelectedChaptersContainIsUnlocked: ${_state.value.listChapterForDownloaded.filter { it.isSelected }}")
-        return _state.value.listChapterForDownloaded.filter { it.isSelected && !it.isUnlocked }
-
+        return if (appPreference.isUserLoggedIn) {
+            _state.value.listChapterForDownloaded.filter { it.isSelected && !it.isUnlocked }
+        } else {
+            return _state.value.listChapterForDownloaded.filter { it.isSelected && it.hasLock }
+        }
     }
 
     fun selectAllChapters() {
@@ -155,7 +158,7 @@ class ChooseChapterDownloadViewModel @Inject constructor(
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
-                    _state.value = state.value.copy(isListNumberLoading = true)
+                    _state.value = state.value.copy(isListNumberLoading = false)
                     Log.e("ComicDetailViewModel", "getListChapterByComicId: $exception")
                 }
             )
@@ -184,14 +187,14 @@ class ChooseChapterDownloadViewModel @Inject constructor(
                 _state.value = _state.value.copy(isUnlockChapterSuccess = true)
                 Log.d("ViewChapterModel", "unlockAChapter: ${result.code()}")
                 //set isUnlocked of selected chapters to true
-                val updatedChapters = _state.value.listChapterForDownloaded.map { chapter ->
-                    if (listChapterNumbers.contains(chapter.number)) {
-                        chapter.copy(isUnlocked = true, isDownloaded = true)
-                    } else {
-                        chapter
-                    }
-                }
-                _state.value = _state.value.copy(listChapterForDownloaded = updatedChapters)
+//                val updatedChapters = _state.value.listChapterForDownloaded.map { chapter ->
+//                    if (listChapterNumbers.contains(chapter.number)) {
+//                        chapter.copy(isUnlocked = true, isDownloaded = true)
+//                    } else {
+//                        chapter
+//                    }
+//                }
+//                _state.value = _state.value.copy(listChapterForDownloaded = updatedChapters)
                 appPreference.userBalance = appPreference.userBalance - totalPrice
             } else {
                 _state.value = _state.value.copy(isUnlockChapterSuccess = false)

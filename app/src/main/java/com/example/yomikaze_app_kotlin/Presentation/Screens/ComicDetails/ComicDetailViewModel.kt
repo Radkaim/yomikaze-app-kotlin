@@ -58,6 +58,7 @@ class ComicDetailViewModel @Inject constructor(
 
     fun navigateToChooseChapterDownload(comicId: Long, comicName: String) {
         navController?.navigate("choose_chapter_download_route/$comicId/$comicName")
+
     }
     fun navigateToComicComment(comicId: Long, comicName: String) {
         navController?.navigate("comic_comment_route/$comicId/$comicName")
@@ -73,17 +74,6 @@ class ComicDetailViewModel @Inject constructor(
     fun checkUserIsLogin(): Boolean {
         return appPreference.isUserLoggedIn
     }
-
-//    // check is that own user comment for set edit and delete button
-//    fun checkIsOwnComment(userId: Long): Boolean {
-//        val ownUserId = appPreference.userId
-//        val userRoles = appPreference.userRoles
-//        return ownUserId == userId
-//    }
-//    fun checkIsAdmin(): Boolean {
-//        val userRoles = appPreference.userRoles
-//        return userRoles?.contains("Super") == true || userRoles?.contains("Administrator") == true
-//    }
 
     fun getComicDetailsFromApi(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -130,55 +120,6 @@ class ComicDetailViewModel @Inject constructor(
             }
         }
     }
-
-//    /**
-//     * Todo: Implement follow comic in comic detail view
-//     */
-//    fun followComic(comicId: Long, categoryId: List<Long>) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-//            val result = followComicUC.followComic(token, comicId)
-//            result.fold(
-//                onSuccess = {
-//                    // Xử lý kết quả thành công
-//                    addComicToCategory(it.id, categoryId)
-//                },
-//                onFailure = { exception ->
-//                    // Xử lý lỗi
-//                    Log.e("ComicDetailViewModel", "FollowComic: $exception")
-//                }
-//            )
-//        }
-//    }
-//
-//    /**
-//     * Todo: Implement unfollow comic in comic detail view
-//     */
-//
-//    /**
-//     * Todo: Implement add comic to category in comic detail view
-//     */
-//    fun addComicToCategory(libraryEntryId: Long, categoryId: List<Long>) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _state.value = _state.value.copy(isFollowComicSuccess = false)
-//            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-//
-//            //create list path request
-//            val pathRequest = mutableListOf<PathRequest>()
-//
-//            categoryId.forEach { id ->
-//                pathRequest.add(PathRequest(id.toString(), "/categoryIds/0", "add"))
-//            }
-//            Log.d("ComicDetailViewModel", "addComicToCategory2: $pathRequest")
-//            val result = addComicToCategoryUC.addComicToCategory(token, libraryEntryId, pathRequest)
-//            if (result.code() == 204) {
-//                _state.value = _state.value.copy(isFollowComicSuccess = true)
-//            } else {
-//                _state.value = _state.value.copy(isFollowComicSuccess = false)
-//                Log.e("Rating", "rateComic: $result")
-//            }
-//        }
-//    }
 
 
     /**

@@ -48,6 +48,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookcas
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.NormalComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.HomeBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangle
@@ -158,6 +159,8 @@ fun MainHomeAppBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeContent(
     state: HomeState,
@@ -170,100 +173,118 @@ fun HomeContent(
     ) {
     if (searchWidgetState == SearchWidgetState.OPEN) {
 
+        Scaffold(
+            topBar = {},
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(top = 70.dp)
-                .wrapContentSize(Alignment.Center)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(
-                    top = 10.dp,
-                    start = 4.dp,
-                    end = 4.dp,
-                    bottom = 4.dp
-                ),// Optional padding for the entire list,
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            item {
-                if (state.totalResults != 0) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
+            bottomBar = {}
+        )
+        {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(top = 70.dp)
+                    .wrapContentSize(Alignment.Center)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(
+                        top = 10.dp,
+                        start = 4.dp,
+                        end = 4.dp,
+                        bottom = 4.dp
+                    ),// Optional padding for the entire list,
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                item {
+                    if (state.totalResults != 0) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = "Results: " + state.totalResults.toString(),
+                                color = MaterialTheme.colorScheme.inverseSurface,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .align(Alignment.Start)
+                                    .padding(bottom = 10.dp)
+                            )
+                        }
+
+                    }
+                }
+
+                items(state.searchResult.value) { comic ->
+                    //  Spacer(modifier = Modifier.height(10.dp))
+                    SearchResultItem(comic = comic, homeViewModel = homeViewModel)
+                }
+
+                item {
+                    if (state.isSearchLoading) {
+                        repeat(2) {
+                            NormalComicCardShimmerLoading()
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+                    }
+                }
+                item {
+                    if (state.searchResult.value.isNotEmpty()) {
                         Text(
-                            text = "Results: " + state.totalResults.toString(),
-                            color = MaterialTheme.colorScheme.inverseSurface,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                            text = "Show More",
                             modifier = Modifier
-                                .align(Alignment.Start)
-                                .padding(bottom = 10.dp)
+                                .padding(top = 10.dp)
+                                .clickable { homeViewModel.onAdvanceSearchClicked(searchTextState) },
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
                         )
                     }
-
-                }
-            }
-
-            items(state.searchResult.value) { comic ->
-                //  Spacer(modifier = Modifier.height(10.dp))
-                SearchResultItem(comic = comic, homeViewModel = homeViewModel)
-            }
-
-            item {
-                if (state.isSearchLoading) {
-                    repeat(2) {
-                        NormalComicCardShimmerLoading()
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
-                }
-            }
-            item {
-                if (state.searchResult.value.isNotEmpty()) {
-                    Text(
-                        text = "Show More",
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .clickable { homeViewModel.onAdvanceSearchClicked(searchTextState) },
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    )
                 }
             }
         }
     } else {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 55.dp)
-                .background(MaterialTheme.colorScheme.background),
-            contentPadding = PaddingValues(0.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        )
-        {
-            item {
-                showComicCarouselByViewRanking(state = state, homeViewModel = homeViewModel)
-            }
-            Log.d("HomeView", "State images: ${homeViewModel.checkUserIsLogin()}")
-            if (homeViewModel.checkUserIsLogin()) {
-                item {
-                    showHistory(navController, homeViewModel, state)
-                }
-            }
+        Scaffold(
+            topBar = {},
 
-            item {
-                showRanking(homeViewModel = homeViewModel, state = state)
-            }
-
-            item {
-                showWeekly(
-                    homeViewModel = homeViewModel,
-                    state = state,
+            bottomBar = {
+                HomeBottomNavBar(
                     navController = navController
                 )
             }
+        )
+        {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 55.dp)
+                    .background(MaterialTheme.colorScheme.background),
+                contentPadding = PaddingValues(0.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            )
+            {
+                item {
+                    showComicCarouselByViewRanking(state = state, homeViewModel = homeViewModel)
+                }
+                Log.d("HomeView", "State images: ${homeViewModel.checkUserIsLogin()}")
+                if (homeViewModel.checkUserIsLogin()) {
+                    item {
+                        showHistory(navController, homeViewModel, state)
+                    }
+                }
 
+                item {
+                    showRanking(homeViewModel = homeViewModel, state = state)
+                }
+
+                item {
+                    showWeekly(
+                        homeViewModel = homeViewModel,
+                        state = state,
+                        navController = navController
+                    )
+                }
+
+            }
         }
+
     }
 }
 

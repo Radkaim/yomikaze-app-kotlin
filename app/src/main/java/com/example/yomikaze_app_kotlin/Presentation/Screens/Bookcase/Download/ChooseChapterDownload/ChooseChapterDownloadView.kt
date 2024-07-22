@@ -35,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,11 +44,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
-import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.LottieAnimationComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.BoxSelectedDownloadShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 
@@ -66,35 +65,15 @@ fun ChooseChapterDownloadView(
 
     LaunchedEffect(Unit) {
         chooseChapterDownloadViewModel.getListChapterByComicId(comicId = comicId)
-
     }
 
     if (CheckNetwork()) {
-        if (state.isListNumberLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                LottieAnimationComponent(
-                    animationFileName = R.raw.loading, // Replace with your animation file name
-                    loop = true,
-                    autoPlay = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .scale(1.15f)
-                )
-            }
-        } else {
-            ChooseChapterDownloadContent(
-                comicId = comicId,
-                navController = navController,
-                chooseChapterDownloadViewModel = chooseChapterDownloadViewModel,
-                state = state
-            )
-        }
+        ChooseChapterDownloadContent(
+            comicId = comicId,
+            navController = navController,
+            chooseChapterDownloadViewModel = chooseChapterDownloadViewModel,
+            state = state
+        )
     } else {
         UnNetworkScreen()
     }
@@ -111,7 +90,7 @@ fun ChooseChapterDownloadContent(
 ) {
 
     val chapterList = state.listChapterForDownloaded.sortedBy { it.number }
-    var selectedChapter by remember { mutableStateOf<Chapter?>(null) }
+
     var totalPrice by remember { mutableStateOf(0) }
 
     val context = LocalContext.current
@@ -253,33 +232,26 @@ fun ChooseChapterDownloadContent(
                                     "ChooseChapterDownload",
                                     "Selected chapters contain lock: $selectedChaptersContainLock"
                                 )
-                                if (selectedChaptersContainLock != null) {
+                                if (selectedChaptersContainLock.isNotEmpty()) {
                                     if (appPreference.isUserLoggedIn) {
                                         totalPrice =
                                             chooseChapterDownloadViewModel.getTotalPriceOfSelectedChaptersContainLock()
                                         showDialog = true
-                                    } else if (selectedChaptersContainLock.isEmpty()) {
-                                        chooseChapterDownloadViewModel.getComicDetailsAndDownload(
-                                            comicId
-                                        )
-                                        Toast
-                                            .makeText(
-                                                context,
-                                                "Downloaded successfully, please wait a moment",
-                                                Toast.LENGTH_SHORT
-                                            )
-                                            .show()
                                     } else {
                                         Toast
                                             .makeText(
                                                 context,
-                                                "You need to login to unlock this chapter",
+                                                "You need to sign in to unlock this chapter",
                                                 Toast.LENGTH_SHORT
                                             )
                                             .show()
                                         return@clickable
                                     }
-                                } else {
+                                }
+                                if (chooseChapterDownloadViewModel
+                                        .getSelectedChapters()
+                                        .isNotEmpty()
+                                ) {
                                     chooseChapterDownloadViewModel.getComicDetailsAndDownload(
                                         comicId
                                     )
@@ -290,6 +262,15 @@ fun ChooseChapterDownloadContent(
                                             Toast.LENGTH_SHORT
                                         )
                                         .show()
+                                } else {
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "You need to sign in to unlock this chapter",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
+                                    return@clickable
                                 }
                             },
                         contentAlignment = Alignment.Center
@@ -323,66 +304,79 @@ fun ChooseChapterDownloadContent(
 
         var isSelected by remember { mutableStateOf(true) }
         var isReversed by remember { mutableStateOf(false) }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Total chapters: ${chapterList!!.size}",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp)
-            )
-
-
-            SortComponent(
-                isOldestSelected = isSelected,
-                onnNewSortClick = {
-                    isSelected = false
-                    isReversed = true
-                },
-                onOldSortClick = {
-                    isSelected = true
-                    isReversed = false
-                }
-            )
-        }
-
-
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(start = 5.dp, end = 5.dp, top = 50.dp, bottom = 5.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+        if (state.isListNumberLoading) {
+            val item = 1..12
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 50.dp),
             ) {
-                chapterList?.let {
-                    val sortedList = if (isReversed) it.reversed() else it
-                    items(chapterList.size) { index ->
+                items(item.count()) { index ->
+                    BoxSelectedDownloadShimmerLoading()
+                }
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Total chapters: ${chapterList!!.size}",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                )
 
-                        val chapter = sortedList[index]
-                        BoxSelectedDownload(
-                            chapter = chapter,
-                            isSelected = chapter.isSelected,
-                            appPreference = appPreference,
-                            onClicked = {
-                                chooseChapterDownloadViewModel.toggleChapterSelection(
-                                    chapter
-                                )
-                            }
-                        )
+
+                SortComponent(
+                    isOldestSelected = isSelected,
+                    onnNewSortClick = {
+                        isSelected = false
+                        isReversed = true
+                    },
+                    onOldSortClick = {
+                        isSelected = true
+                        isReversed = false
+                    }
+                )
+            }
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(start = 5.dp, end = 5.dp, top = 50.dp, bottom = 5.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(4),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 50.dp),
+                ) {
+                    chapterList?.let {
+                        val sortedList = if (isReversed) it.reversed() else it
+                        items(chapterList.size) { index ->
+                            val chapter = sortedList[index]
+                            BoxSelectedDownload(
+                                chapter = chapter,
+                                isSelected = chapter.isSelected,
+                                appPreference = appPreference,
+                                onClicked = {
+                                    chooseChapterDownloadViewModel.toggleChapterSelection(
+                                        chapter
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
         if (showDialog) {
             UnlockChapterDialogComponent(
-                title = "Do you want to unlock this chapter?",
+                title = "You need to unlock ${if (chooseChapterDownloadViewModel.getChapterNumberOfSelectedChaptersContainingLockedChapter().size > 1) "these chapters" else "this chapter"}",
                 totalCoin = totalPrice.toLong(),
                 coinOfUserAvailable = appPreference.userBalance,
                 onConfirmClick = {
@@ -427,11 +421,7 @@ fun BoxSelectedDownload(
                 ) else Modifier
             )
             .clickable {
-//                if (chapter.hasLock) {
-//                   Log.d("ChooseChapterDownload", "You can't download this chapter and you need use $${chapter.price} coin to unlock it")
-//                } else {
                 onClicked()
-
             }
     ) {
         // Tick icon in the top-left corner

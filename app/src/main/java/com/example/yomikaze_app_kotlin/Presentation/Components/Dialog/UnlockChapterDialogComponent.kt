@@ -27,6 +27,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -249,7 +250,7 @@ fun UnlockChapterDialogComponent(
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 80.dp, top = 20.dp)
+                            modifier = Modifier.padding(start = 80.dp, top = 15.dp)
                         )
 
 
@@ -261,7 +262,8 @@ fun UnlockChapterDialogComponent(
                                         color = MaterialTheme.colorScheme.primary,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 15.sp,
-                                        fontStyle = FontStyle.Italic
+                                        fontStyle = FontStyle.Italic,
+                                        textDecoration = TextDecoration.Underline
                                     )
                                 ) {
                                     append("$coinOfUserAvailable")
@@ -274,7 +276,7 @@ fun UnlockChapterDialogComponent(
                             color = MaterialTheme.colorScheme.primaryContainer,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.run { padding(start = 50.dp, top = 10.dp) }
+                            modifier = Modifier.run { padding(start = 50.dp, top = 15.dp) }
                         )
 
                         Row(
