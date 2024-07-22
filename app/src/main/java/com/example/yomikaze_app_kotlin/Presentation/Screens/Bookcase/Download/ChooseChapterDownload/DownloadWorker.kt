@@ -37,6 +37,10 @@ class DownloadWorker @AssistedInject constructor(
     private val downloadPagesOfChapterUC: DownloadPagesOfChapterUC,
 ) : CoroutineWorker(context, workerParams) {
 
+
+    /**
+     * TODO: doWork
+     */
     override suspend fun doWork(): Result {
         // Lấy comicId và listChapterNumberChoose từ input data
         val comicId = inputData.getLong("comicId", -1)
@@ -51,7 +55,12 @@ class DownloadWorker @AssistedInject constructor(
         }
     }
 
-
+    /**
+     * TODO: get comic informatio from api and download that comic information
+     * delay 4s to wait for comic information to be downloaded
+     * download list chapter choose
+     * The order is 1
+     */
     private suspend fun getComicDetailsAndDownload(
         comicId: Long,
         listChapterNumberChoose: List<Int>
@@ -72,6 +81,12 @@ class DownloadWorker @AssistedInject constructor(
         }
     }
 
+
+    /**
+     * TODO: download comic
+     * check if comic is already in DB, if not insert comic to DB
+     * The order is 2
+     */
     private suspend fun downloadComic(comic: ComicResponse, listChapterNumberChoose: List<Int>) {
         val existingComic = getComicByIdDBUC.getComicByIdDB(comic.comicId)
         if (existingComic == null) {
@@ -79,6 +94,12 @@ class DownloadWorker @AssistedInject constructor(
         }
     }
 
+    /**
+     * TODO: download list chapter choose
+     * delay 2s to wait for chapter information to be downloaded
+     * download all page of chapter from DB
+     * The order is 3
+     */
     private suspend fun downloadListChapterChoose(
         comicId: Long,
         listChapterNumberChoose: List<Int>
@@ -88,10 +109,19 @@ class DownloadWorker @AssistedInject constructor(
                 downloadChapterDetail(comicId, chapterNumber)
             }
             delay(2000)
-            downloadAllPageOfChapterFromDB(comicId, listChapterNumberChoose)
+            downloadAllPageFromApiOfChapterFromListNumberChooseToDB(
+                comicId,
+                listChapterNumberChoose
+            )
         }
     }
 
+
+    /**
+     * TODO: download chapter detail
+     * check if chapter is already in DB, if not insert chapter to DB
+     * The order is 4
+     */
     private suspend fun downloadChapterDetail(comicId: Long, chapterNumber: Int) {
         val token = appPreference.authToken ?: ""
         val chapterResult = getChapterDetailUC.getChapterDetail(token, comicId, chapterNumber)
@@ -108,7 +138,17 @@ class DownloadWorker @AssistedInject constructor(
         )
     }
 
-    private suspend fun downloadAllPageOfChapterFromDB(comicId: Long, listNumberChoose: List<Int>) {
+    /**
+     * TODO: download all page for chapter by list number choose
+     * delay 2s to wait for get chapter from DB by comicId and ListNumberChoose
+     * download all page for those chapter to DB
+     * The order is 5
+     */
+
+    private suspend fun downloadAllPageFromApiOfChapterFromListNumberChooseToDB(
+        comicId: Long,
+        listNumberChoose: List<Int>
+    ) {
         val chapters = mutableListOf<Chapter>()
         listNumberChoose.forEach { number ->
             val chapter =
@@ -124,6 +164,11 @@ class DownloadWorker @AssistedInject constructor(
         }
     }
 
+
+    /**
+     * TODO: download all page of chapter from API to DB
+     * The order is 6
+     */
     private suspend fun downloadPageOfChapter(comicId: Long, chapter: Chapter) {
         val token = appPreference.authToken ?: ""
         try {

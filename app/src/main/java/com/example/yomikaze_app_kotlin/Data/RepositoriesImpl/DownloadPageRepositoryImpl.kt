@@ -29,7 +29,7 @@ class DownloadPageRepositoryImpl @Inject constructor(
 
             val result =
                 pageRepository.getPagesByChapterNumberOfComic(
-                    "Bearer $token",
+                    "$token",
                     comicId,
                     chapter.number
                 )

@@ -65,6 +65,13 @@ class ChooseChapterDownloadViewModel @Inject constructor(
     fun getSelectedChapters(): List<Chapter> {
         return _state.value.listChapterForDownloaded.filter { it.isSelected }
     }
+    fun checkSelectedChaptersContainLockedChapter(): Boolean {
+        return if (appPreference.isUserLoggedIn) {
+            _state.value.listChapterForDownloaded.any { it.isSelected && !it.isUnlocked }
+        } else {
+            _state.value.listChapterForDownloaded.any { it.isSelected && it.hasLock }
+        }
+    }
 
     //fun get selectedCapterContainIsUnlocked
     fun getSelectedChaptersContainIsUnlocked(): List<Chapter> {
@@ -122,6 +129,8 @@ class ChooseChapterDownloadViewModel @Inject constructor(
         val downloadWorkRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
             .setInputData(inputData)
             .build()
+
+        //create a downloadWorkerRequest that when download is broken, it will retry
 
         workManager.enqueue(downloadWorkRequest)
         Log.d("ChooseChapterDownloadViewModel", "getComicDetailsAndDownload: $selectedChapters")

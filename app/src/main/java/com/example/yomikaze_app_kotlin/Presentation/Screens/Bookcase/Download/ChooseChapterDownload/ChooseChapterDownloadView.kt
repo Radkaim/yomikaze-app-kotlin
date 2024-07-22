@@ -145,7 +145,6 @@ fun ChooseChapterDownloadContent(
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
-
                     Box(
                         modifier = Modifier
                             .padding(start = 40.dp)
@@ -178,7 +177,6 @@ fun ChooseChapterDownloadContent(
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
-
                     Box(
                         modifier = Modifier
                             .padding(start = 40.dp)
@@ -250,7 +248,9 @@ fun ChooseChapterDownloadContent(
                                 }
                                 if (chooseChapterDownloadViewModel
                                         .getSelectedChapters()
-                                        .isNotEmpty()
+                                        .isNotEmpty() && !chooseChapterDownloadViewModel.checkSelectedChaptersContainLockedChapter()
+                                    // khi chon chaptyer ddang khoa vaanx hienej toast download
+                                    // thanh cong check laij trang thai download cos khoa view chaopter ddc mawcj duf pending
                                 ) {
                                     chooseChapterDownloadViewModel.getComicDetailsAndDownload(
                                         comicId
@@ -262,16 +262,17 @@ fun ChooseChapterDownloadContent(
                                             Toast.LENGTH_SHORT
                                         )
                                         .show()
-                                } else {
-                                    Toast
-                                        .makeText(
-                                            context,
-                                            "You need to sign in to unlock this chapter",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                        .show()
-                                    return@clickable
                                 }
+//                                else {
+//                                    Toast
+//                                        .makeText(
+//                                            context,
+//                                            "You need to sign in to unlock this chapter",
+//                                            Toast.LENGTH_SHORT
+//                                        )
+//                                        .show()
+//                                    return@clickable
+//                                }
                             },
                         contentAlignment = Alignment.Center
                     ) {

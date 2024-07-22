@@ -65,13 +65,17 @@ class PageRepositoryImpl @Inject constructor(
 
     override suspend fun deletePageByComicIdAndChapterNumberDB(comicId: Long, number: Int) {
         val page = pageDao.getPageByComicIdAndChapterNumberDB(comicId, number)
-        if (page.imageLocalPaths == null) {
-            return
-        }
-        page.imageLocalPaths.forEach { imagePath ->
-            imageRepository.deleteImageFromLocal(imagePath)
-        }
+        if (page != null) {
+            if (page.imageLocalPaths == null) {
+                return
+            } else {
+                page.imageLocalPaths.forEach { imagePath ->
+                    imageRepository.deleteImageFromLocal(imagePath)
+                }
 
-        pageDao.deletePage(page)
+                pageDao.deletePage(page)
+            }
+        }
+        return
     }
 }
