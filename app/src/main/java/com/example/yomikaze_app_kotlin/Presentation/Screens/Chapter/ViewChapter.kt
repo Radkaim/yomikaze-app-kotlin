@@ -211,27 +211,30 @@ fun ViewChapterContent(
     var finalLastPageNumber by remember {
         mutableStateOf(lastPageNumber)
     }
-    LaunchedEffect(key1 = lastPageNumber, key2 = state.isGetPageApiSuccess) {
+    LaunchedEffect(key1 = lastPageNumber, key2 = state.isGetPageApiSuccess, key3= isScrollMode) {
         if (finalLastPageNumber != 0 && state.isGetPageApiSuccess) {
             Log.e("ViewChapterContent", "Last Page Number1: $finalLastPageNumber")
 
             if (isScrollMode) {
                 delay(200)
                 scrollState.animateScrollToItem(lastPageNumber - 1)
-                finalLastPageNumber = 0
-            } else {
-                pagerState.animateScrollToPage(lastPageNumber - 1)
-                finalLastPageNumber = 0
-            }
-        }
-        else{
-            if (isScrollMode) {
+//                finalLastPageNumber = 0
                 Log.e("ViewChapterContent", "Last Page Number2: $finalLastPageNumber")
-                scrollState.animateScrollToItem(0)
             } else {
-                pagerState.animateScrollToPage(0)
+                delay(200)
+                pagerState.animateScrollToPage(lastPageNumber - 1)
+//                finalLastPageNumber = 0
+                Log.e("ViewChapterContent", "Last Page Number3: $finalLastPageNumber")
             }
         }
+//        else{
+//            if (isScrollMode) {
+//                Log.e("ViewChapterContent", "Last Page Number2: $finalLastPageNumber")
+//                scrollState.animateScrollToItem(0)
+//            } else {
+//                pagerState.animateScrollToPage(0)
+//            }
+//        }
     }
 
 
@@ -251,12 +254,12 @@ fun ViewChapterContent(
         if (autoScroll && isScrollMode) {
             while (autoScroll) {
                 delay(3000)
-                scrollState.animateScrollToItem(scrollState.firstVisibleItemIndex + 1)
+                scrollState.animateScrollToItem(finalLastPageNumber + 1)
             }
         } else if (autoScroll && !isScrollMode) {
             while (autoScroll) {
                 delay(3000) // Adjust delay time as needed for auto-flip
-                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                pagerState.animateScrollToPage(finalLastPageNumber + 1)
             }
         }
     }
