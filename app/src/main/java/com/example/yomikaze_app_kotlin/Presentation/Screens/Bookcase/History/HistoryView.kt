@@ -1,9 +1,12 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.History
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +16,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -27,10 +32,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Icon
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
+import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.LottieAnimationComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.BookcaseComicCard.BookcaseComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConfirmDialogComponent
@@ -48,6 +57,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.NotSignIn.NotSignIn
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.R
+import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
@@ -61,7 +71,7 @@ fun HistoryView(
 
     if (CheckNetwork()) {
         if (historyViewModel.checkUserIsLogin()) {
-            HistoryContent(historyViewModel = historyViewModel, state = state)
+            showListHistories(historyViewModel = historyViewModel, state = state)
         } else {
             NotSignIn(navController = navController)
         }
@@ -140,10 +150,10 @@ fun HistoryContent(
                     onOldSortClick = { isSelected = true }
                 )
             }
-            if (showPopupMenu!= null) {
+            if (showPopupMenu != null) {
                 //TODO
-                when(showDialog) {
-                    1 ->  DeleteConfirmDialogComponent(
+                when (showDialog) {
+                    1 -> DeleteConfirmDialogComponent(
                         key = 0, // not use
                         value = "", // not use
                         isDeleteAll = true,
@@ -193,7 +203,7 @@ fun HistoryContent(
                         color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
                         shape = MaterialTheme.shapes.small
                     ),
-                onClicked={
+                onClicked = {
                     historyViewModel.onHistoryComicClicked(
                         historyRecord.comic.comicId,
                         historyRecord.chapter.number,
@@ -210,125 +220,222 @@ fun HistoryContent(
     }
 }
 
-//
-//@Composable
-//fun showListHistories(
-//    historyViewModel: HistoryViewModel,
-//    state: HistoryState,
-//) {
-//    val listState = rememberLazyListState()
-//    val context = LocalContext.current
-//    val page = remember { mutableStateOf(1) }
-//    val loading = remember { mutableStateOf(false) }
-//
-//
-//
-//
-//    Column(
-//        verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
-//        modifier = Modifier
-//            .padding(
-//                top = 15.dp,
-//                start = 4.dp,
-//                end = 4.dp,
-//                bottom = 4.dp
-//            ) // Optional padding for the entire list
-//            .background(MaterialTheme.colorScheme.background)
-//            .wrapContentSize(Alignment.Center)
-//    ) {
-//        LazyColumn(
-//            state = listState,
-//            verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
-//        ) {
-//            itemsIndexed(state.listHistoryRecords) { index, historyRecord ->
-//                BookcaseComicCard(
-//                    comicId = historyRecord.comicId,
-//                    image = APIConfig.imageAPIURL.toString() + historyRecord.comic.cover,
-//                    comicName = historyRecord.comic.name,
-//                    status = historyRecord.comic.status,
-//                    authorNames = historyRecord.comic.authors,
-//                    isHistory = true,
-//                    lastChapter = historyRecord.chapter.number.toString(),
-//                    publishedDate = historyRecord.comic.publicationDate,
-//                    backgroundColor = MaterialTheme.colorScheme.onSurface,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(119.dp)
-//                        .border(
-//                            width = 1.dp,
-//                            color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
-//                            shape = MaterialTheme.shapes.small
-//                        )
-//                        .clickable {
-//                            //navController.navigate("comicDetail/${comic.comicId}")
-//                            historyViewModel.onHistoryComicClicked(historyRecord.comicId)
-//                            // TODO change to viewModel.navigateToComicDetail(comic.comicId) if using viewModel
-//                        }
-//                )
-//            }
-//
-//            // Hiển thị một mục tải dữ liệu khi cần
-//            item {
-//                if (loading.value) {
-//                    Box(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(100.dp)
-//                            .padding(10.dp),
-//                        contentAlignment = Alignment.Center
-//                    ) {
-//                        LottieAnimationComponent(
-//                            animationFileName = R.raw.loading, // Replace with your animation file name
-//                            loop = true,
-//                            autoPlay = true,
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .scale(1.15f)
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    LaunchedEffect(
-//        key1 = page.value,
-//        //key2 = state.totalPages
-//    ) {
-//        Log.d("HotComicViewModel", "page1: ${page.value}")
-//        if (page.value > state.currentPage.value && !loading.value) {
-//            loading.value = true
-//            historyViewModel.getHistories(page.value)
-//            loading.value = false
-//        }
-//
-//    }
-//    // Sử dụng SideEffect để phát hiện khi người dùng cuộn tới cuối danh sách
-//    LaunchedEffect(listState) {
-//        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
-//            .collectLatest { lastVisibleItemIndex ->
-//                if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listHistoryRecords.size - 2) {
-//                    if (state.currentPage.value < state.totalPages.value) {
-//                        page.value++
-//
-//                    }
-//                }
-//            }
-//    }
-//
-//    //make toast when reach the end of list
-//    LaunchedEffect(
-//        key1 = state.currentPage.value,
-//        key2 = state.totalPages.value,
-//        key3 = listState
-//    ) {
-//        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
-//            .collectLatest { lastVisibleItemIndex ->
-//                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listHistoryRecords.size && state.listHistoryRecords.size > 5) {
-//                    if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
-//                        Toast.makeText(context, "No comics left", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//    }
-//}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun showListHistories(
+    historyViewModel: HistoryViewModel,
+    state: HistoryState,
+) {
+    val listState = rememberLazyListState()
+    val context = LocalContext.current
+    val page = remember { mutableStateOf(1) }
+    val loading = remember { mutableStateOf(false) }
+
+
+    var isSelected by remember { mutableStateOf(true) }
+    var isReversed by remember { mutableStateOf(true) }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
+        modifier = Modifier
+            .padding(
+                top = 15.dp,
+                start = 4.dp,
+                end = 4.dp,
+                bottom = 4.dp
+            ) // Optional padding for the entire list
+            .background(MaterialTheme.colorScheme.background)
+            .wrapContentSize(Alignment.Center)
+    ) {
+        LazyColumn(
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
+            modifier = Modifier.padding(top = 10.dp, bottom = 60.dp)
+        ) {
+
+            stickyHeader {
+                var showPopupMenu by remember { mutableStateOf(false) }
+                var showDialog by remember { mutableStateOf<Int?>(null) }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Button(
+                        modifier = Modifier
+                            .width(120.dp)
+                            .height(30.dp)
+                            .padding(start = 4.dp)
+                            .shadow(4.dp, shape = RoundedCornerShape(15.dp))
+                            .clip(RoundedCornerShape(20.dp)),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                        onClick = {
+                            //TODO
+                            showPopupMenu = true
+                            showDialog = 1
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_delete),
+                            contentDescription = "delete_all_history",
+                            modifier = Modifier.size(12.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Clear All",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+
+                    SortComponent(
+                        isOldestSelected = isSelected,
+                        onOldSortClick = {
+                            isSelected = true
+                            isReversed = false
+
+                        },
+                        onnNewSortClick = {
+                            isSelected = false
+                            isReversed = true
+
+                        }
+                    )
+                }
+                if (showPopupMenu != null) {
+                    //TODO
+                    when (showDialog) {
+                        1 -> DeleteConfirmDialogComponent(
+                            key = 0, // not use
+                            value = "", // not use
+                            isDeleteAll = true,
+                            title = "Are you sure you want to delete all history record?",
+                            onDismiss = { showDialog = 0 },
+                            viewModel = historyViewModel!!
+                        )
+                    }
+                }
+            }
+
+            item {
+                if (state.isHistoryListLoading) {
+                    repeat(4) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(start = 10.dp, top = 10.dp, end = 10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            NormalComicCardShimmerLoading()
+                        }
+                    }
+                }
+            }
+            if (!state.isHistoryListLoading && state.listHistoryRecords.isNotEmpty()) {
+                val sortList = if (isReversed) {
+                    state.listHistoryRecords.sortedByDescending { it.creationTime }
+                } else {
+                    state.listHistoryRecords.sortedBy { it.creationTime }
+                }
+                items(sortList) { historyRecord ->
+                    BookcaseComicCard(
+                        comicId = historyRecord.comicId,
+                        image = APIConfig.imageAPIURL.toString() + historyRecord.comic.cover,
+                        comicName = historyRecord.comic.name,
+                        status = historyRecord.comic.status,
+                        authorNames = historyRecord.comic.authors,
+                        isHistory = true,
+                        lastChapter = historyRecord.chapter.number.toString(),
+                        atPageNumber = historyRecord.pageNumber,
+                        publishedDate = historyRecord.comic.publicationDate,
+                        backgroundColor = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(119.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
+                                shape = MaterialTheme.shapes.small
+                            ),
+                        onClicked = {
+                            historyViewModel.onHistoryComicClicked(
+                                historyRecord.comic.comicId,
+                                historyRecord.chapter.number,
+                                historyRecord.pageNumber
+                            )
+                        },
+                    )
+                }
+            }
+
+            // Hiển thị một mục tải dữ liệu khi cần
+            item {
+                if (loading.value) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp)
+                            .padding(10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LottieAnimationComponent(
+                            animationFileName = R.raw.loading, // Replace with your animation file name
+                            loop = true,
+                            autoPlay = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .scale(1.15f)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(
+        key1 = page.value,
+        //key2 = state.totalPages
+    ) {
+        Log.d("HotComicViewModel", "page1: ${page.value}")
+        if (page.value > state.currentPage.value && !loading.value) {
+            loading.value = true
+            historyViewModel.getHistories(page.value)
+            loading.value = false
+        }
+
+    }
+    // Sử dụng SideEffect để phát hiện khi người dùng cuộn tới cuối danh sách
+    LaunchedEffect(listState, key2 = page.value) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collectLatest { lastVisibleItemIndex ->
+                if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listHistoryRecords.size - 2) {
+                    if (state.currentPage.value < state.totalPages.value) {
+                        page.value++
+                    }
+                }
+            }
+    }
+
+    //make toast when reach the end of list
+    LaunchedEffect(
+        key1 = state.currentPage.value,
+        key2 = state.totalPages.value,
+        key3 = listState
+    ) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collectLatest { lastVisibleItemIndex ->
+                if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listHistoryRecords.size && state.listHistoryRecords.size > 5) {
+                    if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
+                        Toast.makeText(context, "No history records left", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+    }
+}

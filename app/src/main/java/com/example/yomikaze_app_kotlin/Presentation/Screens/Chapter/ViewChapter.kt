@@ -87,7 +87,7 @@ fun ViewChapter(
         }
     }
 
-    if (isNetworkAvailable) {
+//    if (isNetworkAvailable) {
 
         ViewChapterContent(
             comicId = comicId,
@@ -97,7 +97,7 @@ fun ViewChapter(
             navController = navController,
             viewChapterModel = viewChapterModel
         )
-    }
+//    }
 
 }
 
@@ -137,9 +137,6 @@ fun ViewChapterContent(
             canGoToPreviousChapter =
                 viewChapterModel.canGoToPreviousChapter(state.currentChapterNumber)
             canGoToNextChapter = viewChapterModel.canGoToNextChapter(state.currentChapterNumber)
-
-//            Log.e("ViewChapterContent", "canGoToPreviousChapter1: $canGoToPreviousChapter")
-//            Log.e("ViewChapterContent", "canGoToNextChapter1: $canGoToNextChapter")
         }
     } else {
         //offline mode
@@ -147,9 +144,6 @@ fun ViewChapterContent(
             canGoToPreviousChapter =
                 viewChapterModel.canGoToPreviousChapter(state.currentChapterNumber)
             canGoToNextChapter = viewChapterModel.canGoToNextChapter(state.currentChapterNumber)
-
-//            Log.e("ViewChapterContent", "canGoToPreviousChapter2: $canGoToPreviousChapter")
-//            Log.e("ViewChapterContent", "canGoToNextChapter2: $canGoToNextChapter")
         }
     }
 
@@ -165,8 +159,6 @@ fun ViewChapterContent(
 
     LaunchedEffect(key1 = state.isUnlockChapterSuccess) {
         if (state.isUnlockChapterSuccess) {
-//            Log.e("ViewChapterContent", "Unlock Chapter Success")
-//            Log.e("ViewChapterContent", "Unlock Chapter Number: ${state.chapterUnlockNumber}")
             viewChapterModel.getPagesByChapterNumberOfComic(comicId, state.chapterUnlockNumber)
             viewChapterModel.resetChapterUnlockNumberAndIsChapterNeedToUnlock()
         }
@@ -189,14 +181,12 @@ fun ViewChapterContent(
     var orientation by remember { mutableStateOf(if (appPreference.orientation) FlipPagerOrientation.Vertical else FlipPagerOrientation.Horizontal) }
     var isScrollMode by remember { mutableStateOf(appPreference.isScrollMode) }
 
-//    var autoScroll by remember {
-//        mutableStateOf(false)
-//    }
+
     var autoScroll by remember { mutableStateOf(appPreference.autoScrollChecked) }
     val images = state.pagesImage
 
 
-    val pagerState = rememberPagerState { images.size }
+    val pagerState = rememberPagerState {images.size}
 
     val scrollState = rememberLazyListState()
 
@@ -211,6 +201,12 @@ fun ViewChapterContent(
     var finalLastPageNumber by remember {
         mutableStateOf(lastPageNumber)
     }
+
+    var currentPage by remember { mutableStateOf(if (isScrollMode) currentPageScroll else currentPageFlip) }
+//    LaunchedEffect(key1 = isScrollMode) {
+//        currentPage = if (isScrollMode) scrollState.firstVisibleItemIndex else pagerState.currentPage
+//    }
+
     LaunchedEffect(key1 = lastPageNumber, key2 = state.isGetPageApiSuccess, key3= isScrollMode) {
         if (finalLastPageNumber != 0 && state.isGetPageApiSuccess) {
             Log.e("ViewChapterContent", "Last Page Number1: $finalLastPageNumber")
@@ -218,23 +214,28 @@ fun ViewChapterContent(
             if (isScrollMode) {
                 delay(200)
                 scrollState.animateScrollToItem(lastPageNumber - 1)
-//                finalLastPageNumber = 0
+                finalLastPageNumber = 0
                 Log.e("ViewChapterContent", "Last Page Number2: $finalLastPageNumber")
             } else {
                 delay(200)
                 pagerState.animateScrollToPage(lastPageNumber - 1)
-//                finalLastPageNumber = 0
+                finalLastPageNumber = 0
                 Log.e("ViewChapterContent", "Last Page Number3: $finalLastPageNumber")
             }
         }
-//        else{
-//            if (isScrollMode) {
-//                Log.e("ViewChapterContent", "Last Page Number2: $finalLastPageNumber")
-//                scrollState.animateScrollToItem(0)
-//            } else {
-//                pagerState.animateScrollToPage(0)
-//            }
-//        }
+    }
+
+    // upatate sroll page to current of another reading mode
+    LaunchedEffect(key1 = isScrollMode, key2 = currentPage) {
+        if (isScrollMode) {
+            currentPage = currentPageFlip
+          scrollState.animateScrollToItem(currentPage - 1)
+            Log.e("ViewChapterContent", "Current Page: $currentPage")
+        } else {
+            currentPage = currentPageScroll
+            pagerState.animateScrollToPage(currentPage - 1)
+            Log.e("ViewChapterContent", "Current Page: $currentPage")
+        }
     }
 
 
@@ -254,12 +255,12 @@ fun ViewChapterContent(
         if (autoScroll && isScrollMode) {
             while (autoScroll) {
                 delay(3000)
-                scrollState.animateScrollToItem(finalLastPageNumber + 1)
+                scrollState.animateScrollToItem(lastPageNumber + 1)
             }
         } else if (autoScroll && !isScrollMode) {
             while (autoScroll) {
                 delay(3000) // Adjust delay time as needed for auto-flip
-                pagerState.animateScrollToPage(finalLastPageNumber + 1)
+                pagerState.animateScrollToPage(lastPageNumber + 1)
             }
         }
     }
@@ -287,7 +288,7 @@ fun ViewChapterContent(
 //            )
 //        }
 //    }
-
+    val isNetworkAvailable = CheckNetwork()
     Scaffold(
         topBar = {
             CustomAppBar(
@@ -296,18 +297,25 @@ fun ViewChapterContent(
                 navigationIcon = {
                     IconButton(onClick = {
 //                        viewChapterModel.resetStateIsGetPageApiSuccess()
-                        viewChapterModel.updateLastReadPage(
-                            comicId = comicId,
-                            chapterNumber = state.currentChapterNumber,
-                            page = if (isScrollMode) currentPageScroll else currentPageFlip
-                        )
+                        if (isNetworkAvailable) {
+                            viewChapterModel.updateLastReadPage(
+                                comicId = comicId,
+                                chapterNumber = state.currentChapterNumber,
+                                page = if (isScrollMode) currentPageScroll else currentPageFlip
+                            )
 //                        Log.e("ViewChapterContent", "Last Read Page: $currentPageScroll")
-                        viewChapterModel.resetState()
-                        navController.navigate("comic_detail_route/${comicId}") {
-                            popUpTo("view_chapter_route/${comicId}/${chapterNumber}") {
-                                inclusive = false
+                            viewChapterModel.resetState()
+
+                            navController.navigate("comic_detail_route/${comicId}") {
+                                popUpTo("view_chapter_route/${comicId}/${chapterNumber}") {
+                                    inclusive = false
+                                }
                             }
+                        }else{
+                            //navigate to comic detail offline
+                            navController.popBackStack()
                         }
+
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -398,6 +406,9 @@ fun ViewChapterContent(
                 // Show comic images
             }
         }
+
+
+
         if (isScrollMode) {
             // Scroll View
             // Comic Image
@@ -438,6 +449,7 @@ fun ViewChapterContent(
             }
         } else {
 
+
             FlipPager(
                 state = pagerState,
                 modifier = Modifier
@@ -453,6 +465,15 @@ fun ViewChapterContent(
                 //Comic Image
                 val imagePath = if (CheckNetwork()) APIConfig.imageAPIURL.toString() else {
                     ""
+                }
+
+                //cut size of page when change mode
+                val page = if (page >= images.size && currentPageScroll != 0) {
+                    // page will be equal to the current page scroll
+                    currentPageScroll - 1
+                    Log.e("ViewChapterContent", "Page: $page")
+                } else {
+                    page
                 }
                 images[page].let { image ->
                     AsyncImage(

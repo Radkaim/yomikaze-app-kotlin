@@ -21,6 +21,7 @@ interface HistoryApiService {
     @GET("history")
     suspend fun getHistories(
         @Header("Authorization") token: String,
+        @Query("orderBy") orderBy: String? = null,
         @Query("Page") page: Int? = null,
         @Query("Size") size: Int? = null,
     ): BaseResponse<HistoryResponse>

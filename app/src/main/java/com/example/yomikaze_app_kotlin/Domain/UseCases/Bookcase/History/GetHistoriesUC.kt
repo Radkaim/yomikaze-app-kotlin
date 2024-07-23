@@ -10,9 +10,10 @@ class GetHistoriesUC @Inject constructor(
 ) {
     suspend fun getHistories(
         token: String,
+        orderBy: String? = null,
         page: Int? = null,
         size: Int? = null
     ): Result<BaseResponse<HistoryResponse>> {
-        return historyRepository.getHistories(token, page, size)
+        return historyRepository.getHistories(token, orderBy, page, size)
     }
 }

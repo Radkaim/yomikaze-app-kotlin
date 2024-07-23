@@ -73,6 +73,7 @@ class HomeViewModel @Inject constructor(
     fun updateSearchResult(newSearchResult: List<ComicResponse>) {
         _state.value = _state.value.copy(searchResult = mutableStateOf(newSearchResult))
     }
+
     fun updateTotalResults(newValue: Int) {
         _state.value = _state.value.copy(totalResults = newValue)
     }
@@ -85,8 +86,8 @@ class HomeViewModel @Inject constructor(
         _state.value = _state.value.copy(isHistoryListLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-
-            val result = getHistoriesUC.getHistories(token, page, 3)
+            val orderBy = "LastModifiedDesc"
+            val result = getHistoriesUC.getHistories(token, orderBy, page, 3)
             result.fold(
                 onSuccess = { baseResponse ->
                     // Xử lý kết quả thành công
@@ -100,13 +101,13 @@ class HomeViewModel @Inject constructor(
                 onFailure = { exception ->
                     // Xử lý lỗi
                     _state.value = _state.value.copy(
-                        isHistoryListLoading = true)
+                        isHistoryListLoading = true
+                    )
                     Log.e("HomeViewModel", "getHistories: $exception")
                 }
             )
         }
     }
-
 
 
     /**
@@ -267,7 +268,7 @@ class HomeViewModel @Inject constructor(
             val size = 4
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = searchComicUC.searchComic(token, comicNameQuery,size)
+            val result = searchComicUC.searchComic(token, comicNameQuery, size)
 
             result.fold(
                 onSuccess = { baseResponse ->
@@ -320,7 +321,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onAdvanceSearchClicked(searchText: String) {
-      //  Log.d("HomeViewModel", "onAdvanceSearchClicked: $searchText")
+        //  Log.d("HomeViewModel", "onAdvanceSearchClicked: $searchText")
         navController?.navigate("advance_search_route/$searchText")
     }
 }

@@ -95,6 +95,11 @@ fun HomeView(
                 },
                 onSearchTriggered = { homeViewModel.updateSearchWidgetState(SearchWidgetState.OPEN) }
             )
+        },
+        bottomBar = {
+            HomeBottomNavBar(
+                navController = navController
+            )
         }
     )
     {

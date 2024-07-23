@@ -19,5 +19,8 @@ data class HistoryResponse(
     val chapter: Chapter,
 
     @SerializedName("comic")
-    val comic: ComicResponse
+    val comic: ComicResponse,
+
+    @SerializedName("creationTime")
+    val creationTime: String
 )

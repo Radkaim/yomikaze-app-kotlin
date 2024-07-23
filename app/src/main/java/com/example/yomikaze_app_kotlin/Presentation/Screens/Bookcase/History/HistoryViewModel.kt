@@ -59,7 +59,7 @@ class HistoryViewModel @Inject constructor(
         return appPreference.isUserLoggedIn
     }
 
-    fun onHistoryComicClicked(comicId: Long, chapterNumber: Int, lastPageNumber : Int? = 0) {
+    fun onHistoryComicClicked(comicId: Long, chapterNumber: Int, lastPageNumber: Int? = 0) {
         Log.d("ViewChapterContent", "onHistoryComicClicked: $lastPageNumber")
         navController?.navigate("view_chapter_route/$comicId/$chapterNumber/$lastPageNumber")
     }
@@ -84,16 +84,16 @@ class HistoryViewModel @Inject constructor(
     fun getHistories(page: Int? = 1) {
         _state.value = _state.value.copy(isHistoryListLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
+
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-            Log.d("HistoryViewModel", "getHistories:")
             val size = _state.value.size
 
             val currentPage = _state.value.currentPage.value
             val totalPages = _state.value.totalPages.value
 
             if (currentPage > totalPages && totalPages != 0) return@launch
-
-            val result = getHistoriesUC.getHistories(token, page, size)
+            val orderBy = "LastModifiedDesc"
+            val result = getHistoriesUC.getHistories(token, orderBy, page, size)
             result.fold(
                 onSuccess = { baseResponse ->
                     // Xử lý kết quả thành công

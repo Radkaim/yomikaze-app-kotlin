@@ -61,6 +61,7 @@ fun BookcaseComicCard(
     value: String? = null,
     onClicked: () -> Unit = {},
     lastChapter: String? = null,
+    atPageNumber: Int? = null,
     isDownloaded: Boolean = false,
     downloadViewModel: DownloadViewModel? = null,
 
@@ -195,13 +196,28 @@ fun BookcaseComicCard(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Last Chapter: ",
+                                text = "Last Read: ",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Medium,
                             )
                             Text(
-                                text = lastChapter ?: "",
+                                text = "Chapter ${lastChapter ?: ""} ",
+                                style = TextStyle(
+                                    fontStyle = FontStyle.Italic,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 11.sp,
+                                ),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                            Text(
+                                text = " at page ",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                            )
+                            Text(
+                                text = atPageNumber.toString() ?: "",
                                 style = TextStyle(
                                     fontStyle = FontStyle.Italic,
                                     fontWeight = FontWeight.Medium,

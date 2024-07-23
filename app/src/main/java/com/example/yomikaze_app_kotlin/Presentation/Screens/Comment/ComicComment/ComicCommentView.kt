@@ -113,7 +113,6 @@ fun ComicCommentContent(
 
     var isSelected by remember { mutableStateOf(false) }
     var isReversed by remember { mutableStateOf(true) }
-    var isRefreshing by remember { mutableStateOf(false) }
 
 
     Scaffold(

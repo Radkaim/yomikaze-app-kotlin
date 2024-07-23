@@ -133,6 +133,6 @@ class DownloadDetailViewModel @Inject constructor(
 
     // navigate to view chapter screen
     fun navigateToViewChapterScreen(comicId: Long, chapterNumber: Int) {
-        navController?.navigate("view_chapter_route/$comicId/$chapterNumber")
+        navController?.navigate("view_chapter_route/$comicId/$chapterNumber/0")
     }
 }

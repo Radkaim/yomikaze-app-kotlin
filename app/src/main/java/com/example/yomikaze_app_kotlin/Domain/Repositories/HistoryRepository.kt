@@ -13,6 +13,7 @@ interface HistoryRepository {
      */
     suspend fun getHistories(
         token: String,
+        orderBy: String? = null,
         page: Int? = null,
         size: Int? = null,
     ): Result<BaseResponse<HistoryResponse>>

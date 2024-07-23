@@ -19,11 +19,12 @@ class HistoryRepositoryImpl @Inject constructor(
      */
     override suspend fun getHistories(
         token: String,
+        orderBy: String?,
         page: Int?,
         size: Int?
     ): Result<BaseResponse<HistoryResponse>> {
         return try {
-            val response = api.getHistories("Bearer $token", page, size)
+            val response = api.getHistories("Bearer $token", orderBy, page, size)
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

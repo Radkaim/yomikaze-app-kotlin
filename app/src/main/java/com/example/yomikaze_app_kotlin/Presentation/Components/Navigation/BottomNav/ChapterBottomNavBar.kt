@@ -589,6 +589,7 @@ fun ViewListChapterDialog(
                                                     comicId,
                                                     chapter.number
                                                 )
+                                                onDismiss()
                                             }
                                         }
                                     }
