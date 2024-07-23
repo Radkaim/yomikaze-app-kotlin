@@ -15,11 +15,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -361,14 +362,6 @@ fun showHistory(navController: NavController, viewModel: HomeViewModel, state: H
     }
     if (state.listHistoryRecords.isNotEmpty()) {
         // show 3 shimmer loading cards
-
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 30.dp)
-        ) {
             Row(
                 modifier = Modifier
                     .padding(start = 8.dp, bottom = 1.dp)
@@ -382,32 +375,32 @@ fun showHistory(navController: NavController, viewModel: HomeViewModel, state: H
                 )
                 Text(
                     text = "History",
-                    modifier = Modifier.padding(top = 5.dp, start = 5.dp),
+                    modifier = Modifier.padding(top = 8.dp, start = 5.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
                     Text(
                         text = "More",
-                        modifier = Modifier.padding(top = 8.dp, end = 5.dp),
-                        fontSize = 10.sp,
+                        modifier = Modifier.padding(top = 15.dp, end = 10.dp),
+                        fontSize = 12.sp,
+                        fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Icon(
                         painter = painterResource(id = R.drawable.ic_next),
                         contentDescription = "",
                         modifier = Modifier
-                            .padding(top = 10.dp, end = 8.dp)
+                            .padding(top = 18.dp, end = 15.dp)
                             .width(8.dp)
                             .height(8.dp)
                             .clickable { viewModel.onViewMoreHistoryClicked() },
                         tint = MaterialTheme.colorScheme.onSecondaryContainer
 
                     )
-
                 }
             }
-        }
+
         showHistoryCardComic(state = state, homeViewModel = viewModel)
     }
 }
@@ -472,22 +465,23 @@ fun showRanking(homeViewModel: HomeViewModel, state: HomeState) {
             )
             Text(
                 text = "Ranking",
-                modifier = Modifier.padding(top = 5.dp, start = 5.dp),
+                modifier = Modifier.padding(top = 8.dp, start = 5.dp),
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
             Spacer(modifier = Modifier.weight(1f))
             Row() {
                 Text(
                     text = "More",
-                    modifier = Modifier.padding(top = 8.dp, end = 5.dp),
-                    fontSize = 10.sp,
+                    modifier = Modifier.padding(top = 15.dp, end = 10.dp),
+                    fontSize = 12.sp,
+                    fontStyle = FontStyle.Italic,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_next),
                     contentDescription = "",
                     modifier = Modifier
-                        .padding(top = 10.dp, end = 8.dp)
+                        .padding(top = 18.dp, end = 1.dp)
                         .width(8.dp)
                         .height(8.dp)
                         .clickable { homeViewModel.onViewRankingMore(selectedTabIndex) },
@@ -623,19 +617,23 @@ fun showWeekly(
     state: HomeState,
     navController: NavController
 ) {
+    LaunchedEffect(Unit){
+        homeViewModel.getComicWeekly()
+    }
     Column(
-        verticalArrangement = Arrangement.spacedBy(5.dp),
+        verticalArrangement = Arrangement.spacedBy(1.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 20.dp)
+            .offset(y = -(10).dp)
     ) {
         Row(
             modifier = Modifier
-                .padding(start = 8.dp, bottom = 1.dp)
-                .fillMaxWidth()
+                .padding(top = 20.dp ,start = 20.dp, bottom = 1.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+
         ) {
-            Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_weekly_home),
                 contentDescription = "",
@@ -643,20 +641,47 @@ fun showWeekly(
             )
             Text(
                 text = "Weekly",
-                modifier = Modifier.padding(top = 5.dp, start = 5.dp),
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier
+                    .padding(top = 5.dp)
+
             )
             // Spacer(modifier = Modifier.weight(1f))
         }
-        showComicCarouselByViewRanking(state = state, homeViewModel = homeViewModel)
+        showComicCarouselByWeeklyRanking(state = state, homeViewModel = homeViewModel)
     }
-//    showWeeklyCardComic()
-//    showWeeklyCardComic()
 }
 
-//@Composable
+@Composable
+fun showComicCarouselByWeeklyRanking(
+    homeViewModel: HomeViewModel,
+    state: HomeState
+) {
+    val comics = state.listComicWeekly
+    val images = mutableMapOf<Long, String>()
+
+    for (comic in comics) {
+        val imageUrl = if (comic.banner == null) {
+            APIConfig.imageAPIURL.toString() + comic.cover
+        } else {
+            APIConfig.imageAPIURL.toString() + comic.banner
+        }
+        images[comic.comicId] = imageUrl
+    }
+
+    Box(modifier = Modifier.padding(top = 10.dp)) {
+        if (state.isLoadingComicWeekly) {
+            ComponentRectangle()
+        } else if (images.isNotEmpty() && !state.isLoadingComicWeekly) {
+            Autoslider(imagesWithIds = images, onClick = { comicId ->
+                homeViewModel.onNavigateComicDetail(comicId)
+            })
+        }
+    }
+}
+
+////@Composable
 //fun showWeeklyCardComic() {
-//    val comics = getListCardComicWeekly()
 //
 //    Row(
 //        modifier = Modifier
@@ -678,20 +703,20 @@ fun showWeekly(
 //}
 
 
-@Composable
-fun ShowListWithThreeItemsPerRow(list: List<String>) {
-    LazyRow {
-        items(list.chunked(3)) { chunkedList ->
-            RowWithThreeItems(chunkedList)
-        }
-    }
-}
-
-@Composable
-fun RowWithThreeItems(list: List<String>) {
-    Row {
-        list.forEach { item ->
-
-        }
-    }
-}
+//@Composable
+//fun ShowListWithThreeItemsPerRow(list: List<String>) {
+//    LazyRow {
+//        items(list.chunked(3)) { chunkedList ->
+//            RowWithThreeItems(chunkedList)
+//        }
+//    }
+//}
+//
+//@Composable
+//fun RowWithThreeItems(list: List<String>) {
+//    Row {
+//        list.forEach { item ->
+//
+//        }
+//    }
+//}

@@ -8,7 +8,6 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
-import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
@@ -24,17 +23,6 @@ class ComicRepositoryImpl @Inject constructor(
     private val pageRepository: PageRepository
 ) : ComicRepository {
 
-    /**
-     * TODO: Implement the function to get hot comic banner images
-     */
-    override suspend fun getHotComicBannerImages(): Result<List<ComicResponseTest>> {
-        return try {
-            val response = api.getHotComicBannerImages()
-            Result.success(response)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 
     /**
      * TODO: Implement the function to search comic by name
@@ -61,6 +49,18 @@ class ComicRepositoryImpl @Inject constructor(
     ): Result<BaseResponse<ComicResponse>> {
         return try {
             val response = api.advancedSearchComic("Bearer $token", queryMap)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * TODO: use for get comic in ranking weekly
+     */
+    override suspend fun getComicWeekly(token: String): Result<List<ComicResponse>> {
+        return try {
+            val response = api.getComicWeekly("Bearer $token")
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

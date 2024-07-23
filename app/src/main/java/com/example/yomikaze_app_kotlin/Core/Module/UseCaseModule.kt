@@ -69,7 +69,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByComment
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByRatingRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByViewRankingUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetHotComicBannerUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicWeeklyUC
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -128,15 +128,6 @@ object UseCaseModule {
      * TODO Comic Use Cases
      */
 
-    /**
-     * Todo: Provide the GetHotComicBannerUseCase
-     */
-    @Provides
-    @Singleton
-    fun provideGetHotComicBannerUseCase(comicRepository: ComicRepository): GetHotComicBannerUC {
-        return GetHotComicBannerUC(comicRepository)
-    }
-
 
     /**
      * Todo: Provide the SearchComicUseCase
@@ -154,6 +145,15 @@ object UseCaseModule {
     @Singleton
     fun provideAdvancedSearchComicUseCase(comicRepository: ComicRepository): AdvancedSearchComicUC {
         return AdvancedSearchComicUC(comicRepository)
+    }
+
+    /**
+     * TODO: use for get comic in ranking weekly
+     */
+    @Provides
+    @Singleton
+    fun provideGetComicWeeklyUseCase(comicRepository: ComicRepository): GetComicWeeklyUC {
+        return GetComicWeeklyUC(comicRepository)
     }
 
     /**
@@ -484,6 +484,7 @@ object UseCaseModule {
     fun provideRemoveComicFromCategoryUC(libraryRepository: LibraryRepository): RemoveComicFromCategoryUC {
         return RemoveComicFromCategoryUC(libraryRepository)
     }
+
     /**
      * TODO: Provide the UnfollowComicFromLibraryUC
      */
@@ -511,8 +512,6 @@ object UseCaseModule {
     fun provideGetDefaultComicsInLibraryUC(libraryRepository: LibraryRepository): GetDefaultComicsInLibraryUC {
         return GetDefaultComicsInLibraryUC(libraryRepository)
     }
-
-
 
 
     /**

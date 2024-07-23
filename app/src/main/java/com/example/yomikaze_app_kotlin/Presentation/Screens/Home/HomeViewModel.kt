@@ -15,7 +15,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByComment
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByRatingRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByViewRankingUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetHotComicBannerUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicWeeklyUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getHotComicBannerUseCase: GetHotComicBannerUC,
     private val appPreference: AppPreference,
     private val searchComicUC: SearchComicUC,
     private val getComicByRatingRankingUC: GetComicByRatingRankingUC,
@@ -33,6 +32,7 @@ class HomeViewModel @Inject constructor(
     private val getComicByFollowRankingUC: GetComicByFollowRankingUC,
     private val getComicByViewRankingUC: GetComicByViewRankingUC,
     private val getHistoriesUC: GetHistoriesUC,
+    private val getComicWeeklyUC: GetComicWeeklyUC
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
@@ -49,12 +49,6 @@ class HomeViewModel @Inject constructor(
     private val _searchTextState: MutableState<String> = mutableStateOf(value = "")
     val searchTextState: MutableState<String> get() = _searchTextState
 
-
-//    init {
-//        viewModelScope.launch {
-//            checkUserIsLogin()
-//        }
-//    }
 
     fun updateSearchWidgetState(newState: SearchWidgetState) {
         _searchWidgetState.value = newState
@@ -287,6 +281,33 @@ class HomeViewModel @Inject constructor(
 
         }
     }
+
+    /**
+     * TODO: use for get comic in ranking weekly
+     */
+    fun getComicWeekly() {
+        _state.value = _state.value.copy(listComicWeekly = emptyList())
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isLoadingComicWeekly = true)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = getComicWeeklyUC.getComicWeekly(token)
+            result.fold(
+                onSuccess = { listComicWeekly ->
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(
+                        listComicWeekly = listComicWeekly,
+                        isLoadingComicWeekly = false
+                    )
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    _state.value = _state.value.copy(isLoadingComicWeekly = true)
+                }
+            )
+        }
+    }
+
 
     /**
      * Todo: Implement check user is login

@@ -3,14 +3,11 @@ package com.example.yomikaze_app_kotlin.Domain.Repositories
 import android.content.Context
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
-import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import retrofit2.Response
 
 
 interface ComicRepository {
-
-    suspend fun getHotComicBannerImages(): Result<List<ComicResponseTest>>
 
     /**
      * TODO: use for search comic in home screen
@@ -28,6 +25,14 @@ interface ComicRepository {
         token: String,
         queryMap: Map<String, String>
     ): Result<BaseResponse<ComicResponse>>
+
+
+    /**
+     * TODO: use for get comic in ranking weekly
+     */
+    suspend fun getComicWeekly(
+        token: String
+    ): Result<List<ComicResponse>>
 
     /**
      * TODO: use for get comic in ranking screen by view ranking

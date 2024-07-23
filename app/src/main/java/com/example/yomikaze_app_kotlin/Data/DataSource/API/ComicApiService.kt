@@ -2,7 +2,6 @@ package com.example.yomikaze_app_kotlin.Data.DataSource.API
 
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
-import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponseTest
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -17,9 +16,6 @@ import retrofit2.http.QueryMap
 //Data class for the response from the API
 // inherit from comic class
 interface ComicApiService {
-    @GET("photos")
-    suspend fun getHotComicBannerImages(): List<ComicResponseTest>
-
 
     /**
      * TODO: use for search comic in home screen
@@ -42,6 +38,16 @@ interface ComicApiService {
         @Header("Authorization") token: String,
         @QueryMap queryMap: Map<String, String>,
     ): BaseResponse<ComicResponse>
+
+
+    /**
+     * TODO: use for get comic in ranking weekly
+     */
+    @GET("comics/ranking/weekly")
+    suspend fun getComicWeekly(
+        @Header("Authorization") token: String,
+    ): List<ComicResponse>
+
 
     /**
      * TODO: use for get comic in ranking screen by view ranking

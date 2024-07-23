@@ -32,4 +32,7 @@ data class HomeState(
     val listHistoryRecords: List<HistoryResponse> = emptyList(),
     val isHistoryListLoading: Boolean = true,
 
+    val listComicWeekly: List<ComicResponse> = emptyList(),
+    val isLoadingComicWeekly: Boolean = true,
+
 )
