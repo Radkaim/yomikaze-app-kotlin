@@ -78,18 +78,18 @@ fun RelyCommentDetailView(
     comicId: Long,
     commentId: Long,
     authorName: String,
-    relyCommentDetailViewModel: RelyCommentDetailViewModel = hiltViewModel()
+    replyCommentDetailViewModel: ReplyCommentDetailViewModel = hiltViewModel()
 ) {
-    val state by relyCommentDetailViewModel.state.collectAsState()
+    val state by replyCommentDetailViewModel.state.collectAsState()
 
     //set navController for viewModel
-    relyCommentDetailViewModel.setNavController(navController)
+    replyCommentDetailViewModel.setNavController(navController)
     if (CheckNetwork()) {
         RelyCommentDetailContent(
             navController = navController,
             authorName = authorName,
             state = state,
-            relyCommentDetailViewModel = relyCommentDetailViewModel,
+            replyCommentDetailViewModel = replyCommentDetailViewModel,
             comicId = comicId,
             commentId = commentId
         )
@@ -106,11 +106,11 @@ fun RelyCommentDetailContent(
     authorName: String,
     comicId: Long,
     commentId: Long,
-    state: RelyCommentDetailState,
-    relyCommentDetailViewModel: RelyCommentDetailViewModel
+    state: ReplyCommentDetailState,
+    replyCommentDetailViewModel: ReplyCommentDetailViewModel
 ) {
     LaunchedEffect(Unit){
-        relyCommentDetailViewModel.getMainCommentByCommentId(
+        replyCommentDetailViewModel.getMainCommentByCommentId(
             comicId = comicId,
             commentId = commentId,
         )
@@ -132,7 +132,6 @@ fun RelyCommentDetailContent(
                 title = authorName,
                 navigationIcon = {
                     IconButton(onClick = {
-                        relyCommentDetailViewModel.resetState1()
                         navController.popBackStack()
                     }) {
                         Icon(
@@ -156,12 +155,12 @@ fun RelyCommentDetailContent(
                         ?: "",
                     roleName = state.mainComment.author.roles?.get(0)?:"",
                     creationTime = state.mainComment.creationTime,
-                    isOwnComment = relyCommentDetailViewModel.checkIsOwnComment(
+                    isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(
                         state.mainComment.author.id
                     ),
-                    isAdmin = relyCommentDetailViewModel.checkIsAdmin(),
+                    isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
                     onClicked = {},
-                    relyCommentDetailViewModel = relyCommentDetailViewModel
+                    replyCommentDetailViewModel = replyCommentDetailViewModel
                 )
             }
             else{
@@ -248,10 +247,10 @@ fun RelyCommentDetailContent(
                                     ?: "",
                                 roleName = comment.author.roles?.get(0) ?: "",
                                 creationTime = comment.creationTime,
-                                isOwnComment = relyCommentDetailViewModel.checkIsOwnComment(comment.author.id),
-                                isAdmin = relyCommentDetailViewModel.checkIsAdmin(),
+                                isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(comment.author.id),
+                                isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
                                 onClicked = {},
-                                relyCommentDetailViewModel = relyCommentDetailViewModel
+                                replyCommentDetailViewModel = replyCommentDetailViewModel
                             )
                         }
                     }
@@ -289,13 +288,13 @@ fun RelyCommentDetailContent(
                             end.linkTo(parent.end)
                         },
                     onSendChatClickListener = {
-                        relyCommentDetailViewModel.postReplyComicCommentByComicId(
+                        replyCommentDetailViewModel.postReplyComicCommentByComicId(
                             comicId = comicId,
                             commentId = commentId,
                             content = it,
                         )
                     },
-                    isLogin = relyCommentDetailViewModel.checkUserIsLogin()
+                    isLogin = replyCommentDetailViewModel.checkUserIsLogin()
                 )
             }
         }
@@ -310,7 +309,7 @@ fun RelyCommentDetailContent(
             Log.d("ComicCommentContent", "page: ${page.value}")
             if (page.value > state.currentPage.value && !loading.value) {
                 loading.value = true
-                relyCommentDetailViewModel.getAllReplyCommentByComicId(
+                replyCommentDetailViewModel.getAllReplyCommentByComicId(
                     comicId = comicId,
                     commentId = commentId,
                     page.value,

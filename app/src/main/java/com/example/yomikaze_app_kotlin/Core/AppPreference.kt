@@ -103,4 +103,14 @@ class AppPreference(context : Context) {
     var autoScrollChecked: Boolean
         get() = encryptedPreferences.getBoolean("auto_scroll_checked", false)
         set(value) = encryptedPreferences.edit().putBoolean("auto_scroll_checked", value).apply()
+
+    // save comment id when it is removed
+    var mainReplyCommentIdDeleted: Long
+        get() = encryptedPreferences.getLong("comment_id", 0)
+        set(value) = encryptedPreferences.edit().putLong("comment_id", value).apply()
+
+    // delete comment id
+    fun deleteMainReplyCommentIdDeleted() {
+        encryptedPreferences.edit().remove("comment_id").apply()
+    }
 }

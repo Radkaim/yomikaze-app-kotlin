@@ -60,6 +60,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.LottieAnimationComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
@@ -114,6 +115,15 @@ fun ComicCommentContent(
     var isSelected by remember { mutableStateOf(false) }
     var isReversed by remember { mutableStateOf(true) }
 
+    val context1 = LocalContext.current
+    val appPreference = AppPreference(context1)
+
+    LaunchedEffect(key1 = appPreference.mainReplyCommentIdDeleted) {
+        if (appPreference.mainReplyCommentIdDeleted != 0L) {
+            comicCommentViewModel.removeMainReplyCommentHasDeletedFromList(appPreference.mainReplyCommentIdDeleted)
+        }
+    }
+
 
     Scaffold(
         topBar = {
@@ -121,7 +131,7 @@ fun ComicCommentContent(
                 title = comicName,
                 navigationIcon = {
                     IconButton(onClick = {
-                        comicCommentViewModel.resetState1()
+//                        comicCommentViewModel.resetState1()
                         navController.popBackStack()
                     }) {
                         Icon(

@@ -48,7 +48,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConf
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.EditCommentDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyCommentDetail.RelyCommentDetailViewModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyCommentDetail.ReplyCommentDetailViewModel
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
@@ -66,7 +66,7 @@ fun CommentCard(
 
     onClicked: () -> Unit? = {},
     comicCommentViewModel: ComicCommentViewModel? = null,
-    relyCommentDetailViewModel: RelyCommentDetailViewModel? = null
+    replyCommentDetailViewModel: ReplyCommentDetailViewModel? = null
 
 ) {
     var showPopupMenu by remember { mutableStateOf(false) }
@@ -338,7 +338,7 @@ fun CommentCard(
                                             value = content,
                                             title = "Edit Comment",
                                             onDismiss = { showDialog = 0 },
-                                            viewModel = relyCommentDetailViewModel!!
+                                            viewModel = replyCommentDetailViewModel!!
                                         )
                                     }
 
@@ -349,7 +349,7 @@ fun CommentCard(
                                             value = "",
                                             title = "Are you sure you want to delete this comment?",
                                             onDismiss = { showDialog = 0 },
-                                            viewModel = relyCommentDetailViewModel!!
+                                            viewModel = replyCommentDetailViewModel!!
                                         )
 
                                     }

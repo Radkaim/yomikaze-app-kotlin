@@ -19,22 +19,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class RelyCommentDetailViewModel @Inject constructor(
+class ReplyCommentDetailViewModel @Inject constructor(
     private val appPreference: AppPreference,
     private val getAllReplyCommentByComicIdUC: GetAllReplyCommentByComicIdUC,
     private val postReplyCommentByComicIdUC: PostReplyCommentByComicIdUC,
     private val deleteComicCommentByComicIdUC: DeleteComicCommentByComicIdUC,
     private val updateComicCommentByComicIdUC: UpdateComicCommentByComicIdUC,
     private val provideGetMainCommentByCommentIdUC: GetMainCommentByCommentIdUC
-) : ViewModel(), StatefulViewModel<RelyCommentDetailState> {
+) : ViewModel(), StatefulViewModel<ReplyCommentDetailState> {
     //navController
     private var navController: NavController? = null
 
-    private val _state = MutableStateFlow(RelyCommentDetailState())
-    override val state: StateFlow<RelyCommentDetailState> get() = _state
+    private val _state = MutableStateFlow(ReplyCommentDetailState())
+    override val state: StateFlow<ReplyCommentDetailState> get() = _state
 
     override val isUpdateSuccess: Boolean = _state.value.isUpdateCommentSuccess
     override val isDeleteSuccess: Boolean = _state.value.isDeleteCommentSuccess
@@ -89,7 +90,7 @@ class RelyCommentDetailViewModel @Inject constructor(
     }
 
     fun resetState1() {
-        _state.value = RelyCommentDetailState()
+        _state.value = ReplyCommentDetailState()
     }
 
 
@@ -199,6 +200,10 @@ class RelyCommentDetailViewModel @Inject constructor(
         }
     }
 
+
+    fun navigateBack() {
+        navController?.popBackStack()
+    }
     /**
      * Todo: Implement delete comic comment by comicId and commentId
      */
@@ -208,6 +213,7 @@ class RelyCommentDetailViewModel @Inject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isDeleteCommentSuccess = false)
+            _state.value = _state.value.copy(isDeleteMainCommentSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = deleteComicCommentByComicIdUC.deleteComicCommentByComicId(
                 token = token,
@@ -217,13 +223,22 @@ class RelyCommentDetailViewModel @Inject constructor(
             if (result.code() == 204) {
                 _state.value = _state.value.copy(isDeleteCommentSuccess = true)
                 //remove item from list
-                val list = _state.value.listComicComment.toMutableList()
-                list.removeIf { it.id == commentId }
-                _state.value = _state.value.copy(listComicComment = list)
-                _state.value.totalCommentResults.value = _state.value.totalCommentResults.value - 1
+                if (commentId != _state.value.mainComment?.id) {
+                    val list = _state.value.listComicComment.toMutableList()
+                    list.removeIf { it.id == commentId }
+                    _state.value = _state.value.copy(listComicComment = list)
+                    _state.value.totalCommentResults.value = _state.value.totalCommentResults.value - 1
+                }else{
+                    _state.value = _state.value.copy(isDeleteMainCommentSuccess = true)
+                    appPreference.mainReplyCommentIdDeleted = _state.value.mainComment!!.id
+                    withContext(Dispatchers.Main) {
+                        navigateBack()
+                    }
+                }
 
             } else {
                 _state.value = _state.value.copy(isDeleteCommentSuccess = false)
+                _state.value = _state.value.copy(isDeleteMainCommentSuccess = false)
                 Log.e("ComicCommentViewModel", "deleteComicCommentByComicId: $result")
             }
         }

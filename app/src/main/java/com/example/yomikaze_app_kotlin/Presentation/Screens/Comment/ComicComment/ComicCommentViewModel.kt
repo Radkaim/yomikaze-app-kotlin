@@ -34,6 +34,7 @@ class ComicCommentViewModel @Inject constructor(
     private val _state = MutableStateFlow(ComicCommentState())
     override val state: StateFlow<ComicCommentState> get() = _state
 
+
     override val isUpdateSuccess: Boolean = _state.value.isUpdateCommentSuccess
     override val isDeleteSuccess: Boolean = _state.value.isDeleteCommentSuccess
     override fun update(key: Long, key2: Long?, value: String) {
@@ -68,17 +69,15 @@ class ComicCommentViewModel @Inject constructor(
         return appPreference.isUserLoggedIn
     }
 
-    // reset state
-    fun resetState() {
-//        if (_state.value.currentPage.value > 1) {
-        _state.value = _state.value.copy(
-            listComicComment = emptyList(),
-            isListComicCommentLoading = true,
-        )
-        _state.value.currentPage.value = 0
-        _state.value.totalPages.value = 0
-        _state.value.totalCommentResults.value = 0
-//        }
+    // remove a reply comment have deleted from list
+    fun removeMainReplyCommentHasDeletedFromList(mainReplyCommentId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = _state.value.listComicComment.toMutableList()
+            list.removeIf { it.id == mainReplyCommentId }
+            _state.value = _state.value.copy(listComicComment = list)
+            _state.value.totalCommentResults.value = _state.value.totalCommentResults.value - 1
+            appPreference.deleteMainReplyCommentIdDeleted()
+        }
     }
 
     // check is that own user comment for set edit and delete button
@@ -92,10 +91,14 @@ class ComicCommentViewModel @Inject constructor(
         return userRoles?.contains("Super") == true || userRoles?.contains("Administrator") == true
     }
 
-    fun resetState1() {
+    fun resetState() {
         _state.value = ComicCommentState()
     }
 
+    override fun onCleared() {
+        resetState()
+        super.onCleared()
+    }
 
     /**
      * Todo: Implement get all comment of comic by comicId

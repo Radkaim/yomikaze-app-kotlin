@@ -4,9 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
 
-data class RelyCommentDetailState(
+data class ReplyCommentDetailState(
     //for comment
     val mainComment: CommentResponse? = null,
+    val isDeleteMainCommentSuccess: Boolean = false,
     val listComicComment: List<CommentResponse> = emptyList(),
     val isListComicCommentLoading: Boolean = true,
     val totalCommentResults: MutableState<Int> = mutableStateOf(0),
