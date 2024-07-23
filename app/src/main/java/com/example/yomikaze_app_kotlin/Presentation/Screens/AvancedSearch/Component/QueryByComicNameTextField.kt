@@ -1,5 +1,6 @@
-package com.example.yomikaze_app_kotlin.Presentation.Components.TopBar
+package com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -8,16 +9,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,15 +31,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SearchTopAppBar(
-    searchText: String,
-    onTextChange: (String) -> Unit,
+fun QueryByComicNameTextField(
+    queryByComicName: String,
+    onValueChange: (String) -> Unit,
     onCLoseClicked: () -> Unit,
-    onSearchClicked: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val imeAction = remember { mutableStateOf(ImeAction.Done) }
+
 
     Surface(
         modifier = Modifier
@@ -52,10 +53,10 @@ fun SearchTopAppBar(
     )
     {
         TextField(
-            value = searchText,
+            value = queryByComicName,
             onValueChange = {
-                onTextChange(it)
-                imeAction.value = ImeAction.Search
+                onValueChange(it) // Cập nhật giá trị của TextField
+//                imeAction.value = ImeAction.Search
             },
             placeholder = {
                 Text(
@@ -70,7 +71,7 @@ fun SearchTopAppBar(
             singleLine = true,
             leadingIcon = {
                 IconButton(
-                    onClick = { onSearchClicked(searchText) }
+                    onClick = { onValueChange("") }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Search,
@@ -82,9 +83,11 @@ fun SearchTopAppBar(
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        if (searchText.isNotEmpty()) {
-                            onTextChange("")
+                        if (queryByComicName.isNotEmpty()) {
+                            Log.d("queryByComicName", "queryByComicName: $queryByComicName")
+                            onValueChange("")
                         } else {
+                            Log.d("queryByComicName", "queryByComicName: $queryByComicName")
                             onCLoseClicked()
                             focusManager.clearFocus() // Clear focus to hide the keyboard
                             keyboardController?.hide() // Hide the keyboard
@@ -104,7 +107,7 @@ fun SearchTopAppBar(
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
-                    onSearchClicked(searchText)
+//                    onValueChange(queryByComicName)
                     imeAction.value = ImeAction.Done
                 }
             ),
@@ -117,7 +120,4 @@ fun SearchTopAppBar(
             ),
         )
     }
-
 }
-
-

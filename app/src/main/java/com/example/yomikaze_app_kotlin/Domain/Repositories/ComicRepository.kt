@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.Tag
 import retrofit2.Response
 
 
@@ -134,5 +135,14 @@ interface ComicRepository {
         comicId: Long,
         totalsMbs: Long
     )
+
+    /**
+     * TODO: get tags
+     */
+    suspend fun getTags(
+        token: String,
+        page: Int? = null,
+        size: Int? = null
+    ): Result<BaseResponse<Tag>>
 
 }

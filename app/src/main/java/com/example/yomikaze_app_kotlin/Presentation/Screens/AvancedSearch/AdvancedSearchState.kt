@@ -1,5 +1,8 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch
 
+import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.Tag
+
 
 //initial const for status of comic
 enum class ComicStatus {
@@ -35,7 +38,7 @@ enum class OrderBy {
 
 data class AdvancedSearchState(
 
-    val queryByComicName: String = "",
+    var queryByComicName: String = "",
 
     val listAuthorsInput: List<String> = emptyList(),
     val queryByAuthor: String = "",
@@ -60,8 +63,8 @@ data class AdvancedSearchState(
     val queryToTotalFollows: Int? = null,
 
     //genre
-    val queryIncludeTags: List<String> = emptyList(),
-    val queryExcludeTags: List<String> = emptyList(),
+    val queryIncludeTags: List<Long> = emptyList(),
+    val queryExcludeTags: List<Long> = emptyList(),
 
     val queryInclusionMode: Mode? = null,
     val queryExclusionMode: Mode? = null,
@@ -72,8 +75,13 @@ data class AdvancedSearchState(
     val queryPage: Int? = null,
 
 
-    val searchResults: List<String> = emptyList(),
-    val isLoading: Boolean = false
+    val totalResults: Int? = 0,
+    val searchResults: List<ComicResponse> = emptyList(),
+    val isSearchLoading: Boolean = false,
+
+
+    val tags: List<Tag> = emptyList(),
+    val isTagsLoading: Boolean = false,
 )
 
 

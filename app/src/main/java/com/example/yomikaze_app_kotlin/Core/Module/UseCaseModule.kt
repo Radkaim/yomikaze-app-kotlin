@@ -63,6 +63,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentB
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetTagsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
@@ -128,6 +129,14 @@ object UseCaseModule {
      * TODO Comic Use Cases
      */
 
+    /**
+     * TODO: get tags
+     */
+    @Provides
+    @Singleton
+    fun provideGetTagsUC(comicRepository: ComicRepository): GetTagsUC {
+        return GetTagsUC(comicRepository)
+    }
 
     /**
      * Todo: Provide the SearchComicUseCase

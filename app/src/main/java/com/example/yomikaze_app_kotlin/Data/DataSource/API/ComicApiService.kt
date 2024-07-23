@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Data.DataSource.API
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.Tag
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -26,7 +27,7 @@ interface ComicApiService {
         @Query("Name") name: String,
         @Query("Size") size: Int? = null,
         @Query("OrderBy") orderByTotalViews: String? = "TotalViews",
-        @Query("OrderBy") orderByName : String? = "Name",
+        @Query("OrderBy") orderByName: String? = "Name",
     ): BaseResponse<ComicResponse>
 
     /**
@@ -37,6 +38,8 @@ interface ComicApiService {
     suspend fun advancedSearchComic(
         @Header("Authorization") token: String,
         @QueryMap queryMap: Map<String, String>,
+        @Query("Page") page: Int = 1,
+        @Query("Size") size: Int = 500,
     ): BaseResponse<ComicResponse>
 
 
@@ -114,6 +117,15 @@ interface ComicApiService {
     ): Response<Unit>
 
 
+    /**
+     * TODO: get tag
+     */
+    @GET("tags")
+    suspend fun getTags(
+        @Header("Authorization") token: String,
+        @Query("Page") page: Int? = null,
+        @Query("Size") size: Int? = null,
+    ): BaseResponse<Tag>
 
 
 }

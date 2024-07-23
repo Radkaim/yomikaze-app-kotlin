@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.AdvancedSearchComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetTagsUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AdvancedSearchViewModel @Inject constructor(
+    private val appPreference: AppPreference,
     private val advancedSearchComicUC: AdvancedSearchComicUC,
-    private val appPreference: AppPreference
+    private val getTagsUC: GetTagsUC
 ) : ViewModel() {
 
     private var navController: NavController? = null
@@ -31,9 +33,64 @@ class AdvancedSearchViewModel @Inject constructor(
         this.navController = navController
     }
 
+
+    private val _tagStates = MutableStateFlow<Map<Long, TagState>>(emptyMap())
+    val tagStates: StateFlow<Map<Long, TagState>> get() = _tagStates
+
+    fun toggleTagState(tagId: Long) {
+        val currentState = _tagStates.value[tagId] ?: TagState.NONE
+        val newState = when (currentState) {
+            TagState.NONE -> TagState.INCLUDE
+            TagState.INCLUDE -> TagState.EXCLUDE
+            TagState.EXCLUDE -> TagState.NONE
+        }
+        _tagStates.value = _tagStates.value.toMutableMap().apply { put(tagId, newState) }
+        Log.d("AdvancedSearchViewModel", "tagStates: ${_tagStates.value}")
+    }
+
+    fun updateQueryTags() {
+        val includeTags = _tagStates.value.filterValues { it == TagState.INCLUDE }.keys.toList()
+        val excludeTags = _tagStates.value.filterValues { it == TagState.EXCLUDE }.keys.toList()
+        _state.value = _state.value.copy(
+            queryIncludeTags = includeTags,
+            queryExcludeTags = excludeTags
+        )
+        Log.d("AdvancedSearchViewModel", "queryIncludeTags: ${_state.value.queryIncludeTags}")
+        Log.d("AdvancedSearchViewModel", "queryExcludeTags: ${_state.value.queryExcludeTags}")
+    }
+
+    //reset all tags
+    fun resetTags() {
+        _tagStates.value = _tagStates.value.mapValues { TagState.NONE }
+        updateQueryTags()
+    }
+
+    //reset all state
+    fun resetState() {
+       updateQueryByComicName("")
+        updateListAuthorsInput(emptyList())
+        updateQueryByAuthor("")
+        updateQueryByPublisher("")
+        updateQueryByStatus(null)
+        updateQueryFromPublishedDate("")
+        updateQueryToPublishedDate("")
+        updateQueryFromTotalChapters(null)
+        updateQueryToTotalChapters(null)
+        updateQueryFromTotalViews(null)
+        updateQueryToTotalViews(null)
+        updateQueryFromAverageRating(null)
+        updateQueryToAverageRating(null)
+        updateQueryFromTotalFollows(null)
+        updateQueryToTotalFollows(null)
+        updateQueryIncludeTags(emptyList())
+        resetTags()
+    }
+
+
     //update each state
     fun updateQueryByComicName(queryByComicName: String) {
         _state.value = _state.value.copy(queryByComicName = queryByComicName)
+        Log.d("AdvancedSearchViewModel", "queryByComicName: ${_state.value.queryByComicName}")
     }
 
     fun updateListAuthorsInput(listAuthorsInput: List<String>) {
@@ -48,7 +105,7 @@ class AdvancedSearchViewModel @Inject constructor(
         _state.value = _state.value.copy(queryByPublisher = queryByPublisher)
     }
 
-    fun updateQueryByStatus(queryByStatus: ComicStatus) {
+    fun updateQueryByStatus(queryByStatus: ComicStatus?) {
         _state.value = _state.value.copy(queryByStatus = queryByStatus)
     }
 
@@ -60,43 +117,43 @@ class AdvancedSearchViewModel @Inject constructor(
         _state.value = _state.value.copy(queryToPublishedDate = queryToPublishedDate)
     }
 
-    fun updateQueryFromTotalChapters(queryFromTotalChapters: Int) {
+    fun updateQueryFromTotalChapters(queryFromTotalChapters: Int?) {
         _state.value = _state.value.copy(queryFromTotalChapters = queryFromTotalChapters)
     }
 
-    fun updateQueryToTotalChapters(queryToTotalChapters: Int) {
+    fun updateQueryToTotalChapters(queryToTotalChapters: Int?) {
         _state.value = _state.value.copy(queryToTotalChapters = queryToTotalChapters)
     }
 
-    fun updateQueryFromTotalViews(queryFromTotalViews: Int) {
+    fun updateQueryFromTotalViews(queryFromTotalViews: Int?) {
         _state.value = _state.value.copy(queryFromTotalViews = queryFromTotalViews)
     }
 
-    fun updateQueryToTotalViews(queryToTotalViews: Int) {
+    fun updateQueryToTotalViews(queryToTotalViews: Int?) {
         _state.value = _state.value.copy(queryToTotalViews = queryToTotalViews)
     }
 
-    fun updateQueryFromAverageRating(queryFromAverageRating: Float) {
+    fun updateQueryFromAverageRating(queryFromAverageRating: Float?) {
         _state.value = _state.value.copy(queryFromAverageRating = queryFromAverageRating)
     }
 
-    fun updateQueryToAverageRating(queryToAverageRating: Float) {
+    fun updateQueryToAverageRating(queryToAverageRating: Float?) {
         _state.value = _state.value.copy(queryToAverageRating = queryToAverageRating)
     }
 
-    fun updateQueryFromTotalFollows(queryFromTotalFollows: Int) {
+    fun updateQueryFromTotalFollows(queryFromTotalFollows: Int?) {
         _state.value = _state.value.copy(queryFromTotalFollows = queryFromTotalFollows)
     }
 
-    fun updateQueryToTotalFollows(queryToTotalFollows: Int) {
+    fun updateQueryToTotalFollows(queryToTotalFollows: Int?) {
         _state.value = _state.value.copy(queryToTotalFollows = queryToTotalFollows)
     }
 
-    fun updateQueryIncludeTags(queryIncludeTags: List<String>) {
+    fun updateQueryIncludeTags(queryIncludeTags: List<Long>) {
         _state.value = _state.value.copy(queryIncludeTags = queryIncludeTags)
     }
 
-    fun updateQueryExcludeTags(queryExcludeTags: List<String>) {
+    fun updateQueryExcludeTags(queryExcludeTags: List<Long>) {
         _state.value = _state.value.copy(queryExcludeTags = queryExcludeTags)
     }
 
@@ -119,9 +176,9 @@ class AdvancedSearchViewModel @Inject constructor(
     fun updateQueryPage(queryPage: Int) {
         _state.value = _state.value.copy(queryPage = queryPage)
     }
-    init {
-        performAdvancedSearch()
-    }
+//    init {
+//        performAdvancedSearch()
+//    }
     // Function to execute advanced search
     fun performAdvancedSearch() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -194,23 +251,63 @@ class AdvancedSearchViewModel @Inject constructor(
                 queryMap["Page"] = it.toString()
             }
 
-            _state.value = _state.value.copy(isLoading = true)
+            _state.value = _state.value.copy(isSearchLoading = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             try {
-                val response = advancedSearchComicUC.executeAdvancedSearchComic(token, queryMap)
-                if (response.isSuccess) {
-            //        _state.value = _state.value.copy(searchResults = response.body()?.results ?: emptyList())
-                    Log.d("AdvancedSearchViewModel", "response: $response")
-                } else {
-                    // handle error
-                }
+                val result = advancedSearchComicUC.executeAdvancedSearchComic(token, queryMap)
+               result.fold(
+                    onSuccess = { baseResponse ->
+                        _state.value = _state.value.copy(searchResults = baseResponse.results, totalResults = baseResponse.totals)
+                        Log.d("AdvancedSearchViewModel", "searchResults: ${baseResponse.results}")
+                    },
+                    onFailure = { throwable ->
+                        // handle error
+                        _state.value = _state.value.copy(isSearchLoading = false)
+                        Log.e("AdvancedSearchViewModel", "Error: $throwable")
+                    }
+               )
             } catch (e: Exception) {
                 // handle exception
+                _state.value = _state.value.copy(isSearchLoading = false)
                 Log.e("AdvancedSearchViewModel", "Error: $e")
             } finally {
-                _state.value = _state.value.copy(isLoading = false)
+                _state.value = _state.value.copy(isSearchLoading = false)
+            }
+        }
+    }
+
+
+    /**
+     * Get tags from API
+     */
+    fun getTags() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isTagsLoading = true)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+
+            try {
+                val result = getTagsUC.getTags(token,1, 500)
+
+                result.fold(
+                    onSuccess = { tags ->
+                        _state.value = _state.value.copy(tags = tags.results)
+//                        val tagStates = tags.associateWith {tags.results. TagState.NONE }
+//                        _tagStates.value = tagStates
+                        Log.d("AdvancedSearchViewModel", "tags: ${tags.results}")
+                        _state.value = _state.value.copy(isTagsLoading = false)
+                    },
+                    onFailure = { throwable ->
+                        // handle error
+                        Log.e("AdvancedSearchViewModel", "Error: $throwable")
+                    }
+                )
+            } catch (e: Exception) {
+                // handle exception
+                _state.value = _state.value.copy(isTagsLoading = false)
+                Log.e("AdvancedSearchViewModel", "Error: $e")
             }
         }
     }

@@ -275,6 +275,7 @@ class HomeViewModel @Inject constructor(
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    Log.e("HomeViewModel", "searchComic: $exception")
                     _state.value = _state.value.copy(isSearchLoading = true)
                 }
             )

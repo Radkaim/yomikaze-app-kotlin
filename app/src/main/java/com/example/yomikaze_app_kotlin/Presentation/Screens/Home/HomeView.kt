@@ -97,11 +97,6 @@ fun HomeView(
                 onSearchTriggered = { homeViewModel.updateSearchWidgetState(SearchWidgetState.OPEN) }
             )
         },
-        bottomBar = {
-            HomeBottomNavBar(
-                navController = navController
-            )
-        }
     )
     {
         if (CheckNetwork()) {
@@ -119,7 +114,18 @@ fun HomeView(
             )
         } else {
             // Show UI for No Internet Connectivity
-            UnNetworkScreen()
+            Scaffold(
+                topBar = {},
+
+                bottomBar = {
+                    HomeBottomNavBar(
+                        navController = navController
+                    )
+                }
+            )
+            {
+                UnNetworkScreen()
+            }
         }
     }
 }
@@ -134,6 +140,7 @@ fun MainHomeAppBar(
     onSearchClicked: () -> Unit = {},
     onSearchTriggered: () -> Unit
 ) {
+
     when (searchWidgetState) {
         SearchWidgetState.CLOSE -> {
             // Show search widget
@@ -362,44 +369,44 @@ fun showHistory(navController: NavController, viewModel: HomeViewModel, state: H
     }
     if (state.listHistoryRecords.isNotEmpty()) {
         // show 3 shimmer loading cards
-            Row(
-                modifier = Modifier
-                    .padding(start = 8.dp, bottom = 1.dp)
-                    .fillMaxWidth()
-            ) {
-                Spacer(modifier = Modifier.width(2.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_history),
-                    contentDescription = "Icon History",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+        Row(
+            modifier = Modifier
+                .padding(start = 8.dp, bottom = 1.dp)
+                .fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.width(2.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_history),
+                contentDescription = "Icon History",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+            Text(
+                text = "History",
+                modifier = Modifier.padding(top = 8.dp, start = 5.dp),
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
                 Text(
-                    text = "History",
-                    modifier = Modifier.padding(top = 8.dp, start = 5.dp),
+                    text = "More",
+                    modifier = Modifier.padding(top = 15.dp, end = 10.dp),
+                    fontSize = 12.sp,
+                    fontStyle = FontStyle.Italic,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                Row(modifier = Modifier.clickable { viewModel.onViewMoreHistoryClicked() }) {
-                    Text(
-                        text = "More",
-                        modifier = Modifier.padding(top = 15.dp, end = 10.dp),
-                        fontSize = 12.sp,
-                        fontStyle = FontStyle.Italic,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_next),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding(top = 18.dp, end = 15.dp)
-                            .width(8.dp)
-                            .height(8.dp)
-                            .clickable { viewModel.onViewMoreHistoryClicked() },
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_next),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(top = 18.dp, end = 15.dp)
+                        .width(8.dp)
+                        .height(8.dp)
+                        .clickable { viewModel.onViewMoreHistoryClicked() },
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
 
-                    )
-                }
+                )
             }
+        }
 
         showHistoryCardComic(state = state, homeViewModel = viewModel)
     }
@@ -617,7 +624,7 @@ fun showWeekly(
     state: HomeState,
     navController: NavController
 ) {
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         homeViewModel.getComicWeekly()
     }
     Column(
@@ -629,11 +636,11 @@ fun showWeekly(
     ) {
         Row(
             modifier = Modifier
-                .padding(top = 20.dp ,start = 20.dp, bottom = 1.dp)
+                .padding(top = 20.dp, start = 20.dp, bottom = 1.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
 
-        ) {
+            ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_weekly_home),
                 contentDescription = "",

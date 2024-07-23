@@ -9,6 +9,7 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.Tag
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
@@ -325,6 +326,22 @@ class ComicRepositoryImpl @Inject constructor(
             comicDao.updateTotalMbsOfComic(comicId, totalsMbs)
         } catch (e: Exception) {
             throw e
+        }
+    }
+
+    /**
+     * TODO: get tags
+     */
+    override suspend fun getTags(
+        token: String,
+        page: Int?,
+        size: Int?
+    ): Result<BaseResponse<Tag>> {
+        return try {
+            val response = api.getTags("Bearer $token", page, size)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 

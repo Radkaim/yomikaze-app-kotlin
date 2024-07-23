@@ -89,6 +89,18 @@ fun NormalComicCardShimmerLoading() {
 }
 
 @Composable
+fun TagItemShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .height(20.dp)
+            .fillMaxWidth()
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+
+@Composable
 fun BoxSelectedDownloadShimmerLoading() {
     Box(
         modifier = Modifier
