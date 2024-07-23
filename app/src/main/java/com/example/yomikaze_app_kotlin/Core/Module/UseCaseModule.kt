@@ -58,6 +58,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockManyChaptersU
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetMainCommentByCommentIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
@@ -608,6 +609,17 @@ object UseCaseModule {
         comicCommentRepository: ComicCommentRepository
     ): GetAllComicCommentByComicIdUC {
         return GetAllComicCommentByComicIdUC(comicCommentRepository)
+    }
+
+    /**
+     * TODO: Provide the get main comment by comment id use case
+     */
+    @Provides
+    @Singleton
+    fun provideGetMainCommentByCommentIdUC(
+        comicCommentRepository: ComicCommentRepository
+    ): GetMainCommentByCommentIdUC {
+        return GetMainCommentByCommentIdUC(comicCommentRepository)
     }
 
     /**

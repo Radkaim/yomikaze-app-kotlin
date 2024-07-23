@@ -20,6 +20,15 @@ interface ComicCommentRepository {
     ): Result<BaseResponse<CommentResponse>>
 
     /**
+     * TODO: use for get comment by comicId and commentId
+     */
+    suspend fun getMainCommentByCommentId(
+        token: String,
+        comicId: Long,
+        commentId: Long
+    ): Result<CommentResponse>
+
+    /**
      * TODO: use for post comment of comic by comicId
      */
     suspend fun postComicCommentByComicId(

@@ -10,6 +10,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetMainCommentByCommentIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
@@ -26,7 +27,8 @@ class RelyCommentDetailViewModel @Inject constructor(
     private val getAllReplyCommentByComicIdUC: GetAllReplyCommentByComicIdUC,
     private val postReplyCommentByComicIdUC: PostReplyCommentByComicIdUC,
     private val deleteComicCommentByComicIdUC: DeleteComicCommentByComicIdUC,
-    private val updateComicCommentByComicIdUC: UpdateComicCommentByComicIdUC
+    private val updateComicCommentByComicIdUC: UpdateComicCommentByComicIdUC,
+    private val provideGetMainCommentByCommentIdUC: GetMainCommentByCommentIdUC
 ) : ViewModel(), StatefulViewModel<RelyCommentDetailState> {
     //navController
     private var navController: NavController? = null
@@ -264,6 +266,33 @@ class RelyCommentDetailViewModel @Inject constructor(
                 _state.value = _state.value.copy(isUpdateCommentSuccess = false)
                 Log.e("ComicCommentViewModel", "updateComicCommentByComicId: $result")
             }
+        }
+    }
+
+    /**
+     * Todo: Implement get main comment by commentId
+     */
+    fun getMainCommentByCommentId(
+        comicId: Long,
+        commentId: Long
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = provideGetMainCommentByCommentIdUC.getMainCommentByCommentId(
+                token = token,
+                comicId = comicId,
+                commentId = commentId
+            )
+            result.fold(
+                onSuccess = { commentResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(mainComment = commentResponse)
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicCommentViewModel", "getMainCommentByCommentId: $exception")
+                }
+            )
         }
     }
 

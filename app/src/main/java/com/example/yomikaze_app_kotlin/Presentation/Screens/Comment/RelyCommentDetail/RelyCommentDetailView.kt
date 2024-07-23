@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -108,6 +109,12 @@ fun RelyCommentDetailContent(
     state: RelyCommentDetailState,
     relyCommentDetailViewModel: RelyCommentDetailViewModel
 ) {
+    LaunchedEffect(Unit){
+        relyCommentDetailViewModel.getMainCommentByCommentId(
+            comicId = comicId,
+            commentId = commentId,
+        )
+    }
 
     val listState = rememberLazyListState()
     val context = LocalContext.current
@@ -137,138 +144,160 @@ fun RelyCommentDetailContent(
             )
         },
     ) {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (header, messages, chatBox) = createRefs()
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(top = 5.dp)
-                    .constrainAs(header) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Total Comments: ${state.totalCommentResults.value}",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(8.dp)
-
-                )
-
-                SortComponent(
-                    isOldestSelected = isSelected,
-                    onOldSortClick = {
-                        isSelected = true
-                        isReversed = false
-
-
-                    },
-                    onnNewSortClick = {
-                        isSelected = false
-                        isReversed = true
-
-
-
-                    }
+        //main comment
+        Column {
+            if (state.mainComment != null) {
+                CommentCard(
+                    comicId = comicId,
+                    commentId = state.mainComment.id,
+                    content = state.mainComment.content,
+                    authorName = state.mainComment.author.name ,
+                    authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
+                        ?: "",
+                    roleName = state.mainComment.author.roles?.get(0)?:"",
+                    creationTime = state.mainComment.creationTime,
+                    isOwnComment = relyCommentDetailViewModel.checkIsOwnComment(
+                        state.mainComment.author.id
+                    ),
+                    isAdmin = relyCommentDetailViewModel.checkIsAdmin(),
+                    onClicked = {},
+                    relyCommentDetailViewModel = relyCommentDetailViewModel
                 )
             }
+            else{
+                CommentCardShimmerLoading()
+            }
 
-            LazyColumn(
-                state = listState,
-                verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(messages) {
-                        top.linkTo(header.bottom)
-                        bottom.linkTo(chatBox.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        height = Dimension.fillToConstraints
-                    }
+            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                val (header, messages, chatBox) = createRefs()
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(top = 5.dp)
+                        .constrainAs(header) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val total = state.totalCommentResults.value
+                    Text(
+                        text = "Reply: ${total} ${if (total > 1) "comments" else "comment"}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(8.dp)
 
-            ) {
-//                    stickyHeader {
-//
-//                    }
-                if (state.isListComicCommentLoading) {
-                    item {
-                        repeat(6) {
-                            CommentCardShimmerLoading()
-                            Spacer(modifier = Modifier.height(10.dp))
+                    )
+
+                    SortComponent(
+                        isOldestSelected = isSelected,
+                        onOldSortClick = {
+                            isSelected = true
+                            isReversed = false
+
+
+                        },
+                        onnNewSortClick = {
+                            isSelected = false
+                            isReversed = true
+
+                        }
+                    )
+                }
+
+                LazyColumn(
+                    state = listState,
+                    verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(messages) {
+                            top.linkTo(header.bottom)
+                            bottom.linkTo(chatBox.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            height = Dimension.fillToConstraints
+                        }
+
+                ) {
+
+                    if (state.isListComicCommentLoading) {
+                        item {
+                            repeat(6) {
+                                CommentCardShimmerLoading()
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
                         }
                     }
-                }
-                if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
-                    val sortedList = if (isReversed) {
-                        state.listComicComment.sortedByDescending { it.creationTime }
-                    } else {
-                        state.listComicComment.sortedBy { it.creationTime }
-                    }
-                    items(sortedList) { comment ->
-                        CommentCard(
-                            comicId = comicId,
-                            commentId = comment.id,
-                            content = comment.content,
-                            authorName = comment.author.name,
-                            authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
-                                ?: "",
-                            roleName = comment.author.roles?.get(0) ?: "",
-                            creationTime = comment.creationTime,
-                            isOwnComment = relyCommentDetailViewModel.checkIsOwnComment(comment.author.id),
-                            isAdmin = relyCommentDetailViewModel.checkIsAdmin(),
-                            onClicked = {},
-                            relyCommentDetailViewModel = relyCommentDetailViewModel
-                        )
-                    }
-                }
-
-
-                // Hiển thị một mục tải dữ liệu khi cần
-                item {
-                    if (loading.value) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(100.dp)
-                                .padding(10.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LottieAnimationComponent(
-                                animationFileName = R.raw.loading, // Replace with your animation file name
-                                loop = true,
-                                autoPlay = true,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .scale(1.15f)
+                    if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
+                        val sortedList = if (isReversed) {
+                            state.listComicComment.sortedByDescending { it.creationTime }
+                        } else {
+                            state.listComicComment.sortedBy { it.creationTime }
+                        }
+                        items(sortedList) { comment ->
+                            CommentCard(
+                                comicId = comicId,
+                                commentId = comment.id,
+                                content = comment.content,
+                                authorName = comment.author.name,
+                                authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
+                                    ?: "",
+                                roleName = comment.author.roles?.get(0) ?: "",
+                                creationTime = comment.creationTime,
+                                isOwnComment = relyCommentDetailViewModel.checkIsOwnComment(comment.author.id),
+                                isAdmin = relyCommentDetailViewModel.checkIsAdmin(),
+                                onClicked = {},
+                                relyCommentDetailViewModel = relyCommentDetailViewModel
                             )
                         }
                     }
-                }
-            }
 
-            ChatBox(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(chatBox) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
+
+                    // Hiển thị một mục tải dữ liệu khi cần
+                    item {
+                        if (loading.value) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(100.dp)
+                                    .padding(10.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                LottieAnimationComponent(
+                                    animationFileName = R.raw.loading, // Replace with your animation file name
+                                    loop = true,
+                                    autoPlay = true,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .scale(1.15f)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                ChatBox(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(chatBox) {
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    onSendChatClickListener = {
+                        relyCommentDetailViewModel.postReplyComicCommentByComicId(
+                            comicId = comicId,
+                            commentId = commentId,
+                            content = it,
+                        )
                     },
-                onSendChatClickListener = {
-                    relyCommentDetailViewModel.postReplyComicCommentByComicId(
-                        comicId = comicId,
-                        commentId = commentId,
-                        content = it,
-                    )
-                },
-                isLogin = relyCommentDetailViewModel.checkUserIsLogin()
-            )
+                    isLogin = relyCommentDetailViewModel.checkUserIsLogin()
+                )
+            }
         }
 
 

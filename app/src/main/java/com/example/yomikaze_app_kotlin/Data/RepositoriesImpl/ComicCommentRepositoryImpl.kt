@@ -31,6 +31,23 @@ class ComicCommentRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * TODO: use for get comment by comicId and commentId
+     */
+    override suspend fun getMainCommentByCommentId(
+        token: String,
+        comicId: Long,
+        commentId: Long
+    ): Result<CommentResponse> {
+        return try {
+            val response = api.getMainCommentByCommentId("Bearer $token", comicId, commentId)
+            Result.success(response)
+        } catch (e: Exception) {
+            Log.e("CommentComicRepositoryImpl", "getMainCommentByCommentId: $e")
+            Result.failure(e)
+        }
+    }
+
     override suspend fun postComicCommentByComicId(
         token: String,
         comicId: Long,

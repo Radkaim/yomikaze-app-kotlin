@@ -6,6 +6,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
 
 data class RelyCommentDetailState(
     //for comment
+    val mainComment: CommentResponse? = null,
     val listComicComment: List<CommentResponse> = emptyList(),
     val isListComicCommentLoading: Boolean = true,
     val totalCommentResults: MutableState<Int> = mutableStateOf(0),

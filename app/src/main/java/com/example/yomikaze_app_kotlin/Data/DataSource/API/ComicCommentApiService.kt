@@ -29,6 +29,16 @@ interface ComicCommentApiService {
     ): BaseResponse<CommentResponse>
 
     /**
+     * TODO: use for get comment by comicId and commentId
+     */
+    @GET("comics/{comicId}/comments/{commentId}")
+    suspend fun getMainCommentByCommentId(
+        @Header("Authorization") token: String,
+        @Path("comicId") comicId: Long,
+        @Path("commentId") commentId: Long,
+    ): CommentResponse
+
+    /**
      * TODO: use for post comic comment by comicId
      */
     @POST("comics/{comicId}/comments")
