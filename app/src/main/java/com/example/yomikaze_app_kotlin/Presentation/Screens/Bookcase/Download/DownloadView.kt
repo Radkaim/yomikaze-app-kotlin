@@ -47,7 +47,7 @@ fun DownloadView(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
         modifier = Modifier
             .padding(
-                top = 20.dp,
+//                top = 20.dp,
                 start = 4.dp,
                 end = 4.dp,
                 //bottom = 80.dp
@@ -75,7 +75,7 @@ fun DownloadViewContent(
         verticalArrangement = Arrangement.spacedBy(8.dp),// 8.dp space between each item
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 60.dp)
+            .padding(top = 20.dp,bottom = 60.dp)
     ) {
         items(comics) { comic ->
             BookcaseComicCard(

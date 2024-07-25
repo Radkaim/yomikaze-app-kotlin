@@ -240,7 +240,7 @@ fun showListHistories(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
         modifier = Modifier
             .padding(
-                top = 15.dp,
+//                top = 15.dp,
                 start = 4.dp,
                 end = 4.dp,
                 bottom = 4.dp

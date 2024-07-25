@@ -71,23 +71,27 @@ class AdvancedSearchViewModel @Inject constructor(
 
     //reset all state
     fun resetState() {
-        updateQueryByComicName("")
-        updateListAuthorsInput(emptyList())
-        updateQueryByAuthor("")
-        updateQueryByPublisher("")
-        updateQueryByStatus(null)
-        updateQueryFromPublishedDate("")
-        updateQueryToPublishedDate("")
-        updateQueryFromTotalChapters(null)
-        updateQueryToTotalChapters(null)
-        updateQueryFromTotalViews(null)
-        updateQueryToTotalViews(null)
-        updateQueryFromAverageRating(null)
-        updateQueryToAverageRating(null)
-        updateQueryFromTotalFollows(null)
-        updateQueryToTotalFollows(null)
-        updateQueryIncludeTags(emptyList())
-        resetTags()
+        viewModelScope.launch(Dispatchers.IO) {
+
+
+            updateQueryByComicName("")
+            updateListAuthorsInput(emptyList())
+            updateQueryByAuthor("")
+            updateQueryByPublisher("")
+            updateQueryByStatus(null)
+            updateQueryFromPublishedDate("")
+            updateQueryToPublishedDate("")
+            updateQueryFromTotalChapters(null)
+            updateQueryToTotalChapters(null)
+            updateQueryFromTotalViews(null)
+            updateQueryToTotalViews(null)
+            updateQueryFromAverageRating(null)
+            updateQueryToAverageRating(null)
+            updateQueryFromTotalFollows(null)
+            updateQueryToTotalFollows(null)
+            updateQueryIncludeTags(emptyList())
+            resetTags()
+        }
     }
 
 

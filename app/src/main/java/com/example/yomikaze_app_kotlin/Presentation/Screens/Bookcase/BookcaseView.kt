@@ -74,7 +74,8 @@ fun BookcaseView(
 
                         icon = {
                             setIcon(index, selectedTabIndex)
-                        }
+                        },
+                        modifier = Modifier.height(48.dp).width(120.dp).fillMaxWidth(1f / tabs.size)
                     )
                 }
             }
