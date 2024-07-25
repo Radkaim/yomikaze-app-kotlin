@@ -59,6 +59,7 @@ data class AdvancedSearchState(
     val queryFromAverageRating: Float? = null,
     val queryToAverageRating: Float? = null,
 
+
     val queryFromTotalFollows: Int? = null,
     val queryToTotalFollows: Int? = null,
 

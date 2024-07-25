@@ -33,6 +33,10 @@ class AdvancedSearchViewModel @Inject constructor(
         this.navController = navController
     }
 
+    fun onNavigateComicDetail(comicId: Long) {
+        navController?.navigate("comic_detail_route/$comicId")
+    }
+
 
     private val _tagStates = MutableStateFlow<Map<Long, TagState>>(emptyMap())
     val tagStates: StateFlow<Map<Long, TagState>> get() = _tagStates
@@ -65,32 +69,51 @@ class AdvancedSearchViewModel @Inject constructor(
 
     //reset all tags
     fun resetTags() {
-        _tagStates.value = _tagStates.value.mapValues { TagState.NONE }
-        updateQueryTags()
+        viewModelScope.launch(Dispatchers.IO) {
+            _tagStates.value = _tagStates.value.mapValues { TagState.NONE }
+            updateQueryTags()
+        }
+    }
+
+    //reset average rating
+    fun resetAverageRatingValue() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryFromAverageRating (0f)
+            updateQueryToAverageRating(5f)
+        }
     }
 
     //reset all state
     fun resetState() {
         viewModelScope.launch(Dispatchers.IO) {
-
-
             updateQueryByComicName("")
+
             updateListAuthorsInput(emptyList())
             updateQueryByAuthor("")
+
             updateQueryByPublisher("")
+
             updateQueryByStatus(null)
+
             updateQueryFromPublishedDate("")
             updateQueryToPublishedDate("")
+
             updateQueryFromTotalChapters(null)
             updateQueryToTotalChapters(null)
+
             updateQueryFromTotalViews(null)
             updateQueryToTotalViews(null)
+
             updateQueryFromAverageRating(null)
             updateQueryToAverageRating(null)
+
             updateQueryFromTotalFollows(null)
             updateQueryToTotalFollows(null)
+
             updateQueryIncludeTags(emptyList())
             resetTags()
+            resetAverageRatingValue()
+
         }
     }
 
@@ -142,11 +165,18 @@ class AdvancedSearchViewModel @Inject constructor(
     }
 
     fun updateQueryFromAverageRating(queryFromAverageRating: Float?) {
-        _state.value = _state.value.copy(queryFromAverageRating = queryFromAverageRating)
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("AdvancedSearchViewModel", "queryFromAverageRating: ${queryFromAverageRating}")
+            _state.value = _state.value.copy(queryFromAverageRating = queryFromAverageRating)
+        }
     }
 
+
     fun updateQueryToAverageRating(queryToAverageRating: Float?) {
-        _state.value = _state.value.copy(queryToAverageRating = queryToAverageRating)
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("AdvancedSearchViewModel", "queryToAverageRating: $queryToAverageRating")
+            _state.value = _state.value.copy(queryToAverageRating = queryToAverageRating)
+        }
     }
 
     fun updateQueryFromTotalFollows(queryFromTotalFollows: Int?) {

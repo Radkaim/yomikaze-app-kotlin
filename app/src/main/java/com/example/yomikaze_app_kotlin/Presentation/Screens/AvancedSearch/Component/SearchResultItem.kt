@@ -39,6 +39,6 @@ fun SearchResultItem(
                 color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
                 shape = MaterialTheme.shapes.small
             ),
-        onClicked = { }
+        onClicked = {advancedSearchViewModel.onNavigateComicDetail(comic.comicId)}
     )
 }

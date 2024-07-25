@@ -3,7 +3,6 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -26,8 +24,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -44,14 +40,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Domain.Models.Tag
-import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
@@ -59,6 +52,8 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEff
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.QueryByComicNameTextField
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.SearchResultItem
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.SliderAdvancedExample
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.TagList
 
 
 @Composable
@@ -93,10 +88,15 @@ fun AdvancedSearchContent(
     //work
     LaunchedEffect(Unit) {
         advancedSearchViewModel.updateQueryByComicName(comicNameSearchText)
+//
     }
 
     LaunchedEffect(Unit) {
         advancedSearchViewModel.performAdvancedSearch()
+    }
+
+    LaunchedEffect(Unit) {
+        advancedSearchViewModel.getTags()
     }
 //   advancedSearchViewModel.performAdvancedSearch()
 
@@ -114,6 +114,17 @@ fun AdvancedSearchContent(
     var itemQueryTag by remember { mutableStateOf(false) }
     var itemExcludeIncludeMode by remember { mutableStateOf(false) }
     var itemQueryOrderBy by remember { mutableStateOf(false) }
+
+    var resetSlider by remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = resetSlider)
+    {
+        if (resetSlider) {
+//            advancedSearchViewModel.resetAverageRatingValue()
+            resetSlider = false
+        }
+
+    }
+    //reset average rating
 
     //page 1 size 1000
     fun hideAll() {
@@ -195,6 +206,7 @@ fun AdvancedSearchContent(
                             .clip(RoundedCornerShape(30.dp))
                             .clickable {
                                 advancedSearchViewModel.resetState()
+                                resetSlider = true
                             },
                         contentAlignment = Alignment.Center
 
@@ -222,7 +234,7 @@ fun AdvancedSearchContent(
                         modifier = Modifier
                             .height(40.dp)
                             .width(100.dp)
-                            .background( if (hideAllColorCheck) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.onPrimary)
+                            .background(if (hideAllColorCheck) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.onPrimary)
                             .clickable {
                                 hideAll()
                             },
@@ -298,42 +310,11 @@ fun AdvancedSearchContent(
 
                 //TODO: search by comic name
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Comic Name",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-//                                   .clickable { itemQueryComicName = !itemQueryComicName }
-                        )
-                        Button(
-                            onClick = { itemQueryComicName = !itemQueryComicName },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemQueryComicName) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemQueryComicName) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                                    .clickable { itemQueryComicName = !itemQueryComicName }
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "Comic Name",
+                        onShowClick = { itemQueryComicName = it },
+                        itemShowBoolean = itemQueryComicName
+                    )
                     if (itemQueryComicName) {
                         QueryByComicNameTextField(
                             queryByComicName = state.queryByComicName,
@@ -345,41 +326,11 @@ fun AdvancedSearchContent(
 
                 //Todo: search by author
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Author",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                        Button(
-                            onClick = { itemQueryAuthor = !itemQueryAuthor },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemQueryAuthor) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemQueryAuthor) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "Author",
+                        onShowClick = { itemQueryAuthor = it },
+                        itemShowBoolean = itemQueryAuthor
+                    )
                     if (itemQueryAuthor) {
 
                     }
@@ -387,41 +338,11 @@ fun AdvancedSearchContent(
 
                 //Todo: search by publisher
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Author",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                        Button(
-                            onClick = { itemQueryPublisher = !itemQueryPublisher },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemQueryPublisher) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemQueryPublisher) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "Publisher",
+                        onShowClick = { itemQueryPublisher = it },
+                        itemShowBoolean = itemQueryPublisher
+                    )
                     if (itemQueryPublisher) {
 
                     }
@@ -429,41 +350,11 @@ fun AdvancedSearchContent(
 
                 //Todo: search by status
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Status",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                        Button(
-                            onClick = { itemQueryStatus = !itemQueryStatus },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemQueryStatus) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemQueryStatus) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "Status",
+                        onShowClick = { itemQueryStatus = it },
+                        itemShowBoolean = itemQueryStatus
+                    )
                     if (itemQueryStatus) {
 
                     }
@@ -471,246 +362,120 @@ fun AdvancedSearchContent(
 
                 //Todo: search by From - To Date
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "From - To Date",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                        Button(
-                            onClick = { itemQueryFromToDate = !itemQueryFromToDate },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemQueryFromToDate) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemQueryFromToDate) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "From - To Date",
+                        onShowClick = { itemQueryFromToDate = it },
+                        itemShowBoolean = itemQueryFromToDate
+                    )
                     if (itemQueryFromToDate) {
                     }
                 }
 
                 //Todo: search by From - To Total Chapter
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "From - To Total Chapter",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                        Button(
-                            onClick = { itemFromToTotalChapter = !itemFromToTotalChapter },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemFromToTotalChapter) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemFromToTotalChapter) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "From - To Total Chapter",
+                        onShowClick = { itemFromToTotalChapter = it },
+                        itemShowBoolean = itemFromToTotalChapter
+                    )
                     if (itemFromToTotalChapter) {
                     }
                 }
 
                 //Todo: search by From - To Total View
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "From - To Total View",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                        Button(
-                            onClick = { itemFromToTotalView = !itemFromToTotalView },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemFromToTotalView) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemFromToTotalView) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "From - To Total View",
+                        onShowClick = { itemFromToTotalView = it },
+                        itemShowBoolean = itemFromToTotalView
+                    )
                     if (itemFromToTotalView) {
                     }
                 }
 
                 //Todo: search by From - To Average Rating
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "From - To Average Rating",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                        Button(
-                            onClick = { itemFromToAverageRating = !itemFromToAverageRating },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemFromToAverageRating) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
+                    showTitle(
+                        title = "From - To Average Rating",
+                        onShowClick = { itemFromToAverageRating = it },
+                        itemShowBoolean = itemFromToAverageRating
+                    )
+                    if (itemFromToAverageRating) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(
-                                text = if (itemFromToAverageRating) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
+                            Button(
+                                onClick = {
+                                    advancedSearchViewModel.resetAverageRatingValue()
+                                    resetSlider = true
+                                },
                                 modifier = Modifier
+                                    .wrapContentSize()
+                                    .width(100.dp)
+                                    .height(40.dp)
+                                    .scale(0.7f)
+                                    .offset(x = 20.dp),
+                            ) {
+                                Text(
+                                    text = "Reset All Tags",
+                                    fontSize = 20.sp,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier
+                                )
+                            }
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
+                        ) {
+
+
+                            SliderAdvancedExample(
+                                fromValueChange = state.queryFromAverageRating ?: 0f,
+                                toValueChange = state.queryToAverageRating ?: 5f,
+                                defaultFromValue = 0f,
+                                defaultToValue = 5f,
+                                resetSlider = resetSlider,
+                                onValueFromChange = {
+                                    advancedSearchViewModel.updateQueryFromAverageRating(
+                                        it
+                                    )
+                                },
+                                onValueToChange = {
+                                    advancedSearchViewModel.updateQueryToAverageRating(
+                                        it
+                                    )
+                                }
                             )
                         }
-                    }
-                    if (itemFromToAverageRating) {
                     }
                 }
 
                 //Todo: search by From - To Follow
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "From - To Follow",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                        Button(
-                            onClick = { itemFromToTotalFollow = !itemFromToTotalFollow },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemFromToTotalFollow) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemFromToTotalFollow) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "From - To Total Follow",
+                        onShowClick = { itemFromToTotalFollow = it },
+                        itemShowBoolean = itemFromToTotalFollow
+                    )
                     if (itemFromToTotalFollow) {
                     }
                 }
 
                 //Todo: search by tag
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Tags",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-//                                   .clickable { itemQueryComicName = !itemQueryComicName }
-                        )
-                        Button(
-                            onClick = { itemQueryTag = !itemQueryTag },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemQueryTag) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemQueryTag) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "Tag",
+                        onShowClick = { itemQueryTag = it },
+                        itemShowBoolean = itemQueryTag
+                    )
                     if (itemQueryTag) {
                         val tagId = 1L..20L
-                        LaunchedEffect(key1 = itemQueryTag) {
-                            advancedSearchViewModel.getTags()
-                        }
                         if (state.isTagsLoading) {
                             repeat(10) {
                                 TagItemShimmerLoading()
@@ -749,81 +514,22 @@ fun AdvancedSearchContent(
 
                 //Todo: search by Exclude/Include Mode
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Exclude/Include Mode",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-//                                   .clickable { itemQueryComicName = !itemQueryComicName }
-                        )
-                        Button(
-                            onClick = { itemExcludeIncludeMode = !itemExcludeIncludeMode },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemExcludeIncludeMode) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemExcludeIncludeMode) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "Exclude/Include Mode",
+                        onShowClick = { itemExcludeIncludeMode = it },
+                        itemShowBoolean = itemExcludeIncludeMode
+                    )
                     if (itemExcludeIncludeMode) {
                     }
                 }
 
                 //Todo: search by order by
                 item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Order By",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                        Button(
-                            onClick = { itemQueryOrderBy = !itemQueryOrderBy },
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .width(100.dp)
-                                .height(40.dp)
-                                .scale(0.7f)
-                                .offset(x = 20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (itemQueryOrderBy) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
-                            )
-                        ) {
-                            Text(
-                                text = if (itemQueryOrderBy) "Hide" else "Show",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                            )
-                        }
-                    }
+                    showTitle(
+                        title = "Order By",
+                        onShowClick = { itemQueryOrderBy = it },
+                        itemShowBoolean = itemQueryOrderBy
+                    )
                     if (itemQueryOrderBy) {
                     }
                 }
@@ -871,131 +577,52 @@ fun AdvancedSearchContent(
 
             }
         }
-//        }
-    }
-}
 
-//@Composable
-//fun titleSearch(
-//    onClick: () -> Unit,
-//) {
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.SpaceBetween,
-//        modifier = Modifier.fillMaxWidth()
-//    ) {
-//        Text(
-//            text = "Comic Name",
-//            fontSize = 15.sp,
-//            fontWeight = FontWeight.Bold,
-//            color = MaterialTheme.colorScheme.primaryContainer,
-//            modifier = Modifier
-//                .padding(8.dp)
-////                                   .clickable { itemQueryComicName = !itemQueryComicName }
-//        )
-//        Button(
-//            onClick = { onClick()  },
-//            modifier = Modifier.wrapContentSize().width(100.dp).height(40.dp).scale(0.7f).offset(x = 20.dp),
-//        ) {
-//            Text(
-//                text = if (itemQueryComicName) "Hide" else "Show",
-//                fontSize = 20.sp,
-//                color = MaterialTheme.colorScheme.onSurface,
-//                fontWeight = FontWeight.Bold,
-//                modifier = Modifier
-//                    .clickable { onClick()}
-//            )
-//        }
-//    }
-//}
-
-
-@Composable
-fun TagCheckbox(tag: Long, tagName: String, viewModel: AdvancedSearchViewModel) {
-    val tagStates by viewModel.tagStates.collectAsState()
-    val tagState = tagStates[tag] ?: TagState.NONE
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        CustomCheckbox(
-            tag = tag,
-            tagName = tagName,
-            tagState = tagState,
-            onCheckedChange = {
-                viewModel.toggleTagState(tag)
-                //cal when search click
-                viewModel.updateQueryTags()
-            }
-        )
     }
 }
 
 @Composable
-fun CustomCheckbox(
-    tag: Long,
-    tagName: String,
-    tagState: TagState,
-    onCheckedChange: (Boolean) -> Unit
+fun showTitle(
+    title: String,
+    onShowClick: (Boolean) -> Unit,
+    itemShowBoolean: Boolean,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.clickable { onCheckedChange(tagState != TagState.INCLUDE) }
-    ) {
-        Box(
-            modifier = Modifier
-                .size(24.dp)
-                .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
-                .clickable {
-                    onCheckedChange(tagState != TagState.INCLUDE) // Toggle state
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            when (tagState) {
-                TagState.INCLUDE -> Icon(
-                    imageVector = Icons.Filled.Check, // Dấu tick
-                    contentDescription = "Include",
-                    tint = Color.Green
-                )
-
-                TagState.EXCLUDE -> Icon(
-                    imageVector = Icons.Filled.Close, // Dấu x
-                    contentDescription = "Exclude",
-                    tint = Color.Red
-                )
-
-                else -> {}
-            }
-        }
-        TagComponent(status = tagName)
-    }
-}
-
-@Composable
-fun TagList(viewModel: AdvancedSearchViewModel, tags: List<Tag>) {
-
-    val firstHalf = tags.take((tags.size + 1) / 2)
-    val secondHalf = tags.takeLast(tags.size / 2)
-
-    Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(5.dp)
+        Text(
+            text = title,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primaryContainer,
+            modifier = Modifier
+                .padding(8.dp)
+        )
+        Button(
+            onClick = { onShowClick(!itemShowBoolean) },
+            modifier = Modifier
+                .wrapContentSize()
+                .width(100.dp)
+                .height(40.dp)
+                .scale(0.7f)
+                .offset(x = 20.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (itemShowBoolean) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondaryContainer,
+            )
         ) {
-            firstHalf.forEach { tag ->
-                TagCheckbox(tag = tag.tagId, tagName = tag.name, viewModel = viewModel)
-            }
-        }
-        Column(
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            secondHalf.forEach { tag ->
-                TagCheckbox(tag = tag.tagId, tagName = tag.name, viewModel = viewModel)
-            }
+            Text(
+                text = if (itemShowBoolean) "Hide" else "Show",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+            )
         }
     }
 }
+
+
+
 

@@ -12,6 +12,8 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.BookcaseVie
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.ChooseChapterDownload.ChooseChapterDownloadView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadDetailsView.DownloadDetailView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.PersonalCategory.PersonalCateView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyCommentDetail.RelyCommentDetailView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notification.NotificationView
@@ -95,6 +97,30 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             AdvancedSearchView(
                 navController = navController,
                 comicNameSearchText = comicNameSearchText
+            )
+        }
+
+        //comic comment
+        composable("comic_comment_route/{comicId}/{comicName}") { navBackStackEntry ->
+            val comicId = navBackStackEntry.arguments?.getString("comicId")
+            val comicName = navBackStackEntry.arguments?.getString("comicName")
+            ComicCommentView(
+                navController = navController,
+                comicId = comicId?.toLong() ?: 0,
+                comicName = comicName ?: ""
+            )
+        }
+
+        // reply comment detail screen
+        composable("reply_comment_detail_route/{comicId}/{commentId}/{authorName}") { navBackStackEntry ->
+            val comicId = navBackStackEntry.arguments?.getString("comicId")
+            val commentId = navBackStackEntry.arguments?.getString("commentId")
+            val authorName = navBackStackEntry.arguments?.getString("authorName")
+            RelyCommentDetailView(
+                navController = navController,
+                comicId = comicId?.toLong() ?: 0,
+                commentId = commentId?.toLong() ?: 0,
+                authorName = authorName ?: ""
             )
         }
     }
