@@ -80,6 +80,7 @@ class ComicDetailViewModel @Inject constructor(
 
     fun getComicDetailsFromApi(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isLoading = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = getComicDetailsFromApiUC.getComicDetailsFromApi(token, comicId)
@@ -98,6 +99,7 @@ class ComicDetailViewModel @Inject constructor(
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isLoading = false)
                     Log.e("ComicDetailsViewModel", "getComicDetailsFromApi: $exception")
                 }
             )
@@ -160,6 +162,7 @@ class ComicDetailViewModel @Inject constructor(
      */
     fun getListChapterByComicId(comicId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isListChaptersLoading = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             val result = getListChaptersByComicIdUC.getListChapters(token, comicId)
@@ -173,9 +176,11 @@ class ComicDetailViewModel @Inject constructor(
                     listChapter.results.forEach() {
                         Log.d("ComicDetailViewModel", "getListChapterByComicId: $it")
                     }
+                    _state.value = _state.value.copy(isListChaptersLoading = false)
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
+                    _state.value = _state.value.copy(isListChaptersLoading = false)
                     Log.e("ComicDetailViewModel", "getListChapterByComicId: $exception")
                 }
             )

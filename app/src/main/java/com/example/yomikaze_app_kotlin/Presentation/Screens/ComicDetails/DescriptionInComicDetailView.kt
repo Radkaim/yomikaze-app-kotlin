@@ -46,7 +46,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Comment.CommentCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ButtonReadingShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.DescriptionShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.LineLongShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.LineShortShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.TagShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
 import com.example.yomikaze_app_kotlin.R
 
@@ -95,26 +100,30 @@ fun DescriptionInComicDetailView(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    val maxLine: Int = if (isExpanded) 25 else 3
-                    Text(
-                        text = description ?: "Description",
-                        maxLines = maxLine,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    if (isExpanded) {
-                        Text(
-                            text = "Less",
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
-                            fontSize = 14.sp,
-                        )
+                    if (state.isLoading) {
+                        DescriptionShimmerLoading()
                     } else {
-                        if (description != null) {
-                            if (description.length > 70) {
-                                Text(
-                                    text = "More",
-                                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
-                                    fontSize = 14.sp,
-                                )
+                        val maxLine: Int = if (isExpanded) 25 else 3
+                        Text(
+                            text = description ?: "Description",
+                            maxLines = maxLine,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        if (isExpanded) {
+                            Text(
+                                text = "Less",
+                                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                                fontSize = 14.sp,
+                            )
+                        } else {
+                            if (description != null) {
+                                if (description.length > 70) {
+                                    Text(
+                                        text = "More",
+                                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                                        fontSize = 14.sp,
+                                    )
+                                }
                             }
                         }
                     }
@@ -127,13 +136,22 @@ fun DescriptionInComicDetailView(
                 contentPadding = PaddingValues(start = 2.dp, top = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(listTag) { tag ->
-                    TagComponent(status = tag.name)
+                if (state.isLoading) {
+                    item {
+                        repeat(3) {
+                            TagShimmerLoading()
+                        }
+                    }
+                } else {
+                    items(listTag) { tag ->
+                        TagComponent(status = tag.name)
+                    }
                 }
             }
         }
 
         item {
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -141,50 +159,54 @@ fun DescriptionInComicDetailView(
                     .fillMaxWidth()
                     .padding(top = 20.dp)
             ) {
-                Button(
-                    modifier = Modifier
-                        .width(250.dp)
-                        .height(40.dp)
-                        .shadow(4.dp, shape = RoundedCornerShape(8.dp))
-                        .clip(RoundedCornerShape(20.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colorScheme.onSecondary,
-                        contentColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    onClick = {
-                        //TODO
-                        //    comicDetailViewModel.downloadComic(state.comicResponse!!)
-                        if (state.comicResponse?.isRead == true) {
-                            comicDetailViewModel.getContinueReading(
-                                comicId = comicId,
+                if (state.isLoading) {
+                    ButtonReadingShimmerLoading()
+                } else {
+                    Button(
+                        modifier = Modifier
+                            .width(250.dp)
+                            .height(40.dp)
+                            .shadow(4.dp, shape = RoundedCornerShape(8.dp))
+                            .clip(RoundedCornerShape(20.dp)),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = MaterialTheme.colorScheme.onSecondary,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                        onClick = {
+                            //TODO
+                            //    comicDetailViewModel.downloadComic(state.comicResponse!!)
+                            if (state.comicResponse?.isRead == true) {
+                                comicDetailViewModel.getContinueReading(
+                                    comicId = comicId,
+                                )
+                            } else {
+                                comicDetailViewModel.onStartReading(
+                                    comicId = comicId,
+                                )
+                            }
+                        }) {
+                        if (state.comicResponse?.isRead ?: false) {
+                            Text(
+                                text = "Continue Reading",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         } else {
-                            comicDetailViewModel.onStartReading(
-                                comicId = comicId,
+                            Log.d(
+                                "DescriptionInComicDetailView",
+                                "DescriptionInComicDetailView: ${state.comicResponse?.isRead}"
                             )
-                        }
-                    }) {
-                    if (state.comicResponse?.isRead ?: false) {
-                        Text(
-                            text = "Continue Reading",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    } else {
-                        Log.d(
-                            "DescriptionInComicDetailView",
-                            "DescriptionInComicDetailView: ${state.comicResponse?.isRead}"
-                        )
-                        Text(
-                            text = "Start Reading",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                            Text(
+                                text = "Start Reading",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
 
+                        }
                     }
                 }
             }
@@ -200,34 +222,81 @@ fun DescriptionInComicDetailView(
                         .fillMaxWidth()
                         .padding(start = 8.dp)
                 ) {
-                    Text(
-                        text = "New Comments",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.secondaryContainer
-                    )
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable {
-                            comicDetailViewModel.navigateToComicComment(
-                                comicId = comicId,
-                                comicName = comicName
+                    if (state.isLoading) {
+                        LineShortShimmerLoading()
+                    } else {
+                        Text(
+                            text = "New Comments",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    }
+                    if (state.isLoading) {
+                        LineShortShimmerLoading()
+                    } else {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable {
+                                comicDetailViewModel.navigateToComicComment(
+                                    comicId = comicId,
+                                    comicName = comicName
+                                )
+                            }
+                        ) {
+                            Text(
+                                text = "More",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Icon(
+                                painterResource(id = R.drawable.ic_next),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(10.dp)
+                                    .height(10.dp),
                             )
                         }
+                    }
+                }
+            }
+        }else{
+            if (state.isLoading && !state.isListComicCommentLoading && state.listComicComment!!.isEmpty()) {
+                item {
+                    LineLongShimmerLoading()
+                }
+            } else {
+                item {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset(y = (-20).dp)
+                            .clickable {
+                                comicDetailViewModel.navigateToComicComment(
+                                    comicId = comicId,
+                                    comicName = comicName
+                                )
+                            }
                     ) {
-                        Text(
-                            text = "More",
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Normal
-                        )
                         Icon(
-                            painterResource(id = R.drawable.ic_next),
+                            painterResource(id = R.drawable.ic_comment),
                             contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier
-                                .width(10.dp)
-                                .height(10.dp),
+                                .width(20.dp)
+                                .height(20.dp),
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = "Drop the first comment on this comic!",
+                            fontSize = 15.sp,
+                            fontStyle = FontStyle.Italic,
+                            textDecoration = TextDecoration.Underline,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                         )
                     }
                 }
@@ -235,90 +304,58 @@ fun DescriptionInComicDetailView(
         }
         item { Spacer(modifier = Modifier.height(30.dp)) }
         //   for commment
-        if (state.isListComicCommentLoading) {
-            item {
-                repeat(3) {
-                    NormalComicCardShimmerLoading()
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-            }
-        }
         if (!state.isListComicCommentLoading && state.listComicComment!!.isNotEmpty()) {
-            item {
-                state.listComicComment.forEach { comment ->
-                    CommentCard(
-                        comicId = comicId,
-                        commentId = comment.id,
-                        content = comment.content,
-                        authorName = comment.author?.name ?: "",
-                        authorImage = (APIConfig.imageAPIURL.toString() + comment.author?.avatar)
-                            ?: "",
-                        roleName = comment.author?.roles?.get(0) ?: "",
-                        creationTime = comment.creationTime,
-                        isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author!!.id),
-                        isAdmin = comicCommentViewModel.checkIsAdmin(),
-                        totalLikes = comment.totalLikes.toLong(),
-                        totalDislikes = comment.totalDislikes.toLong(),
-                        totalReplies = comment.totalReplies.toLong(),
-                        myReaction = comment.myReaction,
-                        isReacted = comment.isReacted,
-                        onClicked = {
-                            comicDetailViewModel.onNavigateToReplyCommentDetail(
-                                comicId = comicId,
-                                commentId = comment.id,
-                                authorName = comment.author?.name ?: "",
-                            )},
-                        onLikeClick= {
-                            comicCommentViewModel.reactComicCommentByComicId(
-                                commentId = comment.id,
-                                comicId = comicId,
-                                reactionType = "Like"
-                            )
-                        },
-                        onDislikeClick = {
-                            comicCommentViewModel.reactComicCommentByComicId(
-                                commentId = comment.id,
-                                comicId = comicId,
-                                reactionType = "Dislike"
-                            )
-                        },
-                        comicCommentViewModel = comicCommentViewModel
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
+            if (state.isLoading) {
+                item {
+                    repeat(3) {
+                        NormalComicCardShimmerLoading()
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                 }
-            }
-        } else {
-            item {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(y = (-20).dp)
-                        .clickable {
-                            comicDetailViewModel.navigateToComicComment(
-                                comicId = comicId,
-                                comicName = comicName
-                            )
-                        }
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_comment),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .width(20.dp)
-                            .height(20.dp),
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = "Drop the first comment on this comic!",
-                        fontSize = 15.sp,
-                        fontStyle = FontStyle.Italic,
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
-                    )
+            } else {
+                item {
+                    state.listComicComment.forEach { comment ->
+                        CommentCard(
+                            comicId = comicId,
+                            commentId = comment.id,
+                            content = comment.content,
+                            authorName = comment.author?.name ?: "",
+                            authorImage = (APIConfig.imageAPIURL.toString() + comment.author?.avatar)
+                                ?: "",
+                            roleName = comment.author?.roles?.get(0) ?: "",
+                            creationTime = comment.creationTime,
+                            isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author!!.id),
+                            isAdmin = comicCommentViewModel.checkIsAdmin(),
+                            totalLikes = comment.totalLikes.toLong(),
+                            totalDislikes = comment.totalDislikes.toLong(),
+                            totalReplies = comment.totalReplies.toLong(),
+                            myReaction = comment.myReaction,
+                            isReacted = comment.isReacted,
+                            onClicked = {
+                                comicDetailViewModel.onNavigateToReplyCommentDetail(
+                                    comicId = comicId,
+                                    commentId = comment.id,
+                                    authorName = comment.author?.name ?: "",
+                                )
+                            },
+                            onLikeClick = {
+                                comicCommentViewModel.reactComicCommentByComicId(
+                                    commentId = comment.id,
+                                    comicId = comicId,
+                                    reactionType = "Like"
+                                )
+                            },
+                            onDislikeClick = {
+                                comicCommentViewModel.reactComicCommentByComicId(
+                                    commentId = comment.id,
+                                    comicId = comicId,
+                                    reactionType = "Dislike"
+                                )
+                            },
+                            comicCommentViewModel = comicCommentViewModel
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
             }
         }

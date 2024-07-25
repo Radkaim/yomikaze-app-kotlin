@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -149,30 +148,33 @@ fun RelyCommentDetailContent(
         },
     ) {
         //main comment
-        Column {
-            if (state.mainComment != null) {
-                CommentCard(
-                    comicId = comicId,
-                    commentId = state.mainComment.id,
-                    content = state.mainComment.content,
-                    authorName = state.mainComment.author.name,
-                    authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
-                        ?: "",
-                    roleName = state.mainComment.author.roles?.get(0) ?: "",
-                    creationTime = state.mainComment.creationTime,
-                    isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(
-                        state.mainComment.author.id
-                    ),
-                    isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
-                    onClicked = {},
-                    replyCommentDetailViewModel = replyCommentDetailViewModel
-                )
-            } else {
-                CommentCardShimmerLoading()
-            }
+//        Column {
+//            if (state.mainComment != null) {
+//                CommentCard(
+//                    comicId = comicId,
+//                    commentId = state.mainComment.id,
+//                    content = state.mainComment.content,
+//                    authorName = state.mainComment.author.name,
+//                    authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
+//                        ?: "",
+//                    roleName = state.mainComment.author.roles?.get(0) ?: "",
+//                    creationTime = state.mainComment.creationTime,
+//                    isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(
+//                        state.mainComment.author.id
+//                    ),
+//                    isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
+//                    onClicked = {},
+//                    replyCommentDetailViewModel = replyCommentDetailViewModel
+//                )
+//            } else {
+//                CommentCardShimmerLoading()
+//            }
 
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                 val (header, messages, chatBox) = createRefs()
+
+
+
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
@@ -180,12 +182,16 @@ fun RelyCommentDetailContent(
                         .background(MaterialTheme.colorScheme.background)
                         .padding(top = 5.dp)
                         .constrainAs(header) {
-                            top.linkTo(parent.top)
+                            top.linkTo(parent.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
+                            bottom.linkTo(messages.top)
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
+
+
                     val total = state.totalCommentResults.value
                     Text(
                         text = "Reply: ${total} ${if (total > 1) "comments" else "comment"}",
@@ -226,6 +232,30 @@ fun RelyCommentDetailContent(
                         }
 
                 ) {
+
+                    item {
+                        if (state.mainComment != null) {
+                            CommentCard(
+                                comicId = comicId,
+                                commentId = state.mainComment.id,
+                                content = state.mainComment.content,
+                                authorName = state.mainComment.author.name,
+                                authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
+                                    ?: "",
+                                roleName = state.mainComment.author.roles?.get(0) ?: "",
+                                creationTime = state.mainComment.creationTime,
+                                isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(
+                                    state.mainComment.author.id
+                                ),
+                                isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
+                                onClicked = {},
+                                replyCommentDetailViewModel = replyCommentDetailViewModel
+                            )
+                        } else {
+                            CommentCardShimmerLoading()
+                        }}
+
+
 
                     if (state.isListComicCommentLoading) {
                         item {
@@ -287,6 +317,7 @@ fun RelyCommentDetailContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(chatBox) {
+//                            top.linkTo(messages.bottom)
                             bottom.linkTo(parent.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
@@ -301,7 +332,7 @@ fun RelyCommentDetailContent(
                     isLogin = replyCommentDetailViewModel.checkUserIsLogin()
                 )
             }
-        }
+//        }
 
 
 

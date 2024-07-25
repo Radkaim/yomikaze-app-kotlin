@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEf
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -122,6 +123,42 @@ fun CommentCardShimmerLoading() {
             .shimmerLoadingAnimation() // <--- Here.
     )
 }
+
+//chapter card
+@Composable
+fun ChapterCardShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .height(50.dp)
+            .fillMaxWidth()
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+
+@Composable
+fun ImageShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .height(113.dp)
+            .width(78.dp)
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+@Composable
+fun BannerShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
 @Composable
 fun CoinShopCardShimmerLoading() {
     Box(
@@ -134,14 +171,74 @@ fun CoinShopCardShimmerLoading() {
     )
 }
 
+@Composable
+//triangle shape
+fun TriangleShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .height(20.dp)
+            .width(20.dp)
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+
 // rectangle shape with line short
 @Composable
-fun ComponentRectangleLineShort() {
+fun LineShortShimmerLoading() {
     Box(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(8.dp))
             .background(color = Color.LightGray)
             .size(height = 30.dp, width = 100.dp)
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+
+@Composable
+fun LineLongShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .size(height = 30.dp, width = 100.dp)
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+
+@Composable
+fun ButtonReadingShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .width(250.dp)
+            .height(40.dp)
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+
+@Composable
+fun TagShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(50.dp))
+            .background(color = Color.LightGray)
+            .height(20.dp)
+            .width(30.dp)
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+
+@Composable
+fun DescriptionShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(50.dp))
+            .background(color = Color.LightGray)
+            .height(70.dp)
+            .fillMaxWidth()
             .shimmerLoadingAnimation() // <--- Here.
     )
 }

@@ -73,6 +73,11 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.ShareDialo
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetworkAvailable
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ImageShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.LineLongShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.LineShortShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.TagShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.TriangleShimmerLoading
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
@@ -179,20 +184,24 @@ fun ComicDetailContent(
         ) {
             // banner image
             ///data/user/0/com.example.yomikaze_app_kotlin/files/image_1719475024110.jpg
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imagePath + state.comicResponse?.banner)
-                    .memoryCachePolicy(CachePolicy.ENABLED)
-                    .build(),
-                placeholder = painterResource(R.drawable.placeholder_430_184),
-                error = painterResource(R.drawable.placeholder_430_184),
-                contentDescription = "Comic Banner Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(194.dp) //bug background
-                    .blur(10.dp),
-            )
+            if (state.isLoading) {
+                ImageShimmerLoading()
+            } else {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imagePath + state.comicResponse?.banner)
+                        .memoryCachePolicy(CachePolicy.ENABLED)
+                        .build(),
+                    placeholder = painterResource(R.drawable.placeholder_430_184),
+                    error = painterResource(R.drawable.placeholder_430_184),
+                    contentDescription = "Comic Banner Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(194.dp) //bug background
+                        .blur(10.dp),
+                )
+            }
         }
 
         // Content including back button and menu
@@ -388,29 +397,33 @@ fun ComicDetailContent(
                         } else {
                             image = state.comicResponse?.cover ?: ""
                         }
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(imagePath + state.comicResponse?.cover)
-                                .memoryCachePolicy(CachePolicy.ENABLED)
-                                .build(),
-                            placeholder = painterResource(R.drawable.placeholder),
-                            error = painterResource(R.drawable.placeholder),
-                            contentDescription = "Comic Cover Image",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .width(78.dp)
-                                .height(113.dp)
-                                .offset(y = (-20).dp)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                                    shape = MaterialTheme.shapes.small
-                                )
-                                .shadow(
-                                    elevation = 4.dp,
-                                    shape = MaterialTheme.shapes.small
-                                )
-                        )
+                        if (state.isLoading) {
+//                            BannerShimmerLoading()
+                        } else {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(imagePath + state.comicResponse?.cover)
+                                    .memoryCachePolicy(CachePolicy.ENABLED)
+                                    .build(),
+                                placeholder = painterResource(R.drawable.placeholder),
+                                error = painterResource(R.drawable.placeholder),
+                                contentDescription = "Comic Cover Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .width(78.dp)
+                                    .height(113.dp)
+                                    .offset(y = (-20).dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                        shape = MaterialTheme.shapes.small
+                                    )
+                                    .shadow(
+                                        elevation = 4.dp,
+                                        shape = MaterialTheme.shapes.small
+                                    )
+                            )
+                        }
 
                         // details
                         Column(
@@ -420,45 +433,71 @@ fun ComicDetailContent(
                                 .fillMaxWidth()
                                 .padding(bottom = 40.dp)
                         ) {
-                            Text(
-                                text = state.comicResponse?.name ?: "Comic Name",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                maxLines = 4,
-                                overflow = TextOverflow.Ellipsis,
-                                lineHeight = 15.sp,
-                                modifier = Modifier.width(250.dp)
-                            )
-                            Text(
-                                text = processNameByComma(
-                                    state.comicResponse?.aliases ?: listOf("")
-                                ),
-                                fontSize = 11.sp,
-                                maxLines = 1,
-                                lineHeight = 15.sp,
-                                overflow = TextOverflow.Ellipsis,
-                                fontWeight = FontWeight.Normal
-                            )
-                            Text(
-                                text = "Author: ${
-                                    processNameByComma(
-                                        state.comicResponse?.authors ?: listOf(
-                                            ""
-                                        )
-                                    )
-                                }",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Spacer(modifier = Modifier.height(1.dp))
-                            Text(
-                                text = "Publish Date: ${changeDateTimeFormat(state.comicResponse?.publicationDate ?: "")}",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Normal,
-                                fontStyle = FontStyle.Italic
+                            if (state.isLoading) {
+                                LineShortShimmerLoading()
+                            } else {
+                                Text(
+                                    text = state.comicResponse?.name ?: "Comic Name",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 4,
+                                    overflow = TextOverflow.Ellipsis,
+                                    lineHeight = 15.sp,
+                                    modifier = Modifier.width(250.dp)
+                                )
+                            }
+                            if (state.isLoading) {
+                                LineLongShimmerLoading()
+                            } else {
+                                Text(
+                                    text = processNameByComma(
+                                        state.comicResponse?.aliases ?: listOf("")
+                                    ),
+                                    fontSize = 11.sp,
+                                    maxLines = 1,
+                                    lineHeight = 15.sp,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
+                            if (state.isLoading) {
+                                LineLongShimmerLoading()
+                            } else {
 
-                            )
-                            TagComponent(status = state.comicResponse?.status ?: "")
+
+                                Text(
+                                    text = "Author: ${
+                                        processNameByComma(
+                                            state.comicResponse?.authors ?: listOf(
+                                                ""
+                                            )
+                                        )
+                                    }",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(1.dp))
+
+                            if (state.isLoading) {
+                                LineLongShimmerLoading()
+                            } else {
+
+
+                                Text(
+                                    text = "Publish Date: ${changeDateTimeFormat(state.comicResponse?.publicationDate ?: "")}",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    fontStyle = FontStyle.Italic
+
+                                )
+                            }
+                            if (state.isLoading) {
+                                TagShimmerLoading()
+                            } else {
+                                TagComponent(status = state.comicResponse?.status ?: "")
+                            }
+
                         }
                     }
                 }
@@ -500,42 +539,60 @@ fun ComicDetailContent(
                 horizontalArrangement = Arrangement.spacedBy(25.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconicDataComicDetail(
-                    icon = R.drawable.ic_eye,
-                    iconColor = MaterialTheme.colorScheme.surface,
-                    number = state.comicResponse?.views ?: 0,
-                    numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    title = "Views",
-                    iconWidth = 26,
-                    iconHeight = 16,
-                )
-                IconicDataComicDetail(
-                    icon = R.drawable.ic_following,
-                    iconColor = MaterialTheme.colorScheme.surface,
-                    number = state.comicResponse?.follows ?: 0,
-                    numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    title = "Following",
-                    iconWidth = 12,
-                    iconHeight = 16,
-                )
-                IconicDataComicDetail(
-                    icon = R.drawable.ic_star_fill,
-                    iconColor = MaterialTheme.colorScheme.surface,
-                    numberRating = state.comicResponse?.averageRating ?: 0f,
-                    numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    title = "Rating",
-                    iconWidth = 20,
-                    iconHeight = 20,
-                )
-                IconicDataComicDetail(
-                    icon = R.drawable.ic_comment,
-                    iconColor = MaterialTheme.colorScheme.surface,
-                    number = state.comicResponse?.comments ?: 0,
-                    numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    title = "Comments",
-                    iconWidth = 20,
-                    iconHeight = 20,
-                )
+                if (state.isLoading) {
+                    TriangleShimmerLoading()
+                } else {
+                    IconicDataComicDetail(
+                        icon = R.drawable.ic_eye,
+                        iconColor = MaterialTheme.colorScheme.surface,
+                        number = state.comicResponse?.views ?: 0,
+                        numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        title = "Views",
+                        iconWidth = 26,
+                        iconHeight = 16,
+                    )
+                }
+
+                if (state.isLoading) {
+                    TriangleShimmerLoading()
+                } else {
+                    IconicDataComicDetail(
+                        icon = R.drawable.ic_following,
+                        iconColor = MaterialTheme.colorScheme.surface,
+                        number = state.comicResponse?.follows ?: 0,
+                        numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        title = "Following",
+                        iconWidth = 12,
+                        iconHeight = 16,
+                    )
+                }
+                if (state.isLoading) {
+                    TriangleShimmerLoading()
+                } else {
+                    IconicDataComicDetail(
+                        icon = R.drawable.ic_star_fill,
+                        iconColor = MaterialTheme.colorScheme.surface,
+                        numberRating = state.comicResponse?.averageRating ?: 0f,
+                        numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        title = "Rating",
+                        iconWidth = 20,
+                        iconHeight = 20,
+                    )
+                }
+
+                if (state.isLoading) {
+                    TriangleShimmerLoading()
+                } else {
+                    IconicDataComicDetail(
+                        icon = R.drawable.ic_comment,
+                        iconColor = MaterialTheme.colorScheme.surface,
+                        number = state.comicResponse?.comments ?: 0,
+                        numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        title = "Comments",
+                        iconWidth = 20,
+                        iconHeight = 20,
+                    )
+                }
             }
 
             Divider(

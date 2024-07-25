@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ChapterCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapterModel
 
 
@@ -95,47 +97,61 @@ fun ListChapterInComicDetailView(
             .offset(x = (-4).dp),
         verticalArrangement = Arrangement.spacedBy(4.dp) // 8.dp space between each item
     ) {
-        listChapter?.let { // means if listChapter is not null
-            val sortedList = if (isReversed) it.reversed() else it
-            items(sortedList) { chapter ->
-                LaunchedEffect(key1 = viewChapterState.value.isUnlockChapterSuccess) {
-                    if (viewChapterState.value.isUnlockChapterSuccess) {
-                        comicDetailViewModel.navigateToViewChapter(
-                            comicId = comicId,
-                            chapterNumber = selectedChapter?.number!!
-                        )
+        if (comicDetailViewModel.state.value.isListChaptersLoading) {
+            item {
+                repeat(10) {
+                    Column(
+                        modifier = Modifier.padding(2.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        ChapterCardShimmerLoading()
                     }
                 }
-                ChapterCard(
-                    chapterNumber = chapter.number,
-                    title = chapter.name,
-                    views = chapter.views,
-                    comments = chapter.comments,
-                    publishedDate = chapter.creationTime,
-                    isLocked = if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock,
-                    onClick = {
-                        if (!comicDetailViewModel.checkUserIsLogin() && chapter.hasLock) {
-                            Toast.makeText(
-                                context,
-                                "Please sign in to unlock this chapter",
-                                Toast.LENGTH_SHORT
-                            ).show()
+            }
 
-                        } else {
-                            if (if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock) {
-                                selectedChapter = chapter
-                                showDialog = true
-                            } else {
-                                comicDetailViewModel.navigateToViewChapter(
-                                    comicId,
-                                    chapter.number
-                                )
-                            }
+        } else {
+            listChapter?.let { // means if listChapter is not null
+                val sortedList = if (isReversed) it.reversed() else it
+                items(sortedList) { chapter ->
+                    LaunchedEffect(key1 = viewChapterState.value.isUnlockChapterSuccess) {
+                        if (viewChapterState.value.isUnlockChapterSuccess) {
+                            comicDetailViewModel.navigateToViewChapter(
+                                comicId = comicId,
+                                chapterNumber = selectedChapter?.number!!
+                            )
                         }
-                    },
-                    onReportClick = {}
-                )
+                    }
+                    ChapterCard(
+                        chapterNumber = chapter.number,
+                        title = chapter.name,
+                        views = chapter.views,
+                        comments = chapter.comments,
+                        publishedDate = chapter.creationTime,
+                        isLocked = if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock,
+                        onClick = {
+                            if (!comicDetailViewModel.checkUserIsLogin() && chapter.hasLock) {
+                                Toast.makeText(
+                                    context,
+                                    "Please sign in to unlock this chapter",
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
+                            } else {
+                                if (if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock) {
+                                    selectedChapter = chapter
+                                    showDialog = true
+                                } else {
+                                    comicDetailViewModel.navigateToViewChapter(
+                                        comicId,
+                                        chapter.number
+                                    )
+                                }
+                            }
+                        },
+                        onReportClick = {}
+                    )
+
+                }
             }
         }
     }
