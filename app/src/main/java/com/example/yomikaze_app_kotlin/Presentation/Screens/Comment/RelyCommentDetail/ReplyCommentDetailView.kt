@@ -109,7 +109,7 @@ fun RelyCommentDetailContent(
     state: ReplyCommentDetailState,
     replyCommentDetailViewModel: ReplyCommentDetailViewModel
 ) {
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         replyCommentDetailViewModel.getMainCommentByCommentId(
             comicId = comicId,
             commentId = commentId,
@@ -132,7 +132,12 @@ fun RelyCommentDetailContent(
                 title = authorName,
                 navigationIcon = {
                     IconButton(onClick = {
+                        Log.d("RelyCommentDetailView", "Back button clicked")
+                        //get all fragment in back stack
+//                        val backStackCount = navController.backQueue.size
+//                        Log.d("RelyCommentDetailView", "Back stack count: $backStackCount")
                         navController.popBackStack()
+
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -150,10 +155,10 @@ fun RelyCommentDetailContent(
                     comicId = comicId,
                     commentId = state.mainComment.id,
                     content = state.mainComment.content,
-                    authorName = state.mainComment.author.name ,
+                    authorName = state.mainComment.author.name,
                     authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
                         ?: "",
-                    roleName = state.mainComment.author.roles?.get(0)?:"",
+                    roleName = state.mainComment.author.roles?.get(0) ?: "",
                     creationTime = state.mainComment.creationTime,
                     isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(
                         state.mainComment.author.id
@@ -162,8 +167,7 @@ fun RelyCommentDetailContent(
                     onClicked = {},
                     replyCommentDetailViewModel = replyCommentDetailViewModel
                 )
-            }
-            else{
+            } else {
                 CommentCardShimmerLoading()
             }
 
@@ -408,22 +412,25 @@ private fun ChatBox(
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             ),
             trailingIcon = {
-                IconButton(
-                    //  modifier = Modifier.alpha(ContentAlpha.medium),
-                    onClick = {
-                        if (chatBoxValue.text.isNotEmpty()) {
-                            chatBoxValue = TextFieldValue("")
-                        } else {
-                            focusManager.clearFocus() // Clear focus to hide the keyboard
-                            keyboardController?.hide() // Hide the keyboard
+                if (chatBoxValue.text.isNotEmpty()) {
+                    IconButton(
+                        //  modifier = Modifier.alpha(ContentAlpha.medium),
+                        onClick = {
+                            if (chatBoxValue.text.isNotEmpty()) {
+                                chatBoxValue = TextFieldValue("")
+                            } else {
+                                focusManager.clearFocus() // Clear focus to hide the keyboard
+                                keyboardController?.hide() // Hide the keyboard
+                            }
                         }
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = "Close",
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = "Close",
 
-                        )
+                            )
+                    }
+
                 }
             },
             keyboardOptions = KeyboardOptions(
@@ -463,36 +470,38 @@ private fun ChatBox(
                     shape = RoundedCornerShape(30.dp)
                 )
         )
-        IconButton(
-            onClick = {
-                if (chatBoxValue.text.isNotEmpty() && chatBoxValue.text.length <= textSize && canPost) {
-                    onSendChatClickListener(chatBoxValue.text)
-                    Log.d("ChatBox", "ChatBox: ${chatBoxValue.text}")
-                } else if (chatBoxValue.text.length > textSize && canPost) {
-                    Toast.makeText(
-                        context,
-                        "Please comment less than $textSize characters",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@IconButton
-                } else if (!canPost) {
-                    Toast.makeText(
-                        context,
-                        "Please sign in to comment",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@IconButton
-                }
-                chatBoxValue = TextFieldValue("")
-            },
+        if (chatBoxValue.text.isNotEmpty()) {
+            IconButton(
+                onClick = {
+                    if (chatBoxValue.text.isNotEmpty() && chatBoxValue.text.length <= textSize && canPost) {
+                        onSendChatClickListener(chatBoxValue.text)
+                        Log.d("ChatBox", "ChatBox: ${chatBoxValue.text}")
+                    } else if (chatBoxValue.text.length > textSize && canPost) {
+                        Toast.makeText(
+                            context,
+                            "Please comment less than $textSize characters",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@IconButton
+                    } else if (!canPost) {
+                        Toast.makeText(
+                            context,
+                            "Please sign in to comment",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@IconButton
+                    }
+                    chatBoxValue = TextFieldValue("")
+                },
 //            modifier = Modifier.padding(top = 15.dp)
-        ) {
-            Icon(
-                painterResource(id = R.drawable.ic_send_cmt),
-                contentDescription = "Send",
-                tint = MaterialTheme.colorScheme.secondaryContainer,
-                modifier = Modifier.size(25.dp)
-            )
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.ic_send_cmt),
+                    contentDescription = "Send",
+                    tint = MaterialTheme.colorScheme.secondaryContainer,
+                    modifier = Modifier.size(25.dp)
+                )
+            }
         }
     }
 }

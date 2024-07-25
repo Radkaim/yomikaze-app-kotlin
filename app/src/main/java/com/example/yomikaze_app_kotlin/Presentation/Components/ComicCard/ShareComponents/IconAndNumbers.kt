@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -29,6 +30,7 @@ fun IconAndNumbers(
     numberColor: Color,
     numberWeight: FontWeight,
     numberSize: Int,
+    onClick: () -> Unit? = {}
 
 ) {
     // Assign the icon width and height if they are not null
@@ -38,7 +40,7 @@ fun IconAndNumbers(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp),
-        modifier = Modifier.padding(top = 10.dp)
+        modifier = Modifier.padding(top = 10.dp).clickable { onClick() },
     )
     {
         Icon(
@@ -61,19 +63,17 @@ fun IconAndNumbers(
 fun changeTextFormat(number: Long): String {
     var numberAfterDivide = number
     return when (number) {
-        in 1000..999000 ->
-        {
+        in 1000..999000 -> {
             numberAfterDivide /= 1000
             "$numberAfterDivide" + "K"
         }
-        in 1000000..999000000 ->
-        {
+
+        in 1000000..999000000 -> {
             numberAfterDivide /= 1000000
             "$numberAfterDivide" + "M"
         }
 
-        in 1000000000..999000000000 ->
-        {
+        in 1000000000..999000000000 -> {
             numberAfterDivide /= 1000000000
             "$numberAfterDivide" + "B"
         }

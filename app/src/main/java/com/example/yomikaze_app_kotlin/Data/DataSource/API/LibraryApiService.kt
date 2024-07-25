@@ -22,6 +22,8 @@ interface LibraryApiService {
         @Header("Authorization") token: String,
         @Query("Name") name: String,
         @Query("OrderBy") nameDesc: String = "NameDesc",
+        @Query("Page") page: Int = 1,
+        @Query("Size") size: Int = 100,
     ): BaseResponse<LibraryEntry>
 
 

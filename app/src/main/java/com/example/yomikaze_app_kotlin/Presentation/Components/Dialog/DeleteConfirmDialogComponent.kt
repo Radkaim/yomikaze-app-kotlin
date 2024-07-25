@@ -196,6 +196,20 @@ fun <T, VM> DeleteConfirmDialogComponent(
                             .padding(top = 20.dp, end = 20.dp),
                         horizontalArrangement = Arrangement.Center,
                     ) {
+
+                        Button(
+                            onClick = onDismiss,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.onSecondary,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                            ),
+                            shape = MaterialTheme.shapes.medium
+                        ) {
+                            Text(text = "Dismiss")
+                        }
+
+                        Spacer(modifier = Modifier.width(20.dp))
+
                         Button(
                             onClick = {
                                 viewModel.delete(key, key2, isDeleteAll)
@@ -209,25 +223,12 @@ fun <T, VM> DeleteConfirmDialogComponent(
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onSecondary,
+                                containerColor = MaterialTheme.colorScheme.onPrimary,
                                 contentColor = MaterialTheme.colorScheme.onSurface,
                             ),
                             shape = MaterialTheme.shapes.medium,
                         ) {
                             Text(text = "Confirm")
-                        }
-
-                        Spacer(modifier = Modifier.width(20.dp))
-
-                        Button(
-                            onClick = onDismiss,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onPrimary,
-                                contentColor = MaterialTheme.colorScheme.onSurface,
-                            ),
-                            shape = MaterialTheme.shapes.medium
-                        ) {
-                            Text(text = "Cancel")
                         }
 
                     }

@@ -12,6 +12,23 @@ data class CommentResponse(
     @SerializedName("author")
     var author: ProfileResponse,
 
+    @SerializedName("totalLikes")
+    var totalLikes: Int,
+
+    @SerializedName("totalDislikes")
+    var totalDislikes: Int,
+
+    @SerializedName("isReacted")
+    var isReacted: Boolean,
+
+    //totalReplies
+    @SerializedName("totalReplies")
+    var totalReplies: Int,
+
+    //myReaction
+    @SerializedName("myReaction")
+    var myReaction: String? = null,
+
     @SerializedName("replies")
     val replies: List<CommentResponse>? = null,
 
@@ -21,4 +38,9 @@ data class CommentResponse(
 data class CommentRequest(
     @SerializedName("content")
     val content: String
+)
+
+data class ReactionRequest(
+    @SerializedName("type")
+    val reactionType: String
 )

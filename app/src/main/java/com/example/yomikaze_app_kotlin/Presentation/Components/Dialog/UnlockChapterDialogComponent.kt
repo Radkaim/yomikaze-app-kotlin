@@ -171,7 +171,7 @@ fun UnlockChapterDialogComponent(
                                 ),
                                 shape = MaterialTheme.shapes.medium
                             ) {
-                                Text(text = "Cancel")
+                                Text(text = "Dismiss")
                             }
 
                             Spacer(modifier = Modifier.width(20.dp))
@@ -295,7 +295,7 @@ fun UnlockChapterDialogComponent(
                                 ),
                                 shape = MaterialTheme.shapes.medium,
                             ) {
-                                Text(text = "Cancel")
+                                Text(text = "Dismiss")
                             }
 
                             Spacer(modifier = Modifier.width(20.dp))

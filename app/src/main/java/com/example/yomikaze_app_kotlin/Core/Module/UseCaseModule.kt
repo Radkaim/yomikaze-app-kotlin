@@ -61,6 +61,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommen
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetMainCommentByCommentIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetTagsUC
@@ -684,6 +685,19 @@ object UseCaseModule {
     ): UpdateComicCommentByComicIdUC {
         return UpdateComicCommentByComicIdUC(comicCommentRepository)
     }
+
+
+    /**
+     * TODO: provide ReactComicCommentByComicIdUC
+     */
+    @Provides
+    @Singleton
+    fun provideReactComicCommentByComicIdUC(
+        comicCommentRepository: ComicCommentRepository
+    ): ReactComicCommentByComicIdUC {
+        return ReactComicCommentByComicIdUC(comicCommentRepository)
+    }
+
 
     /**
      *-------------------------------------------------------------------------

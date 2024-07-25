@@ -257,7 +257,31 @@ fun DescriptionInComicDetailView(
                         creationTime = comment.creationTime,
                         isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author!!.id),
                         isAdmin = comicCommentViewModel.checkIsAdmin(),
-                        onClicked = {},
+                        totalLikes = comment.totalLikes.toLong(),
+                        totalDislikes = comment.totalDislikes.toLong(),
+                        totalReplies = comment.totalReplies.toLong(),
+                        myReaction = comment.myReaction,
+                        isReacted = comment.isReacted,
+                        onClicked = {
+                            comicDetailViewModel.onNavigateToReplyCommentDetail(
+                                comicId = comicId,
+                                commentId = comment.id,
+                                authorName = comment.author?.name ?: "",
+                            )},
+                        onLikeClick= {
+                            comicCommentViewModel.reactComicCommentByComicId(
+                                commentId = comment.id,
+                                comicId = comicId,
+                                reactionType = "Like"
+                            )
+                        },
+                        onDislikeClick = {
+                            comicCommentViewModel.reactComicCommentByComicId(
+                                commentId = comment.id,
+                                comicId = comicId,
+                                reactionType = "Dislike"
+                            )
+                        },
                         comicCommentViewModel = comicCommentViewModel
                     )
                     Spacer(modifier = Modifier.height(8.dp))

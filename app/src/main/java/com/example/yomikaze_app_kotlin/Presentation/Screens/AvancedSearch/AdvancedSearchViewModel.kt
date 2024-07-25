@@ -26,7 +26,7 @@ class AdvancedSearchViewModel @Inject constructor(
 
     //for StatefulViewModel
     private val _state = MutableStateFlow(AdvancedSearchState())
-     val state: StateFlow<AdvancedSearchState> get() = _state
+    val state: StateFlow<AdvancedSearchState> get() = _state
 
     // for Navigation
     fun setNavController(navController: NavController) {
@@ -38,25 +38,29 @@ class AdvancedSearchViewModel @Inject constructor(
     val tagStates: StateFlow<Map<Long, TagState>> get() = _tagStates
 
     fun toggleTagState(tagId: Long) {
-        val currentState = _tagStates.value[tagId] ?: TagState.NONE
-        val newState = when (currentState) {
-            TagState.NONE -> TagState.INCLUDE
-            TagState.INCLUDE -> TagState.EXCLUDE
-            TagState.EXCLUDE -> TagState.NONE
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentState = _tagStates.value[tagId] ?: TagState.NONE
+            val newState = when (currentState) {
+                TagState.NONE -> TagState.INCLUDE
+                TagState.INCLUDE -> TagState.EXCLUDE
+                TagState.EXCLUDE -> TagState.NONE
+            }
+            _tagStates.value = _tagStates.value.toMutableMap().apply { put(tagId, newState) }
+//            Log.d("AdvancedSearchViewModel", "tagStates: ${_tagStates.value}")
         }
-        _tagStates.value = _tagStates.value.toMutableMap().apply { put(tagId, newState) }
-        Log.d("AdvancedSearchViewModel", "tagStates: ${_tagStates.value}")
     }
 
     fun updateQueryTags() {
-        val includeTags = _tagStates.value.filterValues { it == TagState.INCLUDE }.keys.toList()
-        val excludeTags = _tagStates.value.filterValues { it == TagState.EXCLUDE }.keys.toList()
-        _state.value = _state.value.copy(
-            queryIncludeTags = includeTags,
-            queryExcludeTags = excludeTags
-        )
-        Log.d("AdvancedSearchViewModel", "queryIncludeTags: ${_state.value.queryIncludeTags}")
-        Log.d("AdvancedSearchViewModel", "queryExcludeTags: ${_state.value.queryExcludeTags}")
+        viewModelScope.launch(Dispatchers.IO) {
+            val includeTags = _tagStates.value.filterValues { it == TagState.INCLUDE }.keys.toList()
+            val excludeTags = _tagStates.value.filterValues { it == TagState.EXCLUDE }.keys.toList()
+            _state.value = _state.value.copy(
+                queryIncludeTags = includeTags,
+                queryExcludeTags = excludeTags
+            )
+//            Log.d("AdvancedSearchViewModel", "queryIncludeTags: ${_state.value.queryIncludeTags}")
+//            Log.d("AdvancedSearchViewModel", "queryExcludeTags: ${_state.value.queryExcludeTags}")
+        }
     }
 
     //reset all tags
@@ -67,7 +71,7 @@ class AdvancedSearchViewModel @Inject constructor(
 
     //reset all state
     fun resetState() {
-       updateQueryByComicName("")
+        updateQueryByComicName("")
         updateListAuthorsInput(emptyList())
         updateQueryByAuthor("")
         updateQueryByPublisher("")
@@ -176,7 +180,8 @@ class AdvancedSearchViewModel @Inject constructor(
     fun updateQueryPage(queryPage: Int) {
         _state.value = _state.value.copy(queryPage = queryPage)
     }
-//    init {
+
+    //    init {
 //        performAdvancedSearch()
 //    }
     // Function to execute advanced search
@@ -187,9 +192,10 @@ class AdvancedSearchViewModel @Inject constructor(
             _state.value.queryByComicName.takeIf { it.isNotEmpty() }?.let {
                 queryMap["Name"] = it
             }
-            _state.value.listAuthorsInput.takeIf { it.isNotEmpty() }?.forEachIndexed { index, author ->
-                queryMap["Authors[$index]"] = author
-            }
+            _state.value.listAuthorsInput.takeIf { it.isNotEmpty() }
+                ?.forEachIndexed { index, author ->
+                    queryMap["Authors[$index]"] = author
+                }
             _state.value.queryByAuthor.takeIf { it.isNotEmpty() }?.let {
                 queryMap["Author"] = it
             }
@@ -257,9 +263,12 @@ class AdvancedSearchViewModel @Inject constructor(
 
             try {
                 val result = advancedSearchComicUC.executeAdvancedSearchComic(token, queryMap)
-               result.fold(
+                result.fold(
                     onSuccess = { baseResponse ->
-                        _state.value = _state.value.copy(searchResults = baseResponse.results, totalResults = baseResponse.totals)
+                        _state.value = _state.value.copy(
+                            searchResults = baseResponse.results,
+                            totalResults = baseResponse.totals
+                        )
                         Log.d("AdvancedSearchViewModel", "searchResults: ${baseResponse.results}")
                     },
                     onFailure = { throwable ->
@@ -267,7 +276,7 @@ class AdvancedSearchViewModel @Inject constructor(
                         _state.value = _state.value.copy(isSearchLoading = false)
                         Log.e("AdvancedSearchViewModel", "Error: $throwable")
                     }
-               )
+                )
             } catch (e: Exception) {
                 // handle exception
                 _state.value = _state.value.copy(isSearchLoading = false)
@@ -289,7 +298,7 @@ class AdvancedSearchViewModel @Inject constructor(
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             try {
-                val result = getTagsUC.getTags(token,1, 500)
+                val result = getTagsUC.getTags(token, 1, 500)
 
                 result.fold(
                     onSuccess = { tags ->

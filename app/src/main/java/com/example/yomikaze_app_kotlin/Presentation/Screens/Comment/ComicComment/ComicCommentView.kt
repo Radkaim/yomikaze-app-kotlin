@@ -118,6 +118,8 @@ fun ComicCommentContent(
     val context1 = LocalContext.current
     val appPreference = AppPreference(context1)
 
+
+    //for delete main reply comment in reply comment detail view and then back to comment view
     LaunchedEffect(key1 = appPreference.mainReplyCommentIdDeleted) {
         if (appPreference.mainReplyCommentIdDeleted != 0L) {
             comicCommentViewModel.removeMainReplyCommentHasDeletedFromList(appPreference.mainReplyCommentIdDeleted)
@@ -131,7 +133,6 @@ fun ComicCommentContent(
                 title = comicName,
                 navigationIcon = {
                     IconButton(onClick = {
-//                        comicCommentViewModel.resetState1()
                         navController.popBackStack()
                     }) {
                         Icon(
@@ -223,6 +224,25 @@ fun ComicCommentContent(
                             creationTime = comment.creationTime,
                             isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author.id),
                             isAdmin = comicCommentViewModel.checkIsAdmin(),
+                            totalLikes = comment.totalLikes.toLong(),
+                            myReaction = comment.myReaction,
+                            isReacted = comment.isReacted,
+                            onLikeClick= {
+                                comicCommentViewModel.reactComicCommentByComicId(
+                                    commentId = comment.id,
+                                    comicId = comicId,
+                                    reactionType = "Like"
+                                )
+                            },
+                            totalDislikes = comment.totalDislikes.toLong(),
+                            onDislikeClick = {
+                                comicCommentViewModel.reactComicCommentByComicId(
+                                    commentId = comment.id,
+                                    comicId = comicId,
+                                    reactionType = "Dislike"
+                                )
+                            },
+                            totalReplies = comment.totalReplies.toLong(),
                             onClicked = {
                                 comicCommentViewModel.onNavigateToReplyCommentDetail(
                                     commentId = comment.id,
@@ -385,22 +405,24 @@ fun ChatBox(
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             ),
             trailingIcon = {
-                IconButton(
-                    //  modifier = Modifier.alpha(ContentAlpha.medium),
-                    onClick = {
-                        if (chatBoxValue.text.isNotEmpty()) {
-                            chatBoxValue = TextFieldValue("")
-                        } else {
-                            focusManager.clearFocus() // Clear focus to hide the keyboard
-                            keyboardController?.hide() // Hide the keyboard
+                if (chatBoxValue.text.isNotEmpty()) {
+                    IconButton(
+                        //  modifier = Modifier.alpha(ContentAlpha.medium),
+                        onClick = {
+                            if (chatBoxValue.text.isNotEmpty()) {
+                                chatBoxValue = TextFieldValue("")
+                            } else {
+                                focusManager.clearFocus() // Clear focus to hide the keyboard
+                                keyboardController?.hide() // Hide the keyboard
+                            }
                         }
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = "Close",
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = "Close",
 
-                        )
+                            )
+                    }
                 }
             },
             keyboardOptions = KeyboardOptions(
@@ -440,36 +462,38 @@ fun ChatBox(
                     shape = RoundedCornerShape(30.dp)
                 )
         )
-        IconButton(
-            onClick = {
-                if (chatBoxValue.text.isNotEmpty() && chatBoxValue.text.length <= textSize && canPost) {
-                    onSendChatClickListener(chatBoxValue.text)
-                    Log.d("ChatBox", "ChatBox: ${chatBoxValue.text}")
-                } else if (chatBoxValue.text.length > textSize && canPost) {
-                    Toast.makeText(
-                        context,
-                        "Please comment less than $textSize characters",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@IconButton
-                } else if (!canPost) {
-                    Toast.makeText(
-                        context,
-                        "Please sign in to comment",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@IconButton
-                }
-                chatBoxValue = TextFieldValue("")
-            },
+        if (chatBoxValue.text.isNotEmpty()) {
+            IconButton(
+                onClick = {
+                    if (chatBoxValue.text.isNotEmpty() && chatBoxValue.text.length <= textSize && canPost) {
+                        onSendChatClickListener(chatBoxValue.text)
+                        Log.d("ChatBox", "ChatBox: ${chatBoxValue.text}")
+                    } else if (chatBoxValue.text.length > textSize && canPost) {
+                        Toast.makeText(
+                            context,
+                            "Please comment less than $textSize characters",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@IconButton
+                    } else if (!canPost) {
+                        Toast.makeText(
+                            context,
+                            "Please sign in to comment",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@IconButton
+                    }
+                    chatBoxValue = TextFieldValue("")
+                },
 //            modifier = Modifier.padding(top = 15.dp)
-        ) {
-            Icon(
-                painterResource(id = R.drawable.ic_send_cmt),
-                contentDescription = "Send",
-                tint = MaterialTheme.colorScheme.secondaryContainer,
-                modifier = Modifier.size(25.dp)
-            )
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.ic_send_cmt),
+                    contentDescription = "Send",
+                    tint = MaterialTheme.colorScheme.secondaryContainer,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }

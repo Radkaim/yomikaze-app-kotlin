@@ -347,11 +347,14 @@ fun showListHistories(
                 items(sortList) { historyRecord ->
                     BookcaseComicCard(
                         comicId = historyRecord.comicId,
+                        historyRecordId = historyRecord.id,
+                        value = "Last Chapter: ${historyRecord.chapter.number}", //for delete
                         image = APIConfig.imageAPIURL.toString() + historyRecord.comic.cover,
                         comicName = historyRecord.comic.name,
                         status = historyRecord.comic.status,
                         authorNames = historyRecord.comic.authors,
                         isHistory = true,
+                        isDeleted = true,
                         lastChapter = historyRecord.chapter.number.toString(),
                         atPageNumber = historyRecord.pageNumber,
                         publishedDate = historyRecord.comic.publicationDate,
@@ -371,6 +374,11 @@ fun showListHistories(
                                 historyRecord.pageNumber
                             )
                         },
+                        onDeleteClicked = {
+                            //   historyViewModel.deleteHistoryRecord(historyRecord.id)
+                            //  Log.d("HistoryView", "Delete ${historyRecord.id}")
+                        },
+                        historyViewModel = historyViewModel
                     )
                 }
             }
@@ -403,7 +411,7 @@ fun showListHistories(
         key1 = page.value,
         //key2 = state.totalPages
     ) {
-        Log.d("HotComicViewModel", "page1: ${page.value}")
+        Log.d("HistoryViewModel", "page1: ${page.value}")
         if (page.value > state.currentPage.value && !loading.value) {
             loading.value = true
             historyViewModel.getHistories(page.value)

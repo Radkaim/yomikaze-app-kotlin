@@ -82,7 +82,7 @@ class HistoryViewModel @Inject constructor(
      * Get all history records
      */
     fun getHistories(page: Int? = 1) {
-        _state.value = _state.value.copy(isHistoryListLoading = true)
+
         viewModelScope.launch(Dispatchers.IO) {
 
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -99,17 +99,19 @@ class HistoryViewModel @Inject constructor(
                     // Xử lý kết quả thành công
                     val results = baseResponse.results
                     _state.value = _state.value.copy(
-                        listHistoryRecords = results,
-                        isHistoryListLoading = false
+                        listHistoryRecords = state.value.listHistoryRecords + results,
                     )
                     //  comic = comicDetailResponse
                     _state.value.currentPage.value = baseResponse.currentPage
                     _state.value.totalPages.value = baseResponse.totalPages
-                    Log.d("HistoryViewModel", "getHistories: $results")
+                    _state.value = _state.value.copy(isHistoryListLoading = false)
+//                    Log.d("HistoryViewModel", "getHistories: ${baseResponse.currentPage}")
+//                    Log.d("HistoryViewModel", "getHistories: ${baseResponse.totalPages}")
+//                    Log.d("HistoryViewModel", "getHistories: $results")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
-                    _state.value = _state.value.copy(isHistoryListLoading = true)
+                    _state.value = _state.value.copy(isHistoryListLoading = false)
                     Log.e("HistoryViewModel", "getHistories: $exception")
                 }
             )

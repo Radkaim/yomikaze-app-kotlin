@@ -206,7 +206,7 @@ fun AddToLibraryDialog(
                                     Text(
                                         text = category.name,
                                         color = colorSelected,
-                                        fontSize = 14.sp,
+                                        fontSize = 16.sp,
                                     )
                                 }
                                 val icon = if (isSelected) {

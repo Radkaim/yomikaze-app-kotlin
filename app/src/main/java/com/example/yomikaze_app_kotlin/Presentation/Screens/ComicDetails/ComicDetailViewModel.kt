@@ -62,6 +62,10 @@ class ComicDetailViewModel @Inject constructor(
     fun navigateToComicComment(comicId: Long, comicName: String) {
         navController?.navigate("comic_comment_route/$comicId/$comicName")
     }
+    fun onNavigateToReplyCommentDetail(commentId: Long, comicId: Long, authorName: String) {
+        navController?.navigate("reply_comment_detail_route/$comicId/$commentId/$authorName")
+    }
+
 
     fun navigateToCoinShop() {
         navController?.navigate("coins_shop_route")
