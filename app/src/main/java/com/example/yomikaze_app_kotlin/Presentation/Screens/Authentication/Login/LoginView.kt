@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -405,6 +406,12 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
 
                     )
                 {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_google),
+                        contentDescription = "Logo",
+                        modifier = Modifier.size(20.dp).offset(x = -(10).dp, y = 0.dp),
+                    )
+
                     Text(
                         text = "Login with Google",
                         color = Color.White,
