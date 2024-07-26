@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -45,9 +46,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -115,9 +119,11 @@ fun ComicCommentContent(
     var isSelected by remember { mutableStateOf(false) }
     var isReversed by remember { mutableStateOf(true) }
 
-    val context1 = LocalContext.current
-    val appPreference = AppPreference(context1)
 
+    val appPreference = AppPreference(context)
+
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     //for delete main reply comment in reply comment detail view and then back to comment view
     LaunchedEffect(key1 = appPreference.mainReplyCommentIdDeleted) {
@@ -185,9 +191,10 @@ fun ComicCommentContent(
 
             LazyColumn(
                 state = listState,
-                verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
+                verticalArrangement = Arrangement.spacedBy(15.dp), // 8.dp space between each item
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(8.dp)
                     .constrainAs(messages) {
                         top.linkTo(header.bottom)
                         bottom.linkTo(chatBox.top)
@@ -195,6 +202,11 @@ fun ComicCommentContent(
                         end.linkTo(parent.end)
                         height = Dimension.fillToConstraints
                     }
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
+                    },
 
             ) {
 
@@ -228,19 +240,27 @@ fun ComicCommentContent(
                             myReaction = comment.myReaction,
                             isReacted = comment.isReacted,
                             onLikeClick= {
-                                comicCommentViewModel.reactComicCommentByComicId(
-                                    commentId = comment.id,
-                                    comicId = comicId,
-                                    reactionType = "Like"
-                                )
+                                if(appPreference.isUserLoggedIn) {
+                                    comicCommentViewModel.reactComicCommentByComicId(
+                                        commentId = comment.id,
+                                        comicId = comicId,
+                                        reactionType = "Like"
+                                    )
+                                }else{
+                                    Toast.makeText(context, "Please sign in to like", Toast.LENGTH_SHORT).show()
+                                }
                             },
                             totalDislikes = comment.totalDislikes.toLong(),
                             onDislikeClick = {
-                                comicCommentViewModel.reactComicCommentByComicId(
-                                    commentId = comment.id,
-                                    comicId = comicId,
-                                    reactionType = "Dislike"
-                                )
+                                if(appPreference.isUserLoggedIn) {
+                                    comicCommentViewModel.reactComicCommentByComicId(
+                                        commentId = comment.id,
+                                        comicId = comicId,
+                                        reactionType = "Dislike"
+                                    )
+                                }else{
+                                    Toast.makeText(context, "Please sign in to dislike", Toast.LENGTH_SHORT).show()
+                                }
                             },
                             totalReplies = comment.totalReplies.toLong(),
                             onClicked = {
@@ -280,6 +300,8 @@ fun ComicCommentContent(
             }
 
             ChatBox(
+                focusManager = focusManager,
+                keyboardController = keyboardController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(chatBox) {
@@ -355,12 +377,14 @@ fun ChatBox(
     onSendChatClickListener: (String) -> Unit,
     modifier: Modifier,
     isLogin: Boolean,
+    focusManager: FocusManager,
+    keyboardController: SoftwareKeyboardController?
 ) {
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
     val canPost by remember { mutableStateOf(isLogin) }
     val textSize: Int = 1024
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
+//    val focusManager = LocalFocusManager.current
+//    val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     Row(
         modifier = modifier,

@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReactionRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetContinueReadingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
@@ -15,6 +16,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFrom
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +35,8 @@ class ComicDetailViewModel @Inject constructor(
     private val getLibraryCategoryUC: GetLibraryCategoryUC,
     private val getComicByIdDBUC: GetComicByIdDBUC,
     private val getContinueReadingUC: GetContinueReadingUC,
-    private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC
+    private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC,
+    private val reactComicCommentByComicIdUC: ReactComicCommentByComicIdUC
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -59,9 +62,11 @@ class ComicDetailViewModel @Inject constructor(
         navController?.navigate("choose_chapter_download_route/$comicId/$comicName")
 
     }
+
     fun navigateToComicComment(comicId: Long, comicName: String) {
         navController?.navigate("comic_comment_route/$comicId/$comicName")
     }
+
     fun onNavigateToReplyCommentDetail(commentId: Long, comicId: Long, authorName: String) {
         navController?.navigate("reply_comment_detail_route/$comicId/$commentId/$authorName")
     }
@@ -225,7 +230,7 @@ class ComicDetailViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         listComicComment = baseResponse.results,
                         isListComicCommentLoading = false
-                        )
+                    )
                     Log.d("ComicDetailViewModel", "getAllComicCommentByComicId: $result")
                 },
 
@@ -241,7 +246,7 @@ class ComicDetailViewModel @Inject constructor(
     /**
      * Todo: Implement start reading first time
      */
-    fun onStartReading(comicId: Long, chapterNumber: Int? = 0,  lastPageNumber : Int? = 0){
+    fun onStartReading(comicId: Long, chapterNumber: Int? = 0, lastPageNumber: Int? = 0) {
         navController?.navigate("view_chapter_route/$comicId/$chapterNumber/$lastPageNumber")
     }
 
@@ -267,4 +272,78 @@ class ComicDetailViewModel @Inject constructor(
             )
         }
     }
+
+    /**
+     * Todo: Implement react comic comment by comicId
+     */
+    fun reactComicCommentByComicId(
+        comicId: Long,
+        commentId: Long,
+        reactionType: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val reactionRequest = ReactionRequest(reactionType)
+            val result = reactComicCommentByComicIdUC.reactComicCommentByComicId(
+                token = token,
+                comicId = comicId,
+                commentId = commentId,
+                reactionRequest = reactionRequest
+            )
+            if (result.code() == 200) {
+                Log.d("ComicCommentViewModel", "reactComicCommentByComicId: $result")
+                // update it content
+                _state.value = _state.value.copy(
+                    listComicComment = _state.value.listComicComment.map {
+                        if (it.id == commentId) {
+                            if (reactionType == "Like") {
+                                if (it.myReaction == "Like") {
+                                    // Already liked, so unlike it
+                                    it.copy(
+                                        totalLikes = it.totalLikes - 1,
+                                        myReaction = "",
+                                        isReacted = false
+                                    )
+                                } else {
+                                    // Either it was disliked or no reaction before, so like it
+                                    val newTotalDislikes =
+                                        if (it.myReaction == "Dislike") it.totalDislikes - 1 else it.totalDislikes
+                                    it.copy(
+                                        totalLikes = it.totalLikes + 1,
+                                        totalDislikes = newTotalDislikes,
+                                        myReaction = "Like",
+                                        isReacted = true
+                                    )
+                                }
+                            } else {
+                                if (it.myReaction == "Dislike") {
+                                    // Already disliked, so undislike it
+                                    it.copy(
+                                        totalDislikes = it.totalDislikes - 1,
+                                        myReaction = "",
+                                        isReacted = false
+                                    )
+                                } else {
+                                    // Either it was liked or no reaction before, so dislike it
+                                    val newTotalLikes =
+                                        if (it.myReaction == "Like") it.totalLikes - 1 else it.totalLikes
+                                    it.copy(
+                                        totalDislikes = it.totalDislikes + 1,
+                                        totalLikes = newTotalLikes,
+                                        myReaction = "Dislike",
+                                        isReacted = true
+                                    )
+                                }
+                            }
+                        } else {
+                            it
+                        }
+                    }
+                )
+            } else {
+                Log.e("ComicCommentViewModel", "reactComicCommentByComicId: $result")
+            }
+        }
+    }
+
 }

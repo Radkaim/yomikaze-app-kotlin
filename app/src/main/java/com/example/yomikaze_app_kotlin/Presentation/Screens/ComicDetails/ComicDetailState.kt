@@ -30,7 +30,7 @@ data class ComicDetailState(
     val isComicExistInDB: Boolean = false,
 
     //for comment
-    val listComicComment: List<CommentResponse>? = emptyList(),
+    val listComicComment: List<CommentResponse> = emptyList(),
     val isListComicCommentLoading: Boolean = true,
 
     // continue reading

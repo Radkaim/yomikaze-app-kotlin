@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +45,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Comment.CommentCard
@@ -71,6 +74,9 @@ fun DescriptionInComicDetailView(
     val description = state.comicResponse?.description
 
     val comicCommentState by comicCommentViewModel.state.collectAsState()
+
+    val context1 = LocalContext.current
+    val appPreference = AppPreference(context1)
     LaunchedEffect(
         key1 = comicCommentState.isDeleteCommentSuccess,
         key2 = comicCommentState.isUpdateCommentSuccess
@@ -261,7 +267,7 @@ fun DescriptionInComicDetailView(
                     }
                 }
             }
-        }else{
+        } else {
             if (state.isLoading && !state.isListComicCommentLoading && state.listComicComment!!.isEmpty()) {
                 item {
                     LineLongShimmerLoading()
@@ -339,18 +345,35 @@ fun DescriptionInComicDetailView(
                                 )
                             },
                             onLikeClick = {
-                                comicCommentViewModel.reactComicCommentByComicId(
-                                    commentId = comment.id,
-                                    comicId = comicId,
-                                    reactionType = "Like"
-                                )
+                                if (appPreference.isUserLoggedIn) {
+                                    comicDetailViewModel.reactComicCommentByComicId(
+                                        commentId = comment.id,
+                                        comicId = comicId,
+                                        reactionType = "Like"
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        context1,
+                                        "Please login to like",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+
                             },
                             onDislikeClick = {
-                                comicCommentViewModel.reactComicCommentByComicId(
-                                    commentId = comment.id,
-                                    comicId = comicId,
-                                    reactionType = "Dislike"
-                                )
+                                if (appPreference.isUserLoggedIn) {
+                                    comicDetailViewModel.reactComicCommentByComicId(
+                                        commentId = comment.id,
+                                        comicId = comicId,
+                                        reactionType = "Dislike"
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        context1,
+                                        "Please login to dislike",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             },
                             comicCommentViewModel = comicCommentViewModel
                         )

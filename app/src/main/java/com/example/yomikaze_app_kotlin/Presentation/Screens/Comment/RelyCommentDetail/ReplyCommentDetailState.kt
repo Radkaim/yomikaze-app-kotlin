@@ -9,7 +9,7 @@ data class ReplyCommentDetailState(
     val mainComment: CommentResponse? = null,
     val isDeleteMainCommentSuccess: Boolean = false,
     val listComicComment: List<CommentResponse> = emptyList(),
-    val isListComicCommentLoading: Boolean = true,
+    val isListComicCommentLoading: Boolean = false,
     val totalCommentResults: MutableState<Int> = mutableStateOf(0),
     val currentPage: MutableState<Int> = mutableStateOf(0),
     val totalPages: MutableState<Int> = mutableStateOf(0),

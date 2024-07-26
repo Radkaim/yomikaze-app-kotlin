@@ -112,8 +112,7 @@ class ComicCommentViewModel @Inject constructor(
         comicId: Long,
         page: Int? = 1,
         orderBy: String? = "CreationTime",
-
-        ) {
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isListComicCommentLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
@@ -123,7 +122,6 @@ class ComicCommentViewModel @Inject constructor(
             val totalPages = _state.value.totalPages.value
 
             if (currentPage >= totalPages && totalPages != 0) return@launch
-
             val result = getAllComicCommentByComicIdUC.getAllComicCommentByComicId(
                 token = token,
                 comicId = comicId,
@@ -314,7 +312,8 @@ class ComicCommentViewModel @Inject constructor(
                                     )
                                 } else {
                                     // Either it was disliked or no reaction before, so like it
-                                    val newTotalDislikes = if (it.myReaction == "Dislike") it.totalDislikes - 1 else it.totalDislikes
+                                    val newTotalDislikes =
+                                        if (it.myReaction == "Dislike") it.totalDislikes - 1 else it.totalDislikes
                                     it.copy(
                                         totalLikes = it.totalLikes + 1,
                                         totalDislikes = newTotalDislikes,
@@ -332,7 +331,8 @@ class ComicCommentViewModel @Inject constructor(
                                     )
                                 } else {
                                     // Either it was liked or no reaction before, so dislike it
-                                    val newTotalLikes = if (it.myReaction == "Like") it.totalLikes - 1 else it.totalLikes
+                                    val newTotalLikes =
+                                        if (it.myReaction == "Like") it.totalLikes - 1 else it.totalLikes
                                     it.copy(
                                         totalDislikes = it.totalDislikes + 1,
                                         totalLikes = newTotalLikes,

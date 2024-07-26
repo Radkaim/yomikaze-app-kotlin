@@ -8,10 +8,12 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.ReactionRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetMainCommentByCommentIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +31,8 @@ class ReplyCommentDetailViewModel @Inject constructor(
     private val postReplyCommentByComicIdUC: PostReplyCommentByComicIdUC,
     private val deleteComicCommentByComicIdUC: DeleteComicCommentByComicIdUC,
     private val updateComicCommentByComicIdUC: UpdateComicCommentByComicIdUC,
-    private val provideGetMainCommentByCommentIdUC: GetMainCommentByCommentIdUC
+    private val provideGetMainCommentByCommentIdUC: GetMainCommentByCommentIdUC,
+    private val reactComicCommentByComicIdUC: ReactComicCommentByComicIdUC
 ) : ViewModel(), StatefulViewModel<ReplyCommentDetailState> {
     //navController
     private var navController: NavController? = null
@@ -137,8 +140,8 @@ class ReplyCommentDetailViewModel @Inject constructor(
                     _state.value = _state.value.copy(isListComicCommentLoading = false)
 
                     Log.d(
-                        "ComicCommentContent",
-                        "listComicComment: ${state.value.listComicComment.size}"
+                        "ReplyCommentDetailViewModel",
+                        "listComicComment: ${state.value.listComicComment}"
                     )
                 },
 
@@ -173,7 +176,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
                 _state.value = _state.value.copy(isPostComicCommentSuccess = true)
                 // add new item to list
                 val newComment = result.body() ?: return@launch
-                Log.d("ComicCommentViewModel", "postComicCommentByComicId: $newComment")
+                Log.d("ReplyCommentDetailViewModel", "postComicCommentByComicId: $newComment")
                 var newCommentResponse = newComment
                 newCommentResponse.author = ProfileResponse(
                     id = appPreference.userId,
@@ -182,7 +185,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
                     balance = 0,
                     roles = appPreference.userRoles
                 )
-                Log.d("ComicCommentViewModel", "postComicCommentByComicId: $newCommentResponse")
+                Log.d("ReplyCommentDetailViewModel", "postComicCommentByComicId: $newCommentResponse")
                 val list = _state.value.listComicComment.toMutableList()
                 if (!list.any { it.id == newComment.id }) {
                     list.add(newCommentResponse)
@@ -195,7 +198,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
 
             } else {
                 _state.value = _state.value.copy(isPostComicCommentSuccess = false)
-                Log.e("ComicCommentViewModel", "postComicCommentByComicId: $result")
+                Log.e("ReplyCommentDetailViewModel", "postComicCommentByComicId: $result")
             }
         }
     }
@@ -239,7 +242,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
             } else {
                 _state.value = _state.value.copy(isDeleteCommentSuccess = false)
                 _state.value = _state.value.copy(isDeleteMainCommentSuccess = false)
-                Log.e("ComicCommentViewModel", "deleteComicCommentByComicId: $result")
+                Log.e("ReplyCommentDetailViewModel", "deleteComicCommentByComicId: $result")
             }
         }
     }
@@ -256,7 +259,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
             _state.value = _state.value.copy(isUpdateCommentSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             //log content
-            Log.d("ComicCommentViewModel", "updateComicCommentByComicId: $content")
+            Log.d("ReplyCommentDetailViewModel", "updateComicCommentByComicId: $content")
             val listPathRequest = listOf(
                 PathRequest(content, "/content", "replace")
             )
@@ -267,7 +270,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
                 pathRequest = listPathRequest
             )
             if (result.code() == 204) {
-                Log.d("ComicCommentViewModel", "updateComicCommentByComicId: $result")
+                Log.d("ReplyCommentDetailViewModel", "updateComicCommentByComicId: $result")
                 _state.value = _state.value.copy(isUpdateCommentSuccess = true)
                 // update it content
                 val list = _state.value.listComicComment.toMutableList()
@@ -279,7 +282,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
                 _state.value = _state.value.copy(listComicComment = list)
             } else {
                 _state.value = _state.value.copy(isUpdateCommentSuccess = false)
-                Log.e("ComicCommentViewModel", "updateComicCommentByComicId: $result")
+                Log.e("ReplyCommentDetailViewModel", "updateComicCommentByComicId: $result")
             }
         }
     }
@@ -302,14 +305,87 @@ class ReplyCommentDetailViewModel @Inject constructor(
                 onSuccess = { commentResponse ->
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(mainComment = commentResponse)
+                    Log.d("ReplyCommentDetailViewModel", "getMainCommentByCommentId: $commentResponse")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
-                    Log.e("ComicCommentViewModel", "getMainCommentByCommentId: $exception")
+                    Log.e("ReplyCommentDetailViewModel", "getMainCommentByCommentId: $exception")
                 }
             )
         }
     }
+
+    /**
+     * Todo: Implement react comic comment by comicId
+     */
+    fun reactComicCommentByComicId(
+        comicId: Long,
+        commentId: Long,
+        reactionType: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val reactionRequest = ReactionRequest(reactionType)
+            val result = reactComicCommentByComicIdUC.reactComicCommentByComicId(
+                token = token,
+                comicId = comicId,
+                commentId = commentId,
+                reactionRequest = reactionRequest
+            )
+            if (result.code() == 200) {
+                Log.d("ComicCommentViewModel", "reactComicCommentByComicId: $result")
+                // update it content
+                _state.value = _state.value.copy(
+                    listComicComment = _state.value.listComicComment.map {
+                        if (it.id == commentId) {
+                            if (reactionType == "Like") {
+                                if (it.myReaction == "Like") {
+                                    // Already liked, so unlike it
+                                    it.copy(
+                                        totalLikes = it.totalLikes - 1,
+                                        myReaction = "",
+                                        isReacted = false
+                                    )
+                                } else {
+                                    // Either it was disliked or no reaction before, so like it
+                                    val newTotalDislikes = if (it.myReaction == "Dislike") it.totalDislikes - 1 else it.totalDislikes
+                                    it.copy(
+                                        totalLikes = it.totalLikes + 1,
+                                        totalDislikes = newTotalDislikes,
+                                        myReaction = "Like",
+                                        isReacted = true
+                                    )
+                                }
+                            } else {
+                                if (it.myReaction == "Dislike") {
+                                    // Already disliked, so undislike it
+                                    it.copy(
+                                        totalDislikes = it.totalDislikes - 1,
+                                        myReaction = "",
+                                        isReacted = false
+                                    )
+                                } else {
+                                    // Either it was liked or no reaction before, so dislike it
+                                    val newTotalLikes = if (it.myReaction == "Like") it.totalLikes - 1 else it.totalLikes
+                                    it.copy(
+                                        totalDislikes = it.totalDislikes + 1,
+                                        totalLikes = newTotalLikes,
+                                        myReaction = "Dislike",
+                                        isReacted = true
+                                    )
+                                }
+                            }
+                        } else {
+                            it
+                        }
+                    }
+                )
+            } else {
+                Log.e("ComicCommentViewModel", "reactComicCommentByComicId: $result")
+            }
+        }
+    }
+
 
 
 }

@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -45,9 +46,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -60,6 +64,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.LottieAnimationComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
@@ -108,21 +113,23 @@ fun RelyCommentDetailContent(
     state: ReplyCommentDetailState,
     replyCommentDetailViewModel: ReplyCommentDetailViewModel
 ) {
+
     LaunchedEffect(Unit) {
         replyCommentDetailViewModel.getMainCommentByCommentId(
             comicId = comicId,
             commentId = commentId,
         )
     }
-
     val listState = rememberLazyListState()
     val context = LocalContext.current
+    val appPreference = AppPreference(context)
     val page = remember { mutableStateOf(1) }
     val loading = remember { mutableStateOf(false) }
-
     var isSelected by remember { mutableStateOf(false) }
     var isReversed by remember { mutableStateOf(true) }
-    var isRefreshing by remember { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
 
     Scaffold(
@@ -132,11 +139,7 @@ fun RelyCommentDetailContent(
                 navigationIcon = {
                     IconButton(onClick = {
                         Log.d("RelyCommentDetailView", "Back button clicked")
-                        //get all fragment in back stack
-//                        val backStackCount = navController.backQueue.size
-//                        Log.d("RelyCommentDetailView", "Back stack count: $backStackCount")
                         navController.popBackStack()
-
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -147,193 +150,256 @@ fun RelyCommentDetailContent(
             )
         },
     ) {
-        //main comment
-//        Column {
-//            if (state.mainComment != null) {
-//                CommentCard(
-//                    comicId = comicId,
-//                    commentId = state.mainComment.id,
-//                    content = state.mainComment.content,
-//                    authorName = state.mainComment.author.name,
-//                    authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
-//                        ?: "",
-//                    roleName = state.mainComment.author.roles?.get(0) ?: "",
-//                    creationTime = state.mainComment.creationTime,
-//                    isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(
-//                        state.mainComment.author.id
-//                    ),
-//                    isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
-//                    onClicked = {},
-//                    replyCommentDetailViewModel = replyCommentDetailViewModel
-//                )
-//            } else {
-//                CommentCardShimmerLoading()
-//            }
-
-            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-                val (header, messages, chatBox) = createRefs()
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val (header, messages, chatBox) = createRefs()
 
 
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(top = 5.dp)
+                    .constrainAs(header) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {}
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(top = 5.dp)
-                        .constrainAs(header) {
-                            top.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            bottom.linkTo(messages.top)
-                        },
-                    verticalAlignment = Alignment.CenterVertically
+            LazyColumn(
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(15.dp), // 8.dp space between each item
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .constrainAs(messages) {
+                        top.linkTo(header.bottom)
+                        bottom.linkTo(chatBox.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        height = Dimension.fillToConstraints
+                    }
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
+                    },
+
                 ) {
 
+                item {
+                    if (state.mainComment != null) {
+                        CommentCard(
+                            comicId = comicId,
+                            commentId = state.mainComment!!.id,
+                            content = state.mainComment.content,
+                            authorName = state.mainComment.author.name,
+                            authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
+                                ?: "",
+                            roleName = state.mainComment.author.roles?.get(0) ?: "",
+                            creationTime = state.mainComment.creationTime,
+                            isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(state.mainComment.author.id),
+                            isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
+                            totalLikes = state.mainComment.totalLikes.toLong(),
+                            myReaction = state.mainComment.myReaction,
+                            isReacted = state.mainComment.isReacted,
+                            onLikeClick = {
+                                if (appPreference.isUserLoggedIn) {
+                                    replyCommentDetailViewModel.reactComicCommentByComicId(
+                                        commentId = state.mainComment.id,
+                                        comicId = comicId,
+                                        reactionType = "Like"
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Please sign in to like",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            },
+                            totalDislikes = state.mainComment.totalDislikes.toLong(),
+                            onDislikeClick = {
+                                if (appPreference.isUserLoggedIn) {
+                                    replyCommentDetailViewModel.reactComicCommentByComicId(
+                                        commentId = state.mainComment.id,
+                                        comicId = comicId,
+                                        reactionType = "Dislike"
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Please sign in to dislike",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            },
+                            totalReplies = state.mainComment.totalReplies.toLong(),
+                            onClicked = {},
+                            replyCommentDetailViewModel = replyCommentDetailViewModel
+                        )
+                    } else {
+                        CommentCardShimmerLoading()
+                    }
+                }
+//
+                item {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(top = 5.dp)
+                            .constrainAs(header) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+//                            bottom.linkTo(messages.top)
+                            },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
 
-                    val total = state.totalCommentResults.value
-                    Text(
-                        text = "Reply: ${total} ${if (total > 1) "comments" else "comment"}",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.padding(8.dp)
+                        val total = state.totalCommentResults.value
+                        Text(
+                            text = "Reply: ${total} ${if (total > 1) "comments" else "comment"}",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.padding(8.dp)
 
-                    )
+                        )
 
-                    SortComponent(
-                        isOldestSelected = isSelected,
-                        onOldSortClick = {
-                            isSelected = true
-                            isReversed = false
-
-
-                        },
-                        onnNewSortClick = {
-                            isSelected = false
-                            isReversed = true
-
-                        }
-                    )
+                        SortComponent(
+                            isOldestSelected = isSelected,
+                            onOldSortClick = {
+                                isSelected = true
+                                isReversed = false
+                            },
+                            onnNewSortClick = {
+                                isSelected = false
+                                isReversed = true
+                            }
+                        )
+                    }
                 }
 
-                LazyColumn(
-                    state = listState,
-                    verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(messages) {
-                            top.linkTo(header.bottom)
-                            bottom.linkTo(chatBox.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            height = Dimension.fillToConstraints
-                        }
 
-                ) {
-
+                if (state.isListComicCommentLoading) {
                     item {
-                        if (state.mainComment != null) {
-                            CommentCard(
-                                comicId = comicId,
-                                commentId = state.mainComment.id,
-                                content = state.mainComment.content,
-                                authorName = state.mainComment.author.name,
-                                authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
-                                    ?: "",
-                                roleName = state.mainComment.author.roles?.get(0) ?: "",
-                                creationTime = state.mainComment.creationTime,
-                                isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(
-                                    state.mainComment.author.id
-                                ),
-                                isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
-                                onClicked = {},
-                                replyCommentDetailViewModel = replyCommentDetailViewModel
-                            )
-                        } else {
+                        repeat(6) {
                             CommentCardShimmerLoading()
-                        }}
-
-
-
-                    if (state.isListComicCommentLoading) {
-                        item {
-                            repeat(6) {
-                                CommentCardShimmerLoading()
-                                Spacer(modifier = Modifier.height(10.dp))
-                            }
+                            Spacer(modifier = Modifier.height(10.dp))
                         }
                     }
-                    if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
-                        val sortedList = if (isReversed) {
-                            state.listComicComment.sortedByDescending { it.creationTime }
-                        } else {
-                            state.listComicComment.sortedBy { it.creationTime }
-                        }
-                        items(sortedList) { comment ->
-                            CommentCard(
-                                comicId = comicId,
-                                commentId = comment.id,
-                                content = comment.content,
-                                authorName = comment.author.name,
-                                authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
-                                    ?: "",
-                                roleName = comment.author.roles?.get(0) ?: "",
-                                creationTime = comment.creationTime,
-                                isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(comment.author.id),
-                                isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
-                                onClicked = {},
-                                replyCommentDetailViewModel = replyCommentDetailViewModel
-                            )
-                        }
+                }
+                if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
+                    val sortedList = if (isReversed) {
+                        state.listComicComment.sortedByDescending { it.creationTime }
+                    } else {
+                        state.listComicComment.sortedBy { it.creationTime }
                     }
+                    items(sortedList) { comment ->
+                        CommentCard(
+                            comicId = comicId,
+                            commentId = comment.id,
+                            content = comment.content,
+                            authorName = comment.author.name,
+                            authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
+                                ?: "",
+                            roleName = comment.author.roles?.get(0) ?: "",
+                            creationTime = comment.creationTime,
+                            isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(comment.author.id),
+                            isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
+                            totalLikes = comment.totalLikes.toLong(),
+                            myReaction = comment.myReaction,
+                            isReacted = comment.isReacted,
+                            onLikeClick = {
+                                if (appPreference.isUserLoggedIn) {
+                                    replyCommentDetailViewModel.reactComicCommentByComicId(
+                                        commentId = comment.id,
+                                        comicId = comicId,
+                                        reactionType = "Like"
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Please sign in to like",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            },
+                            totalDislikes = comment.totalDislikes.toLong(),
+                            onDislikeClick = {
+                                if(appPreference.isUserLoggedIn) {
+                                    replyCommentDetailViewModel.reactComicCommentByComicId(
+                                        commentId = comment.id,
+                                        comicId = comicId,
+                                        reactionType = "Dislike"
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Please sign in to dislike",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            },
+                            totalReplies = comment.totalReplies.toLong(),
+                            onClicked = {},
+                            replyCommentDetailViewModel = replyCommentDetailViewModel
+                        )
+                    }
+                }
 
 
-                    // Hiển thị một mục tải dữ liệu khi cần
-                    item {
-                        if (loading.value) {
-                            Box(
+                // Hiển thị một mục tải dữ liệu khi cần
+                item {
+                    if (loading.value) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                                .padding(10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LottieAnimationComponent(
+                                animationFileName = R.raw.loading, // Replace with your animation file name
+                                loop = true,
+                                autoPlay = true,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(100.dp)
-                                    .padding(10.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                LottieAnimationComponent(
-                                    animationFileName = R.raw.loading, // Replace with your animation file name
-                                    loop = true,
-                                    autoPlay = true,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .scale(1.15f)
-                                )
-                            }
+                                    .scale(1.15f)
+                            )
                         }
                     }
                 }
-
-                ChatBox(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(chatBox) {
-//                            top.linkTo(messages.bottom)
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                    onSendChatClickListener = {
-                        replyCommentDetailViewModel.postReplyComicCommentByComicId(
-                            comicId = comicId,
-                            commentId = commentId,
-                            content = it,
-                        )
-                    },
-                    isLogin = replyCommentDetailViewModel.checkUserIsLogin()
-                )
             }
-//        }
 
+            ChatBox(
+                focusManager = focusManager,
+                keyboardController = keyboardController,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(chatBox) {
+//                            top.linkTo(messages.bottom)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                onSendChatClickListener = {
+                    replyCommentDetailViewModel.postReplyComicCommentByComicId(
+                        comicId = comicId,
+                        commentId = commentId,
+                        content = it,
+                    )
+                },
+                isLogin = replyCommentDetailViewModel.checkUserIsLogin()
+            )
+        }
+//        }
 
 
         LaunchedEffect(
@@ -393,6 +459,8 @@ private fun ChatBox(
     onSendChatClickListener: (String) -> Unit,
     modifier: Modifier,
     isLogin: Boolean,
+    focusManager: FocusManager,
+    keyboardController: SoftwareKeyboardController?
 ) {
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
     val canPost by remember { mutableStateOf(isLogin) }

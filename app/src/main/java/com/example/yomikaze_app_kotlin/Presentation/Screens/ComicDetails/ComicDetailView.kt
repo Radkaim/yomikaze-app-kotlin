@@ -95,9 +95,8 @@ fun ComicDetailsView(
 
     if (CheckNetwork()) {
         LaunchedEffect(Unit) {
-            Log.d("ComicDetailsView", "launchedEffect:1")
             comicDetailViewModel.getComicDetailsFromApi(comicId = comicId)
-            comicDetailViewModel.getAllComicCommentByComicId(comicId = comicId)
+//            comicDetailViewModel.getAllComicCommentByComicId(comicId = comicId)
         }
 
         LaunchedEffect(
