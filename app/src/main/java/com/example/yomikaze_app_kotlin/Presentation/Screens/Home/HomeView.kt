@@ -53,6 +53,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.Bottom
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ComponentRectangle
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.HistoryCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.DefaultTopAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.SearchTopAppBar
@@ -407,8 +408,21 @@ fun showHistory(navController: NavController, viewModel: HomeViewModel, state: H
                 )
             }
         }
-
-        showHistoryCardComic(state = state, homeViewModel = viewModel)
+        if (state.isHistoryListLoading) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 30.dp, end = 5.dp, bottom = 8.dp, top = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(25.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                repeat(3) {
+                    HistoryCardShimmerLoading()
+                }
+            }
+        } else {
+            showHistoryCardComic(state = state, homeViewModel = viewModel)
+        }
     }
 }
 
@@ -443,6 +457,7 @@ fun showHistoryCardComic(
                 // averageRatingNumber = comic.averageRatingNumber
             )
         }
+
 
     }
 }

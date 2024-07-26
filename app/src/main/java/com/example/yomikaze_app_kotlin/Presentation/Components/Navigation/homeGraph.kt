@@ -96,7 +96,7 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             val comicNameSearchText = navBackStackEntry.arguments?.getString("searchText")
             AdvancedSearchView(
                 navController = navController,
-                comicNameSearchText = comicNameSearchText
+                comicNameSearchText = comicNameSearchText ?: null
             )
         }
 

@@ -97,6 +97,13 @@ fun SettingView(
             iconEnd = R.drawable.ic_next,
             route = "transaction_history_route"
         ),
+        SettingObject(
+            iconStart = R.drawable.ic_search,
+            title = "Advanced Search",
+            iconEnd = R.drawable.ic_next,
+            route = "advance_search_route"
+        ),
+
     )
 
     Scaffold(

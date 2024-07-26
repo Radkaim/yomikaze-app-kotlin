@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 
@@ -61,7 +62,8 @@ fun SearchTopAppBar(
                 Text(
                     modifier = Modifier.alpha(ContentAlpha.medium),
                     text = "Search here...",
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = MaterialTheme.colorScheme.surface,
+                    fontWeight = FontWeight.Bold
                 )
             },
             textStyle = TextStyle(

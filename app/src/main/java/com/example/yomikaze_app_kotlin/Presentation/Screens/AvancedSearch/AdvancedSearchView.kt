@@ -4,30 +4,36 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,11 +41,16 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,10 +61,16 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.TagItemShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.DateRangePickerSample
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.InputNumberTextField
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.OrderByDropdownMenu
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.QueryByComicNameTextField
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.SearchResultItem
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.SliderAdvancedExample
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.TagList
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.getFormattedDateForDisplay
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.getFormattedDateForRequest
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -67,7 +84,7 @@ fun AdvancedSearchView(
     if (CheckNetwork()) {
         AdvancedSearchContent(
             navController = navController,
-            comicNameSearchText = comicNameSearchText!!,
+            comicNameSearchText = comicNameSearchText ?: "",
             advancedSearchViewModel = advancedSearchViewModel,
             state = state
         )
@@ -76,7 +93,7 @@ fun AdvancedSearchView(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AdvancedSearchContent(
@@ -85,15 +102,20 @@ fun AdvancedSearchContent(
     advancedSearchViewModel: AdvancedSearchViewModel,
     state: AdvancedSearchState
 ) {
+
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     //work
+    var itemQueryComicName by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        advancedSearchViewModel.updateQueryByComicName(comicNameSearchText)
-//
+        if (comicNameSearchText.isNotEmpty() && comicNameSearchText != "null-null-null") {
+            advancedSearchViewModel.updateQueryByComicName(comicNameSearchText)
+            advancedSearchViewModel.performAdvancedSearch()
+            itemQueryComicName = true
+        }
     }
 
-    LaunchedEffect(Unit) {
-        advancedSearchViewModel.performAdvancedSearch()
-    }
 
     LaunchedEffect(Unit) {
         advancedSearchViewModel.getTags()
@@ -102,7 +124,7 @@ fun AdvancedSearchContent(
 
 
     // item to show
-    var itemQueryComicName by remember { mutableStateOf(true) }
+
     var itemQueryAuthor by remember { mutableStateOf(false) }
     var itemQueryPublisher by remember { mutableStateOf(false) }
     var itemQueryStatus by remember { mutableStateOf(false) }
@@ -115,15 +137,50 @@ fun AdvancedSearchContent(
     var itemExcludeIncludeMode by remember { mutableStateOf(false) }
     var itemQueryOrderBy by remember { mutableStateOf(false) }
 
-    var resetSlider by remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = resetSlider)
+    var resetSliderAverage by remember { mutableStateOf(false) }
+    var resetSliderTotalView by remember { mutableStateOf(false) }
+    var resetSliderTotalFollow by remember { mutableStateOf(false) }
+    var resetSliderTotalChapter by remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = resetSliderAverage)
     {
-        if (resetSlider) {
-//            advancedSearchViewModel.resetAverageRatingValue()
-            resetSlider = false
+        if (resetSliderAverage) {
+            resetSliderAverage = false
         }
-
     }
+    LaunchedEffect(key1 = resetSliderTotalView)
+    {
+        if (resetSliderTotalView) {
+            resetSliderTotalView = false
+        }
+    }
+
+    LaunchedEffect(key1 = resetSliderTotalFollow)
+    {
+        if (resetSliderTotalFollow) {
+            resetSliderTotalFollow = false
+        }
+    }
+
+    LaunchedEffect(key1 = resetSliderTotalChapter)
+    {
+        if (resetSliderTotalChapter) {
+            resetSliderTotalChapter = false
+        }
+    }
+    var dateState = rememberDateRangePickerState()
+    val bottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val coroutineScope = rememberCoroutineScope()
+
+    //reset published date
+    fun resetPublishedDate() {
+        dateState.setSelection(
+            startDateMillis = null,
+            endDateMillis = null
+        )
+    }
+
+
     //reset average rating
 
     //page 1 size 1000
@@ -141,6 +198,20 @@ fun AdvancedSearchContent(
         itemExcludeIncludeMode = false
         itemQueryOrderBy = false
     }
+
+
+    //reset all value
+    fun resetAll() {
+
+        advancedSearchViewModel.resetState()
+        resetPublishedDate()
+
+        resetSliderAverage = true
+        resetSliderTotalView = true
+        resetSliderTotalFollow = true
+        resetSliderTotalChapter = true
+    }
+
 
     //check color for hide all button return true if all item is hide
 //check color for hide all button return true if all items are hidden
@@ -165,7 +236,7 @@ fun AdvancedSearchContent(
     Scaffold(
         topBar = {
             CustomAppBar(
-                title = "Avanced Search",
+                title = "Advanced Search",
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()
@@ -205,8 +276,7 @@ fun AdvancedSearchContent(
                             .width(100.dp)
                             .clip(RoundedCornerShape(30.dp))
                             .clickable {
-                                advancedSearchViewModel.resetState()
-                                resetSlider = true
+                                resetAll()
                             },
                         contentAlignment = Alignment.Center
 
@@ -283,11 +353,7 @@ fun AdvancedSearchContent(
             }
         }
     ) {
-//        Surface(
-//            modifier = Modifier
-//                .padding(4.dp)
-//                .background(MaterialTheme.colorScheme.background)
-//        ) {
+
         Column(
             verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
             modifier = Modifier
@@ -300,248 +366,376 @@ fun AdvancedSearchContent(
                 .background(MaterialTheme.colorScheme.background)
                 .wrapContentSize(Alignment.Center)
         ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .padding(bottom = 80.dp)
-
+            ModalBottomSheetLayout(
+                sheetState = bottomSheetState,
+                sheetContent = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(600.dp)
+                            .background(Color.White)
+                    ) {
+                        DateRangePickerSample(dateState)
+                    }
+                },
+                scrimColor = Color.Black.copy(alpha = 0.5f),
+                sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
             ) {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                    .padding(bottom = 80.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
+                    },
 
-                //TODO: search by comic name
-                item {
-                    showTitle(
-                        title = "Comic Name",
-                        onShowClick = { itemQueryComicName = it },
-                        itemShowBoolean = itemQueryComicName
-                    )
-                    if (itemQueryComicName) {
-                        QueryByComicNameTextField(
-                            queryByComicName = state.queryByComicName,
-                            onValueChange = { advancedSearchViewModel.updateQueryByComicName(it) },
-                            onCLoseClicked = { advancedSearchViewModel.updateQueryByComicName("") }
+                ) {
+
+                    //TODO: search by comic name
+                    item {
+                        showTitle(
+                            title = "Comic Name",
+                            onShowClick = { itemQueryComicName = it },
+                            itemShowBoolean = itemQueryComicName
                         )
+                        if (itemQueryComicName) {
+                            QueryByComicNameTextField(
+                                queryByComicName = state.queryByComicName,
+                                onValueChange = { advancedSearchViewModel.updateQueryByComicName(it) },
+                                onCLoseClicked = { advancedSearchViewModel.updateQueryByComicName("") }
+                            )
+                        }
                     }
-                }
 
-                //Todo: search by author
-                item {
-                    showTitle(
-                        title = "Author",
-                        onShowClick = { itemQueryAuthor = it },
-                        itemShowBoolean = itemQueryAuthor
-                    )
-                    if (itemQueryAuthor) {
+                    //Todo: search by author
+                    item {
+                        showTitle(
+                            title = "Author",
+                            onShowClick = { itemQueryAuthor = it },
+                            itemShowBoolean = itemQueryAuthor
+                        )
+                        if (itemQueryAuthor) {
 
+                        }
                     }
-                }
 
-                //Todo: search by publisher
-                item {
-                    showTitle(
-                        title = "Publisher",
-                        onShowClick = { itemQueryPublisher = it },
-                        itemShowBoolean = itemQueryPublisher
-                    )
-                    if (itemQueryPublisher) {
+                    //Todo: search by publisher
+                    item {
+                        showTitle(
+                            title = "Publisher",
+                            onShowClick = { itemQueryPublisher = it },
+                            itemShowBoolean = itemQueryPublisher
+                        )
+                        if (itemQueryPublisher) {
 
+                        }
                     }
-                }
 
-                //Todo: search by status
-                item {
-                    showTitle(
-                        title = "Status",
-                        onShowClick = { itemQueryStatus = it },
-                        itemShowBoolean = itemQueryStatus
-                    )
-                    if (itemQueryStatus) {
+                    //Todo: search by status
+                    item {
+                        showTitle(
+                            title = "Status",
+                            onShowClick = { itemQueryStatus = it },
+                            itemShowBoolean = itemQueryStatus
+                        )
+                        if (itemQueryStatus) {
 
+                        }
                     }
-                }
 
-                //Todo: search by From - To Date
-                item {
-                    showTitle(
-                        title = "From - To Date",
-                        onShowClick = { itemQueryFromToDate = it },
-                        itemShowBoolean = itemQueryFromToDate
-                    )
-                    if (itemQueryFromToDate) {
-                    }
-                }
-
-                //Todo: search by From - To Total Chapter
-                item {
-                    showTitle(
-                        title = "From - To Total Chapter",
-                        onShowClick = { itemFromToTotalChapter = it },
-                        itemShowBoolean = itemFromToTotalChapter
-                    )
-                    if (itemFromToTotalChapter) {
-                    }
-                }
-
-                //Todo: search by From - To Total View
-                item {
-                    showTitle(
-                        title = "From - To Total View",
-                        onShowClick = { itemFromToTotalView = it },
-                        itemShowBoolean = itemFromToTotalView
-                    )
-                    if (itemFromToTotalView) {
-                    }
-                }
-
-                //Todo: search by From - To Average Rating
-                item {
-                    showTitle(
-                        title = "From - To Average Rating",
-                        onShowClick = { itemFromToAverageRating = it },
-                        itemShowBoolean = itemFromToAverageRating
-                    )
-                    if (itemFromToAverageRating) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
+                    //Todo: search by From - To Date
+                    item {
+                        showTitle(
+                            title = "From - To Date",
+                            onShowClick = { itemQueryFromToDate = it },
+                            itemShowBoolean = itemQueryFromToDate
+                        )
+                        if (itemQueryFromToDate) {
+                            ResetButton(
+                                onClick = {
+                                    advancedSearchViewModel.resetPublishedDateValue()
+                                    resetPublishedDate()
+                                }
+                            )
                             Button(
                                 onClick = {
-                                    advancedSearchViewModel.resetAverageRatingValue()
-                                    resetSlider = true
+                                    coroutineScope.launch {
+                                        bottomSheetState.show()
+                                    }
                                 },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Black,
+                                    contentColor = Color.White
+                                ),
                                 modifier = Modifier
-                                    .wrapContentSize()
-                                    .width(100.dp)
-                                    .height(40.dp)
-                                    .scale(0.7f)
-                                    .offset(x = 20.dp),
+                                    .padding(end = 16.dp)
                             ) {
-                                Text(
-                                    text = "Reset All Tags",
-                                    fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier
+                                Text("Done", color = Color.White)
+                            }
+                            Text(text = "Start Date:" + if (dateState.selectedStartDateMillis != null) dateState.selectedStartDateMillis?.let {
+                                getFormattedDateForDisplay(
+                                    it
+                                )
+                                //updateQueryFromPublishedDate
+
+
+                            } else "")
+
+                            if (dateState.selectedStartDateMillis != null) dateState.selectedStartDateMillis?.let {
+                                advancedSearchViewModel.updateQueryFromPublishedDate(
+                                    getFormattedDateForRequest(
+                                        it
+                                    )
+                                )
+                            }else ""
+
+
+                            Text(text = "End Date:" + if (dateState.selectedEndDateMillis != null) dateState.selectedEndDateMillis?.let {
+                                getFormattedDateForDisplay(
+                                    it
+                                )
+                            } else "")
+
+                            if (dateState.selectedEndDateMillis != null) dateState.selectedEndDateMillis?.let {
+                                advancedSearchViewModel.updateQueryToPublishedDate(
+                                    getFormattedDateForRequest(
+                                        it
+                                    )
+                                )
+                            }else ""
+                        }
+                    }
+
+                    //Todo: search by From - To Total Chapter
+                    item {
+                        showTitle(
+                            title = "From - To Total Chapter",
+                            onShowClick = { itemFromToTotalChapter = it },
+                            itemShowBoolean = itemFromToTotalChapter
+                        )
+                        if (itemFromToTotalChapter) {
+                            ResetButton(
+                                onClick = {
+                                    advancedSearchViewModel.resetTotalChaptersValue()
+                                    resetSliderTotalChapter = true
+                                }
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp)
+                            ) {
+                                SliderAdvancedExample(
+                                    fromValueChange = state.queryFromTotalChapters?.toFloat() ?: 0f,
+                                    toValueChange = state.queryToTotalChapters?.toFloat()
+                                        ?: 2500.toFloat(),
+                                    defaultFromValue = 0f,
+                                    defaultToValue = 2500.toFloat(),
+                                    steps = 1000,
+                                    isInteger = true,
+                                    resetSlider = resetSliderTotalChapter,
+                                    onValueFromChange = {
+                                        advancedSearchViewModel.updateQueryFromTotalChapters(
+                                            it.toInt()
+                                        )
+                                    },
+                                    onValueToChange = {
+                                        advancedSearchViewModel.updateQueryToTotalChapters(
+                                            it.toInt()
+                                        )
+                                    }
                                 )
                             }
                         }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
-                        ) {
+                    }
 
-
-                            SliderAdvancedExample(
-                                fromValueChange = state.queryFromAverageRating ?: 0f,
-                                toValueChange = state.queryToAverageRating ?: 5f,
-                                defaultFromValue = 0f,
-                                defaultToValue = 5f,
-                                resetSlider = resetSlider,
-                                onValueFromChange = {
-                                    advancedSearchViewModel.updateQueryFromAverageRating(
-                                        it
-                                    )
-                                },
-                                onValueToChange = {
-                                    advancedSearchViewModel.updateQueryToAverageRating(
-                                        it
-                                    )
+                    //Todo: search by From - To Total View
+                    item {
+                        showTitle(
+                            title = "From - To Total View",
+                            onShowClick = { itemFromToTotalView = it },
+                            itemShowBoolean = itemFromToTotalView
+                        )
+                        if (itemFromToTotalView) {
+                            ResetButton(
+                                onClick = {
+                                    advancedSearchViewModel.resetTotalViewsValue()
+                                    resetSliderTotalView = true
                                 }
                             )
-                        }
-                    }
-                }
-
-                //Todo: search by From - To Follow
-                item {
-                    showTitle(
-                        title = "From - To Total Follow",
-                        onShowClick = { itemFromToTotalFollow = it },
-                        itemShowBoolean = itemFromToTotalFollow
-                    )
-                    if (itemFromToTotalFollow) {
-                    }
-                }
-
-                //Todo: search by tag
-                item {
-                    showTitle(
-                        title = "Tag",
-                        onShowClick = { itemQueryTag = it },
-                        itemShowBoolean = itemQueryTag
-                    )
-                    if (itemQueryTag) {
-                        val tagId = 1L..20L
-                        if (state.isTagsLoading) {
-                            repeat(10) {
-                                TagItemShimmerLoading()
-                            }
-                        } else {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.End,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp)
                             ) {
-                                Button(
-                                    onClick = { advancedSearchViewModel.resetTags() },
-                                    modifier = Modifier
-                                        .wrapContentSize()
-                                        .width(100.dp)
-                                        .height(40.dp)
-                                        .scale(0.7f)
-                                        .offset(x = 20.dp),
-                                ) {
-                                    Text(
-                                        text = "Reset All Tags",
-                                        fontSize = 20.sp,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier
-                                    )
-                                }
+                                InputNumberTextField(
+                                    defaultValueFrom = state.queryFromTotalViews?.toString() ?: "",
+                                    defaultValueTo = state.queryToTotalViews?.toString() ?: "",
+                                    onValueFromChange = {
+                                        advancedSearchViewModel.updateQueryFromTotalViews(
+                                            it
+                                        )
+                                    },
+                                    onValueToChange = {
+                                        advancedSearchViewModel.updateQueryToTotalViews(
+                                            it
+                                        )
+                                    },
+                                    isReset = resetSliderTotalView,
+                                    focusManager = focusManager,
+                                    keyboardController = keyboardController
+                                )
+
                             }
-                            TagList(
-                                viewModel = advancedSearchViewModel,
-                                tags = state.tags
+                        }
+                    }
+
+                    //Todo: search by From - To Average Rating
+                    item {
+                        showTitle(
+                            title = "From - To Average Rating",
+                            onShowClick = { itemFromToAverageRating = it },
+                            itemShowBoolean = itemFromToAverageRating
+                        )
+                        if (itemFromToAverageRating) {
+                            ResetButton(
+                                onClick = {
+                                    advancedSearchViewModel.resetAverageRatingValue()
+                                    resetSliderAverage = true
+                                }
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp)
+                            ) {
+                                SliderAdvancedExample(
+                                    fromValueChange = state.queryFromAverageRating ?: 0f,
+                                    toValueChange = state.queryToAverageRating ?: 5f,
+                                    defaultFromValue = 0f,
+                                    defaultToValue = 5f,
+                                    resetSlider = resetSliderAverage,
+                                    onValueFromChange = {
+                                        advancedSearchViewModel.updateQueryFromAverageRating(
+                                            it
+                                        )
+                                    },
+                                    onValueToChange = {
+                                        advancedSearchViewModel.updateQueryToAverageRating(
+                                            it
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    //Todo: search by From - To Follow
+                    item {
+                        showTitle(
+                            title = "From - To Total Follow",
+                            onShowClick = { itemFromToTotalFollow = it },
+                            itemShowBoolean = itemFromToTotalFollow
+                        )
+                        if (itemFromToTotalFollow) {
+                            ResetButton(
+                                onClick = {
+                                    advancedSearchViewModel.resetTotalFollowsValue()
+                                    resetSliderTotalFollow = true
+                                }
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp)
+                            ) {
+                                InputNumberTextField(
+                                    defaultValueFrom = state.queryFromTotalFollows?.toString()
+                                        ?: "",
+                                    defaultValueTo = state.queryToTotalFollows?.toString() ?: "",
+                                    onValueFromChange = {
+                                        advancedSearchViewModel.updateQueryFromTotalFollows(
+                                            it
+                                        )
+                                    },
+                                    onValueToChange = {
+                                        advancedSearchViewModel.updateQueryToTotalFollows(
+                                            it
+                                        )
+                                    },
+                                    isReset = resetSliderTotalFollow,
+                                    focusManager = focusManager,
+                                    keyboardController = keyboardController
+                                )
+
+                            }
+                        }
+                    }
+
+                    //Todo: search by tag
+                    item {
+                        showTitle(
+                            title = "Tag",
+                            onShowClick = { itemQueryTag = it },
+                            itemShowBoolean = itemQueryTag
+                        )
+                        if (itemQueryTag) {
+                            val tagId = 1L..20L
+                            if (state.isTagsLoading) {
+                                repeat(10) {
+                                    TagItemShimmerLoading()
+                                }
+                            } else {
+                                ResetButton(onClick = { advancedSearchViewModel.resetTags() })
+                                TagList(
+                                    viewModel = advancedSearchViewModel,
+                                    tags = state.tags
+                                )
+                            }
+                        }
+                    }
+
+                    //Todo: search by Exclude/Include Mode
+                    item {
+                        showTitle(
+                            title = "Exclude/Include Mode",
+                            onShowClick = { itemExcludeIncludeMode = it },
+                            itemShowBoolean = itemExcludeIncludeMode
+                        )
+                        if (itemExcludeIncludeMode) {
+                        }
+                    }
+
+                    //Todo: search by order by
+                    item {
+                        showTitle(
+                            title = "Order By",
+                            onShowClick = { itemQueryOrderBy = it },
+                            itemShowBoolean = itemQueryOrderBy
+                        )
+                        if (itemQueryOrderBy) {
+                            OrderByDropdownMenu(
+                                viewModel = advancedSearchViewModel
                             )
                         }
                     }
-                }
 
-                //Todo: search by Exclude/Include Mode
-                item {
-                    showTitle(
-                        title = "Exclude/Include Mode",
-                        onShowClick = { itemExcludeIncludeMode = it },
-                        itemShowBoolean = itemExcludeIncludeMode
-                    )
-                    if (itemExcludeIncludeMode) {
-                    }
-                }
-
-                //Todo: search by order by
-                item {
-                    showTitle(
-                        title = "Order By",
-                        onShowClick = { itemQueryOrderBy = it },
-                        itemShowBoolean = itemQueryOrderBy
-                    )
-                    if (itemQueryOrderBy) {
-                    }
-                }
-
-                //Todo: result comic
-                item {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        if (state.totalResults != 0) {
+                    //Todo: result comic
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+//                        if (state.totalResults != 0) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
@@ -555,26 +749,35 @@ fun AdvancedSearchContent(
                                         .padding(bottom = 10.dp)
                                 )
                             }
+//                        }
                         }
                     }
-                }
 
-                item {
-                    if (state.isSearchLoading) {
-                        repeat(2) {
-                            NormalComicCardShimmerLoading()
-                            Spacer(modifier = Modifier.height(10.dp))
-                        }
-                    } else {
-                        state.searchResults.forEach { comic ->
-                            SearchResultItem(
-                                comic = comic,
-                                advancedSearchViewModel = advancedSearchViewModel
-                            )
+                    item {
+                        if (state.isSearchLoading) {
+                            repeat(2) {
+                                NormalComicCardShimmerLoading()
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
+                        } else {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(5.dp),
+                                verticalArrangement = Arrangement.spacedBy(5.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                state.searchResults.forEach { comic ->
+                                    SearchResultItem(
+                                        comic = comic,
+                                        advancedSearchViewModel = advancedSearchViewModel
+                                    )
+                                }
+                            }
                         }
                     }
-                }
 
+                }
             }
         }
 
@@ -614,6 +817,35 @@ fun showTitle(
         ) {
             Text(
                 text = if (itemShowBoolean) "Hide" else "Show",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Composable
+fun ResetButton(
+    onClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Button(
+            onClick = { onClick() },
+            modifier = Modifier
+                .wrapContentSize()
+                .width(100.dp)
+                .height(40.dp)
+                .scale(0.7f)
+                .offset(x = 20.dp),
+        ) {
+            Text(
+                text = "Reset",
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,

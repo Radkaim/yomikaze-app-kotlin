@@ -179,7 +179,5 @@ fun ProfileContent(
                 }
             }
         }
-
-
     }
 }

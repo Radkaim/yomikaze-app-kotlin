@@ -47,6 +47,7 @@ class SettingViewModel @Inject constructor(
             "coins_shop_route" -> navController?.navigate("coins_shop_route")
             "about_us_route" -> navController?.navigate("about_us_route")
             "transaction_history_route" -> navController?.navigate("transaction_history_route")
+            "advance_search_route" -> navController?.navigate("advance_search_route/null-null-null")
         }
     }
 

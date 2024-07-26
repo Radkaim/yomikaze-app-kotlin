@@ -71,6 +71,7 @@ data class AdvancedSearchState(
     val queryExclusionMode: Mode? = null,
 
     val queryOrderBy: OrderBy? = null,
+    val selectedOrderBy: OrderBy = OrderBy.Name,
 
     val querySize: Int? = null,
     val queryPage: Int? = null,

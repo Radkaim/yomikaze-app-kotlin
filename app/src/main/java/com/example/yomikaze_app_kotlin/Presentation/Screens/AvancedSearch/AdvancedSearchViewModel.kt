@@ -36,6 +36,11 @@ class AdvancedSearchViewModel @Inject constructor(
     fun onNavigateComicDetail(comicId: Long) {
         navController?.navigate("comic_detail_route/$comicId")
     }
+    fun updateOrderBy(orderBy: OrderBy) {
+//        _state.value = _state.value.copy(queryOrderBy = orderBy)
+        _state.value = _state.value.copy(selectedOrderBy = orderBy)
+    }
+
 
 
     private val _tagStates = MutableStateFlow<Map<Long, TagState>>(emptyMap())
@@ -78,8 +83,40 @@ class AdvancedSearchViewModel @Inject constructor(
     //reset average rating
     fun resetAverageRatingValue() {
         viewModelScope.launch(Dispatchers.IO) {
-            updateQueryFromAverageRating (0f)
-            updateQueryToAverageRating(5f)
+            updateQueryFromAverageRating(null)
+            updateQueryToAverageRating(null)
+        }
+    }
+
+    // reset total views
+    fun resetTotalViewsValue() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryFromTotalViews(null)
+            updateQueryToTotalViews(null)
+        }
+    }
+
+    //reset total follows
+    fun resetTotalFollowsValue() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryFromTotalFollows(null)
+            updateQueryToTotalFollows(null)
+        }
+    }
+
+    //reset published date
+    fun resetPublishedDateValue() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryFromPublishedDate("")
+            updateQueryToPublishedDate("")
+        }
+    }
+
+    //reset total chapters
+    fun resetTotalChaptersValue() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryFromTotalChapters(null)
+            updateQueryToTotalChapters(null)
         }
     }
 
@@ -112,7 +149,7 @@ class AdvancedSearchViewModel @Inject constructor(
 
             updateQueryIncludeTags(emptyList())
             resetTags()
-            resetAverageRatingValue()
+//            resetAverageRatingValue()
 
         }
     }
@@ -141,11 +178,17 @@ class AdvancedSearchViewModel @Inject constructor(
     }
 
     fun updateQueryFromPublishedDate(queryFromPublishedDate: String) {
-        _state.value = _state.value.copy(queryFromPublishedDate = queryFromPublishedDate)
+       viewModelScope.launch(Dispatchers.IO) {
+           Log.d("AdvancedSearchViewModel", "queryFromPublishedDate: $queryFromPublishedDate")
+           _state.value = _state.value.copy(queryFromPublishedDate = queryFromPublishedDate)
+       }
     }
 
     fun updateQueryToPublishedDate(queryToPublishedDate: String) {
-        _state.value = _state.value.copy(queryToPublishedDate = queryToPublishedDate)
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("AdvancedSearchViewModel", "queryToPublishedDate: $queryToPublishedDate")
+            _state.value = _state.value.copy(queryToPublishedDate = queryToPublishedDate)
+        }
     }
 
     fun updateQueryFromTotalChapters(queryFromTotalChapters: Int?) {
@@ -157,16 +200,22 @@ class AdvancedSearchViewModel @Inject constructor(
     }
 
     fun updateQueryFromTotalViews(queryFromTotalViews: Int?) {
-        _state.value = _state.value.copy(queryFromTotalViews = queryFromTotalViews)
+        viewModelScope.launch(Dispatchers.IO) {
+//            Log.d("AdvancedSearchViewModel", "queryFromTotalViews: $queryFromTotalViews")
+            _state.value = _state.value.copy(queryFromTotalViews = queryFromTotalViews)
+        }
     }
 
     fun updateQueryToTotalViews(queryToTotalViews: Int?) {
-        _state.value = _state.value.copy(queryToTotalViews = queryToTotalViews)
+        viewModelScope.launch(Dispatchers.IO) {
+//            Log.d("AdvancedSearchViewModel", "queryToTotalViews: $queryToTotalViews")
+            _state.value = _state.value.copy(queryToTotalViews = queryToTotalViews)
+        }
     }
 
     fun updateQueryFromAverageRating(queryFromAverageRating: Float?) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("AdvancedSearchViewModel", "queryFromAverageRating: ${queryFromAverageRating}")
+//            Log.d("AdvancedSearchViewModel", "queryFromAverageRating: ${queryFromAverageRating}")
             _state.value = _state.value.copy(queryFromAverageRating = queryFromAverageRating)
         }
     }
@@ -174,7 +223,7 @@ class AdvancedSearchViewModel @Inject constructor(
 
     fun updateQueryToAverageRating(queryToAverageRating: Float?) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("AdvancedSearchViewModel", "queryToAverageRating: $queryToAverageRating")
+//            Log.d("AdvancedSearchViewModel", "queryToAverageRating: $queryToAverageRating")
             _state.value = _state.value.copy(queryToAverageRating = queryToAverageRating)
         }
     }

@@ -30,13 +30,15 @@ fun SliderAdvancedExample(
     toValueChange: Float = 5f,
     defaultFromValue: Float,
     defaultToValue: Float,
+    steps: Int = 5,
     resetSlider: Boolean = false,
+    isInteger: Boolean = false
 ) {
     var sliderPosition by remember { mutableStateOf(fromValueChange..toValueChange) }
     Log.d("SliderAdvancedExample", "fromValueChange: $fromValueChange")
     Log.d("SliderAdvancedExample", "toValueChange: $toValueChange")
 
-   //reset slider
+    //reset slider
     if (resetSlider) {
         sliderPosition = defaultFromValue..defaultToValue
         sliderPosition = remember {
@@ -48,7 +50,7 @@ fun SliderAdvancedExample(
     Column {
         RangeSlider(
             value = sliderPosition,
-            steps = 5,
+            steps = steps,
             onValueChange = { range -> sliderPosition = range },
             valueRange = defaultFromValue..defaultToValue,
             colors = SliderDefaults.colors(
@@ -61,7 +63,7 @@ fun SliderAdvancedExample(
 //                // viewModel.updateSelectedSliderValue(sliderPosition)
 //                val roundedStart = String.format("%.1f", sliderPosition.start).toFloat()
 //                val roundedEnd = String.format("%.0f", sliderPosition.endInclusive).toFloat()
-                onValueFromChange( sliderPosition.start)
+                onValueFromChange(sliderPosition.start)
                 onValueToChange(sliderPosition.endInclusive)
             },
         )
@@ -76,10 +78,36 @@ fun SliderAdvancedExample(
             verticalAlignment = Alignment.CenterVertically
 
         ) {
-            Text(text = "From: " + String.format("%.1f", sliderPosition.start))
+            if (isInteger) {
+                Text(text = "From: " + (sliderPosition.start.toInt()))
+                Text(text = "To: " + (sliderPosition.endInclusive.toInt()))
+            } else {
+                Text(text = "From: " + String.format("%.1f", sliderPosition.start))
 
-            Text(text = "To: "+ String.format("%.1f", sliderPosition.endInclusive))
-
+                Text(text = "To: " + String.format("%.1f", sliderPosition.endInclusive))
+            }
         }
+    }
+}
+
+fun changeTextFormat(number: Int): String {
+    var numberAfterDivide = number
+    return when (number) {
+        in 1000..999000 -> {
+            numberAfterDivide /= 1000
+            "$numberAfterDivide" + "K"
+        }
+
+        in 1000000..999000000 -> {
+            numberAfterDivide /= 1000000
+            "$numberAfterDivide" + "M"
+        }
+
+        in 1000000000..999000000000 -> {
+            numberAfterDivide /= 1000000000
+            "$numberAfterDivide" + "B"
+        }
+
+        else -> number.toString()
     }
 }
