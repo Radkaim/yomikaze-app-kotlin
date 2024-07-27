@@ -5,12 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
-import com.example.yomikaze_app_kotlin.Core.AppThemeSate
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainEvent
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -32,6 +32,7 @@ class SettingViewModel @Inject constructor(
     fun setMainViewModel(viewModel: MainViewModel) {
         this.viewModel = viewModel
     }
+
     /**
      * Todo: Implement check user is login
      */
@@ -71,19 +72,33 @@ class SettingViewModel @Inject constructor(
     }
 
     fun changeTheme() {
-        val currentTheme = viewModel?.stateApp
-        val newTheme = when (currentTheme?.theme) {
-            AppTheme.DARK -> AppTheme.LIGHT
-            AppTheme.LIGHT -> AppTheme.DARK
-            AppTheme.DEFAULT -> AppTheme.DARK
+        viewModelScope.launch(Dispatchers.IO) {
+//        val currentTheme = viewModel?.stateApp
+//        val newTheme = when (currentTheme?.theme) {
+//            AppTheme.DARK -> AppTheme.LIGHT
+//            AppTheme.LIGHT -> AppTheme.DARK
+//            AppTheme.DEFAULT -> AppTheme.DARK
+//
+//            else -> {
+//                AppTheme.DEFAULT
+//            }
+//        }
+//        AppThemeSate.resetTheme()
+//        AppThemeSate.setTheme(newTheme)
+//        viewModel?.onEvent(MainEvent.ThemeChange(newTheme))
 
-            else -> {
-                AppTheme.DEFAULT
+
+            val currentTheme = appPreference.getTheme()
+            val newTheme = when (currentTheme) {
+                AppTheme.DARK -> AppTheme.LIGHT
+                AppTheme.LIGHT -> AppTheme.DARK
+                AppTheme.DEFAULT -> AppTheme.DARK
             }
+
+            appPreference.setTheme(newTheme)
+            viewModel?.onEvent(MainEvent.ThemeChange(newTheme))
         }
-        AppThemeSate.resetTheme()
-        AppThemeSate.setTheme(newTheme)
-        viewModel?.onEvent(MainEvent.ThemeChange(newTheme))
+
     }
 
 }

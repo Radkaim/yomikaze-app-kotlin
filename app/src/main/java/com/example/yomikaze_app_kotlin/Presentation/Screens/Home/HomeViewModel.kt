@@ -58,6 +58,16 @@ class HomeViewModel @Inject constructor(
         _searchTextState.value = newValue
     }
 
+    override fun onCleared() {
+        Log.d("HomeViewModel", "onCleared: ")
+        super.onCleared()
+    }
+
+    init {
+        getHistories()
+        getComicByViewRanking(1, 5)
+        getComicWeekly()
+    }
 
     // for HomeView use
     fun setNavController(navController: NavController) {
@@ -203,6 +213,7 @@ class HomeViewModel @Inject constructor(
                         isCoverCarouselLoading = false,
                         isLoadingRanking = false
                     )
+                    Log.d("HomeViewModel", "getComicByRatingRanking: $results")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -324,6 +335,7 @@ class HomeViewModel @Inject constructor(
         // remove current screen from backstack
 
         navController?.navigate("bookcase_route/1")
+
     }
 
     fun onViewRankingMore(tabIndex: Int) {
@@ -335,7 +347,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onNavigateComicDetail(comicId: Long) {
-        navController?.navigate("comic_detail_route/$comicId")
+            navController?.navigate("comic_detail_route/$comicId")
+//        navController?.navigate("comic_detail_route/$comicId")
     }
 
     fun onComicSearchClicked(comicId: Long) {

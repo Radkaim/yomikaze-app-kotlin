@@ -251,7 +251,7 @@ fun ComicDetailContent(
                             expanded = showPopupMenu,
                             onDismissRequest = { showPopupMenu = false },
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.onSurface)
+                                .background(MaterialTheme.colorScheme.onErrorContainer)
 
                         ) {
                             listTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->

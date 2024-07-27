@@ -19,16 +19,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.History.HistoryView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Library.LibraryView
 import com.example.yomikaze_app_kotlin.R
+import com.example.yomikaze_app_kotlin.ui.AppTheme
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -61,21 +64,25 @@ fun BookcaseView(
                 }
             ) {
                 tabs.forEachIndexed { index, title ->
-                    Tab(text = {
-                        Text(
-                            text = title,
-                            color = changeColor(selectedTabIndex, index),
-                            fontWeight = FontWeight.Medium
+                    Tab(
+                        text = {
+                            Text(
+                                text = title,
+                                color = changeColor(selectedTabIndex, index),
+                                fontWeight = FontWeight.Medium
 
-                        )
-                    },
+                            )
+                        },
                         selected = selectedTabIndex == index,
                         onClick = { viewModel.setSelectedTabIndex(index) },
 
                         icon = {
                             setIcon(index, selectedTabIndex)
                         },
-                        modifier = Modifier.height(48.dp).width(120.dp).fillMaxWidth(1f / tabs.size)
+                        modifier = Modifier
+                            .height(48.dp)
+                            .width(120.dp)
+                            .fillMaxWidth(1f / tabs.size)
                     )
                 }
             }
@@ -131,7 +138,16 @@ fun changeSizeIcon(): Modifier {
 
 @Composable
 fun changeColor(tabIndex: Int, index: Int): Color {
-    return if (tabIndex == index) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary.copy(
-        alpha = 0.36f
-    )
+    val context = LocalContext.current
+    val appPreference = AppPreference(context)
+    return if (appPreference.getTheme() == AppTheme.LIGHT || appPreference.getTheme() == AppTheme.DEFAULT) {
+
+        if (tabIndex == index) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary.copy(
+            alpha = 0.36f
+        )
+    } else {
+        if (tabIndex == index) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.background.copy(
+            alpha = 0.36f
+        )
+    }
 }

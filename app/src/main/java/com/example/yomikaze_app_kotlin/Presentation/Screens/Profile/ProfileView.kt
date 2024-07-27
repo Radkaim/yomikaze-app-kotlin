@@ -18,7 +18,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -99,9 +98,9 @@ fun ProfileContent(
 ) {
 //    profileViewModel.getUserInfo(CheckNetwork())
 
-    LaunchedEffect(Unit) {
-        profileViewModel.getProfile()
-    }
+//    LaunchedEffect(Unit) {
+//        profileViewModel.getProfile()
+//    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -151,7 +150,8 @@ fun ProfileContent(
                 Text(
                     text = state.profileResponse?.name ?: "Guest",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.primaryContainer,
                 )
                 // Subtitle Text
 

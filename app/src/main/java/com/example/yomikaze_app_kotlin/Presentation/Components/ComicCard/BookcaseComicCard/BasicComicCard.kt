@@ -77,7 +77,7 @@ fun BasicComicCard(
                 .width(80.dp)
                 .clickable { onClick() },
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.onSurface // Set the background color of the card to white
+                containerColor = MaterialTheme.colorScheme.onErrorContainer // Set the background color of the card to white
             )
         ) {
             Column(

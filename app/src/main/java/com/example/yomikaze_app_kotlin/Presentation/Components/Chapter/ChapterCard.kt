@@ -42,7 +42,7 @@ fun ChapterCard(
     publishedDate: String,
     isLocked: Boolean,
     onClick: () -> Unit,
-    backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
+    backgroundColor: Color = MaterialTheme.colorScheme.onErrorContainer,
     onReportClick: () -> Unit
 ) {
     Surface(

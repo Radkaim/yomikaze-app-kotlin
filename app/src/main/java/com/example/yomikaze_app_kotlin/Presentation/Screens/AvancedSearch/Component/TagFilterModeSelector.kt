@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -62,9 +63,13 @@ fun TagFilterModeSelector(
                             onClick = {
                                 if (state.queryInclusionMode?.name == mode) return@RadioButton
                                 viewModel.updateQueryInclusionMode(Mode.valueOf(mode))
-                            }
+                            },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = MaterialTheme.colorScheme.primaryContainer,
+                            )
                         )
-                        Text(mode.uppercase())
+                        Text(mode.uppercase(), color = MaterialTheme.colorScheme.primaryContainer,)
                     }
                 }
             }
@@ -95,9 +100,13 @@ fun TagFilterModeSelector(
                             selected = (state.queryExclusionMode?.name == mode),
                             onClick = {
                                 viewModel.updateQueryExclusionMode(Mode.valueOf(mode))
-                            }
+                            },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = MaterialTheme.colorScheme.primaryContainer,
+                            )
                         )
-                        Text(mode.uppercase())
+                        Text(mode.uppercase(), color = MaterialTheme.colorScheme.primaryContainer,)
                     }
                 }
             }

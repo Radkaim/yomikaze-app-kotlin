@@ -66,6 +66,7 @@ fun SettingItemComponent(
             Text(
                 text = title,
                 fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 fontWeight = FontWeight.Normal,
                 modifier = Modifier.padding(start = 4.dp, top = 4.dp)
             )

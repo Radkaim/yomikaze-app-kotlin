@@ -42,7 +42,7 @@ fun ComicCateCard(
     status: String,
     authorNames: List<String>,
     publishedDate: String,
-    backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
+    backgroundColor: Color = MaterialTheme.colorScheme.onErrorContainer,
     isDeleted: Boolean = false,
     onDeleteClicked: () -> Unit? = {},
     modifier: Modifier,

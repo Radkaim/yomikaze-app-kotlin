@@ -194,6 +194,7 @@ fun ComicCommentContent(
                 verticalArrangement = Arrangement.spacedBy(15.dp), // 8.dp space between each item
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(8.dp)
                     .constrainAs(messages) {
                         top.linkTo(header.bottom)
@@ -387,7 +388,7 @@ fun ChatBox(
 //    val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     Row(
-        modifier = modifier,
+        modifier = modifier.then(Modifier.background(MaterialTheme.colorScheme.tertiary)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

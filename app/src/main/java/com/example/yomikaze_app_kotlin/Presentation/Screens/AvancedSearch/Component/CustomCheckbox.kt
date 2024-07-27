@@ -14,6 +14,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,7 +42,7 @@ fun CustomCheckbox(
         Box(
             modifier = Modifier
                 .size(24.dp)
-                .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
+                .border(1.dp, MaterialTheme.colorScheme.onSecondaryContainer, RoundedCornerShape(4.dp))
                 .clickable {
                     onCheckedChange(tagState != TagState.INCLUDE) // Toggle state
                 },

@@ -26,7 +26,7 @@ fun ItemRankingTabHome(
     tabName: String,
     textSize: TextUnit = 12.sp,
     isSelected: Boolean,
-    textColor: Color = MaterialTheme.colorScheme.background,
+    textColor: Color = Color(0xFFffF2FFFD),
     modifier: Modifier,
     onClick: () -> Unit
 ) {

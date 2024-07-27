@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -249,8 +250,8 @@ fun ChooseChapterDownloadContent(
                                 if (chooseChapterDownloadViewModel
                                         .getSelectedChapters()
                                         .isNotEmpty() && !chooseChapterDownloadViewModel.checkSelectedChaptersContainLockedChapter()
-                                    // khi chon chaptyer ddang khoa vaanx hienej toast download
-                                    // thanh cong check laij trang thai download cos khoa view chaopter ddc mawcj duf pending
+                                // khi chon chaptyer ddang khoa vaanx hienej toast download
+                                // thanh cong check laij trang thai download cos khoa view chaopter ddc mawcj duf pending
                                 ) {
                                     chooseChapterDownloadViewModel.getComicDetailsAndDownload(
                                         comicId
@@ -311,6 +312,8 @@ fun ChooseChapterDownloadContent(
                 columns = GridCells.Fixed(4),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(bottom = 50.dp),
             ) {
                 items(item.count()) { index ->
@@ -319,41 +322,55 @@ fun ChooseChapterDownloadContent(
             }
         } else {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background),
+                horizontalArrangement = Arrangement.SpaceBetween,
+//                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Total chapters: ${chapterList!!.size}",
                     fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primaryContainer,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp)
                 )
+                Row(
+                    modifier = Modifier
+                        .padding(top = 10.dp, end = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
 
-                SortComponent(
-                    isOldestSelected = isSelected,
-                    onnNewSortClick = {
-                        isSelected = false
-                        isReversed = true
-                    },
-                    onOldSortClick = {
-                        isSelected = true
-                        isReversed = false
-                    }
-                )
+                    SortComponent(
+                        isOldestSelected = isSelected,
+                        onnNewSortClick = {
+                            isSelected = false
+                            isReversed = true
+                        },
+                        onOldSortClick = {
+                            isSelected = true
+                            isReversed = false
+                        }
+                    )
+                }
             }
 
 
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(start = 5.dp, end = 5.dp, top = 50.dp, bottom = 5.dp),
+                    .padding(top = 50.dp, bottom = 5.dp, start = 5.dp, end = 5.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(bottom = 50.dp),
                 ) {
                     chapterList?.let {
@@ -459,6 +476,7 @@ fun BoxSelectedDownload(
             Text(
                 text = chapter.number.toString(),
                 fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.align(Alignment.Center)
             )

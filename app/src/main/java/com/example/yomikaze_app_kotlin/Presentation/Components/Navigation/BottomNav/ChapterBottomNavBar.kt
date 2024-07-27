@@ -80,7 +80,7 @@ fun ChapterBottomNavBar(
     var isNetworkAvailable by remember { mutableStateOf(true) }
     isNetworkAvailable = CheckNetwork()
 
-
+    val context = LocalContext.current
     val items = listOf(
         BottomChapterNavItems.PreviousChapter,
         BottomChapterNavItems.ListChapter,
@@ -111,10 +111,10 @@ fun ChapterBottomNavBar(
                 )
 
                 BottomChapterNavItems.NextChapter -> if (canNext) MaterialTheme.colorScheme.secondaryContainer else colorSelected(
-                    isSelected
+                    isSelected, context
                 )
 
-                else -> colorSelected(isSelected)
+                else -> colorSelected(isSelected, context)
             }
             BottomNavigationItem(
                 icon = {

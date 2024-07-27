@@ -232,9 +232,9 @@ fun DownloadDetailView(
             verticalArrangement = Arrangement.spacedBy(150.dp), // 15.dp space between each card
             modifier = Modifier
                 .padding(
-                    top = 20.dp,
-                    start = 4.dp,
-                    end = 4.dp,
+//                    top = 20.dp,
+//                    start = 4.dp,
+//                    end = 4.dp,
                     //bottom = 80.dp
                 ) // Optional padding for the entire list
                 .background(MaterialTheme.colorScheme.background)

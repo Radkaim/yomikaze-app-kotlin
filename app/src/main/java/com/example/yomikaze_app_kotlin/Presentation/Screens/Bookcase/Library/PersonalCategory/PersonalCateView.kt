@@ -142,7 +142,6 @@ fun PersonalCategoryViewContent(
                     publishedDate = comic.libraryEntry.publicationDate,
                     isDeleted = true,
                     onDeleteClicked = {personalCategoryViewModel.removeComicFromCategory(comic.libraryEntry.comicId, listOf(categoryId))},
-                    backgroundColor = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(119.dp)

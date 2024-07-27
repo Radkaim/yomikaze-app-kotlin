@@ -186,7 +186,7 @@ fun DateRangePickerSample(state: DateRangePickerState) {
         },
         showModeToggle = true,
         colors = DatePickerDefaults.colors(
-            dayContentColor = MaterialTheme.colorScheme.primaryContainer,
+            dayContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
 
             headlineContentColor = MaterialTheme.colorScheme.primary,
             weekdayContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),

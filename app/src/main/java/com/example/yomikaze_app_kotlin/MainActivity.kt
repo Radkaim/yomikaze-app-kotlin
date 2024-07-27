@@ -36,7 +36,7 @@ import io.paperdb.Paper
 class MainActivity : ComponentActivity() {
 
     private val loginViewModel: LoginViewModel by viewModels()
-
+    private val mainViewModel: MainViewModel by viewModels()
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         Paper.init(this) // use paperdb show paper.init should be called before any other method
@@ -52,9 +52,9 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             // check view model stateApp theme
-            val viewModel: MainViewModel = MainViewModel()
-            checkAndChangeStatusBarColor(viewModel.stateApp.theme, windowInsetsController, window)
-            YomikazeappkotlinTheme(appTheme = viewModel.stateApp.theme) {
+//            val viewModel: MainViewModel = MainViewModel()
+            checkAndChangeStatusBarColor(mainViewModel.stateApp.theme, windowInsetsController, window)
+            YomikazeappkotlinTheme(appTheme = mainViewModel.stateApp.theme) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                             // navController.navigate("main_content_route")
                         }
                         composable("main_screen_route") {
-                            MainView(viewModel)
+                            MainView(mainViewModel)
                         }
 
                         composable(

@@ -114,6 +114,7 @@ fun DescriptionInComicDetailView(
                             text = description ?: "Description",
                             maxLines = maxLine,
                             overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                         if (isExpanded) {
                             Text(
@@ -197,7 +198,7 @@ fun DescriptionInComicDetailView(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onErrorContainer
                             )
                         } else {
                             Log.d(
@@ -209,7 +210,7 @@ fun DescriptionInComicDetailView(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onErrorContainer
                             )
 
                         }
@@ -254,7 +255,8 @@ fun DescriptionInComicDetailView(
                             Text(
                                 text = "More",
                                 fontSize = 11.sp,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Normal,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                             Icon(
                                 painterResource(id = R.drawable.ic_next),
@@ -262,6 +264,7 @@ fun DescriptionInComicDetailView(
                                 modifier = Modifier
                                     .width(10.dp)
                                     .height(10.dp),
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
                             )
                         }
                     }

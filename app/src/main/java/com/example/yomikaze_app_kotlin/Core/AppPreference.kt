@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.example.yomikaze_app_kotlin.ui.AppTheme
 
 class AppPreference(context : Context) {
     // Tạo MasterKey
@@ -113,4 +114,27 @@ class AppPreference(context : Context) {
     fun deleteMainReplyCommentIdDeleted() {
         encryptedPreferences.edit().remove("comment_id").apply()
     }
+
+
+    // Theme preferences
+    companion object {
+        private const val APP_THEME_KEY = "AppTheme"
+    }
+
+    // Save theme
+    fun setTheme(theme: AppTheme) {
+        encryptedPreferences.edit().putString(APP_THEME_KEY, theme.name).apply()
+    }
+
+    // Get theme
+    fun getTheme(): AppTheme {
+        val themeName = encryptedPreferences.getString(APP_THEME_KEY, AppTheme.LIGHT.name)
+        return AppTheme.valueOf(themeName ?: AppTheme.LIGHT.name)
+    }
+
+    // Reset theme
+    fun resetTheme() {
+        encryptedPreferences.edit().remove(APP_THEME_KEY).apply()
+    }
+
 }

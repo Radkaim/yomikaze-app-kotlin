@@ -32,7 +32,7 @@ fun RankingComicCard(
     follows: Long,
     views: Long,
     comments: Long,
-    backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
+    backgroundColor: Color = MaterialTheme.colorScheme.onErrorContainer,
     modifier: Modifier,
     onClicked: () -> Unit? = { }
 ) {

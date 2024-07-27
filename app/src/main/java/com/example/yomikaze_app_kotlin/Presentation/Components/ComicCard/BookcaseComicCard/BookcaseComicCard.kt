@@ -68,7 +68,7 @@ fun BookcaseComicCard(
     totalMbs: Long? = null,
     isDeleted: Boolean = false,
     onDeleteClicked: () -> Unit = {},
-    backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
+    backgroundColor: Color = MaterialTheme.colorScheme.onErrorContainer,
     modifier: Modifier,
 ) {
     var showPopupMenu by remember { mutableStateOf(false) }
@@ -167,6 +167,7 @@ fun BookcaseComicCard(
                             style = MaterialTheme.typography.bodyLarge,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
 
                         TagComponent(status = status)
@@ -180,6 +181,7 @@ fun BookcaseComicCard(
                             style = MaterialTheme.typography.bodyMedium,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                         Text(
                             text = cutAuthorName(processAuthorName(authorNames)),
@@ -187,6 +189,7 @@ fun BookcaseComicCard(
                                 fontStyle = FontStyle.Italic,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 11.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             ),
                         )
                     }
@@ -200,6 +203,7 @@ fun BookcaseComicCard(
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                             Text(
                                 text = "Chapter ${lastChapter ?: ""} ",
@@ -207,6 +211,7 @@ fun BookcaseComicCard(
                                     fontStyle = FontStyle.Italic,
                                     fontWeight = FontWeight.Medium,
                                     fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
                                 ),
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
@@ -215,6 +220,7 @@ fun BookcaseComicCard(
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                             Text(
                                 text = atPageNumber.toString() ?: "",
@@ -237,6 +243,7 @@ fun BookcaseComicCard(
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                             Text(
                                 text = convertToMbsOrGbs(totalMbs!!),
@@ -244,6 +251,7 @@ fun BookcaseComicCard(
                                     fontStyle = FontStyle.Italic,
                                     fontWeight = FontWeight.Medium,
                                     fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
                                 ),
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
@@ -256,6 +264,7 @@ fun BookcaseComicCard(
                             fontStyle = FontStyle.Italic,
                             fontWeight = FontWeight.Light,
                             fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     )
                 }

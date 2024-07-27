@@ -95,7 +95,7 @@ fun CommentCard(
                 shape = MaterialTheme.shapes.small
             ),
 //            .clickable { onClicked() },
-        color = MaterialTheme.colorScheme.onSurface,
+        color = MaterialTheme.colorScheme.onErrorContainer,
     ) {
 
         Box(
@@ -172,10 +172,7 @@ fun CommentCard(
                     onClick = { onClicked() }
                 )
             }
-
-
-
-
+            0
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,

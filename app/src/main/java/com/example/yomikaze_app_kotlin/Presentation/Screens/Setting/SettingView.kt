@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -104,7 +105,7 @@ fun SettingView(
             route = "advance_search_route"
         ),
 
-    )
+        )
 
     Scaffold(
         topBar = {
@@ -157,10 +158,15 @@ fun SettingView(
                             .size(24.dp),
                         painter = painterResource(id = R.drawable.ic_darkmode),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.75f),
+                        tint = MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.75f),
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Text(text = "Dark Mode")
+                    Text(
+                        text = "Dark Mode", fontSize = 15.sp,
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        fontWeight = FontWeight.Normal,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
                     Spacer(modifier = Modifier.weight(1f))
                     SwitchCustomComponent(settingViewModel)
 
@@ -171,7 +177,7 @@ fun SettingView(
                     thickness = 1.dp,
                 )
 
-                if (settingViewModel.checkUserIsLogin()){
+                if (settingViewModel.checkUserIsLogin()) {
                     Button(
                         onClick = { settingViewModel.onLogout() },
                         modifier = Modifier
@@ -195,13 +201,13 @@ fun SettingView(
                             modifier = Modifier
                                 .size(15.dp)
                                 .offset(x = (-10).dp),
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = Color(0xFFffF2FFFD)
                         )
                         Text(
                             text = "LOGOUT",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = Color(0xFFffF2FFFD),
                         )
 
                     }

@@ -76,6 +76,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Compon
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.getFormattedDateForDisplay
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.getFormattedDateForRequest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -114,16 +115,20 @@ fun AdvancedSearchContent(
     //work
     var itemQueryComicName by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        if (comicNameSearchText.isNotEmpty() && comicNameSearchText != "null-null-null") {
-            advancedSearchViewModel.updateQueryByComicName(comicNameSearchText)
-            advancedSearchViewModel.performAdvancedSearch()
-            itemQueryComicName = true
+        withContext(coroutineContext) {
+            if (comicNameSearchText.isNotEmpty() && comicNameSearchText != "null-null-null") {
+                advancedSearchViewModel.updateQueryByComicName(comicNameSearchText)
+                advancedSearchViewModel.performAdvancedSearch()
+                itemQueryComicName = true
+            }
         }
     }
 
 
     LaunchedEffect(Unit) {
-        advancedSearchViewModel.getTags()
+        withContext(coroutineContext) {
+            advancedSearchViewModel.getTags()
+        }
     }
 //   advancedSearchViewModel.performAdvancedSearch()
 
@@ -148,28 +153,36 @@ fun AdvancedSearchContent(
     var resetSliderTotalChapter by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = resetSliderAverage)
     {
-        if (resetSliderAverage) {
-            resetSliderAverage = false
+        withContext(coroutineContext) {
+            if (resetSliderAverage) {
+                resetSliderAverage = false
+            }
         }
     }
     LaunchedEffect(key1 = resetSliderTotalView)
     {
-        if (resetSliderTotalView) {
-            resetSliderTotalView = false
+        withContext(coroutineContext) {
+            if (resetSliderTotalView) {
+                resetSliderTotalView = false
+            }
         }
     }
 
     LaunchedEffect(key1 = resetSliderTotalFollow)
     {
-        if (resetSliderTotalFollow) {
-            resetSliderTotalFollow = false
+        withContext(coroutineContext) {
+            if (resetSliderTotalFollow) {
+                resetSliderTotalFollow = false
+            }
         }
     }
 
     LaunchedEffect(key1 = resetSliderTotalChapter)
     {
-        if (resetSliderTotalChapter) {
-            resetSliderTotalChapter = false
+        withContext(coroutineContext) {
+            if (resetSliderTotalChapter) {
+                resetSliderTotalChapter = false
+            }
         }
     }
     var dateState = rememberDateRangePickerState()
@@ -392,9 +405,7 @@ fun AdvancedSearchContent(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                         )
-
                     }
-
                 }
             }
         }
@@ -404,9 +415,9 @@ fun AdvancedSearchContent(
             verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
             modifier = Modifier
                 .padding(
-                    start = 4.dp,
-                    end = 4.dp,
-                    bottom = 4.dp
+//                    start = 4.dp,
+//                    end = 4.dp,
+//                    bottom = 4.dp
                 ) // Optional padding for the entire list
                 .background(MaterialTheme.colorScheme.background)
                 .wrapContentSize(Alignment.Center)
@@ -449,7 +460,7 @@ fun AdvancedSearchContent(
                         )
                         if (itemQueryComicName) {
                             ResetButton(
-                                onClick = {  advancedSearchViewModel.updateQueryByComicName("") },
+                                onClick = { advancedSearchViewModel.updateQueryByComicName("") },
                                 description = hintForComicName
                             )
                             QueryByValueTextField(

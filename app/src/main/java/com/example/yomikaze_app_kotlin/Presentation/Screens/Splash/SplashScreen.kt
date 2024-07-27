@@ -47,12 +47,12 @@ fun SplashScreen(navController: NavController) {
         scale.animateTo(
             targetValue = 0.7f,
             animationSpec = tween(
-                durationMillis = 800,
+                durationMillis = 200,
                 easing = {
-                    OvershootInterpolator(4f).getInterpolation(it)
+                    OvershootInterpolator(0.1f).getInterpolation(it)
                 })
         )
-        delay(500L)
+        delay(100L)
         // Optionally, show the system bars again after the splash screen
 
         navController.navigate("main_screen_route")

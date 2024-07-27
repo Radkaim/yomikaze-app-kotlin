@@ -27,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -365,9 +364,13 @@ fun showComicCarouselByViewRanking(
 @Composable
 fun showHistory(navController: NavController, viewModel: HomeViewModel, state: HomeState) {
 
-    LaunchedEffect(Unit) {
-        viewModel.getHistories()
-    }
+//    LaunchedEffect(Unit) {
+//        withContext(coroutineContext) {
+//            if (state.listHistoryRecords.isEmpty()) {
+//                viewModel.getHistories()
+//            }
+//        }
+//    }
     if (state.listHistoryRecords.isNotEmpty()) {
         // show 3 shimmer loading cards
         Row(
@@ -540,9 +543,13 @@ fun showTabRow(
     // Các tên tab và các hành động tương ứng
     val tabs = listOf("Hot", "Rating", "Comment", "Follow")
 
-    LaunchedEffect(Unit) {
-        homeViewModel.getComicByViewRanking(1, 5)
-    }
+//    LaunchedEffect(Unit) {
+//        withContext(coroutineContext) {
+//            if (state.listRankingComics.isEmpty() && state.listComicCarousel.isEmpty()) {
+//                homeViewModel.getComicByViewRanking(1, 5)
+//            }
+//        }
+//    }
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -639,9 +646,13 @@ fun showWeekly(
     state: HomeState,
     navController: NavController
 ) {
-    LaunchedEffect(Unit) {
-        homeViewModel.getComicWeekly()
-    }
+//    LaunchedEffect(Unit) {
+//        withContext(coroutineContext) {
+//            if (state.listComicWeekly.isEmpty()) {
+//                homeViewModel.getComicWeekly()
+//            }
+//        }
+//    }
     Column(
         verticalArrangement = Arrangement.spacedBy(1.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

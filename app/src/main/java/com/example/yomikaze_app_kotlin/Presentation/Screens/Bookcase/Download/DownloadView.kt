@@ -48,8 +48,8 @@ fun DownloadView(
         modifier = Modifier
             .padding(
 //                top = 20.dp,
-                start = 4.dp,
-                end = 4.dp,
+//                start = 4.dp,
+//                end = 4.dp,
                 //bottom = 80.dp
             ) // Optional padding for the entire list
             .background(MaterialTheme.colorScheme.background)
@@ -89,7 +89,6 @@ fun DownloadViewContent(
                 isDeleted = true,
                 totalMbs = comic.totalMbs,
                 publishedDate = comic.publicationDate,
-                backgroundColor = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(119.dp)

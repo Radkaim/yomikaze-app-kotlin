@@ -241,12 +241,13 @@ fun showListHistories(
         modifier = Modifier
             .padding(
 //                top = 15.dp,
-                start = 4.dp,
-                end = 4.dp,
-                bottom = 4.dp
+//                start = 4.dp,
+//                end = 4.dp,
+//                bottom = 4.dp
             ) // Optional padding for the entire list
             .background(MaterialTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
+            .fillMaxSize()
     ) {
         LazyColumn(
             state = listState,
@@ -272,7 +273,7 @@ fun showListHistories(
                             .clip(RoundedCornerShape(20.dp)),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
                         ),
                         onClick = {
                             //TODO
@@ -291,7 +292,7 @@ fun showListHistories(
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onErrorContainer
                         )
                     }
 
@@ -358,7 +359,6 @@ fun showListHistories(
                         lastChapter = historyRecord.chapter.number.toString(),
                         atPageNumber = historyRecord.pageNumber,
                         publishedDate = historyRecord.comic.publicationDate,
-                        backgroundColor = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(119.dp)
@@ -414,7 +414,11 @@ fun showListHistories(
         Log.d("HistoryViewModel", "page1: ${page.value}")
         if (page.value > state.currentPage.value && !loading.value) {
             loading.value = true
+//            if (state.listHistoryRecords.isEmpty() && state.currentPage.value >2) {
+//            historyViewModel.getHistories(page.value)
+//            } else {
             historyViewModel.getHistories(page.value)
+//            }
             loading.value = false
         }
 
@@ -441,7 +445,8 @@ fun showListHistories(
             .collectLatest { lastVisibleItemIndex ->
                 if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listHistoryRecords.size && state.listHistoryRecords.size > 5) {
                     if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
-                        Toast.makeText(context, "No history records left", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "No history records left", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }

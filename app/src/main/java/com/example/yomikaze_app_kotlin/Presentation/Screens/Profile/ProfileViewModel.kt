@@ -67,6 +67,9 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    init {
+        getProfile()
+    }
     /**
      * Todo: Implement getProfile
      */

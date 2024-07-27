@@ -23,7 +23,7 @@ fun TagComponent(
     status: String,
     textSize: TextUnit = 12.sp,
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceTint.copy(0.65f),
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
+    textColor: Color = Color(0xFFffF2FFFD),
 
 ) {
     // TODO: Implement ComicStatus

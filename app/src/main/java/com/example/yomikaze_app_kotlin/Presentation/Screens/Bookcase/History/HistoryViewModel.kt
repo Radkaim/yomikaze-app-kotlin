@@ -42,15 +42,15 @@ class HistoryViewModel @Inject constructor(
     }
 
     // Reset state
-    private fun resetState() {
-        _state.value = HistoryState()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        // Reset page and size if needed
-        resetState()
-    }
+//    private fun resetState() {
+//        _state.value = HistoryState()
+//    }
+//
+//    override fun onCleared() {
+//        super.onCleared()
+//        // Reset page and size if needed
+//        resetState()
+//    }
 
     /**
      * Todo: Implement check user is login
@@ -76,7 +76,9 @@ class HistoryViewModel @Inject constructor(
             deleteHistoryRecord(key)
         }
     }
-
+    init {
+        getHistories()
+    }
 
     /**
      * Get all history records
@@ -107,7 +109,7 @@ class HistoryViewModel @Inject constructor(
                     _state.value = _state.value.copy(isHistoryListLoading = false)
 //                    Log.d("HistoryViewModel", "getHistories: ${baseResponse.currentPage}")
 //                    Log.d("HistoryViewModel", "getHistories: ${baseResponse.totalPages}")
-//                    Log.d("HistoryViewModel", "getHistories: $results")
+                    Log.d("HistoryViewModel", "getHistories: $results")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi

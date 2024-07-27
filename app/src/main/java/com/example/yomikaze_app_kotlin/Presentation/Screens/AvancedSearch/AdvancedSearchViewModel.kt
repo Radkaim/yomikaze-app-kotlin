@@ -203,8 +203,9 @@ class AdvancedSearchViewModel @Inject constructor(
 
     //update each state
     fun updateQueryByComicName(queryByComicName: String) {
-        _state.value = _state.value.copy(queryByComicName = queryByComicName)
-//        Log.d("AdvancedSearchViewModel", "queryByComicName: ${_state.value.queryByComicName}")
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(queryByComicName = queryByComicName)
+        }
     }
 
     fun updateListAuthorsInput(listAuthorsInput: String) {
@@ -269,11 +270,15 @@ class AdvancedSearchViewModel @Inject constructor(
     }
 
     fun updateQueryFromTotalChapters(queryFromTotalChapters: Int?) {
-        _state.value = _state.value.copy(queryFromTotalChapters = queryFromTotalChapters)
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(queryFromTotalChapters = queryFromTotalChapters)
+        }
     }
 
     fun updateQueryToTotalChapters(queryToTotalChapters: Int?) {
-        _state.value = _state.value.copy(queryToTotalChapters = queryToTotalChapters)
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(queryToTotalChapters = queryToTotalChapters)
+        }
     }
 
     fun updateQueryFromTotalViews(queryFromTotalViews: Int?) {
@@ -306,11 +311,15 @@ class AdvancedSearchViewModel @Inject constructor(
     }
 
     fun updateQueryFromTotalFollows(queryFromTotalFollows: Int?) {
-        _state.value = _state.value.copy(queryFromTotalFollows = queryFromTotalFollows)
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(queryFromTotalFollows = queryFromTotalFollows)
+        }
     }
 
     fun updateQueryToTotalFollows(queryToTotalFollows: Int?) {
-        _state.value = _state.value.copy(queryToTotalFollows = queryToTotalFollows)
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(queryToTotalFollows = queryToTotalFollows)
+        }
     }
 
     fun updateQueryIncludeTags(queryIncludeTags: List<Long>) {

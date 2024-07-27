@@ -67,7 +67,7 @@ fun AboutUsItem(
                 Icon(
                     painter = painterResource(id = iconEnd),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.65f),
+                    tint = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.65f),
                     modifier = Modifier.size(16.dp)
                 )
             }

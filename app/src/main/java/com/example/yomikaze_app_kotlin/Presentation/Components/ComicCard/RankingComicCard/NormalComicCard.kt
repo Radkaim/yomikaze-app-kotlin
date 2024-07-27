@@ -51,7 +51,7 @@ fun NormalComicCard(
     follows: Long,
     views: Long,
     comments: Long,
-    backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
+    backgroundColor: Color = MaterialTheme.colorScheme.onErrorContainer,
     isDeleted: Boolean = false,
     isSearch: Boolean = false,
     modifier: Modifier,

@@ -8,14 +8,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Green300,
+    primary = Orange500,
     onPrimary = Green500,
     secondary = Orange300,
     onSecondary = Orange400,
-    tertiary = Color.White,
+
+    tertiary = Green400,
+    onTertiary = Green400,
+    scrim = coinColor,
+    background = Green900,
+
+    onSurface = Orange900,
+    onErrorContainer = Orange900,
+    surface = Green400,
+
+    primaryContainer = Green100,
+    secondaryContainer = Orange600,
+
+    onBackground = GrayA07,
 
 
-)
+    )
 
 private val LightColorScheme = lightColorScheme(
     primary = Green500, //1FC488
@@ -31,12 +44,13 @@ private val LightColorScheme = lightColorScheme(
     error = Orange600, //B22F24
     onError = Orange700, //831513
     errorContainer = Orange300, //FBB69F
+    onErrorContainer = Orange100, //FFF7F2
 
     background = Green100, //F2FFFD
     onBackground = GrayA07, //D9D9D9
 
     surface = Orange400, //F28C74
-    onSurface = Orange100, //FFF7F2
+    onSurface = Orange900, //FFF7F2
     inverseSurface = Orange800, //550A0A
     inverseOnSurface = switchTrackColor,
     surfaceTint = Green800,
@@ -46,7 +60,7 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Color.White, //FFFFFF
     onTertiary = Color.Black,
     tertiaryContainer = Green200, //BFFEF2
-    onTertiaryContainer = Orange200 ,// FFDACA
+    onTertiaryContainer = Orange200,// FFDACA
 
 
     outline = OrangeSplash, //E38B6C
@@ -80,9 +94,11 @@ fun YomikazeappkotlinTheme(
                 LightColorScheme
             }
         }
+
         AppTheme.LIGHT -> {
             LightColorScheme
         }
+
         AppTheme.DARK -> {
             DarkColorScheme
         }
