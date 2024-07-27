@@ -520,6 +520,7 @@ fun RegisterContent(
                     Text(
                         text = "Sign In?",
                         style = TextStyle(fontStyle = FontStyle.Italic),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier
                             .padding(
                                 bottom = 20.dp

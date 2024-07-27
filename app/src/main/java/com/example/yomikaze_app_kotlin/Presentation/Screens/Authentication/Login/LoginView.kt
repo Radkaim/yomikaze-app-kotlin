@@ -21,10 +21,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
@@ -32,8 +30,10 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -329,6 +329,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     style = TextStyle(
                         fontStyle = FontStyle.Italic,
                     ),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier
                         .padding(
                             top = 3.dp,
@@ -341,6 +342,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                 Text(
                     text = "Forgot Password?",
                     style = TextStyle(fontStyle = FontStyle.Italic),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier
                         .padding(
                             top = 3.dp,
@@ -367,7 +369,11 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                         1.dp,
                         MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.36f)
                     ),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
                     onClick = { loginViewModel.onLogin(username, password) },
+
                 )
                 {
                     if (state.isLoading) {
@@ -377,7 +383,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     }
                     Text(
                         text = "Login",
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = Color.White,
                         style = TextStyle(
                             fontSize = 16.sp,
                         ),
@@ -394,7 +400,9 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                     )
                 )
                 OutlinedButton(
-                    colors = buttonColors(MaterialTheme.colorScheme.surface),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
                     modifier = Modifier
                         .height(50.dp)
                         .width(200.dp)
