@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,12 +62,16 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NoNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.NormalComicCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.TagItemShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.AuthorsManager
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.DateRangePickerSample
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.InputNumberTextField
-import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.OrderByDropdownMenu
-import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.QueryByComicNameTextField
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.OrderByOptionsDropdownMenu
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.QueryByValueTextField
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.ResetButton
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.SearchResultItem
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.SliderAdvancedExample
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.StatusOptionMenuDropdown
+import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.TagFilterModeSelector
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.TagList
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.getFormattedDateForDisplay
 import com.example.yomikaze_app_kotlin.Presentation.Screens.AvancedSearch.Component.getFormattedDateForRequest
@@ -180,6 +185,32 @@ fun AdvancedSearchContent(
         )
     }
 
+    val hintForComicName =
+        "Please enter the name of the comic you want to search for."
+    // hint of function search
+    val hintForInclusionModeExclusionMode =
+        "Use the Inclusion Mode to select how tags should be combined in the search results: \"And\" will include comics that have all selected tags, while \"Or\" will include comics with any of the selected tags. Use the Exclusion Mode to exclude comics based on tags: \"And\" will exclude comics that have all selected tags, and \"Or\" will exclude comics with any of the selected tags"
+    val hintForOrderBy =
+        "Select the order in which the search results should be displayed. The default order is by relevance, but you can also sort by it options in ascending or descending options."
+    val hintForTag =
+        "Select tags to filter the search results. You can select multiple tags to narrow down the search results. One Click to include that tag must be in comic, Double Click to exclude that tag must not be in comic."
+    val hintForAuthor =
+        "Enter the name of the author you want to search for."
+    val hintForPublisher =
+        "Enter the name of the publisher you want to search for."
+    val hintForStatus =
+        "Select the status of the comics you want to search for. You can choose from ongoing, completed, or hiatus."
+    val hintForFromToDate =
+        "Select the date range for the comics you want to search for. You can choose a start date and an end date to filter the search results."
+    val hintForTotalChapter =
+        "Select the range of total chapters for the comics you want to search for. You can choose a minimum and maximum number of chapters to filter the search results."
+    val hintForTotalView =
+        "Select the range of total views for the comics you want to search for. You can choose a minimum and maximum number of views to filter the search results."
+    val hintForAverageRating =
+        "Select the range of average ratings for the comics you want to search for. You can choose a minimum and maximum rating to filter the search results."
+    val hintForTotalFollow =
+        "Select the range of total follows for the comics you want to search for. You can choose a minimum and maximum number of follows to filter the search results."
+
 
     //reset average rating
 
@@ -197,6 +228,21 @@ fun AdvancedSearchContent(
         itemQueryTag = false
         itemExcludeIncludeMode = false
         itemQueryOrderBy = false
+    }
+
+    fun showAll() {
+        itemQueryComicName = true
+        itemQueryAuthor = true
+        itemQueryPublisher = true
+        itemQueryStatus = true
+        itemQueryFromToDate = true
+        itemFromToTotalChapter = true
+        itemFromToTotalView = true
+        itemFromToAverageRating = true
+        itemFromToTotalFollow = true
+        itemQueryTag = true
+        itemExcludeIncludeMode = true
+        itemQueryOrderBy = true
     }
 
 
@@ -306,13 +352,13 @@ fun AdvancedSearchContent(
                             .width(100.dp)
                             .background(if (hideAllColorCheck) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.onPrimary)
                             .clickable {
-                                hideAll()
+                                if (hideAllColorCheck) showAll() else hideAll()
                             },
                         contentAlignment = Alignment.Center
                     ) {
 
                         Text(
-                            text = "Hide All",
+                            text = if (hideAllColorCheck) "Show All" else "Hide All",
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold,
@@ -358,7 +404,6 @@ fun AdvancedSearchContent(
             verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
             modifier = Modifier
                 .padding(
-
                     start = 4.dp,
                     end = 4.dp,
                     bottom = 4.dp
@@ -372,7 +417,7 @@ fun AdvancedSearchContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(600.dp)
+                            .height(700.dp)
                             .background(Color.White)
                     ) {
                         DateRangePickerSample(dateState)
@@ -386,14 +431,14 @@ fun AdvancedSearchContent(
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth()
-                    .padding(bottom = 80.dp)
-                    .pointerInput(Unit) {
-                        detectTapGestures(onTap = {
-                            focusManager.clearFocus()
-                        })
-                    },
+                        .padding(bottom = 80.dp)
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = {
+                                focusManager.clearFocus()
+                            })
+                        },
 
-                ) {
+                    ) {
 
                     //TODO: search by comic name
                     item {
@@ -403,8 +448,13 @@ fun AdvancedSearchContent(
                             itemShowBoolean = itemQueryComicName
                         )
                         if (itemQueryComicName) {
-                            QueryByComicNameTextField(
-                                queryByComicName = state.queryByComicName,
+                            ResetButton(
+                                onClick = {  advancedSearchViewModel.updateQueryByComicName("") },
+                                description = hintForComicName
+                            )
+                            QueryByValueTextField(
+                                placeHolderTitle = "Enter Comic Name",
+                                queryByValue = state.queryByComicName,
                                 onValueChange = { advancedSearchViewModel.updateQueryByComicName(it) },
                                 onCLoseClicked = { advancedSearchViewModel.updateQueryByComicName("") }
                             )
@@ -419,7 +469,19 @@ fun AdvancedSearchContent(
                             itemShowBoolean = itemQueryAuthor
                         )
                         if (itemQueryAuthor) {
-
+                            ResetButton(
+                                onClick = { advancedSearchViewModel.resetAuthors() },
+                                description = hintForAuthor
+                            )
+                            AuthorsManager(
+                                authors = state.queryListAuthorsInput ?: emptyList(),
+                                onAddAuthor = {
+                                    advancedSearchViewModel.updateListAuthorsInput(it)
+                                },
+                                onRemoveAuthor = {
+                                    advancedSearchViewModel.removeAuthor(it)
+                                }
+                            )
                         }
                     }
 
@@ -431,7 +493,16 @@ fun AdvancedSearchContent(
                             itemShowBoolean = itemQueryPublisher
                         )
                         if (itemQueryPublisher) {
-
+                            ResetButton(
+                                onClick = { advancedSearchViewModel.updateQueryByPublisher("") },
+                                description = hintForPublisher
+                            )
+                            QueryByValueTextField(
+                                placeHolderTitle = "Enter Publisher Name",
+                                queryByValue = state.queryByPublisher,
+                                onValueChange = { advancedSearchViewModel.updateQueryByPublisher(it) },
+                                onCLoseClicked = { advancedSearchViewModel.updateQueryByPublisher("") }
+                            )
                         }
                     }
 
@@ -443,7 +514,13 @@ fun AdvancedSearchContent(
                             itemShowBoolean = itemQueryStatus
                         )
                         if (itemQueryStatus) {
-
+                            ResetButton(
+                                onClick = { advancedSearchViewModel.resetStatus() },
+                                description = hintForStatus
+                            )
+                            StatusOptionMenuDropdown(
+                                viewModel = advancedSearchViewModel,
+                            )
                         }
                     }
 
@@ -459,54 +536,93 @@ fun AdvancedSearchContent(
                                 onClick = {
                                     advancedSearchViewModel.resetPublishedDateValue()
                                     resetPublishedDate()
-                                }
-                            )
-                            Button(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        bottomSheetState.show()
-                                    }
                                 },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Black,
-                                    contentColor = Color.White
-                                ),
+                                description = hintForFromToDate
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier
-                                    .padding(end = 16.dp)
+                                    .fillMaxWidth()
+                                    .padding(10.dp)
                             ) {
-                                Text("Done", color = Color.White)
+
+                                //start date
+                                Column(
+                                    modifier = Modifier
+                                        .padding(10.dp),
+                                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                                ) {
+
+                                    Text(
+                                        text = "Start Date: " + if (dateState.selectedStartDateMillis != null) dateState.selectedStartDateMillis?.let {
+                                            getFormattedDateForDisplay(
+                                                it
+                                            )
+                                        } else "",
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 16.sp,
+                                        fontStyle = FontStyle.Italic,
+                                        color = MaterialTheme.colorScheme.primaryContainer,
+//                                        textDecoration = TextDecoration.Underline
+                                    )
+
+                                    if (dateState.selectedStartDateMillis != null) dateState.selectedStartDateMillis?.let {
+                                        advancedSearchViewModel.updateQueryFromPublishedDate(
+                                            getFormattedDateForRequest(
+                                                it
+                                            )
+                                        )
+                                    } else ""
+
+                                    //end date
+                                    Text(
+                                        text = "End Date: " + if (dateState.selectedEndDateMillis != null) dateState.selectedEndDateMillis?.let {
+                                            getFormattedDateForDisplay(
+                                                it
+                                            )
+                                        } else "",
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 16.sp,
+                                        fontStyle = FontStyle.Italic,
+                                        color = MaterialTheme.colorScheme.primaryContainer,
+//                                        textDecoration = TextDecoration.Underline)
+                                    )
+                                    if (dateState.selectedEndDateMillis != null) dateState.selectedEndDateMillis?.let {
+                                        advancedSearchViewModel.updateQueryToPublishedDate(
+                                            getFormattedDateForRequest(
+                                                it
+                                            )
+                                        )
+                                    } else advancedSearchViewModel.updateQueryToPublishedDate("")
+                                }
+                                //button
+                                Button(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            bottomSheetState.show()
+                                        }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onSurface
+                                    ),
+                                    modifier = Modifier
+                                        .wrapContentSize()
+                                        .width(150.dp)
+                                        .height(60.dp)
+                                        .scale(0.7f)
+                                        .offset(x = 20.dp),
+                                ) {
+                                    Text(
+                                        text = "Select Date",
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier
+                                    )
+                                }
                             }
-                            Text(text = "Start Date:" + if (dateState.selectedStartDateMillis != null) dateState.selectedStartDateMillis?.let {
-                                getFormattedDateForDisplay(
-                                    it
-                                )
-                                //updateQueryFromPublishedDate
-
-
-                            } else "")
-
-                            if (dateState.selectedStartDateMillis != null) dateState.selectedStartDateMillis?.let {
-                                advancedSearchViewModel.updateQueryFromPublishedDate(
-                                    getFormattedDateForRequest(
-                                        it
-                                    )
-                                )
-                            }else ""
-
-
-                            Text(text = "End Date:" + if (dateState.selectedEndDateMillis != null) dateState.selectedEndDateMillis?.let {
-                                getFormattedDateForDisplay(
-                                    it
-                                )
-                            } else "")
-
-                            if (dateState.selectedEndDateMillis != null) dateState.selectedEndDateMillis?.let {
-                                advancedSearchViewModel.updateQueryToPublishedDate(
-                                    getFormattedDateForRequest(
-                                        it
-                                    )
-                                )
-                            }else ""
                         }
                     }
 
@@ -522,7 +638,8 @@ fun AdvancedSearchContent(
                                 onClick = {
                                     advancedSearchViewModel.resetTotalChaptersValue()
                                     resetSliderTotalChapter = true
-                                }
+                                },
+                                description = hintForTotalChapter
                             )
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -566,7 +683,8 @@ fun AdvancedSearchContent(
                                 onClick = {
                                     advancedSearchViewModel.resetTotalViewsValue()
                                     resetSliderTotalView = true
-                                }
+                                },
+                                description = hintForTotalView
                             )
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -608,7 +726,8 @@ fun AdvancedSearchContent(
                                 onClick = {
                                     advancedSearchViewModel.resetAverageRatingValue()
                                     resetSliderAverage = true
-                                }
+                                },
+                                description = hintForAverageRating
                             )
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -649,7 +768,8 @@ fun AdvancedSearchContent(
                                 onClick = {
                                     advancedSearchViewModel.resetTotalFollowsValue()
                                     resetSliderTotalFollow = true
-                                }
+                                },
+                                description = hintForTotalFollow
                             )
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -694,7 +814,10 @@ fun AdvancedSearchContent(
                                     TagItemShimmerLoading()
                                 }
                             } else {
-                                ResetButton(onClick = { advancedSearchViewModel.resetTags() })
+                                ResetButton(
+                                    onClick = { advancedSearchViewModel.resetTags() },
+                                    description = hintForTag
+                                )
                                 TagList(
                                     viewModel = advancedSearchViewModel,
                                     tags = state.tags
@@ -711,6 +834,13 @@ fun AdvancedSearchContent(
                             itemShowBoolean = itemExcludeIncludeMode
                         )
                         if (itemExcludeIncludeMode) {
+                            ResetButton(
+                                onClick = { advancedSearchViewModel.resetInclusionExclusionMode() },
+                                description = hintForInclusionModeExclusionMode
+                            )
+                            TagFilterModeSelector(
+                                viewModel = advancedSearchViewModel
+                            )
                         }
                     }
 
@@ -722,8 +852,12 @@ fun AdvancedSearchContent(
                             itemShowBoolean = itemQueryOrderBy
                         )
                         if (itemQueryOrderBy) {
-                            OrderByDropdownMenu(
-                                viewModel = advancedSearchViewModel
+                            ResetButton(
+                                onClick = { advancedSearchViewModel.resetOrderBy() },
+                                description = hintForOrderBy
+                            )
+                            OrderByOptionsDropdownMenu(
+                                viewModel = advancedSearchViewModel,
                             )
                         }
                     }
@@ -825,36 +959,3 @@ fun showTitle(
         }
     }
 }
-
-@Composable
-fun ResetButton(
-    onClick: () -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Button(
-            onClick = { onClick() },
-            modifier = Modifier
-                .wrapContentSize()
-                .width(100.dp)
-                .height(40.dp)
-                .scale(0.7f)
-                .offset(x = 20.dp),
-        ) {
-            Text(
-                text = "Reset",
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-            )
-        }
-    }
-}
-
-
-
-

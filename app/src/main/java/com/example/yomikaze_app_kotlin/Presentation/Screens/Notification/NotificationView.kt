@@ -40,14 +40,14 @@ fun NotificationView(
             NotSignIn(navController = navController)
         }
 //        {
-////            LottieAnimationComponent(
-////                animationFileName = R.raw.no_connection_2, // Replace with your animation file name
-////                loop = true,
-////                autoPlay = true,
-////                modifier = Modifier
-////                    .fillMaxWidth()
-////                    .scale(0.15f)
-////            )
+//            LottieAnimationComponent(
+//                animationFileName = R.raw.buld, // Replace with your animation file name
+//                loop = true,
+//                autoPlay = true,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .scale(0.15f)
+//            )
 //            Column {
 //                NormalChapterDownload(
 //                    orderIndex = 1,

@@ -571,7 +571,7 @@ fun ComicDetailContent(
                     IconicDataComicDetail(
                         icon = R.drawable.ic_star_fill,
                         iconColor = MaterialTheme.colorScheme.surface,
-                        numberRating = state.comicResponse?.averageRating ?: 0f,
+                        numberRating = state.comicResponse?.averageRating,
                         numberColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         title = "Rating",
                         iconWidth = 20,

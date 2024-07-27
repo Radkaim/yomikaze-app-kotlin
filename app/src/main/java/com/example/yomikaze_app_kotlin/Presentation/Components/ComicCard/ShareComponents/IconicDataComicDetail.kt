@@ -41,7 +41,7 @@ fun IconicDataComicDetail(
     Box {
         Column {
             Text(
-                text = numberRating?.toString() ?: changeTextFormat(number!!),
+                text = numberRating?.let { changeNumberRatingFormat(it) } ?: changeTextFormat(number!!),
                 color = numberColor,
                 fontSize = numberSize.sp,
                 fontWeight = numberWeight,

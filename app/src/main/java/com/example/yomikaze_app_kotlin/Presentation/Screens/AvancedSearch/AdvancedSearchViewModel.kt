@@ -36,11 +36,6 @@ class AdvancedSearchViewModel @Inject constructor(
     fun onNavigateComicDetail(comicId: Long) {
         navController?.navigate("comic_detail_route/$comicId")
     }
-    fun updateOrderBy(orderBy: OrderBy) {
-//        _state.value = _state.value.copy(queryOrderBy = orderBy)
-        _state.value = _state.value.copy(selectedOrderBy = orderBy)
-    }
-
 
 
     private val _tagStates = MutableStateFlow<Map<Long, TagState>>(emptyMap())
@@ -71,6 +66,39 @@ class AdvancedSearchViewModel @Inject constructor(
 //            Log.d("AdvancedSearchViewModel", "queryExcludeTags: ${_state.value.queryExcludeTags}")
         }
     }
+
+    fun updateOrderBy(orderBy: OrderBy) {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryOrderBy(orderBy)
+            _state.value = _state.value.copy(selectedOrderBy = orderBy)
+        }
+    }
+
+    fun updateStatus(status: ComicStatus) {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryByStatus(status)
+            _state.value = _state.value.copy(selectedStatus = status)
+        }
+    }
+
+    //reset updateOrderBy
+    fun resetOrderBy() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryOrderBy(OrderBy.Name)
+            _state.value = _state.value.copy(selectedOrderBy = OrderBy.None)
+            updateQueryOrderBy(null)
+        }
+    }
+
+    //reser status
+    fun resetStatus() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryByStatus(ComicStatus.None)
+            _state.value = _state.value.copy(selectedStatus = ComicStatus.None)
+            updateQueryByStatus(null)
+        }
+    }
+
 
     //reset all tags
     fun resetTags() {
@@ -120,13 +148,24 @@ class AdvancedSearchViewModel @Inject constructor(
         }
     }
 
+    fun resetAuthors() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(queryListAuthorsInput = emptyList())
+        }
+    }
+
+    fun resetInclusionExclusionMode() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateQueryInclusionMode(Mode.None)
+            updateQueryExclusionMode(Mode.None)
+        }
+    }
+
+
     //reset all state
     fun resetState() {
         viewModelScope.launch(Dispatchers.IO) {
             updateQueryByComicName("")
-
-            updateListAuthorsInput(emptyList())
-            updateQueryByAuthor("")
 
             updateQueryByPublisher("")
 
@@ -147,9 +186,16 @@ class AdvancedSearchViewModel @Inject constructor(
             updateQueryFromTotalFollows(null)
             updateQueryToTotalFollows(null)
 
+
             updateQueryIncludeTags(emptyList())
             resetTags()
-//            resetAverageRatingValue()
+
+            resetStatus()
+            resetOrderBy()
+
+            resetAuthors()
+
+            resetInclusionExclusionMode()
 
         }
     }
@@ -158,36 +204,67 @@ class AdvancedSearchViewModel @Inject constructor(
     //update each state
     fun updateQueryByComicName(queryByComicName: String) {
         _state.value = _state.value.copy(queryByComicName = queryByComicName)
-        Log.d("AdvancedSearchViewModel", "queryByComicName: ${_state.value.queryByComicName}")
+//        Log.d("AdvancedSearchViewModel", "queryByComicName: ${_state.value.queryByComicName}")
     }
 
-    fun updateListAuthorsInput(listAuthorsInput: List<String>) {
-        _state.value = _state.value.copy(listAuthorsInput = listAuthorsInput)
+    fun updateListAuthorsInput(listAuthorsInput: String) {
+        //add author to list
+        viewModelScope.launch(Dispatchers.IO) {
+            val listAuthors = _state.value.queryListAuthorsInput.toMutableList()
+            listAuthors.add(listAuthorsInput)
+            _state.value = _state.value.copy(queryListAuthorsInput = listAuthors)
+        }
     }
 
-    fun updateQueryByAuthor(queryByAuthor: String) {
-        _state.value = _state.value.copy(queryByAuthor = queryByAuthor)
+    fun removeAuthor(author: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val listAuthors = _state.value.queryListAuthorsInput.toMutableList()
+            listAuthors.remove(author)
+            _state.value = _state.value.copy(queryListAuthorsInput = listAuthors)
+        }
     }
+
+//    fun updateQueryByAuthor(queryByAuthor: String) {
+//        _state.value = _state.value.copy(queryByAuthor = queryByAuthor)
+//    }
 
     fun updateQueryByPublisher(queryByPublisher: String) {
-        _state.value = _state.value.copy(queryByPublisher = queryByPublisher)
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(queryByPublisher = queryByPublisher)
+        }
     }
 
     fun updateQueryByStatus(queryByStatus: ComicStatus?) {
-        _state.value = _state.value.copy(queryByStatus = queryByStatus)
+        viewModelScope.launch(Dispatchers.IO) {
+            if (queryByStatus == ComicStatus.None) {
+                _state.value = _state.value.copy(queryByStatus = null)
+            } else {
+                _state.value = _state.value.copy(queryByStatus = queryByStatus)
+            }
+
+        }
     }
 
     fun updateQueryFromPublishedDate(queryFromPublishedDate: String) {
-       viewModelScope.launch(Dispatchers.IO) {
-           Log.d("AdvancedSearchViewModel", "queryFromPublishedDate: $queryFromPublishedDate")
-           _state.value = _state.value.copy(queryFromPublishedDate = queryFromPublishedDate)
-       }
+        viewModelScope.launch(Dispatchers.IO) {
+            if (queryFromPublishedDate.isEmpty()) {
+                _state.value = _state.value.copy(queryFromPublishedDate = null)
+            } else {
+                Log.d("AdvancedSearchViewModel", "queryFromPublishedDate: $queryFromPublishedDate")
+                _state.value = _state.value.copy(queryFromPublishedDate = queryFromPublishedDate)
+            }
+//            _state.value = _state.value.copy(queryFromPublishedDate = queryFromPublishedDate)
+        }
     }
 
     fun updateQueryToPublishedDate(queryToPublishedDate: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("AdvancedSearchViewModel", "queryToPublishedDate: $queryToPublishedDate")
-            _state.value = _state.value.copy(queryToPublishedDate = queryToPublishedDate)
+            if (queryToPublishedDate.isEmpty()) {
+                _state.value = _state.value.copy(queryToPublishedDate = null)
+            } else {
+                Log.d("AdvancedSearchViewModel", "queryToPublishedDate: $queryToPublishedDate")
+                _state.value = _state.value.copy(queryToPublishedDate = queryToPublishedDate)
+            }
         }
     }
 
@@ -244,16 +321,37 @@ class AdvancedSearchViewModel @Inject constructor(
         _state.value = _state.value.copy(queryExcludeTags = queryExcludeTags)
     }
 
-    fun updateQueryInclusionMode(queryInclusionMode: Mode) {
-        _state.value = _state.value.copy(queryInclusionMode = queryInclusionMode)
+    fun updateQueryInclusionMode(queryInclusionMode: Mode?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (queryInclusionMode == Mode.None) {
+                _state.value = _state.value.copy(queryInclusionMode = null)
+                return@launch
+            } else {
+                _state.value = _state.value.copy(queryInclusionMode = queryInclusionMode)
+            }
+        }
     }
 
-    fun updateQueryExclusionMode(queryExclusionMode: Mode) {
-        _state.value = _state.value.copy(queryExclusionMode = queryExclusionMode)
+    fun updateQueryExclusionMode(queryExclusionMode: Mode?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (queryExclusionMode == Mode.None) {
+                _state.value = _state.value.copy(queryExclusionMode = null)
+                return@launch
+            } else {
+                _state.value = _state.value.copy(queryExclusionMode = queryExclusionMode)
+            }
+        }
     }
 
-    fun updateQueryOrderBy(queryOrderBy: OrderBy) {
-        _state.value = _state.value.copy(queryOrderBy = queryOrderBy)
+    fun updateQueryOrderBy(queryOrderBy: OrderBy?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (queryOrderBy == OrderBy.None) {
+                _state.value = _state.value.copy(queryOrderBy = null)
+//                return@launch
+            } else {
+                _state.value = _state.value.copy(queryOrderBy = queryOrderBy)
+            }
+        }
     }
 
     fun updateQuerySize(querySize: Int) {
@@ -264,9 +362,6 @@ class AdvancedSearchViewModel @Inject constructor(
         _state.value = _state.value.copy(queryPage = queryPage)
     }
 
-    //    init {
-//        performAdvancedSearch()
-//    }
     // Function to execute advanced search
     fun performAdvancedSearch() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -275,24 +370,24 @@ class AdvancedSearchViewModel @Inject constructor(
             _state.value.queryByComicName.takeIf { it.isNotEmpty() }?.let {
                 queryMap["Name"] = it
             }
-            _state.value.listAuthorsInput.takeIf { it.isNotEmpty() }
+            _state.value.queryListAuthorsInput.takeIf { it.isNotEmpty() }
                 ?.forEachIndexed { index, author ->
                     queryMap["Authors[$index]"] = author
                 }
-            _state.value.queryByAuthor.takeIf { it.isNotEmpty() }?.let {
-                queryMap["Author"] = it
-            }
+//            _state.value.queryByAuthor.takeIf { it.isNotEmpty() }?.let {
+//                queryMap["Author"] = it
+//            }
             _state.value.queryByPublisher.takeIf { it.isNotEmpty() }?.let {
                 queryMap["Publisher"] = it
             }
             _state.value.queryByStatus?.let {
                 queryMap["Status"] = it.name
             }
-            _state.value.queryFromPublishedDate.takeIf { it.isNotEmpty() }?.let {
-                queryMap["FromPublishedDate"] = it
+            _state.value.queryFromPublishedDate?.takeIf { it.isNotEmpty() }?.let {
+                queryMap["FromPublicationDate"] = it
             }
-            _state.value.queryToPublishedDate.takeIf { it.isNotEmpty() }?.let {
-                queryMap["ToPublishedDate"] = it
+            _state.value.queryToPublishedDate?.takeIf { it.isNotEmpty() }?.let {
+                queryMap["ToPublicationDate"] = it
             }
             _state.value.queryFromTotalChapters?.let {
                 queryMap["FromTotalChapters"] = it.toString()
@@ -345,6 +440,7 @@ class AdvancedSearchViewModel @Inject constructor(
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             try {
+                Log.d("AdvancedSearchViewModel", "queryMap: $queryMap")
                 val result = advancedSearchComicUC.executeAdvancedSearchComic(token, queryMap)
                 result.fold(
                     onSuccess = { baseResponse ->
@@ -352,7 +448,7 @@ class AdvancedSearchViewModel @Inject constructor(
                             searchResults = baseResponse.results,
                             totalResults = baseResponse.totals
                         )
-                        Log.d("AdvancedSearchViewModel", "searchResults: ${baseResponse.results}")
+//                        Log.d("AdvancedSearchViewModel", "searchResults: ${baseResponse.results}")
                     },
                     onFailure = { throwable ->
                         // handle error

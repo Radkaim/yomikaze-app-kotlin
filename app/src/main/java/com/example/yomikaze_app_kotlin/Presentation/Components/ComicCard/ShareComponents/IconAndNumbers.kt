@@ -40,7 +40,9 @@ fun IconAndNumbers(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp),
-        modifier = Modifier.padding(top = 10.dp).clickable { onClick() },
+        modifier = Modifier
+            .padding(top = 10.dp)
+            .clickable { onClick() },
     )
     {
         Icon(
@@ -52,7 +54,7 @@ fun IconAndNumbers(
                 .height(finalIconHeight.dp)
         )
         Text(
-            text = numberRating?.toString() ?: changeTextFormat(number!!),
+            text = numberRating?.let { changeNumberRatingFormat(it) } ?: changeTextFormat(number),
             color = numberColor,
             fontSize = numberSize.sp,
             fontWeight = numberWeight
@@ -80,4 +82,9 @@ fun changeTextFormat(number: Long): String {
 
         else -> number.toString()
     }
+}
+
+//change float format to string
+fun changeNumberRatingFormat(number: Float?): String? {
+    return String.format("%.1f", number)
 }
