@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Core.Module
 
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterCommentApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.CoinShopApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicCommentApiService
@@ -99,6 +100,15 @@ object ServiceModule {
     @Singleton
     fun provideComicCommentApiService(retrofit: Retrofit): ComicCommentApiService {
         return retrofit.create(ComicCommentApiService::class.java)
+    }
+
+    /**
+     * Todo: Provide the Chapter Comment Api Service
+     */
+    @Provides
+    @Singleton
+    fun provideChapterCommentApiService(retrofit: Retrofit): ChapterCommentApiService {
+        return retrofit.create(ChapterCommentApiService::class.java)
     }
 
 

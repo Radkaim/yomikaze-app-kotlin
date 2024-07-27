@@ -86,6 +86,7 @@ fun AdvancedSearchView(
     advancedSearchViewModel: AdvancedSearchViewModel = hiltViewModel(),
 ) {
     val state by advancedSearchViewModel.state.collectAsState()
+    advancedSearchViewModel.setNavController(navController)
 
     if (CheckNetwork()) {
         AdvancedSearchContent(

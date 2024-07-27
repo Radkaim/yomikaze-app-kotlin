@@ -66,7 +66,6 @@ fun NormalComicCard(
                     .clickable {
                         onClicked()
                     }
-
             } else {
                 Modifier
             }),

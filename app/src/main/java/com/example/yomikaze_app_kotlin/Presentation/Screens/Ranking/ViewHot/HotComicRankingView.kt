@@ -77,17 +77,18 @@ fun HotComicViewContent(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
         modifier = Modifier
             .padding(
-                top = 15.dp,
-                start = 4.dp,
-                end = 4.dp,
-                bottom = 4.dp
+//                top = 15.dp,
+//                start = 4.dp,
+//                end = 4.dp,
+//                bottom = 4.dp
             ) // Optional padding for the entire list
             .background(MaterialTheme.colorScheme.background)
             .wrapContentSize(Alignment.Center)
     ) {
         LazyColumn(
             state = listState,
-            verticalArrangement = Arrangement.spacedBy(8.dp) // 8.dp space between each item
+            verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
+            modifier = Modifier.padding(top=15.dp, start=4.dp, end=4.dp, bottom=4.dp)
         ) {
 
             if (state.isLoadingHot) {

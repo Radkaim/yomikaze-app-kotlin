@@ -35,17 +35,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Presentation.Components.SettingProfile.SettingItemComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.SettingProfile.SettingObject
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.R
+import com.example.yomikaze_app_kotlin.ui.AppTheme
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -224,7 +227,11 @@ fun SettingView(
 fun SwitchCustomComponent(
     settingViewModel: SettingViewModel
 ) {
+    val context = LocalContext.current
+    val appPreference = AppPreference(context)
     var checked by remember { mutableStateOf(true) }
+
+    checked = appPreference.getTheme() != AppTheme.LIGHT
 
     Switch(
         checked = checked,

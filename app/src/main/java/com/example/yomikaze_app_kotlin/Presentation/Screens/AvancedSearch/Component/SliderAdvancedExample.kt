@@ -79,12 +79,12 @@ fun SliderAdvancedExample(
 
         ) {
             if (isInteger) {
-                Text(text = "From: " + (sliderPosition.start.toInt()))
-                Text(text = "To: " + (sliderPosition.endInclusive.toInt()))
+                Text(text = "From: " + (sliderPosition.start.toInt()), color = MaterialTheme.colorScheme.primaryContainer,)
+                Text(text = "To: " + (sliderPosition.endInclusive.toInt()), color = MaterialTheme.colorScheme.primaryContainer,)
             } else {
-                Text(text = "From: " + String.format("%.1f", sliderPosition.start))
+                Text(text = "From: " + String.format("%.1f", sliderPosition.start), color = MaterialTheme.colorScheme.primaryContainer,)
 
-                Text(text = "To: " + String.format("%.1f", sliderPosition.endInclusive))
+                Text(text = "To: " + String.format("%.1f", sliderPosition.endInclusive), color = MaterialTheme.colorScheme.primaryContainer,)
             }
         }
     }

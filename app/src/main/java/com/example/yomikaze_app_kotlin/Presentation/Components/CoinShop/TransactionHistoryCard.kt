@@ -36,7 +36,7 @@ fun TransactionHistoryCard(
             .width(370.dp)
             .height(70.dp)
             .offset(x = 10.dp, y = 10.dp),
-        color = MaterialTheme.colorScheme.onSurface,
+        color = MaterialTheme.colorScheme.onErrorContainer,
         shape = RoundedCornerShape(15), // Making it oval
         shadowElevation = 5.dp
     ) {

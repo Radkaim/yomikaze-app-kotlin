@@ -42,7 +42,7 @@ fun CoinShopCard(
             .height(55.dp)
             .offset(x = 20.dp, y = 10.dp)
             .clickable(onClick = onClicked),
-        color = MaterialTheme.colorScheme.onSurface,
+        color = MaterialTheme.colorScheme.onErrorContainer,
         shape = RoundedCornerShape(40), // Making it oval
         shadowElevation = 5.dp
     ) {
