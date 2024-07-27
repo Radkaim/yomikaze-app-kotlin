@@ -40,6 +40,7 @@ private val LightColorScheme = lightColorScheme(
     inverseSurface = Orange800, //550A0A
     inverseOnSurface = switchTrackColor,
     surfaceTint = Green800,
+    surfaceVariant = Green400, //52E6B9
 
 
     tertiary = Color.White, //FFFFFF

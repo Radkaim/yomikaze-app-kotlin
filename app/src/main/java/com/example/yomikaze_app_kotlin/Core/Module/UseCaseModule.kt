@@ -48,6 +48,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.Unfollow
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.UpdateCateNameUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetCoinPricingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetPaymentSheetResponseUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetTransactionHistoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetChapterDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
@@ -601,6 +602,17 @@ object UseCaseModule {
         coinShopRepository: CoinShopRepository
     ): GetPaymentSheetResponseUC {
         return GetPaymentSheetResponseUC(coinShopRepository)
+    }
+
+    /**
+     * TODO: Provide the get transaction history use case
+     */
+    @Provides
+    @Singleton
+    fun provideGetTransactionHistoryUseCase(
+        coinShopRepository: CoinShopRepository
+    ): GetTransactionHistoryUC {
+        return GetTransactionHistoryUC(coinShopRepository)
     }
 
 

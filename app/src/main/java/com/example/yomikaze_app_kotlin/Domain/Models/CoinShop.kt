@@ -19,3 +19,27 @@ data class CoinPricingResponse(
     @SerializedName("creationTime")
     val createdTime: String,
 )
+
+data class TransactionHistoryResponse(
+
+    @SerializedName("userId")
+    val userId: Long,
+
+    @SerializedName("id")
+    val id: Long,
+
+    @SerializedName("amount")
+    val amount: Long,
+
+    @SerializedName("description")
+    val description: String,
+
+    @SerializedName("type")
+    val type: String,
+
+    @SerializedName("price")
+    val price: Int,
+
+    @SerializedName("creationTime")
+    val createdTime: String,
+)

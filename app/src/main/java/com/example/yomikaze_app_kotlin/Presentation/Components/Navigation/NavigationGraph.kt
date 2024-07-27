@@ -17,6 +17,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.AboutUs.Abou
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.CoinShop.CoinShopView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.EditProfile.EditProfileView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.SettingView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.TransactionHistory.TransactionHistoryView
 
 
 @Composable
@@ -127,6 +128,11 @@ fun NavigationGraph(
         // for ranking screen
         composable("coins_shop_route") {
             CoinShopView(navController = navController)
+        }
+
+        //transaction_history_route
+        composable("transaction_history_route") {
+            TransactionHistoryView(navController = navController)
         }
 
     }
