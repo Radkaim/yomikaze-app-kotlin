@@ -356,7 +356,7 @@ fun CommentCard(
                                 expanded = showPopupMenu,
                                 onDismissRequest = { showPopupMenu = false },
                                 modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.onSurface)
+                                    .background(MaterialTheme.colorScheme.onErrorContainer)
                             ) {
                                 finalListTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
                                     DropdownMenuItem(

@@ -380,6 +380,53 @@ class ReplyCommentDetailViewModel @Inject constructor(
                         }
                     }
                 )
+                // update main comment
+                _state.value = _state.value.copy(
+                    mainComment = _state.value.mainComment?.let {
+                        if (it.id == commentId) {
+                            if (reactionType == "Like") {
+                                if (it.myReaction == "Like") {
+                                    // Already liked, so unlike it
+                                    it.copy(
+                                        totalLikes = it.totalLikes - 1,
+                                        myReaction = "",
+                                        isReacted = false
+                                    )
+                                } else {
+                                    // Either it was disliked or no reaction before, so like it
+                                    val newTotalDislikes = if (it.myReaction == "Dislike") it.totalDislikes - 1 else it.totalDislikes
+                                    it.copy(
+                                        totalLikes = it.totalLikes + 1,
+                                        totalDislikes = newTotalDislikes,
+                                        myReaction = "Like",
+                                        isReacted = true
+                                    )
+                                }
+                            } else {
+                                if (it.myReaction == "Dislike") {
+                                    // Already disliked, so undislike it
+                                    it.copy(
+                                        totalDislikes = it.totalDislikes - 1,
+                                        myReaction = "",
+                                        isReacted = false
+                                    )
+                                } else {
+                                    // Either it was liked or no reaction before, so dislike it
+                                    val newTotalLikes = if (it.myReaction == "Like") it.totalLikes - 1 else it.totalLikes
+                                    it.copy(
+                                        totalDislikes = it.totalDislikes + 1,
+                                        totalLikes = newTotalLikes,
+                                        myReaction = "Dislike",
+                                        isReacted = true
+                                    )
+                                }
+                            }
+                        } else {
+                            it
+                        }
+                    }
+                )
+
             } else {
                 Log.e("ComicCommentViewModel", "reactComicCommentByComicId: $result")
             }

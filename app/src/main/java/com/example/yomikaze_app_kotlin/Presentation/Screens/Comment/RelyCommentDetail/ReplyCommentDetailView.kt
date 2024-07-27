@@ -173,6 +173,7 @@ fun RelyCommentDetailContent(
                 verticalArrangement = Arrangement.spacedBy(15.dp), // 8.dp space between each item
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(8.dp)
                     .constrainAs(messages) {
                         top.linkTo(header.bottom)
@@ -469,9 +470,9 @@ private fun ChatBox(
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     Row(
-        modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.then(Modifier.background(MaterialTheme.colorScheme.tertiary)),
     ) {
         TextField(
             value = chatBoxValue,
@@ -547,7 +548,7 @@ private fun ChatBox(
             isError = chatBoxValue.text.length > textSize,   //check if the length of text is over 256 characters
             colors = TextFieldDefaults.textFieldColors(
                 textColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                backgroundColor = MaterialTheme.colorScheme.onSurface,
+                backgroundColor = MaterialTheme.colorScheme.onErrorContainer,
                 focusedIndicatorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.1f),
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
                 cursorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),

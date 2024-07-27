@@ -465,7 +465,7 @@ fun ChatBox(
             isError = chatBoxValue.text.length > textSize,   //check if the length of text is over 256 characters
             colors = TextFieldDefaults.textFieldColors(
                 textColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                backgroundColor = MaterialTheme.colorScheme.onSurface,
+                backgroundColor = MaterialTheme.colorScheme.onErrorContainer,
                 focusedIndicatorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.1f),
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
                 cursorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
