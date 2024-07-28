@@ -12,7 +12,7 @@ interface ChapterCommentRepository {
     /**
      * TODO: use for get all comment of chapter by comicId, chapter number
      */
-    suspend fun getAllChapterCommentByComicId(
+    suspend fun getAllChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -24,7 +24,7 @@ interface ChapterCommentRepository {
     /**
      * TODO: use for get main chapter comment by comicId and commentId, chapter number
      */
-    suspend fun getMainChapterCommentByCommentId(
+    suspend fun getMainChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -34,7 +34,7 @@ interface ChapterCommentRepository {
     /**
      * TODO: use for post comment of comic by comicId,
      */
-    suspend fun postChapterCommentByComicId(
+    suspend fun postChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -44,7 +44,7 @@ interface ChapterCommentRepository {
     /**
      * TODO: use for post reply comment by comicId and commentId, chapter number
      */
-    suspend fun postReplyChapterCommentByComicId(
+    suspend fun postReplyChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -55,7 +55,7 @@ interface ChapterCommentRepository {
     /**
      * TODO: use for get all reply comment by comicId and commentId
      */
-    suspend fun getAllReplyCommentByComicId(
+    suspend fun getAllReplyChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -68,7 +68,7 @@ interface ChapterCommentRepository {
     /**
      * TODO: use for delete chapter comment by comicId and commentId, chapter number
      */
-    suspend fun deleteChapterCommentByComicId(
+    suspend fun deleteChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -78,7 +78,7 @@ interface ChapterCommentRepository {
     /**
      * TODO: use for update comic comment by comicId and commentId
      */
-    suspend fun updateChapterCommentByComicId(
+    suspend fun updateChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -89,7 +89,7 @@ interface ChapterCommentRepository {
     /**
      * TODO: use for react comic comment by comicId and commentId
      */
-    suspend fun reactChapterCommentByComicId(
+    suspend fun reactChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,

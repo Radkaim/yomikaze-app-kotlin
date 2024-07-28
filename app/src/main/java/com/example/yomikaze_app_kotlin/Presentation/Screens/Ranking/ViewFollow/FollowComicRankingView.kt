@@ -99,7 +99,6 @@ fun FollowComicViewContent(
                         follows = comic.follows,
                         views = comic.views,
                         comments = comic.comments,
-                        backgroundColor = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier,
                         onClicked = { followComicViewModel.navigateToComicDetail(comic.comicId) }
                     )

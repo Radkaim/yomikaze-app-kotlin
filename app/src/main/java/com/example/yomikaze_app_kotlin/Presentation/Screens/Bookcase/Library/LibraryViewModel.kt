@@ -284,7 +284,7 @@ class LibraryViewModel @Inject constructor(
     /**
      * Todo: Implement edit category of StatefulViewModel
      */
-    override fun update(key: Long, key2: Long?, value: String) {
+    override fun update(key: Long, key2: Long?, key3: Int?, value: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isUpdateCategoryNameSuccess = false)
             val token =
@@ -308,7 +308,7 @@ class LibraryViewModel @Inject constructor(
      * Todo: Implement delete category of StatefulViewModel
      *
      */
-    override fun delete(key: Long, key2: Long?, isDeleteAll: Boolean?) {
+    override fun delete(key: Long, key2: Long?, key3: Int?, isDeleteAll: Boolean?) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isDeleteCategorySuccess = false)
             val token =
@@ -459,11 +459,11 @@ class LibraryViewModel @Inject constructor(
             result.fold(
                 onSuccess = { baseResponse ->
                     val results = baseResponse.results
-                        // Xử lý kết quả thành công
-                        _state.value =
-                            _state.value.copy(totalDefaultComicResults = baseResponse.totals)
-                        _state.value = _state.value.copy(defaultComicResult = results)
-                        _state.value = _state.value.copy(isDefaultComicLoading = false)
+                    // Xử lý kết quả thành công
+                    _state.value =
+                        _state.value.copy(totalDefaultComicResults = baseResponse.totals)
+                    _state.value = _state.value.copy(defaultComicResult = results)
+                    _state.value = _state.value.copy(isDefaultComicLoading = false)
 
                 },
                 onFailure = { exception ->

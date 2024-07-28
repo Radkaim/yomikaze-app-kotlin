@@ -49,6 +49,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareCo
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConfirmDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.EditCommentDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ChapterComment.ChapterCommentViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyCommentDetail.ReplyCommentDetailViewModel
 import com.example.yomikaze_app_kotlin.R
@@ -78,9 +79,10 @@ fun CommentCard(
 
     onClicked: () -> Unit? = {},
     comicCommentViewModel: ComicCommentViewModel? = null,
-    replyCommentDetailViewModel: ReplyCommentDetailViewModel? = null
+    replyCommentDetailViewModel: ReplyCommentDetailViewModel? = null,
+    chapterCommentViewModel: ChapterCommentViewModel? = null,
 
-) {
+    ) {
     var showPopupMenu by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf<Int?>(null) }
 

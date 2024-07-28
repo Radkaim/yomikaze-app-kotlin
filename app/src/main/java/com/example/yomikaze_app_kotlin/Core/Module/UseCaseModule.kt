@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Core.Module
 
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterCommentRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.CoinShopRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicCommentRepository
@@ -56,6 +57,14 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockAChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockManyChaptersUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.DeleteChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.GetAllChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.GetAllReplyChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.GetMainChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.PostChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.PostReplyChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.ReactChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.UpdateChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
@@ -708,6 +717,102 @@ object UseCaseModule {
         comicCommentRepository: ComicCommentRepository
     ): ReactComicCommentByComicIdUC {
         return ReactComicCommentByComicIdUC(comicCommentRepository)
+    }
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Chapter Comment Use Case
+     */
+
+
+    /**
+     * Todo: Provide get all chapter comment use case
+     */
+    @Provides
+    @Singleton
+    fun provideGetAllChapterCommentUC(
+        chapterCommentRepository: ChapterCommentRepository
+    ): GetAllChapterCommentUC {
+        return GetAllChapterCommentUC(chapterCommentRepository)
+    }
+
+
+    /**
+     * Todo: Provide the get main chapter comment use case
+     */
+    @Provides
+    @Singleton
+    fun provideGetMainChapterCommentUC(
+        chapterCommentRepository: ChapterCommentRepository
+    ): GetMainChapterCommentUC {
+        return GetMainChapterCommentUC(chapterCommentRepository)
+    }
+
+    /**
+     * Todo: Provide the post reply chapter comment use case
+     */
+    @Provides
+    @Singleton
+    fun providePostReplyChapterCommentUC(
+        chapterCommentRepository: ChapterCommentRepository
+    ): PostReplyChapterCommentUC {
+        return PostReplyChapterCommentUC(chapterCommentRepository)
+    }
+
+    /**
+     * Todo: Provide the post chapter comment use case
+     */
+    @Provides
+    @Singleton
+    fun providePostChapterCommentUC(
+        chapterCommentRepository: ChapterCommentRepository
+    ): PostChapterCommentUC {
+        return PostChapterCommentUC(chapterCommentRepository)
+    }
+
+    /**
+     * Todo: Provide the delete chapter comment use case
+     */
+    @Provides
+    @Singleton
+    fun provideDeleteChapterCommentUC(
+        chapterCommentRepository: ChapterCommentRepository
+    ): DeleteChapterCommentUC {
+        return DeleteChapterCommentUC(chapterCommentRepository)
+    }
+
+    /**
+     * TODO: Provide the get all reply chapter comment use case
+     */
+    @Provides
+    @Singleton
+    fun provideGetAllReplyChapterCommentUC(
+        chapterCommentRepository: ChapterCommentRepository
+    ): GetAllReplyChapterCommentUC {
+        return GetAllReplyChapterCommentUC(chapterCommentRepository)
+    }
+
+    /**
+     * TODO: Provide the update chapter comment use case
+     *
+     */
+    @Provides
+    @Singleton
+    fun provideUpdateChapterCommentUC(
+        chapterCommentRepository: ChapterCommentRepository
+    ): UpdateChapterCommentUC {
+        return UpdateChapterCommentUC(chapterCommentRepository)
+    }
+
+    /***
+     * TODO: Provide the react chapter comment use case
+     */
+    @Provides
+    @Singleton
+    fun provideReactChapterCommentUC(
+        chapterCommentRepository: ChapterCommentRepository
+    ): ReactChapterCommentUC {
+        return ReactChapterCommentUC(chapterCommentRepository)
     }
 
 

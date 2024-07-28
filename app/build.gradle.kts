@@ -91,7 +91,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.22.0-rc")
 
     // paper use for shared preferences
-    implementation("io.github.pilgr:paperdb:2.7.2")
+//    implementation("io.github.pilgr:paperdb:2.7.2")
 
     // Retrofit for network requests
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -156,6 +156,7 @@ dependencies {
 
     // constraint layout compose
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
 }
 kapt {
     correctErrorTypes = true

@@ -14,7 +14,7 @@ import javax.inject.Inject
 class ChapterCommentRepositoryImpl @Inject constructor(
     private val api: ChapterCommentApiService
 ) :ChapterCommentRepository {
-    override suspend fun getAllChapterCommentByComicId(
+    override suspend fun getAllChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -30,7 +30,7 @@ class ChapterCommentRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMainChapterCommentByCommentId(
+    override suspend fun getMainChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -44,7 +44,7 @@ class ChapterCommentRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun postChapterCommentByComicId(
+    override suspend fun postChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -76,7 +76,7 @@ class ChapterCommentRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun postReplyChapterCommentByComicId(
+    override suspend fun postReplyChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -108,7 +108,7 @@ class ChapterCommentRepositoryImpl @Inject constructor(
         return response
     }
 
-    override suspend fun getAllReplyCommentByComicId(
+    override suspend fun getAllReplyChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -125,7 +125,7 @@ class ChapterCommentRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteChapterCommentByComicId(
+    override suspend fun deleteChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -156,7 +156,7 @@ class ChapterCommentRepositoryImpl @Inject constructor(
         return response
     }
 
-    override suspend fun updateChapterCommentByComicId(
+    override suspend fun updateChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,
@@ -188,7 +188,7 @@ class ChapterCommentRepositoryImpl @Inject constructor(
         return response
     }
 
-    override suspend fun reactChapterCommentByComicId(
+    override suspend fun reactChapterComment(
         token: String,
         comicId: Long,
         chapterNumber: Int,

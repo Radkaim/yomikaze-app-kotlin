@@ -175,7 +175,7 @@ fun ChapterBottomNavBar(
                         }
 
                         "list_chapter_route" -> showDialog = 2
-                        "comment_route" -> showDialog = 1
+                        "comment_route" -> {viewChapterModel.navigateToChapterComment(comicId = comicId, chapterNumber = viewChapterModel.state.value.currentChapterNumber, chapterTitle = viewChapterModel.state.value.currentChapterTitle!!)}
                         "setting_route" -> showDialog = 4
                         "next_chapter_route" -> if (canNext) {
 //                            Log.d("ChapterBottomNavBar", "onNextClick: ${canNext}")

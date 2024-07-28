@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Core.Module
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterCommentApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.CoinShopApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicCommentApiService
@@ -15,6 +16,7 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.PageDao
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.AuthRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ChapterCommentRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ChapterRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.CoinShopRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ComicCommentRepositoryImpl
@@ -27,6 +29,7 @@ import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.LibraryRepositoryIm
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.PageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ProfileRepositoryImpl
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterCommentRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.CoinShopRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicCommentRepository
@@ -195,6 +198,17 @@ object RepoModule {
         comicCommentApiService: ComicCommentApiService
     ): ComicCommentRepository {
         return ComicCommentRepositoryImpl(comicCommentApiService)
+    }
+
+    /**
+     * TODO: Provide chapter comment repository
+     */
+    @Provides
+    @Singleton
+    fun provideChapterCommentRepository(
+        chapterCommentApiService: ChapterCommentApiService
+    ): ChapterCommentRepository {
+        return ChapterCommentRepositoryImpl(chapterCommentApiService)
     }
 
     /**

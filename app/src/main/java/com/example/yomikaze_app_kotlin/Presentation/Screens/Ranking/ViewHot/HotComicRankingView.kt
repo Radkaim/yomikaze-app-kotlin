@@ -113,7 +113,6 @@ fun HotComicViewContent(
                         follows = comic.follows,
                         views = comic.views,
                         comments = comic.comments,
-                        backgroundColor = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier,
                         onClicked = { hotComicViewModel.navigateToComicDetail(comic.comicId) }
                     )

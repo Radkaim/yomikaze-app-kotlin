@@ -60,18 +60,15 @@ fun TransactionHistoryCard(
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.Start,
                     modifier = Modifier.padding(start = 35.dp)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .offset(x = -(20).dp)
-                            .align(Alignment.CenterHorizontally)
-                    ) {
+                    Box{
                         TagComponent(status = type)
                     }
+
                     Text(
-                        text = if (isNegative) "-$amount Coins" else "+$amount Coins",
+                        text = if (isNegative) "$amount Coins" else "+$amount Coins",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.W500,
                         color = if (isNegative) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondaryContainer

@@ -1,6 +1,5 @@
 package com.example.yomikaze_app_kotlin
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +19,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Login.LoginViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainView
@@ -29,31 +27,33 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
 import dagger.hilt.android.AndroidEntryPoint
-import io.paperdb.Paper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val loginViewModel: LoginViewModel by viewModels()
+    //    private val loginViewModel: LoginViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
-    @SuppressLint("WrongConstant")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        Paper.init(this) // use paperdb show paper.init should be called before any other method
 
+    //    @SuppressLint("WrongConstant")
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //  WindowCompat.setDecorFitsSystemWindows(window, false)
 
         //  window.statusBarColor = Color.White.toArgb()
         //   window.navigationBarColor = Color.White.toArgb()
 
-        val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
-
+//        val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+        CoroutineScope(Dispatchers.Main).launch {
+            checkAndChangeStatusBarColor(mainViewModel.stateApp.theme, window)
+        }
         setContent {
 
             // check view model stateApp theme
 //            val viewModel: MainViewModel = MainViewModel()
-            checkAndChangeStatusBarColor(mainViewModel.stateApp.theme, windowInsetsController, window)
             YomikazeappkotlinTheme(appTheme = mainViewModel.stateApp.theme) {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -62,7 +62,6 @@ class MainActivity : ComponentActivity() {
                 )
                 {
                     val navController = rememberNavController()
-                    Paper.init(navController.context.applicationContext)
                     NavHost(navController, startDestination = "splash_route") {
                         composable("splash_route") {
                             SplashScreen(navController)
@@ -148,11 +147,13 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 fun checkAndChangeStatusBarColor(
     theme: AppTheme,
-    windowInsetsController: WindowInsetsControllerCompat,
+//    windowInsetsController: WindowInsetsControllerCompat,
     window: android.view.Window
 ) {
+    val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
 
     if (theme == AppTheme.DEFAULT) {
         window.statusBarColor = Color.White.toArgb()

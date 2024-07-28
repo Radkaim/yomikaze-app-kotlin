@@ -235,6 +235,9 @@ fun showListHistories(
 
     var isSelected by remember { mutableStateOf(true) }
     var isReversed by remember { mutableStateOf(true) }
+    // Lưu vị trí hiện tại trước khi thay đổi
+    val lastVisibleItemIndex = remember { mutableStateOf(-1) }
+
 
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
@@ -301,11 +304,13 @@ fun showListHistories(
                         onOldSortClick = {
                             isSelected = true
                             isReversed = false
+                            lastVisibleItemIndex.value = listState.firstVisibleItemIndex
 
                         },
                         onnNewSortClick = {
                             isSelected = false
                             isReversed = true
+                            lastVisibleItemIndex.value = listState.firstVisibleItemIndex
 
                         }
                     )
@@ -406,6 +411,14 @@ fun showListHistories(
             }
         }
     }
+
+    // Khôi phục vị trí cuộn sau khi thay đổi
+    LaunchedEffect(key1 = lastVisibleItemIndex.value) {
+        if (lastVisibleItemIndex.value != -1) {
+            listState.scrollToItem(lastVisibleItemIndex.value)
+        }
+    }
+
 
     LaunchedEffect(
         key1 = page.value,

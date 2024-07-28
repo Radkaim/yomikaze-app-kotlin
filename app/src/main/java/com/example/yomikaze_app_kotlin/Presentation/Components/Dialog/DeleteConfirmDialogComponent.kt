@@ -41,6 +41,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulVi
 fun <T, VM> DeleteConfirmDialogComponent(
     key: Long,
     key2: Long? = null,
+    key3: Int? = null,
     title: String, // title of dialog
     value: String?, //name
     viewModel: VM,
@@ -212,7 +213,7 @@ fun <T, VM> DeleteConfirmDialogComponent(
 
                         Button(
                             onClick = {
-                                viewModel.delete(key, key2, isDeleteAll)
+                                viewModel.delete(key, key2, key3 , isDeleteAll)
                                 if (viewModel.isDeleteSuccess!!) {
                                     Toast.makeText(
                                         context,

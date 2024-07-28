@@ -121,6 +121,8 @@ fun ComicCommentContent(
 
 
     val appPreference = AppPreference(context)
+    // Lưu vị trí hiện tại trước khi thay đổi
+    val lastVisibleItemIndex = remember { mutableStateOf(-1) }
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -179,11 +181,15 @@ fun ComicCommentContent(
                     onOldSortClick = {
                         isSelected = true
                         isReversed = false
+                        lastVisibleItemIndex.value = listState.firstVisibleItemIndex
+                        Log.d("ComicCommentContent", "isReversed: ${listState.firstVisibleItemIndex}")
 
                     },
                     onnNewSortClick = {
                         isSelected = false
                         isReversed = true
+                        lastVisibleItemIndex.value = listState.firstVisibleItemIndex
+                        Log.d("ComicCommentContent", "isReversed: ${listState.firstVisibleItemIndex}")
 
                     }
                 )
@@ -318,6 +324,14 @@ fun ComicCommentContent(
                 },
                 isLogin = comicCommentViewModel.checkUserIsLogin()
             )
+        }
+
+        // Khôi phục vị trí cuộn sau khi thay đổi
+        LaunchedEffect(key1 = lastVisibleItemIndex.value) {
+            if (lastVisibleItemIndex.value != -1) {
+                Log.d("ComicCommentContent", "lastVisibleItemIndex: ${lastVisibleItemIndex.value}")
+                listState.scrollToItem(lastVisibleItemIndex.value)
+            }
         }
 
         LaunchedEffect(

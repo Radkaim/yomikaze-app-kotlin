@@ -35,7 +35,7 @@ class HistoryViewModel @Inject constructor(
     override val isDeleteSuccess: Boolean = _state.value.isDeleteHistoryRecordSuccess
 
     //for StatefulViewModel
-    override fun update(key: Long, key2: Long?, value: String) {}
+    override fun update(key: Long, key2: Long?, key3: Int?, value: String) {}
 
     fun setNavController(navController: NavController) {
         this.navController = navController
@@ -68,7 +68,7 @@ class HistoryViewModel @Inject constructor(
     /**
      * Delete a history record
      */
-    override fun delete(key: Long, key2: Long?, isDeleteAll: Boolean?) {
+    override fun delete(key: Long, key2: Long?, key3: Int?, isDeleteAll: Boolean?) {
         if (isDeleteAll == true) {
             deleteAllHistoryRecords()
             return
@@ -76,6 +76,7 @@ class HistoryViewModel @Inject constructor(
             deleteHistoryRecord(key)
         }
     }
+
     init {
         getHistories()
     }

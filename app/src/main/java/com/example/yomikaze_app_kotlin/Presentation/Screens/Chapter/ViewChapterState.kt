@@ -16,6 +16,7 @@ data class ViewChapterState(
     val canPreviousChapter: Boolean = false,
     val canNextChapter: Boolean = false,
     val currentChapterNumber: Int = 0,
+    val currentChapterTitle: String? = null,
 
     val isUserNeedToLogin: Boolean = false,
 

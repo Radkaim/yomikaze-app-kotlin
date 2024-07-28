@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyCommentDetail
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ChapterComment
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -77,26 +77,24 @@ import com.example.yomikaze_app_kotlin.R
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun RelyCommentDetailView(
+fun ChapterCommentView(
     navController: NavController,
     comicId: Long,
-    commentId: Long,
-    chapterNumber: Int? = null,
-    authorName: String,
-    replyCommentDetailViewModel: ReplyCommentDetailViewModel = hiltViewModel()
+    chapterNumber: Int,
+    chapterTitle: String,
+    chapterCommentViewModel: ChapterCommentViewModel = hiltViewModel()
 ) {
-    val state by replyCommentDetailViewModel.state.collectAsState()
+    val state by chapterCommentViewModel.state.collectAsState()
 
     //set navController for viewModel
-    replyCommentDetailViewModel.setNavController(navController)
+    chapterCommentViewModel.setNavController(navController)
     if (CheckNetwork()) {
-        RelyCommentDetailContent(
+        ChapterCommentContent(
             navController = navController,
-            authorName = authorName,
+            chapterTitle = chapterTitle,
             state = state,
-            replyCommentDetailViewModel = replyCommentDetailViewModel,
+            chapterCommentViewModel = chapterCommentViewModel,
             comicId = comicId,
-            commentId = commentId,
             chapterNumber = chapterNumber
         )
     } else {
@@ -107,57 +105,45 @@ fun RelyCommentDetailView(
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun RelyCommentDetailContent(
+fun ChapterCommentContent(
     navController: NavController,
-    authorName: String,
+    chapterTitle: String,
     comicId: Long,
-    commentId: Long,
-    chapterNumber: Int? = null,
-    state: ReplyCommentDetailState,
-    replyCommentDetailViewModel: ReplyCommentDetailViewModel
+    chapterNumber: Int,
+    state: ChapterCommentState,
+    chapterCommentViewModel: ChapterCommentViewModel
 ) {
 
-    LaunchedEffect(Unit) {
-        Log.d(
-            "RelyCommentDetailView",
-            "comicId: $comicId, chapterNumber: $chapterNumber, commentId: $commentId"
-        )
-        if (chapterNumber != null) {
-            replyCommentDetailViewModel.getMainChapterComment(
-                comicId = comicId,
-                chapterNumber = chapterNumber,
-                commentId = commentId,
-            )
-        } else {
-//            Log.d("RelyCommentDetailView", "comicId: $comicId, commentId: $commentId")
-            replyCommentDetailViewModel.getMainCommentByCommentId(
-                comicId = comicId,
-                commentId = commentId,
-            )
-        }
-    }
     val listState = rememberLazyListState()
     val context = LocalContext.current
-    val appPreference = AppPreference(context)
     val page = remember { mutableStateOf(1) }
     val loading = remember { mutableStateOf(false) }
+
     var isSelected by remember { mutableStateOf(false) }
     var isReversed by remember { mutableStateOf(true) }
+
+
+    val appPreference = AppPreference(context)
     // Lưu vị trí hiện tại trước khi thay đổi
     val lastVisibleItemIndex = remember { mutableStateOf(-1) }
 
-
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    //for delete main reply comment in reply comment detail view and then back to comment view
+    LaunchedEffect(key1 = appPreference.mainReplyCommentIdDeleted) {
+        if (appPreference.mainReplyCommentIdDeleted != 0L) {
+            chapterCommentViewModel.removeMainReplyCommentHasDeletedFromList(appPreference.mainReplyCommentIdDeleted)
+        }
+    }
 
 
     Scaffold(
         topBar = {
             CustomAppBar(
-                title = authorName,
+                title = chapterTitle,
                 navigationIcon = {
                     IconButton(onClick = {
-                        Log.d("RelyCommentDetailView", "Back button clicked")
                         navController.popBackStack()
                     }) {
                         Icon(
@@ -171,8 +157,6 @@ fun RelyCommentDetailContent(
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (header, messages, chatBox) = createRefs()
-
-
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
@@ -185,7 +169,40 @@ fun RelyCommentDetailContent(
                         end.linkTo(parent.end)
                     },
                 verticalAlignment = Alignment.CenterVertically
-            ) {}
+            ) {
+                Text(
+                    text = "Total Comments: ${state.totalCommentResults.value}",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(8.dp)
+
+                )
+
+                SortComponent(
+                    isOldestSelected = isSelected,
+                    onOldSortClick = {
+                        isSelected = true
+                        isReversed = false
+                        lastVisibleItemIndex.value = listState.firstVisibleItemIndex
+                        Log.d(
+                            "ChapterCommentContent",
+                            "isReversed: ${listState.firstVisibleItemIndex}"
+                        )
+
+                    },
+                    onnNewSortClick = {
+                        isSelected = false
+                        isReversed = true
+                        lastVisibleItemIndex.value = listState.firstVisibleItemIndex
+                        Log.d(
+                            "ChapterCommentContent",
+                            "isReversed: ${listState.firstVisibleItemIndex}"
+                        )
+
+                    }
+                )
+            }
 
             LazyColumn(
                 state = listState,
@@ -209,107 +226,7 @@ fun RelyCommentDetailContent(
 
                 ) {
 
-                item {
-                    if (state.mainComment != null) {
-                        CommentCard(
-                            comicId = comicId,
-                            commentId = state.mainComment!!.id,
-                            content = state.mainComment.content,
-                            authorName = state.mainComment.author.name,
-                            authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
-                                ?: "",
-                            roleName = state.mainComment.author.roles?.get(0) ?: "",
-                            creationTime = state.mainComment.creationTime,
-                            isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(state.mainComment.author.id),
-                            isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
-                            totalLikes = state.mainComment.totalLikes.toLong(),
-                            myReaction = state.mainComment.myReaction,
-                            isReacted = state.mainComment.isReacted,
-                            onLikeClick = {
-                                if (appPreference.isUserLoggedIn) {
-                                    replyCommentDetailViewModel.reactComicCommentByComicId(
-                                        commentId = state.mainComment.id,
-                                        comicId = comicId,
-                                        reactionType = "Like"
-                                    )
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Please sign in to like",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            },
-                            totalDislikes = state.mainComment.totalDislikes.toLong(),
-                            onDislikeClick = {
-                                if (appPreference.isUserLoggedIn) {
-                                    replyCommentDetailViewModel.reactComicCommentByComicId(
-                                        commentId = state.mainComment.id,
-                                        comicId = comicId,
-                                        reactionType = "Dislike"
-                                    )
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Please sign in to dislike",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            },
-                            totalReplies = state.mainComment.totalReplies.toLong(),
-                            onClicked = {},
-                            replyCommentDetailViewModel = replyCommentDetailViewModel
-                        )
-                    } else {
-                        CommentCardShimmerLoading()
-                    }
-                }
-//
-                item {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.background)
-                            .padding(top = 5.dp)
-                            .constrainAs(header) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-//                            bottom.linkTo(messages.top)
-                            },
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-
-                        val total = state.totalCommentResults.value
-                        Text(
-                            text = "Reply: ${total} ${if (total > 1) "comments" else "comment"}",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.padding(8.dp)
-
-                        )
-
-                        SortComponent(
-                            isOldestSelected = isSelected,
-                            onOldSortClick = {
-                                isSelected = true
-                                isReversed = false
-                                lastVisibleItemIndex.value = listState.firstVisibleItemIndex
-                            },
-                            onnNewSortClick = {
-                                isSelected = false
-                                isReversed = true
-                                lastVisibleItemIndex.value = listState.firstVisibleItemIndex
-                            }
-                        )
-                    }
-                }
-
-
-                if (state.isListComicCommentLoading) {
+                if (state.isListChapterCommentLoading) {
                     item {
                         repeat(6) {
                             CommentCardShimmerLoading()
@@ -317,11 +234,11 @@ fun RelyCommentDetailContent(
                         }
                     }
                 }
-                if (!state.isListComicCommentLoading && state.listComicComment.isNotEmpty()) {
+                if (!state.isListChapterCommentLoading && state.listChapterComment.isNotEmpty()) {
                     val sortedList = if (isReversed) {
-                        state.listComicComment.sortedByDescending { it.creationTime }
+                        state.listChapterComment.sortedByDescending { it.creationTime }
                     } else {
-                        state.listComicComment.sortedBy { it.creationTime }
+                        state.listChapterComment.sortedBy { it.creationTime }
                     }
                     items(sortedList) { comment ->
                         CommentCard(
@@ -333,14 +250,14 @@ fun RelyCommentDetailContent(
                                 ?: "",
                             roleName = comment.author.roles?.get(0) ?: "",
                             creationTime = comment.creationTime,
-                            isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(comment.author.id),
-                            isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
+                            isOwnComment = chapterCommentViewModel.checkIsOwnComment(comment.author.id),
+                            isAdmin = chapterCommentViewModel.checkIsAdmin(),
                             totalLikes = comment.totalLikes.toLong(),
                             myReaction = comment.myReaction,
                             isReacted = comment.isReacted,
                             onLikeClick = {
                                 if (appPreference.isUserLoggedIn) {
-                                    replyCommentDetailViewModel.reactComicCommentByComicId(
+                                    chapterCommentViewModel.reactComicCommentByComicId(
                                         commentId = comment.id,
                                         comicId = comicId,
                                         reactionType = "Like"
@@ -356,7 +273,7 @@ fun RelyCommentDetailContent(
                             totalDislikes = comment.totalDislikes.toLong(),
                             onDislikeClick = {
                                 if (appPreference.isUserLoggedIn) {
-                                    replyCommentDetailViewModel.reactComicCommentByComicId(
+                                    chapterCommentViewModel.reactComicCommentByComicId(
                                         commentId = comment.id,
                                         comicId = comicId,
                                         reactionType = "Dislike"
@@ -370,8 +287,15 @@ fun RelyCommentDetailContent(
                                 }
                             },
                             totalReplies = comment.totalReplies.toLong(),
-                            onClicked = {},
-                            replyCommentDetailViewModel = replyCommentDetailViewModel
+                            onClicked = {
+                                chapterCommentViewModel.onNavigateToReplyCommentDetail(
+                                    commentId = comment.id,
+                                    comicId = comicId,
+                                    chapterNumber = chapterNumber,
+                                    authorName = comment.author.name
+                                )
+                            },
+                            chapterCommentViewModel = chapterCommentViewModel
                         )
                     }
                 }
@@ -406,54 +330,45 @@ fun RelyCommentDetailContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(chatBox) {
-//                            top.linkTo(messages.bottom)
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
                 onSendChatClickListener = {
-                    replyCommentDetailViewModel.postReplyComicCommentByComicId(
+                    chapterCommentViewModel.postComicCommentByComicId(
                         comicId = comicId,
-                        commentId = commentId,
+                        chapterNumber = chapterNumber,
                         content = it,
                     )
                 },
-                isLogin = replyCommentDetailViewModel.checkUserIsLogin()
+                isLogin = chapterCommentViewModel.checkUserIsLogin()
             )
         }
-//        }
-// Khôi phục vị trí cuộn sau khi thay đổi
+
+        // Khôi phục vị trí cuộn sau khi thay đổi
         LaunchedEffect(key1 = lastVisibleItemIndex.value) {
             if (lastVisibleItemIndex.value != -1) {
+                Log.d("ChapterCommentContent", "lastVisibleItemIndex: ${lastVisibleItemIndex.value}")
                 listState.scrollToItem(lastVisibleItemIndex.value)
             }
         }
 
-
         LaunchedEffect(
             key1 = page.value,
             key2 = isReversed,
-            key3 = state,
+            key3 = state
         ) {
-            Log.d("ComicCommentContent", "page: ${page.value}")
+
+
+            Log.d("ChapterCommentContent", "page: ${page.value}")
             if (page.value > state.currentPage.value && !loading.value) {
                 loading.value = true
-                if (chapterNumber != null) {
-                    replyCommentDetailViewModel.getAllReplyChapterComment(
-                        comicId = comicId,
-                        chapterNumber = chapterNumber,
-                        commentId = commentId,
-                        page.value,
-                        orderBy = if (isReversed) "CreationTimeDesc" else "CreationTime"
-                    )
-                } else {
-                    replyCommentDetailViewModel.getAllReplyCommentByComicId(
-                        comicId = comicId,
-                        commentId = commentId,
-                        page.value,
-                        orderBy = if (isReversed) "CreationTimeDesc" else "CreationTime"
-                    )
-                }
+                chapterCommentViewModel.getAllChapterComment(
+                    comicId = comicId,
+                    chapterNumber = chapterNumber,
+                    page.value,
+                    orderBy = if (isReversed) "CreationTimeDesc" else "CreationTime"
+                )
                 loading.value = false
             }
         }
@@ -461,10 +376,10 @@ fun RelyCommentDetailContent(
         LaunchedEffect(key1 = listState, key2 = isReversed, key3 = page.value) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collectLatest { lastVisibleItemIndex ->
-                    if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listComicComment.size - 2) {
+                    if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listChapterComment.size - 2) {
                         Log.d(
-                            "ComicCommentContent",
-                            "ComicCommentContent12: ${lastVisibleItemIndex} and ${state.listComicComment.size}"
+                            "ChapterCommentContent",
+                            "ChapterCommentContent12: ${lastVisibleItemIndex} and ${state.listChapterComment.size}"
                         )
                         if (state.currentPage.value < state.totalPages.value) {
                             page.value++
@@ -481,7 +396,7 @@ fun RelyCommentDetailContent(
         ) {
             snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .collectLatest { lastVisibleItemIndex ->
-                    if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listComicComment.size && state.listComicComment.size > 5) {
+                    if (lastVisibleItemIndex != null && lastVisibleItemIndex == state.listChapterComment.size && state.listChapterComment.size > 5) {
                         if (state.currentPage.value == state.totalPages.value && state.totalPages.value != 0) {
                             Toast.makeText(context, "No comments left", Toast.LENGTH_SHORT)
                                 .show()
@@ -493,7 +408,7 @@ fun RelyCommentDetailContent(
 }
 
 @Composable
-private fun ChatBox(
+fun ChatBox(
     onSendChatClickListener: (String) -> Unit,
     modifier: Modifier,
     isLogin: Boolean,
@@ -503,13 +418,13 @@ private fun ChatBox(
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
     val canPost by remember { mutableStateOf(isLogin) }
     val textSize: Int = 1024
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
+//    val focusManager = LocalFocusManager.current
+//    val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.then(Modifier.background(MaterialTheme.colorScheme.tertiary)),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         TextField(
             value = chatBoxValue,
@@ -567,7 +482,6 @@ private fun ChatBox(
 
                             )
                     }
-
                 }
             },
             keyboardOptions = KeyboardOptions(
@@ -636,7 +550,7 @@ private fun ChatBox(
                     painterResource(id = R.drawable.ic_send_cmt),
                     contentDescription = "Send",
                     tint = MaterialTheme.colorScheme.secondaryContainer,
-                    modifier = Modifier.size(25.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }

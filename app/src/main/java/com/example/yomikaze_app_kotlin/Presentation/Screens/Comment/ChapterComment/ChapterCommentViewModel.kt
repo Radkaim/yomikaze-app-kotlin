@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment
+package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ChapterComment
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -9,11 +9,11 @@ import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ReactionRequest
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.DeleteChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.GetAllChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.PostChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.UpdateChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,37 +23,40 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ComicCommentViewModel @Inject constructor(
+class ChapterCommentViewModel @Inject constructor(
     private val appPreference: AppPreference,
-    private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC,
-    private val postComicCommentByComicIdU: PostComicCommentByComicIdUC,
-    private val deleteComicCommentByComicIdUC: DeleteComicCommentByComicIdUC,
-    private val updateComicCommentByComicIdUC: UpdateComicCommentByComicIdUC,
+    private val getAllChapterCommentUC: GetAllChapterCommentUC,
+    private val postChapterCommentUC: PostChapterCommentUC,
+    private val deleteComicCommentByComicIdUC: DeleteChapterCommentUC,
+
+    private val updateChapterCommentUC: UpdateChapterCommentUC,
     private val reactComicCommentByComicIdUC: ReactComicCommentByComicIdUC
-) : ViewModel(), StatefulViewModel<ComicCommentState> {
+) : ViewModel(), StatefulViewModel<ChapterCommentState> {
     //navController
     private var navController: NavController? = null
 
-    private val _state = MutableStateFlow(ComicCommentState())
-    override val state: StateFlow<ComicCommentState> get() = _state
+    private val _state = MutableStateFlow(ChapterCommentState())
+    override val state: StateFlow<ChapterCommentState> get() = _state
 
 
     override val isUpdateSuccess: Boolean = _state.value.isUpdateCommentSuccess
     override val isDeleteSuccess: Boolean = _state.value.isDeleteCommentSuccess
 
 
-    override fun update(key: Long, key2: Long?,key3: Int?, value: String) {
+    override fun update(key: Long, key2: Long?, key3: Int?, value: String) {
         updateComicCommentByComicId(
             comicId = key,
             commentId = key2!!,
+            chapterNumber = key3!!,
             content = value
         )
     }
 
-    override fun delete(key: Long, key2: Long?, key3: Int?, isDeleteAll: Boolean?) {
+    override fun delete(key: Long, key2: Long?, key3:Int?, isDeleteAll: Boolean?) {
         deleteComicCommentByComicId(
             comicId = key,
-            commentId = key2!!
+            commentId = key2!!,
+            chapterNumber = key3!!
         )
     }
 
@@ -63,8 +66,8 @@ class ComicCommentViewModel @Inject constructor(
         this.navController = navController
     }
 
-    fun onNavigateToReplyCommentDetail(commentId: Long, comicId: Long, authorName: String) {
-        navController?.navigate("reply_comment_detail_route/$comicId/$commentId/{}/$authorName")
+    fun onNavigateToReplyCommentDetail(commentId: Long, comicId: Long, chapterNumber: Int, authorName: String) {
+        navController?.navigate("reply_comment_detail_route/$comicId/$commentId/$chapterNumber/$authorName")
     }
 
     /**
@@ -77,9 +80,9 @@ class ComicCommentViewModel @Inject constructor(
     // remove a reply comment have deleted from list
     fun removeMainReplyCommentHasDeletedFromList(mainReplyCommentId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = _state.value.listComicComment.toMutableList()
+            val list = _state.value.listChapterComment.toMutableList()
             list.removeIf { it.id == mainReplyCommentId }
-            _state.value = _state.value.copy(listComicComment = list)
+            _state.value = _state.value.copy(listChapterComment = list)
             _state.value.totalCommentResults.value = _state.value.totalCommentResults.value - 1
             appPreference.deleteMainReplyCommentIdDeleted()
         }
@@ -97,7 +100,7 @@ class ComicCommentViewModel @Inject constructor(
     }
 
     fun resetState() {
-        _state.value = ComicCommentState()
+        _state.value = ChapterCommentState()
     }
 
     override fun onCleared() {
@@ -108,13 +111,14 @@ class ComicCommentViewModel @Inject constructor(
     /**
      * Todo: Implement get all comment of comic by comicId
      */
-    fun getAllComicCommentByComicId(
+    fun getAllChapterComment(
         comicId: Long,
+        chapterNumber: Int,
         page: Int? = 1,
         orderBy: String? = "CreationTime",
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = _state.value.copy(isListComicCommentLoading = true)
+            _state.value = _state.value.copy(isListChapterCommentLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val size = _state.value.size
 
@@ -122,9 +126,10 @@ class ComicCommentViewModel @Inject constructor(
             val totalPages = _state.value.totalPages.value
 
             if (currentPage >= totalPages && totalPages != 0) return@launch
-            val result = getAllComicCommentByComicIdUC.getAllComicCommentByComicId(
+            val result = getAllChapterCommentUC.getAllChapterComment(
                 token = token,
                 comicId = comicId,
+                chapterNumber = chapterNumber,
                 orderBy = orderBy,
                 page = page,
                 size = size
@@ -134,7 +139,7 @@ class ComicCommentViewModel @Inject constructor(
                     val results = baseResponse.results
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(
-                        listComicComment = state.value.listComicComment + results,
+                        listChapterComment = state.value.listChapterComment + results,
                     )
 
                     _state.value.currentPage.value = baseResponse.currentPage
@@ -142,18 +147,18 @@ class ComicCommentViewModel @Inject constructor(
                     _state.value.totalCommentResults.value = baseResponse.totals
 
 
-                    _state.value = _state.value.copy(isListComicCommentLoading = false)
+                    _state.value = _state.value.copy(isListChapterCommentLoading = false)
 
                     Log.d(
-                        "ComicCommentContent",
-                        "listComicComment: ${state.value.listComicComment.size}"
+                        "ChapterCommentViewModel",
+                        "listComicComment: ${state.value.listChapterComment.size}"
                     )
                 },
 
                 onFailure = { exception ->
                     // Xử lý lỗi
-                    _state.value = _state.value.copy(isListComicCommentLoading = false)
-                    Log.e("ComicCommentViewModel", "getAllComicCommentByComicId: $exception")
+                    _state.value = _state.value.copy(isListChapterCommentLoading = false)
+                    Log.e("ChapterCommentViewModel", "getAllComicCommentByComicId: $exception")
                 }
             )
         }
@@ -165,21 +170,23 @@ class ComicCommentViewModel @Inject constructor(
      */
     fun postComicCommentByComicId(
         comicId: Long,
+        chapterNumber: Int,
         content: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = _state.value.copy(isPostComicCommentSuccess = false)
+            _state.value = _state.value.copy(isPostChapterCommentSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = postComicCommentByComicIdU.postComicCommentByComicId(
+            val result = postChapterCommentUC.postChapterComment(
                 token = token,
                 comicId = comicId,
+                chapterNumber  = chapterNumber,
                 content = CommentRequest(content = content)
             )
             if (result.code() == 201) {
-                _state.value = _state.value.copy(isPostComicCommentSuccess = true)
+                _state.value = _state.value.copy(isPostChapterCommentSuccess = true)
                 // add new item to list
                 val newComment = result.body() ?: return@launch
-                Log.d("ComicCommentViewModel", "postComicCommentByComicId: $newComment")
+                Log.d("ChapterCommentViewModel", "postComicCommentByComicId: $newComment")
                 var newCommentResponse = newComment
                 newCommentResponse.author = ProfileResponse(
                     id = appPreference.userId,
@@ -188,22 +195,22 @@ class ComicCommentViewModel @Inject constructor(
                     balance = 0,
                     roles = appPreference.userRoles
                 )
-                Log.d("ComicCommentViewModel", "postComicCommentByComicId: $newCommentResponse")
-                val list = _state.value.listComicComment.toMutableList()
+                Log.d("ChapterCommentViewModel", "postComicCommentByComicId: $newCommentResponse")
+                val list = _state.value.listChapterComment.toMutableList()
                 if (!list.any { it.id == newComment.id }) {
                     list.add(newCommentResponse)
                     _state.value = _state.value.copy(
                         // sort by creation time
-                        listComicComment = list.sortedByDescending { it.creationTime },
-                        isPostComicCommentSuccess = true,
+                        listChapterComment = list.sortedByDescending { it.creationTime },
+                        isPostChapterCommentSuccess = true,
                     )
                     _state.value.totalCommentResults.value =
                         _state.value.totalCommentResults.value + 1
                 }
 
             } else {
-                _state.value = _state.value.copy(isPostComicCommentSuccess = false)
-                Log.e("ComicCommentViewModel", "postComicCommentByComicId: $result")
+                _state.value = _state.value.copy(isPostChapterCommentSuccess = false)
+                Log.e("ChapterCommentViewModel", "postComicCommentByComicId: $result")
             }
 
         }
@@ -214,27 +221,29 @@ class ComicCommentViewModel @Inject constructor(
      */
     fun deleteComicCommentByComicId(
         comicId: Long,
-        commentId: Long
+        commentId: Long,
+        chapterNumber: Int,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isDeleteCommentSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = deleteComicCommentByComicIdUC.deleteComicCommentByComicId(
+            val result = deleteComicCommentByComicIdUC.deleteChapterComment(
                 token = token,
                 comicId = comicId,
+                chapterNumber = chapterNumber,
                 commentId = commentId
             )
             if (result.code() == 204) {
                 _state.value = _state.value.copy(isDeleteCommentSuccess = true)
                 //remove item from list
-                val list = _state.value.listComicComment.toMutableList()
+                val list = _state.value.listChapterComment.toMutableList()
                 list.removeIf { it.id == commentId }
-                _state.value = _state.value.copy(listComicComment = list)
+                _state.value = _state.value.copy(listChapterComment = list)
                 _state.value.totalCommentResults.value = _state.value.totalCommentResults.value - 1
 
             } else {
                 _state.value = _state.value.copy(isDeleteCommentSuccess = false)
-                Log.e("ComicCommentViewModel", "deleteComicCommentByComicId: $result")
+                Log.e("ChapterCommentViewModel", "deleteComicCommentByComicId: $result")
             }
         }
     }
@@ -245,36 +254,38 @@ class ComicCommentViewModel @Inject constructor(
     fun updateComicCommentByComicId(
         comicId: Long,
         commentId: Long,
+        chapterNumber: Int,
         content: String,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isUpdateCommentSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             //log content
-            Log.d("ComicCommentViewModel", "updateComicCommentByComicId: $content")
+            Log.d("ChapterCommentViewModel", "updateComicCommentByComicId: $content")
             val listPathRequest = listOf(
                 PathRequest(content, "/content", "replace")
             )
-            val result = updateComicCommentByComicIdUC.updateComicComment(
+            val result = updateChapterCommentUC.updateChapterComment(
                 token = token,
                 comicId = comicId,
+                chapterNumber = chapterNumber,
                 commentId = commentId,
                 pathRequest = listPathRequest
             )
             if (result.code() == 204) {
-                Log.d("ComicCommentViewModel", "updateComicCommentByComicId: $result")
+                Log.d("ChapterCommentViewModel", "updateComicCommentByComicId: $result")
                 _state.value = _state.value.copy(isUpdateCommentSuccess = true)
                 // update it content
-                val list = _state.value.listComicComment.toMutableList()
+                val list = _state.value.listChapterComment.toMutableList()
                 list.forEach {
                     if (it.id == commentId) {
                         it.content = content
                     }
                 }
-                _state.value = _state.value.copy(listComicComment = list)
+                _state.value = _state.value.copy(listChapterComment = list)
             } else {
                 _state.value = _state.value.copy(isUpdateCommentSuccess = false)
-                Log.e("ComicCommentViewModel", "updateComicCommentByComicId: $result")
+                Log.e("ChapterCommentViewModel", "updateComicCommentByComicId: $result")
             }
         }
     }
@@ -297,10 +308,10 @@ class ComicCommentViewModel @Inject constructor(
                 reactionRequest = reactionRequest
             )
             if (result.code() == 200) {
-                Log.d("ComicCommentViewModel", "reactComicCommentByComicId: $result")
+                Log.d("ChapterCommentViewModel", "reactComicCommentByComicId: $result")
                 // update it content
                 _state.value = _state.value.copy(
-                    listComicComment = _state.value.listComicComment.map {
+                    listChapterComment = _state.value.listChapterComment.map {
                         if (it.id == commentId) {
                             if (reactionType == "Like") {
                                 if (it.myReaction == "Like") {
@@ -347,7 +358,7 @@ class ComicCommentViewModel @Inject constructor(
                     }
                 )
             } else {
-                Log.e("ComicCommentViewModel", "reactComicCommentByComicId: $result")
+                Log.e("ChapterCommentViewModel", "reactComicCommentByComicId: $result")
             }
         }
     }

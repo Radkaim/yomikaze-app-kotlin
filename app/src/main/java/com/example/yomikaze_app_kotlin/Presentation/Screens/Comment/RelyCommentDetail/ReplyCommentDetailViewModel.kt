@@ -9,6 +9,8 @@ import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ReactionRequest
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.GetAllReplyChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.GetMainChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetMainCommentByCommentIdUC
@@ -27,11 +29,17 @@ import javax.inject.Inject
 @HiltViewModel
 class ReplyCommentDetailViewModel @Inject constructor(
     private val appPreference: AppPreference,
+
     private val getAllReplyCommentByComicIdUC: GetAllReplyCommentByComicIdUC,
+    private val getAllReplyChapterCommentUC: GetAllReplyChapterCommentUC,
+
     private val postReplyCommentByComicIdUC: PostReplyCommentByComicIdUC,
     private val deleteComicCommentByComicIdUC: DeleteComicCommentByComicIdUC,
     private val updateComicCommentByComicIdUC: UpdateComicCommentByComicIdUC,
+
     private val provideGetMainCommentByCommentIdUC: GetMainCommentByCommentIdUC,
+    private val getMainChapterComment: GetMainChapterCommentUC,
+
     private val reactComicCommentByComicIdUC: ReactComicCommentByComicIdUC
 ) : ViewModel(), StatefulViewModel<ReplyCommentDetailState> {
     //navController
@@ -42,7 +50,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
 
     override val isUpdateSuccess: Boolean = _state.value.isUpdateCommentSuccess
     override val isDeleteSuccess: Boolean = _state.value.isDeleteCommentSuccess
-    override fun update(key: Long, key2: Long?, value: String) {
+    override fun update(key: Long, key2: Long?, key3: Int?, value: String) {
         updateComicCommentByComicId(
             comicId = key,
             commentId = key2!!,
@@ -50,7 +58,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
         )
     }
 
-    override fun delete(key: Long, key2: Long?, isDeleteAll: Boolean?) {
+    override fun delete(key: Long, key2: Long?, key3: Int?, isDeleteAll: Boolean?) {
         deleteComicCommentByComicId(
             comicId = key,
             commentId = key2!!
@@ -95,7 +103,6 @@ class ReplyCommentDetailViewModel @Inject constructor(
     fun resetState1() {
         _state.value = ReplyCommentDetailState()
     }
-
 
 
     /**
@@ -154,6 +161,55 @@ class ReplyCommentDetailViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Todo: Implement get all replies comment of chapter
+     */
+    fun getAllReplyChapterComment(
+        comicId: Long,
+        chapterNumber: Int,
+        commentId: Long,
+        page: Int? = 1,
+        orderBy: String? = "CreationTime",
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isListComicCommentLoading = true)
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val size = _state.value.size
+
+            val currentPage = _state.value.currentPage.value
+            val totalPages = _state.value.totalPages.value
+
+            if (currentPage >= totalPages && totalPages != 0) return@launch
+
+            val result = getAllReplyChapterCommentUC.getAllReplyChapterComment(
+                token = token,
+                comicId = comicId,
+                chapterNumber = chapterNumber,
+                commentId = commentId,
+                orderBy = orderBy,
+                page = page,
+                size = size
+            )
+            result.fold(
+                onSuccess = { baseResponse ->
+                    val results = baseResponse.results
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(
+                        listComicComment = state.value.listComicComment + results,
+                    )
+                    _state.value.currentPage.value = baseResponse.currentPage
+                    _state.value.totalPages.value = baseResponse.totalPages
+                    _state.value.totalCommentResults.value = baseResponse.totals
+                    _state.value = _state.value.copy(isListComicCommentLoading = false)
+                },
+                onFailure ={ exception ->
+                    _state.value = _state.value.copy(isListComicCommentLoading = false)
+                    Log.e("ReplyCommentDetailViewModel", "getAllReplyChapterComment: $exception")
+                }
+
+            )
+        }
+    }
 
     /**
      * Todo: Implement post comment of comic by comicId
@@ -185,7 +241,10 @@ class ReplyCommentDetailViewModel @Inject constructor(
                     balance = 0,
                     roles = appPreference.userRoles
                 )
-                Log.d("ReplyCommentDetailViewModel", "postComicCommentByComicId: $newCommentResponse")
+                Log.d(
+                    "ReplyCommentDetailViewModel",
+                    "postComicCommentByComicId: $newCommentResponse"
+                )
                 val list = _state.value.listComicComment.toMutableList()
                 if (!list.any { it.id == newComment.id }) {
                     list.add(newCommentResponse)
@@ -193,7 +252,8 @@ class ReplyCommentDetailViewModel @Inject constructor(
                         listComicComment = list,
                         isPostComicCommentSuccess = true,
                     )
-                    _state.value.totalCommentResults.value = _state.value.totalCommentResults.value + 1
+                    _state.value.totalCommentResults.value =
+                        _state.value.totalCommentResults.value + 1
                 }
 
             } else {
@@ -207,6 +267,7 @@ class ReplyCommentDetailViewModel @Inject constructor(
     fun navigateBack() {
         navController?.popBackStack()
     }
+
     /**
      * Todo: Implement delete comic comment by comicId and commentId
      */
@@ -230,8 +291,9 @@ class ReplyCommentDetailViewModel @Inject constructor(
                     val list = _state.value.listComicComment.toMutableList()
                     list.removeIf { it.id == commentId }
                     _state.value = _state.value.copy(listComicComment = list)
-                    _state.value.totalCommentResults.value = _state.value.totalCommentResults.value - 1
-                }else{
+                    _state.value.totalCommentResults.value =
+                        _state.value.totalCommentResults.value - 1
+                } else {
                     _state.value = _state.value.copy(isDeleteMainCommentSuccess = true)
                     appPreference.mainReplyCommentIdDeleted = _state.value.mainComment!!.id
                     withContext(Dispatchers.Main) {
@@ -305,11 +367,49 @@ class ReplyCommentDetailViewModel @Inject constructor(
                 onSuccess = { commentResponse ->
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(mainComment = commentResponse)
-                    Log.d("ReplyCommentDetailViewModel", "getMainCommentByCommentId: $commentResponse")
+                    Log.d(
+                        "ReplyCommentDetailViewModel",
+                        "getMainCommentByCommentId: $commentResponse"
+                    )
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
                     Log.e("ReplyCommentDetailViewModel", "getMainCommentByCommentId: $exception")
+                }
+            )
+        }
+    }
+
+    /**
+     * Todo: Implement get main chapter comment
+     *
+     */
+    fun getMainChapterComment(
+        comicId: Long,
+        chapterNumber: Int,
+        commentId: Long
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val result = getMainChapterComment.getMainChapterComment(
+                token = token,
+                comicId = comicId,
+                chapterNumber = chapterNumber,
+                commentId = commentId
+            )
+            Log.d("ReplyCommentDetailViewModel", "getMainChapterComment: $comicId, $chapterNumber, $commentId")
+            result.fold(
+                onSuccess = { commentResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(mainComment = commentResponse)
+                    Log.d(
+                        "ReplyCommentDetailViewModel",
+                        "getMainChapterComment: $commentResponse"
+                    )
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ReplyCommentDetailViewModel", "getMainChapterComment: $exception")
                 }
             )
         }
@@ -348,7 +448,8 @@ class ReplyCommentDetailViewModel @Inject constructor(
                                     )
                                 } else {
                                     // Either it was disliked or no reaction before, so like it
-                                    val newTotalDislikes = if (it.myReaction == "Dislike") it.totalDislikes - 1 else it.totalDislikes
+                                    val newTotalDislikes =
+                                        if (it.myReaction == "Dislike") it.totalDislikes - 1 else it.totalDislikes
                                     it.copy(
                                         totalLikes = it.totalLikes + 1,
                                         totalDislikes = newTotalDislikes,
@@ -366,7 +467,8 @@ class ReplyCommentDetailViewModel @Inject constructor(
                                     )
                                 } else {
                                     // Either it was liked or no reaction before, so dislike it
-                                    val newTotalLikes = if (it.myReaction == "Like") it.totalLikes - 1 else it.totalLikes
+                                    val newTotalLikes =
+                                        if (it.myReaction == "Like") it.totalLikes - 1 else it.totalLikes
                                     it.copy(
                                         totalDislikes = it.totalDislikes + 1,
                                         totalLikes = newTotalLikes,
@@ -394,7 +496,8 @@ class ReplyCommentDetailViewModel @Inject constructor(
                                     )
                                 } else {
                                     // Either it was disliked or no reaction before, so like it
-                                    val newTotalDislikes = if (it.myReaction == "Dislike") it.totalDislikes - 1 else it.totalDislikes
+                                    val newTotalDislikes =
+                                        if (it.myReaction == "Dislike") it.totalDislikes - 1 else it.totalDislikes
                                     it.copy(
                                         totalLikes = it.totalLikes + 1,
                                         totalDislikes = newTotalDislikes,
@@ -412,7 +515,8 @@ class ReplyCommentDetailViewModel @Inject constructor(
                                     )
                                 } else {
                                     // Either it was liked or no reaction before, so dislike it
-                                    val newTotalLikes = if (it.myReaction == "Like") it.totalLikes - 1 else it.totalLikes
+                                    val newTotalLikes =
+                                        if (it.myReaction == "Like") it.totalLikes - 1 else it.totalLikes
                                     it.copy(
                                         totalDislikes = it.totalDislikes + 1,
                                         totalLikes = newTotalLikes,
@@ -432,7 +536,6 @@ class ReplyCommentDetailViewModel @Inject constructor(
             }
         }
     }
-
 
 
 }

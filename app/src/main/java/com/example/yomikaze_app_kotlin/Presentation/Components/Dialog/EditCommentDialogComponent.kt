@@ -59,6 +59,7 @@ fun <T, VM> EditCommentDialogComponent(
     title: String,
     key: Long,
     key2: Long? = null,
+    key3: Int? = null,
     value: String, //name
     viewModel: VM,
     onDismiss: () -> Unit
@@ -220,7 +221,7 @@ fun <T, VM> EditCommentDialogComponent(
                                 if (value.isEmpty() || value.length > textSize) {
                                     isError = true
                                 } else {
-                                    viewModel.update(key, key2, value)
+                                    viewModel.update(key, key2, key3, value)
                                     if (viewModel.isUpdateSuccess!!) {
                                         Toast.makeText(
                                             context,

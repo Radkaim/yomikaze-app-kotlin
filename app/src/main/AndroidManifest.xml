@@ -12,33 +12,38 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
+        android:supportsRtl="true"
         android:theme="@style/Theme.Yomikazeappkotlin"
         tools:targetApi="31"
+        android:enableOnBackInvokedCallback="false"
         android:name=".YomiApplication"
         >
-        <meta-data
-            android:name="com.google.android.gms.wallet.api.enabled"
-            android:value="true" />
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.wallet.api.enabled"-->
+<!--            android:value="true" />-->
 
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:label="@string/app_name"
+            android:enableOnBackInvokedCallback="true"
             android:theme="@style/Theme.Yomikazeappkotlin"
             >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+
             <intent-filter android:autoVerify="true">
                 <data android:host="yomikaze.org"
                     android:scheme="https" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-
             </intent-filter>
 
 

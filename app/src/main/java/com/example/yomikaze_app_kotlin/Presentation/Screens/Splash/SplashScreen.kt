@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.R
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -35,8 +35,9 @@ fun SplashScreen(navController: NavController) {
 //    val systemUiController = rememberSystemUiController()
 
     // AnimationEffect
-    val color = MaterialTheme.colorScheme.background
+//    val color = MaterialTheme.colorScheme.background
     LaunchedEffect(key1 = true) {
+        withContext(kotlinx.coroutines.Dispatchers.Main) {
 
 //        scale.animateTo(
 //            targetValue = 0.7f,
@@ -46,17 +47,26 @@ fun SplashScreen(navController: NavController) {
 //                    OvershootInterpolator(0.1f).getInterpolation(it)
 //                })
 //        )
-        delay(100L)
-        // Optionally, show the system bars again after the splash screen
+//        delay(100L)
+            // Optionally, show the system bars again after the splash screen
 
-        navController.navigate("main_screen_route")
+            navController.navigate("main_screen_route")
+        }
 
     }
-
+    val brush = Brush.horizontalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.outline,
+            MaterialTheme.colorScheme.outlineVariant
+        )
+    )
     // Image
+
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize().offset(y = -(50).dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .offset(y = -(50).dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
@@ -72,18 +82,14 @@ fun SplashScreen(navController: NavController) {
             fontSize = 30.sp,
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.outline,
-                        MaterialTheme.colorScheme.outlineVariant
-                    ),
-                )
+                brush = brush,
             ),
             modifier = Modifier.padding(
                 top = 220.dp
             )
         )
     }
+
 
 }
 

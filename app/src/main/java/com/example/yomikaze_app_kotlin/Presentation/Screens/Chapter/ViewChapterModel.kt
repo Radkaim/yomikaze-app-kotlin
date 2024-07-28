@@ -46,6 +46,10 @@ class ViewChapterModel @Inject constructor(
         navController?.navigate("coins_shop_route")
     }
 
+    fun navigateToChapterComment(comicId: Long, chapterTitle: String?, chapterNumber: Int) {
+        navController?.navigate("chapter_comment_route/$comicId/$chapterTitle/$chapterNumber")
+    }
+
     //reset state
     fun resetState() {
         _state.value = ViewChapterState()
@@ -119,6 +123,7 @@ class ViewChapterModel @Inject constructor(
                         pagesImage = page.pages,
                         pageResponse = page,
                         currentChapterNumber = chapterNumber,
+                        currentChapterTitle = page.name,
 
                         isUserNeedToLogin = false,
                         isChapterNeedToUnlock = false

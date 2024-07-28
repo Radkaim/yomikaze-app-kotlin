@@ -50,6 +50,7 @@ import com.example.yomikaze_app_kotlin.R
 fun <T, VM> EditDialogComponent(
     key: Long,
     key2: Long? = null,
+    key3: Int? = null,
     value: String, //name
     title: String, // title of dialog
     viewModel: VM,
@@ -198,7 +199,7 @@ fun <T, VM> EditDialogComponent(
                                 if (value.isEmpty() || value.length > 32) {
                                     isError = true
                                 } else {
-                                    viewModel.update(key, key2, value)
+                                    viewModel.update(key, key2, key3,  value)
                                     if (viewModel.isUpdateSuccess!!) {
                                         Toast.makeText(context, "Update successfully", Toast.LENGTH_SHORT).show()
                                         onDismiss()

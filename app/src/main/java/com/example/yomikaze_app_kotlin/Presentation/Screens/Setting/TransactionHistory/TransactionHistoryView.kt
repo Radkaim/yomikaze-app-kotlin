@@ -134,7 +134,7 @@ fun TransactionHistoryViewContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(top = 5.dp),
+                    .padding(top = 5.dp, end = 10.dp),
 
                 verticalAlignment = Alignment.CenterVertically
             ) {
