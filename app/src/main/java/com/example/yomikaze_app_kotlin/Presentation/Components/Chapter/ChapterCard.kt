@@ -120,8 +120,7 @@ fun ChapterCard(
                                         .width(15.dp)
                                         .height(15.dp)
                                         .offset(x = 20.dp, y = (-7).dp)
-                                        .clickable { onReportClick() }
-                                )
+                                        .clickable { onReportClick() })
                             }
                         }
                         // for views and comments and published date

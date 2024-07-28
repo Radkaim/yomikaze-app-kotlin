@@ -30,9 +30,11 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.ReportDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.ChapterCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapterModel
+import kotlinx.coroutines.withContext
 
 
 /**
@@ -41,6 +43,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapterM
 @Composable
 fun ListChapterInComicDetailView(
     comicDetailViewModel: ComicDetailViewModel,
+    state: ComicDetailState,
     comicId: Long,
     viewChapterModel: ViewChapterModel = hiltViewModel()
 ) {
@@ -49,7 +52,10 @@ fun ListChapterInComicDetailView(
 //    val viewChapterModel = hiltViewModel<ViewChapterModel>()
     val viewChapterState = viewChapterModel.state.collectAsState()
     LaunchedEffect(Unit) {
-        comicDetailViewModel.getListChapterByComicId(comicId = comicId)
+        withContext(coroutineContext) {
+            comicDetailViewModel.getListChapterByComicId(comicId = comicId)
+            comicDetailViewModel.getCommonChapterReportReasons()
+        }
     }
 
 
@@ -58,7 +64,8 @@ fun ListChapterInComicDetailView(
 
     val listChapter = comicDetailViewModel.state.value.listChapters
 
-    var showDialog by remember { mutableStateOf(false) }
+//    var showDialog by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf<Int?>(null) }
     var selectedChapter by remember { mutableStateOf<Chapter?>(null) }
 
     Row(
@@ -139,7 +146,7 @@ fun ListChapterInComicDetailView(
                             } else {
                                 if (if (comicDetailViewModel.checkUserIsLogin()) !chapter.isUnlocked else chapter.hasLock) {
                                     selectedChapter = chapter
-                                    showDialog = true
+                                    showDialog = 1
                                 } else {
                                     comicDetailViewModel.navigateToViewChapter(
                                         comicId,
@@ -148,32 +155,58 @@ fun ListChapterInComicDetailView(
                                 }
                             }
                         },
-                        onReportClick = {}
+                        onReportClick = {
+                            showDialog = 2
+                            selectedChapter = chapter
+                        },
                     )
 
                 }
             }
         }
     }
-    if (showDialog) {
-        UnlockChapterDialogComponent(
-            title = "Do you want to unlock this chapter?",
-            chapterNumber = selectedChapter?.number!!,
-            totalCoin = selectedChapter?.price?.toLong() ?: 0,
-            coinOfUserAvailable = appPreference.userBalance,
-            onConfirmClick = {
-                //UnlockUC
-                //if(state.success) {navigateToViewChapter}
-                viewChapterModel.unlockAChapter(
-                    comicId = comicId,
+    if (showDialog != null) {
+        when (showDialog) {
+            1 -> {
+                UnlockChapterDialogComponent(
+                    title = "Do you want to unlock this chapter?",
                     chapterNumber = selectedChapter?.number!!,
-                    price = selectedChapter?.price?.toLong() ?: 0
+                    totalCoin = selectedChapter?.price?.toLong() ?: 0,
+                    coinOfUserAvailable = appPreference.userBalance,
+                    onConfirmClick = {
+                        //UnlockUC
+                        //if(state.success) {navigateToViewChapter}
+                        viewChapterModel.unlockAChapter(
+                            comicId = comicId,
+                            chapterNumber = selectedChapter?.number!!,
+                            price = selectedChapter?.price?.toLong() ?: 0
+                        )
+                    },
+                    onDismiss = { showDialog = null },
+                    onBuyCoinsClick = {
+                        comicDetailViewModel.navigateToCoinShop()
+                    }
                 )
-            },
-            onDismiss = { showDialog = false },
-            onBuyCoinsClick = {
-                comicDetailViewModel.navigateToCoinShop()
             }
-        )
+
+            2 -> {
+                ReportDialog(
+                    title = "Report Chapter",
+                    keyId = comicId,
+                    chapterNumber = selectedChapter?.number!!,
+                    typeReport = "chapter",
+                    listCommonReportReasons = state.listCommonChapterReportResponse,
+                    onDismiss = { showDialog = null },
+                    onSubmitChapterReport = { comicId, chapterNumber, reasonId, reportContent ->
+                        comicDetailViewModel.reportChapter(
+                            comicId = comicId,
+                            chapterNumber = chapterNumber,
+                            reportReasonId = reasonId,
+                            reportContent = reportContent
+                        )
+                    }
+                )
+            }
+        }
     }
 }

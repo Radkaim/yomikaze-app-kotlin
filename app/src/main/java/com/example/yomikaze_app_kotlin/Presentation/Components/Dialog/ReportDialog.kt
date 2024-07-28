@@ -12,17 +12,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -38,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
@@ -50,16 +55,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ReportComicDialog(
+fun ReportDialog(
     title: String,
-    value: String,
-    onSubmit: (String) -> Unit,
+    keyId: Long,
+    chapterNumber: Int? = null,
+    typeReport: String,
+    listCommonReportReasons: List<ReportResponse>,
+    onSubmitComicReport: (Long, Long, String) -> Unit? = { _, _, _ -> },
+    onSubmitChapterReport: (Long, Int, Long, String) -> Unit? = { _, _, _, _ -> },
     onDismiss: () -> Unit,
 ) {
-    val context = LocalContext.current
-    var value by remember { mutableStateOf((value)) }
+
+    var value by remember { mutableStateOf(("")) }
+    val listCommonReportReasons by remember { mutableStateOf(listCommonReportReasons) }
+    var selectedReason by remember { mutableStateOf(listCommonReportReasons.last()) }
+
+    var expanded by remember { mutableStateOf(false) }
+
+
     var isError by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -89,8 +106,10 @@ fun ReportComicDialog(
                     .align(Alignment.Center)
             ) {
                 Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .padding(start = 20.dp, top = 10.dp)
+                        .padding(top = 10.dp)
                         .align(Alignment.Center)
                 ) {
                     Text(
@@ -104,6 +123,58 @@ fun ReportComicDialog(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
+                    // Dropdown list for report reasons
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = !expanded },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .padding(top = 10.dp, start = 50.dp, end = 20.dp)
+                            .align(Alignment.CenterHorizontally)
+                    ) {
+                        OutlinedTextField(
+                            value = selectedReason.content,
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = {
+                                Icon(
+                                    Icons.Filled.ArrowDropDown,
+                                    contentDescription = "DropDownIcon",
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(
+                                    alpha = 0.2f
+                                ),
+                                focusedIndicatorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                                unfocusedIndicatorColor = MaterialTheme.colorScheme.secondaryContainer,
+                                cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                                trailingIconColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                                focusedLabelColor = MaterialTheme.colorScheme.surface,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.surface.copy(alpha = ContentAlpha.medium)
+                            )
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            listCommonReportReasons.forEach { reason ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        selectedReason = reason
+                                        expanded = false
+                                    }
+                                ) {
+                                    Text(reason.content)
+                                }
+                            }
+                        }
+                    }
+
+
                     TextField(
                         value = value,
                         onValueChange = { newText ->
@@ -114,7 +185,7 @@ fun ReportComicDialog(
                             if (value.length > textSize) {
                                 isError = true
                                 Text(
-                                    text = "Your comment is too long",
+                                    text = "Your report is too long",
                                     fontSize = 12.sp,
                                     color = MaterialTheme.colorScheme.error
                                 )
@@ -122,7 +193,7 @@ fun ReportComicDialog(
                                 isError = true
                                 Text(
                                     modifier = Modifier.alpha(ContentAlpha.medium),
-                                    text = "Say something...",
+                                    text = "Write your description here!!!",
                                     fontWeight = FontWeight.Medium,
                                     fontStyle = FontStyle.Italic,
                                     fontSize = 16.sp,
@@ -212,10 +283,13 @@ fun ReportComicDialog(
                         Spacer(modifier = Modifier.width(20.dp))
                         Button(
                             onClick = {
-                                if (value.isEmpty() || value.length > textSize) {
+                                if (value.length > textSize) {
                                     isError = true
                                 } else {
-                                    onSubmit(value)
+                                    when(typeReport) {
+                                        "comic" -> onSubmitComicReport(keyId, selectedReason.id, value)
+                                        "chapter" -> onSubmitChapterReport(keyId, chapterNumber!!, selectedReason.id, value)
+                                    }
                                     onDismiss()
                                 }
                             },

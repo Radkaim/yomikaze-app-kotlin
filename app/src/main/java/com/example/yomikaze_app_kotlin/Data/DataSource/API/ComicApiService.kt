@@ -134,14 +134,14 @@ interface ComicApiService {
     /**
      * TODO: get common report reasons of comic
      */
-    @GET("comics/reports/reasons")
+    @GET("reports/comic/reasons")
     suspend fun getComicCommonReportReasons(
     ): List<ReportResponse>
 
     /**
      * TODO: use for report a comic
      */
-    @POST("comics/{comicId}/reports")
+    @POST("reports/comic/{comicId}")
     suspend fun reportComic(
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,

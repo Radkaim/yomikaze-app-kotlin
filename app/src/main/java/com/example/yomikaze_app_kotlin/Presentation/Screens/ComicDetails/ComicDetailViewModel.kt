@@ -15,8 +15,10 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetConti
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicCommonReportReasonsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetCommonChapterReportReasonsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.ReportChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.ReportComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
@@ -42,7 +44,10 @@ class ComicDetailViewModel @Inject constructor(
     private val reactComicCommentByComicIdUC: ReactComicCommentByComicIdUC,
 
     private val getComicCommonReportReasonsUC: GetComicCommonReportReasonsUC,
-    private val reportComicUC: ReportComicUC
+    private val reportComicUC: ReportComicUC,
+
+    private val getCommonChapterReportReasonsUC: GetCommonChapterReportReasonsUC,
+    private val reportChapterUC: ReportChapterUC
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -87,6 +92,11 @@ class ComicDetailViewModel @Inject constructor(
      */
     fun checkUserIsLogin(): Boolean {
         return appPreference.isUserLoggedIn
+    }
+
+
+    init {
+        getComicCommonReportReasons()
     }
 
     fun getComicDetailsFromApi(comicId: Long) {
@@ -361,7 +371,7 @@ class ComicDetailViewModel @Inject constructor(
             result.fold(
                 onSuccess = { listReportResponse ->
                     // Xử lý kết quả thành công
-                    _state.value = _state.value.copy(listReportResponse = listReportResponse)
+                    _state.value = _state.value.copy(listCommonComicReportResponse = listReportResponse)
                     Log.d("ComicDetailViewModel", "getComicCommonReportReasons: $result")
                 },
                 onFailure = { exception ->
@@ -375,8 +385,12 @@ class ComicDetailViewModel @Inject constructor(
     /**
      * Todo: Implement report comic
      */
-    fun reportComic(comicId: Long, reportReasonId: Long, reportContent: String) {
+    fun reportComic(comicId: Long, reportReasonId: Long, reportContent: String?) {
         viewModelScope.launch(Dispatchers.IO) {
+//            Log.d("ComicDetailViewModel", "reportComic: $reportContent")
+            Log.d("ComicDetailViewModel", "reportComic: $reportReasonId")
+//            Log.d("ComicDetailViewModel", "reportComic: $comicId")
+
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val newReportRequest = ReportRequest(reportReasonId, reportContent)
             val result = reportComicUC.reportComic(token, comicId, newReportRequest)
@@ -384,6 +398,52 @@ class ComicDetailViewModel @Inject constructor(
                 Log.d("ComicDetailViewModel", "reportComic: $result")
             } else {
                 Log.e("ComicDetailViewModel", "reportComic: $result")
+            }
+        }
+    }
+
+    /**
+     * Todo: Implement get common report reasons of chapter
+     */
+    fun getCommonChapterReportReasons() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = getCommonChapterReportReasonsUC.getCommonChapterReportReasons()
+            result.fold(
+                onSuccess = { listReportResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(listCommonChapterReportResponse = listReportResponse)
+                    Log.d("ComicDetailViewModel", "getCommonChapterReportReasons: $result")
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicDetailViewModel", "getCommonChapterReportReasons: $exception")
+                }
+            )
+        }
+    }
+
+    /**
+     * Todo: Implement report chapter
+     */
+    fun reportChapter(
+        comicId: Long,
+        chapterNumber: Int,
+        reportReasonId: Long,
+        reportContent: String?
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+//            Log.d("ComicDetailViewModel", "reportChapter: $reportContent")
+//            Log.d("ComicDetailViewModel", "reportChapter: $reportReasonId")
+//            Log.d("ComicDetailViewModel", "reportChapter: $comicId")
+//            Log.d("ComicDetailViewModel", "reportChapter: $chapterNumber")
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val newReportRequest = ReportRequest(reportReasonId, reportContent)
+            val result =
+                reportChapterUC.reportChapter(token, comicId, chapterNumber, newReportRequest)
+            if (result.code() == 201) {
+                Log.d("ComicDetailViewModel", "reportChapter: $result")
+            } else {
+                Log.e("ComicDetailViewModel", "reportChapter: $result")
             }
         }
     }

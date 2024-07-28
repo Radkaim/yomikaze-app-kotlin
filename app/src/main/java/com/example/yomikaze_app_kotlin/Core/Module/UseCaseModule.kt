@@ -53,8 +53,10 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetTransactionHi
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetChapterDetailUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicCommonReportReasonsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetCommonChapterReportReasonsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.ReportChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.ReportComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockAChapterUC
@@ -249,6 +251,24 @@ object UseCaseModule {
     @Singleton
     fun provideGetComicCommonReportReasonsUC(comicRepository: ComicRepository): GetComicCommonReportReasonsUC {
         return GetComicCommonReportReasonsUC(comicRepository)
+    }
+
+    /**
+     * Todo: Provide the GetCommonChapterReportReasonsUC
+     */
+    @Provides
+    @Singleton
+    fun provideGetCommonChapterReportReasonsUC(chapterRepository: ChapterRepository): GetCommonChapterReportReasonsUC {
+        return GetCommonChapterReportReasonsUC(chapterRepository)
+    }
+
+    /**
+     * Todo: Provide the ReportChapterUC
+     */
+    @Provides
+    @Singleton
+    fun provideReportChapterUC(chapterRepository: ChapterRepository): ReportChapterUC {
+        return ReportChapterUC(chapterRepository)
     }
 
     /**

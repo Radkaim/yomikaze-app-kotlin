@@ -2,6 +2,8 @@ package com.example.yomikaze_app_kotlin.Domain.Repositories
 
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 import retrofit2.Response
 
 interface ChapterRepository {
@@ -65,5 +67,21 @@ interface ChapterRepository {
         token: String,
         comicId: Long,
         chapterNumbers: List<Int>
+    ): Response<Unit>
+
+    /**
+     * TODO : getCommonReportReasons
+     *
+     */
+    suspend fun getCommonChapterReportReasons(): Result<List<ReportResponse>>
+
+    /**
+     * TODO : reportChapter
+     */
+    suspend fun reportChapter(
+        token: String,
+        comicId: Long,
+        chapterNumber: Int,
+        reportRequest: ReportRequest
     ): Response<Unit>
 }

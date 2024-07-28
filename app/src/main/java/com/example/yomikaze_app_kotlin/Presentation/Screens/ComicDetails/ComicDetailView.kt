@@ -69,6 +69,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareCo
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.AddToLibraryDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.RatingComicDialog
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.ReportDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.ShareDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
@@ -360,7 +361,21 @@ fun ComicDetailContent(
                                     comicDetailViewModel = comicDetailViewModel
                                 )
 
-                                4 -> CustomDialog4(onDismiss = { showDialog = null })
+                                4 -> ReportDialog(
+                                    title = "Report Comic",
+                                    keyId = comicId,
+                                    typeReport = "comic",
+                                    onDismiss = { showDialog = null },
+                                    listCommonReportReasons = state.listCommonComicReportResponse, // danh sách lý do phổ biến để báo cáo
+                                    onSubmitComicReport = { keyId, reportReasonId, reportContent ->
+                                        comicDetailViewModel.reportComic(
+                                            comicId = keyId,
+                                            reportReasonId = reportReasonId,
+                                            reportContent = reportContent
+                                        )
+                                    }
+                                )
+
                                 5 -> {
                                     ShareDialog(
                                         text = "https://yomikaze.org/comic_detail/$comicId",
@@ -640,7 +655,8 @@ fun ComicDetailContent(
 
                 1 -> ListChapterInComicDetailView(
                     comicDetailViewModel = comicDetailViewModel,
-                    comicId = comicId
+                    comicId = comicId,
+                    state = state
                     //  listChapter = listChapter
                 )
             }

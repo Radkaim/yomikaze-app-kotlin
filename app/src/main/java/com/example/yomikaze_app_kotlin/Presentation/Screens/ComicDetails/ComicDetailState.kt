@@ -37,6 +37,8 @@ data class ComicDetailState(
     // continue reading
 //    val continueReadingResponse: ContinueReadingResponse? = null,
 
-    val listReportResponse: List<ReportResponse> = emptyList(),
+    val listCommonComicReportResponse: List<ReportResponse> = emptyList(),
+    val listCommonChapterReportResponse: List<ReportResponse> = emptyList(),
+
 
     )

@@ -5,6 +5,8 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.API.ChapterApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ChapterRepository
 import retrofit2.Response
 import javax.inject.Inject
@@ -149,4 +151,50 @@ class ChapterRepositoryImpl @Inject constructor(
         return response
     }
 
+    /**
+     * TODO: get common report reasons of chapter
+     */
+    override suspend fun getCommonChapterReportReasons(): Result<List<ReportResponse>> {
+        return try {
+            val response = api.getCommonChapterReportReasons()
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * TODO: use for report a chapter
+     */
+    override suspend fun reportChapter(
+        token: String,
+        comicId: Long,
+        chapterNumber: Int,
+        reportRequest: ReportRequest
+    ) :Response<Unit> {
+        val response =  api.reportChapter("Bearer $token", comicId, chapterNumber, reportRequest)
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            val httpCode = response.code()
+            when (httpCode) {
+                400 -> {
+                    // Xử lý lỗi 400 (Bad Request)
+                    Log.e("ChapterRepositoryImpl", "Bad Request")
+                }
+
+                401 -> {
+                    // Xử lý lỗi 401 (Unauthorized)
+                    Log.e("ChapterRepositoryImpl", "Unauthorized")
+                }
+                // Xử lý các mã lỗi khác
+                else -> {
+                    // Xử lý mặc định cho các mã lỗi khác
+                    Log.e("ChapterRepositoryImpl", "Failed to report chapter $httpCode")
+                }
+            }
+            Result.failure(Exception("Failed to report chapter"))
+        }
+        return response
+    }
 }
