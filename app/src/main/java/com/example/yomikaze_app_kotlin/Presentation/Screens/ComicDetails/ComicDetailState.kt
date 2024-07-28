@@ -4,6 +4,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LibraryCategoryResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Tag
 
 data class ComicDetailState(
@@ -35,5 +36,7 @@ data class ComicDetailState(
 
     // continue reading
 //    val continueReadingResponse: ContinueReadingResponse? = null,
+
+    val listReportResponse: List<ReportResponse> = emptyList(),
 
     )

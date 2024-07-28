@@ -4,6 +4,8 @@ import android.content.Context
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Tag
 import retrofit2.Response
 
@@ -145,4 +147,17 @@ interface ComicRepository {
         size: Int? = null
     ): Result<BaseResponse<Tag>>
 
+    /**
+     * TODO: get common report reasons of comic
+     */
+    suspend fun getComicCommonReportReasons(): Result<List<ReportResponse>>
+
+    /**
+     * TODO: use for report a comic
+     */
+    suspend fun reportComic(
+        token: String,
+        comicId: Long,
+        reportRequest: ReportRequest,
+    ): Response<Unit>
 }

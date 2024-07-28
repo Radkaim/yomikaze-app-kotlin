@@ -58,6 +58,7 @@ import com.example.yomikaze_app_kotlin.R
 fun CommentCard(
     comicId: Long,
     commentId: Long,
+    chapterNumber: Int? = null,
     content: String,
     authorName: String,
     authorImage: String,
@@ -407,7 +408,7 @@ fun CommentCard(
                             }
 
                             if (showDialog != null) {
-                                if (comicCommentViewModel != null) {
+                                if (comicCommentViewModel != null && replyCommentDetailViewModel == null && chapterCommentViewModel == null) {
                                     when (showDialog) {
 
                                         1 -> {
@@ -433,12 +434,14 @@ fun CommentCard(
 
                                         }
                                     }
-                                } else {
+                                }
+                                if (comicCommentViewModel == null && replyCommentDetailViewModel != null && chapterCommentViewModel == null) {
                                     when (showDialog) {
                                         1 -> {
                                             EditCommentDialogComponent(
                                                 key = comicId,
                                                 key2 = commentId,
+                                                key3 = chapterNumber!!,
                                                 value = content,
                                                 title = "Edit Comment",
                                                 onDismiss = { showDialog = 0 },
@@ -450,6 +453,7 @@ fun CommentCard(
                                             DeleteConfirmDialogComponent(
                                                 key = comicId,
                                                 key2 = commentId,
+                                                key3 = chapterNumber!!,
                                                 value = "",
                                                 title = "Are you sure you want to delete this comment?",
                                                 onDismiss = { showDialog = 0 },
@@ -459,6 +463,58 @@ fun CommentCard(
                                         }
                                     }
                                 }
+                                if (comicCommentViewModel == null && replyCommentDetailViewModel == null && chapterCommentViewModel != null) {
+                                    when (showDialog) {
+                                        1 -> {
+                                            EditCommentDialogComponent(
+                                                key = comicId,
+                                                key2 = commentId,
+                                                key3 = chapterNumber!!,
+                                                value = content,
+                                                title = "Edit Comment",
+                                                onDismiss = { showDialog = 0 },
+                                                viewModel = chapterCommentViewModel!!
+                                            )
+                                        }
+
+                                        3 -> {
+                                            DeleteConfirmDialogComponent(
+                                                key = comicId,
+                                                key2 = commentId,
+                                                key3 = chapterNumber!!,
+                                                value = "",
+                                                title = "Are you sure you want to delete this comment?",
+                                                onDismiss = { showDialog = 0 },
+                                                viewModel = chapterCommentViewModel!!
+                                            )
+
+                                        }
+                                    }
+                                }
+//                                    when (showDialog) {
+//                                        1 -> {
+//                                            EditCommentDialogComponent(
+//                                                key = comicId,
+//                                                key2 = commentId,
+//                                                value = content,
+//                                                title = "Edit Comment",
+//                                                onDismiss = { showDialog = 0 },
+//                                                viewModel = replyCommentDetailViewModel!!
+//                                            )
+//                                        }
+//
+//                                        3 -> {
+//                                            DeleteConfirmDialogComponent(
+//                                                key = comicId,
+//                                                key2 = commentId,
+//                                                value = "",
+//                                                title = "Are you sure you want to delete this comment?",
+//                                                onDismiss = { showDialog = 0 },
+//                                                viewModel = replyCommentDetailViewModel!!
+//                                            )
+//
+//                                        }
+//                                    }
                             }
                         }
                     }
@@ -466,6 +522,7 @@ fun CommentCard(
             }
         }
     }
-
 }
+
+
 

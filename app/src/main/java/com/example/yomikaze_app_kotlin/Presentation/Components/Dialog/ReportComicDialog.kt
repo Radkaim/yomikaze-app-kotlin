@@ -1,6 +1,5 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.Dialog
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,26 +50,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.ViewModel
-import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 
 @Composable
-fun <T, VM> EditCommentDialogComponent(
+fun ReportComicDialog(
     title: String,
-    key: Long,
-    key2: Long? = null,
-    key3: Int? = null,
-    value: String, //name
-    viewModel: VM,
-    onDismiss: () -> Unit
-) where VM : ViewModel, VM : StatefulViewModel<T> {
-
+    value: String,
+    onSubmit: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
     val context = LocalContext.current
     var value by remember { mutableStateOf((value)) }
     var isError by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val textSize = 1024
+    val textSize = 512
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -199,7 +193,7 @@ fun <T, VM> EditCommentDialogComponent(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
-                            .height(400.dp)
+                            .height(200.dp)
                             .padding(8.dp)
                             .clip(RoundedCornerShape(30.dp))
                             .border(
@@ -221,15 +215,8 @@ fun <T, VM> EditCommentDialogComponent(
                                 if (value.isEmpty() || value.length > textSize) {
                                     isError = true
                                 } else {
-                                    viewModel.update(key, key2, key3, value)
-                                    if (viewModel.isUpdateSuccess!!) {
-                                        Toast.makeText(
-                                            context,
-                                            "Update successfully",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        onDismiss()
-                                    }
+                                    onSubmit(value)
+                                    onDismiss()
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -238,7 +225,7 @@ fun <T, VM> EditCommentDialogComponent(
                             ),
                             shape = MaterialTheme.shapes.medium,
                         ) {
-                            Text(text = "Save")
+                            Text(text = "Submit")
                         }
                     }
                 }

@@ -3,11 +3,14 @@ package com.example.yomikaze_app_kotlin.Data.DataSource.API
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Tag
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -126,6 +129,24 @@ interface ComicApiService {
         @Query("Page") page: Int? = null,
         @Query("Size") size: Int? = null,
     ): BaseResponse<Tag>
+
+
+    /**
+     * TODO: get common report reasons of comic
+     */
+    @GET("comics/reports/reasons")
+    suspend fun getComicCommonReportReasons(
+    ): List<ReportResponse>
+
+    /**
+     * TODO: use for report a comic
+     */
+    @POST("comics/{comicId}/reports")
+    suspend fun reportComic(
+        @Header("Authorization") token: String,
+        @Path("comicId") comicId: Long,
+        @Body reportRequest: ReportRequest
+    ): Response<Unit>
 
 
 }

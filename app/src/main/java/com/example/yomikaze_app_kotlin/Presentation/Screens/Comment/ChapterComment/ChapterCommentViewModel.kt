@@ -12,8 +12,8 @@ import com.example.yomikaze_app_kotlin.Domain.Models.ReactionRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.DeleteChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.GetAllChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.PostChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.ReactChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.UpdateChapterCommentUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Presentation.Screens.BaseModel.StatefulViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +27,10 @@ class ChapterCommentViewModel @Inject constructor(
     private val appPreference: AppPreference,
     private val getAllChapterCommentUC: GetAllChapterCommentUC,
     private val postChapterCommentUC: PostChapterCommentUC,
-    private val deleteComicCommentByComicIdUC: DeleteChapterCommentUC,
-
+    private val deleteChapterCommentUC: DeleteChapterCommentUC,
     private val updateChapterCommentUC: UpdateChapterCommentUC,
-    private val reactComicCommentByComicIdUC: ReactComicCommentByComicIdUC
+
+    private val reactChapterCommentUC: ReactChapterCommentUC
 ) : ViewModel(), StatefulViewModel<ChapterCommentState> {
     //navController
     private var navController: NavController? = null
@@ -44,7 +44,7 @@ class ChapterCommentViewModel @Inject constructor(
 
 
     override fun update(key: Long, key2: Long?, key3: Int?, value: String) {
-        updateComicCommentByComicId(
+        updateChapterComment(
             comicId = key,
             commentId = key2!!,
             chapterNumber = key3!!,
@@ -53,7 +53,7 @@ class ChapterCommentViewModel @Inject constructor(
     }
 
     override fun delete(key: Long, key2: Long?, key3:Int?, isDeleteAll: Boolean?) {
-        deleteComicCommentByComicId(
+        deleteChapterComment(
             comicId = key,
             commentId = key2!!,
             chapterNumber = key3!!
@@ -168,7 +168,7 @@ class ChapterCommentViewModel @Inject constructor(
     /**
      * Todo: Implement post comment of comic by comicId
      */
-    fun postComicCommentByComicId(
+    fun postChapterComment(
         comicId: Long,
         chapterNumber: Int,
         content: String
@@ -219,7 +219,7 @@ class ChapterCommentViewModel @Inject constructor(
     /**
      * Todo: Implement delete comic comment by comicId and commentId
      */
-    fun deleteComicCommentByComicId(
+    fun deleteChapterComment(
         comicId: Long,
         commentId: Long,
         chapterNumber: Int,
@@ -227,7 +227,7 @@ class ChapterCommentViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isDeleteCommentSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-            val result = deleteComicCommentByComicIdUC.deleteChapterComment(
+            val result = deleteChapterCommentUC.deleteChapterComment(
                 token = token,
                 comicId = comicId,
                 chapterNumber = chapterNumber,
@@ -251,7 +251,7 @@ class ChapterCommentViewModel @Inject constructor(
     /**
      * Todo: Implement update comic comment by comicId and commentId
      */
-    fun updateComicCommentByComicId(
+    fun updateChapterComment(
         comicId: Long,
         commentId: Long,
         chapterNumber: Int,
@@ -293,21 +293,23 @@ class ChapterCommentViewModel @Inject constructor(
     /**
      * Todo: Implement react comic comment by comicId
      */
-    fun reactComicCommentByComicId(
+    fun reactChapterComment(
         comicId: Long,
         commentId: Long,
+        chapterNumber: Int,
         reactionType: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val reactionRequest = ReactionRequest(reactionType)
-            val result = reactComicCommentByComicIdUC.reactComicCommentByComicId(
+            val result = reactChapterCommentUC.reactChapterComment(
                 token = token,
                 comicId = comicId,
                 commentId = commentId,
+                chapterNumber = chapterNumber,
                 reactionRequest = reactionRequest
             )
-            if (result.code() == 200) {
+            if (result.code() == 200 || result.code() == 204) {
                 Log.d("ChapterCommentViewModel", "reactComicCommentByComicId: $result")
                 // update it content
                 _state.value = _state.value.copy(

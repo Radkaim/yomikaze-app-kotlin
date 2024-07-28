@@ -128,6 +128,7 @@ fun RelyCommentDetailContent(
                 chapterNumber = chapterNumber,
                 commentId = commentId,
             )
+            replyCommentDetailViewModel.updateIsChapterComment(true)
         } else {
 //            Log.d("RelyCommentDetailView", "comicId: $comicId, commentId: $commentId")
             replyCommentDetailViewModel.getMainCommentByCommentId(
@@ -214,6 +215,7 @@ fun RelyCommentDetailContent(
                         CommentCard(
                             comicId = comicId,
                             commentId = state.mainComment!!.id,
+                            chapterNumber = chapterNumber,
                             content = state.mainComment.content,
                             authorName = state.mainComment.author.name,
                             authorImage = (APIConfig.imageAPIURL.toString() + state.mainComment.author.avatar)
@@ -227,11 +229,20 @@ fun RelyCommentDetailContent(
                             isReacted = state.mainComment.isReacted,
                             onLikeClick = {
                                 if (appPreference.isUserLoggedIn) {
-                                    replyCommentDetailViewModel.reactComicCommentByComicId(
-                                        commentId = state.mainComment.id,
-                                        comicId = comicId,
-                                        reactionType = "Like"
-                                    )
+                                        if (chapterNumber != null){
+                                            replyCommentDetailViewModel.reactChapterComment(
+                                                commentId = state.mainComment!!.id,
+                                                comicId = comicId,
+                                                chapterNumber = chapterNumber,
+                                                reactionType = "Like"
+                                            )
+                                        } else {
+                                            replyCommentDetailViewModel.reactComicComment(
+                                                commentId = state.mainComment!!.id,
+                                                comicId = comicId,
+                                                reactionType = "Like"
+                                            )
+                                        }
                                 } else {
                                     Toast.makeText(
                                         context,
@@ -243,11 +254,20 @@ fun RelyCommentDetailContent(
                             totalDislikes = state.mainComment.totalDislikes.toLong(),
                             onDislikeClick = {
                                 if (appPreference.isUserLoggedIn) {
-                                    replyCommentDetailViewModel.reactComicCommentByComicId(
-                                        commentId = state.mainComment.id,
-                                        comicId = comicId,
-                                        reactionType = "Dislike"
-                                    )
+                                   if (chapterNumber != null){
+                                       replyCommentDetailViewModel.reactChapterComment(
+                                           commentId = state.mainComment!!.id,
+                                           comicId = comicId,
+                                           chapterNumber = chapterNumber,
+                                           reactionType = "Dislike"
+                                       )
+                                   } else {
+                                       replyCommentDetailViewModel.reactComicComment(
+                                           commentId = state.mainComment!!.id,
+                                           comicId = comicId,
+                                           reactionType = "Dislike"
+                                       )
+                                   }
                                 } else {
                                     Toast.makeText(
                                         context,
@@ -328,6 +348,7 @@ fun RelyCommentDetailContent(
                             comicId = comicId,
                             commentId = comment.id,
                             content = comment.content,
+                            chapterNumber = chapterNumber,
                             authorName = comment.author.name,
                             authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
                                 ?: "",
@@ -340,11 +361,20 @@ fun RelyCommentDetailContent(
                             isReacted = comment.isReacted,
                             onLikeClick = {
                                 if (appPreference.isUserLoggedIn) {
-                                    replyCommentDetailViewModel.reactComicCommentByComicId(
-                                        commentId = comment.id,
-                                        comicId = comicId,
-                                        reactionType = "Like"
-                                    )
+                                    if (chapterNumber != null){
+                                        replyCommentDetailViewModel.reactChapterComment(
+                                            commentId = comment.id,
+                                            comicId = comicId,
+                                            chapterNumber = chapterNumber,
+                                            reactionType = "Like"
+                                        )
+                                    } else {
+                                        replyCommentDetailViewModel.reactComicComment(
+                                            commentId = comment.id,
+                                            comicId = comicId,
+                                            reactionType = "Like"
+                                        )
+                                    }
                                 } else {
                                     Toast.makeText(
                                         context,
@@ -356,11 +386,20 @@ fun RelyCommentDetailContent(
                             totalDislikes = comment.totalDislikes.toLong(),
                             onDislikeClick = {
                                 if (appPreference.isUserLoggedIn) {
-                                    replyCommentDetailViewModel.reactComicCommentByComicId(
-                                        commentId = comment.id,
-                                        comicId = comicId,
-                                        reactionType = "Dislike"
-                                    )
+                                    if(chapterNumber != null){
+                                        replyCommentDetailViewModel.reactChapterComment(
+                                            commentId = comment.id,
+                                            comicId = comicId,
+                                            chapterNumber = chapterNumber,
+                                            reactionType = "Dislike"
+                                        )
+                                    } else {
+                                        replyCommentDetailViewModel.reactComicComment(
+                                            commentId = comment.id,
+                                            comicId = comicId,
+                                            reactionType = "Dislike"
+                                        )
+                                    }
                                 } else {
                                     Toast.makeText(
                                         context,
@@ -412,11 +451,20 @@ fun RelyCommentDetailContent(
                         end.linkTo(parent.end)
                     },
                 onSendChatClickListener = {
-                    replyCommentDetailViewModel.postReplyComicCommentByComicId(
-                        comicId = comicId,
-                        commentId = commentId,
-                        content = it,
-                    )
+                    if (chapterNumber != null) {
+                        replyCommentDetailViewModel.postChapterComment(
+                            comicId = comicId,
+                            chapterNumber = chapterNumber,
+                            commentId = commentId,
+                            content = it,
+                        )
+                    } else {
+                        replyCommentDetailViewModel.postReplyComicCommentByComicId(
+                            comicId = comicId,
+                            commentId = commentId,
+                            content = it,
+                        )
+                    }
                 },
                 isLogin = replyCommentDetailViewModel.checkUserIsLogin()
             )

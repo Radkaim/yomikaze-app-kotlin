@@ -9,6 +9,8 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ComicDao
 import com.example.yomikaze_app_kotlin.Domain.Models.BaseResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.Tag
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ComicRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
@@ -345,5 +347,51 @@ class ComicRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * TODO: get common report reasons of comic
+     */
+    override suspend fun getComicCommonReportReasons(): Result<List<ReportResponse>> {
+        return try {
+            val response = api.getComicCommonReportReasons()
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * TODO: use for report a comic
+     *
+     */
+    override suspend fun reportComic(
+        token: String,
+        comicId: Long,
+        reportRequest: ReportRequest,
+    ): Response<Unit> {
+
+        val response = api.reportComic("Bearer $token", comicId, reportRequest)
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            val httpCode = response.code()
+            when (httpCode) {
+                400 -> {
+                    // Xử lý lỗi 400 (Bad Request)
+                    Log.e("ComicRepositoryImpl", "Bad Request")
+                }
+
+                401 -> {
+                    // Xử lý lỗi 401 (Unauthorized)
+                    Log.e("ComicRepositoryImpl", "Unauthorized")
+                }
+                // Xử lý các mã lỗi khác
+                else -> {
+                    // Xử lý mặc định cho các mã lỗi khác
+                }
+            }
+            Result.failure(Exception("Failed to report comic"))
+        }
+        return response
+    }
 }
 

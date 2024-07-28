@@ -70,7 +70,8 @@ fun CategoryCard(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                 shape = MaterialTheme.shapes.small
             )
-            .clickable { onClick() }
+            .clickable { onClick() },
+        color = MaterialTheme.colorScheme.onErrorContainer
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -167,6 +168,7 @@ fun CategoryCard(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_more),
                             contentDescription = "More option menu",
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
 
@@ -187,7 +189,7 @@ fun CategoryCard(
                             expanded = showPopupMenu,
                             onDismissRequest = { showPopupMenu = false },
                             modifier = Modifier
-                                .background(MaterialTheme.colorScheme.onSurface)
+                                .background(MaterialTheme.colorScheme.onErrorContainer)
                         ) {
                             listTitlesOfComicMenuOption.forEachIndexed { index, menuOptions ->
                                 DropdownMenuItem(

@@ -104,7 +104,7 @@ interface ChapterCommentApiService {
     /**
      * TODO: use for react chapter comment by comicId, chapterNumber and commentId
      */
-    @POST("comics/{comicId}/chapters/{number}/comments/{commentId}/reactions")
+    @POST("comics/{comicId}/chapters/{number}/comments/{commentId}/react")
     suspend fun reactChapterCommentByComicId(
         @Header("Authorization") token: String,
         @Path("comicId") comicId: Long,

@@ -9,12 +9,15 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.RatingRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ReactionRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetComicByIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.GetContinueReadingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Library.GetLibraryCategoryUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicCommonReportReasonsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.ReportComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +39,10 @@ class ComicDetailViewModel @Inject constructor(
     private val getComicByIdDBUC: GetComicByIdDBUC,
     private val getContinueReadingUC: GetContinueReadingUC,
     private val getAllComicCommentByComicIdUC: GetAllComicCommentByComicIdUC,
-    private val reactComicCommentByComicIdUC: ReactComicCommentByComicIdUC
+    private val reactComicCommentByComicIdUC: ReactComicCommentByComicIdUC,
+
+    private val getComicCommonReportReasonsUC: GetComicCommonReportReasonsUC,
+    private val reportComicUC: ReportComicUC
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -290,7 +296,7 @@ class ComicDetailViewModel @Inject constructor(
                 commentId = commentId,
                 reactionRequest = reactionRequest
             )
-            if (result.code() == 200) {
+            if (result.code() == 200 || result.code() == 204) {
                 Log.d("ComicCommentViewModel", "reactComicCommentByComicId: $result")
                 // update it content
                 _state.value = _state.value.copy(
@@ -346,4 +352,39 @@ class ComicDetailViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Todo: Implement get common report reasons
+     */
+    fun getComicCommonReportReasons() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = getComicCommonReportReasonsUC.getComicCommonReportReasons()
+            result.fold(
+                onSuccess = { listReportResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(listReportResponse = listReportResponse)
+                    Log.d("ComicDetailViewModel", "getComicCommonReportReasons: $result")
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicDetailViewModel", "getComicCommonReportReasons: $exception")
+                }
+            )
+        }
+    }
+
+    /**
+     * Todo: Implement report comic
+     */
+    fun reportComic(comicId: Long, reportReasonId: Long, reportContent: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val newReportRequest = ReportRequest(reportReasonId, reportContent)
+            val result = reportComicUC.reportComic(token, comicId, newReportRequest)
+            if (result.code() == 201) {
+                Log.d("ComicDetailViewModel", "reportComic: $result")
+            } else {
+                Log.e("ComicDetailViewModel", "reportComic: $result")
+            }
+        }
+    }
 }

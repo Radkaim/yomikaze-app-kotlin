@@ -296,7 +296,7 @@ class ComicCommentViewModel @Inject constructor(
                 commentId = commentId,
                 reactionRequest = reactionRequest
             )
-            if (result.code() == 200) {
+            if (result.code() == 200 || result.code() == 204) {
                 Log.d("ComicCommentViewModel", "reactComicCommentByComicId: $result")
                 // update it content
                 _state.value = _state.value.copy(

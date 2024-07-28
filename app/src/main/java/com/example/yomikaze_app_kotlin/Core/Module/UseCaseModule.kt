@@ -51,9 +51,11 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetCoinPricingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetPaymentSheetResponseUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetTransactionHistoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetChapterDetailUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicCommonReportReasonsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.ReportComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.SearchComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockAChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockManyChaptersUC
@@ -229,6 +231,24 @@ object UseCaseModule {
     @Singleton
     fun provideRatingComicUC(comicRepository: ComicRepository): RatingComicUC {
         return RatingComicUC(comicRepository)
+    }
+
+    /**
+     * Todo: Provide the ReportComicUC
+     */
+    @Provides
+    @Singleton
+    fun provideReportComicUC(comicRepository: ComicRepository): ReportComicUC {
+        return ReportComicUC(comicRepository)
+    }
+
+    /**
+     * Todo: Provide the GetComicCommonReportReasonsUC
+     */
+    @Provides
+    @Singleton
+    fun provideGetComicCommonReportReasonsUC(comicRepository: ComicRepository): GetComicCommonReportReasonsUC {
+        return GetComicCommonReportReasonsUC(comicRepository)
     }
 
     /**

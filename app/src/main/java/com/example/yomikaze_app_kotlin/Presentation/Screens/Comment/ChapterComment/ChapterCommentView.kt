@@ -244,6 +244,7 @@ fun ChapterCommentContent(
                         CommentCard(
                             comicId = comicId,
                             commentId = comment.id,
+                            chapterNumber = chapterNumber,
                             content = comment.content,
                             authorName = comment.author.name,
                             authorImage = (APIConfig.imageAPIURL.toString() + comment.author.avatar)
@@ -257,9 +258,10 @@ fun ChapterCommentContent(
                             isReacted = comment.isReacted,
                             onLikeClick = {
                                 if (appPreference.isUserLoggedIn) {
-                                    chapterCommentViewModel.reactComicCommentByComicId(
+                                    chapterCommentViewModel.reactChapterComment(
                                         commentId = comment.id,
                                         comicId = comicId,
+                                        chapterNumber = chapterNumber,
                                         reactionType = "Like"
                                     )
                                 } else {
@@ -273,9 +275,10 @@ fun ChapterCommentContent(
                             totalDislikes = comment.totalDislikes.toLong(),
                             onDislikeClick = {
                                 if (appPreference.isUserLoggedIn) {
-                                    chapterCommentViewModel.reactComicCommentByComicId(
+                                    chapterCommentViewModel.reactChapterComment(
                                         commentId = comment.id,
                                         comicId = comicId,
+                                        chapterNumber = chapterNumber,
                                         reactionType = "Dislike"
                                     )
                                 } else {
@@ -335,7 +338,7 @@ fun ChapterCommentContent(
                         end.linkTo(parent.end)
                     },
                 onSendChatClickListener = {
-                    chapterCommentViewModel.postComicCommentByComicId(
+                    chapterCommentViewModel.postChapterComment(
                         comicId = comicId,
                         chapterNumber = chapterNumber,
                         content = it,
