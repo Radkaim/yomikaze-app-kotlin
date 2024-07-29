@@ -335,7 +335,6 @@ class HomeViewModel @Inject constructor(
         // remove current screen from backstack
 
         navController?.navigate("bookcase_route/1")
-
     }
 
     fun onViewRankingMore(tabIndex: Int) {

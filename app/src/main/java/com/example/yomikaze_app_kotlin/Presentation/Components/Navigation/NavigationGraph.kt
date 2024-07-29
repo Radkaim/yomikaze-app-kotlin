@@ -63,7 +63,7 @@ fun NavigationGraph(
         composable(route = "comic_detail_route/{comicId}",
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "https://yomikaze.org/comic_detail/{comicId}"
+                    uriPattern = "https://yomikaze.org/comics/{comicId}"
                     action = Intent.ACTION_VIEW
                 }
             )) { navBackStackEntry ->

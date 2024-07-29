@@ -223,12 +223,14 @@ fun ComicDetailContent(
                             || previousRoute?.startsWith("notification_route") == true
                             || previousRoute?.startsWith("ranking_route") == true
                             || previousRoute?.startsWith("download_detail_route") == true
+//                            || previousRoute?.startsWith("advance_search_route") == true
 
                         ) {
                             Log.d("ComicDetailsView", "previousRoute1: Hung1")
                             navController.popBackStack()
                         } else {
                             Log.d("ComicDetailsView", "previousRoute2: Hung2")
+                            Log.d("ComicDetailsView", "previousRoute2: $previousRoute")
                             navController.navigate("home_route")
                         }
 //                        if(!isNetworkAvailable){
@@ -378,7 +380,7 @@ fun ComicDetailContent(
 
                                 5 -> {
                                     ShareDialog(
-                                        text = "https://yomikaze.org/comic_detail/$comicId",
+                                        text = "https://yomikaze.org/comics/$comicId",
                                         context = context
                                     )
                                     showDialog = null

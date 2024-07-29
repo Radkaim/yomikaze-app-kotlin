@@ -28,7 +28,7 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             route = BottomHomeNavItems.Home.screen_route,
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "https://yomikaze.org/home"
+                    uriPattern = "https://yomikaze.org"
                     action = Intent.ACTION_VIEW
                 }
             )

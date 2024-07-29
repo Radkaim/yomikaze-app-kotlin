@@ -19,8 +19,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.BottomHomeNavItems
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
@@ -70,6 +72,19 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("main_screen_route") {
                             MainView(mainViewModel)
+                        }
+
+                        composable(
+                            route = BottomHomeNavItems.Home.screen_route,
+                            deepLinks = listOf(
+                                navDeepLink {
+                                    uriPattern = "https://yomikaze.org/"
+                                    action = Intent.ACTION_VIEW
+                                }
+                            )
+
+                        ) {
+                            HomeView(navController = navController)
                         }
 
                         composable(
@@ -133,14 +148,14 @@ class MainActivity : ComponentActivity() {
                     navController.navigate("view_chapter_route/$comicId/$chapterId")
                 }
 
-                pathSegments.size > 1 && pathSegments[0] == "comic_detail" -> {
+                pathSegments.size > 1 && pathSegments[0] == "comics" -> {
                     val comicId = pathSegments[1]
                     Log.d("DeepLink", "comicId: $comicId")
                     navController.navigate("comic_detail_route/$comicId")
                 }
 
                 else -> {
-                    navController.navigate("main_graph_route")
+                    navController.navigate("home_route")
                 }
             }
         }
