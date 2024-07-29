@@ -1,6 +1,8 @@
 package com.example.yomikaze_app_kotlin.Domain.Repositories
 
+import com.example.yomikaze_app_kotlin.Domain.Models.ChangePasswordRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
+import retrofit2.Response
 
 interface ProfileRepository {
 
@@ -12,4 +14,6 @@ interface ProfileRepository {
 //        token: String,
 //        authorResponse: AuthorResponse
 //    ): Result<AuthorResponse>
+
+
 }

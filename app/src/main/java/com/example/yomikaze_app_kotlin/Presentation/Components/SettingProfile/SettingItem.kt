@@ -1,10 +1,12 @@
 package com.example.yomikaze_app_kotlin.Presentation.Components.SettingProfile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
@@ -26,7 +28,8 @@ data class SettingObject(
     val iconStartColor: Color? = null,
     val title: String,
     val iconEnd: Int,
-    val route: String
+    val route: String,
+    val isLoginMethod: Boolean = false
 
 )
 
@@ -36,6 +39,7 @@ fun SettingItemComponent(
     iconStartColor: Color? = null,
     title: String,
     iconEnd: Int,
+    isLoginMethod: Boolean? = false,
     onClicked: () -> Unit
 ) {
     var finalIconStartColor = iconStartColor ?: MaterialTheme.colorScheme.surfaceTint
@@ -72,13 +76,21 @@ fun SettingItemComponent(
             )
         }
 
-        IconButton(onClick = { onClicked() }) {
-            Icon(
+        if (isLoginMethod == true) {
+            Image(
                 painter = painterResource(id = iconEnd),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.65f),
-                modifier = Modifier.size(10.dp)
+                contentDescription = "Logo",
+                modifier = Modifier.size(25.dp).offset(x = -(10).dp, y = 0.dp),
             )
+        }else {
+            IconButton(onClick = { onClicked() }) {
+                Icon(
+                    painter = painterResource(id = iconEnd),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.65f),
+                    modifier = Modifier.size(10.dp)
+                )
+            }
         }
     }
 

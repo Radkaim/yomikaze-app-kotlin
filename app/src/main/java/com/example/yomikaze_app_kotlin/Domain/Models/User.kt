@@ -70,11 +70,11 @@ data class ResetPasswordRequest(
  * Change Password
  */
 data class ChangePasswordRequest(
-    @SerializedName("oldPassword")
-    val oldPassword: String,
+    @SerializedName("currentPassword")
+    val currentPassword: String? = null,
 
     @SerializedName("newPassword")
-    val confirmPassword: String
+    val newPassword: String
 )
 
 
@@ -112,13 +112,6 @@ data class ProfileResponse(
     var birthday: String = "",
 )
 
-data class DataUser(
-    //for api
-    @SerializedName("user")
-    //for database
-    @ColumnInfo(name = "user")
-    val user: User
-)
 
 data class User(
     //for api
@@ -138,43 +131,4 @@ data class User(
     //for database
     @ColumnInfo(name = "balance")
     val balance: Int,
-
-//    //for api
-//    @SerializedName("email")
-//    //for database
-//    @ColumnInfo(name = "email")
-//    val email: String,
-//
-//    //for api
-//    @SerializedName("isAdmin")
-//    //for database
-//    @ColumnInfo(name = "isAdmin")
-//    val isAdmin: Boolean,
-)
-
-data class UserClaims(
-
-    @SerializedName("jti")
-    val jti: String,
-
-    @SerializedName("iat")
-    val iat: String,
-
-    @SerializedName("exp")
-    val exp: String,
-
-    @SerializedName("sub")
-    val sub: String,
-
-    @SerializedName("name")
-    val name: String,
-
-    @SerializedName("email")
-    val email: String,
-
-    @SerializedName("sid")
-    val sid: String,
-
-    @SerializedName("roles")
-    val roles: String
 )

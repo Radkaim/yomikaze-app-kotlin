@@ -317,7 +317,7 @@ fun AddToLibraryDialog(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = Color(0xFFffF2FFFD)
                         )
                     }
                 }

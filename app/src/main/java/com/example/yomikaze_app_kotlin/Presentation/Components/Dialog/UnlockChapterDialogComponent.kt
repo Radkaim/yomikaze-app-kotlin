@@ -171,7 +171,7 @@ fun UnlockChapterDialogComponent(
                                 ),
                                 shape = MaterialTheme.shapes.medium
                             ) {
-                                Text(text = "Dismiss")
+                                Text(text = "Dismiss", color = Color(0xFFffF2FFFD))
                             }
 
                             Spacer(modifier = Modifier.width(20.dp))
@@ -196,7 +196,7 @@ fun UnlockChapterDialogComponent(
                                 ),
                                 shape = MaterialTheme.shapes.medium,
                             ) {
-                                Text(text = "Unlock")
+                                Text(text = "Unlock", color = Color(0xFFffF2FFFD))
                             }
                         }
                     }
@@ -295,7 +295,7 @@ fun UnlockChapterDialogComponent(
                                 ),
                                 shape = MaterialTheme.shapes.medium,
                             ) {
-                                Text(text = "Dismiss")
+                                Text(text = "Dismiss", color = Color(0xFFffF2FFFD))
                             }
 
                             Spacer(modifier = Modifier.width(20.dp))
@@ -310,7 +310,7 @@ fun UnlockChapterDialogComponent(
                                 ),
                                 shape = MaterialTheme.shapes.medium
                             ) {
-                                Text(text = "Buy coins")
+                                Text(text = "Buy coins", color = Color(0xFFffF2FFFD))
                             }
 
                         }

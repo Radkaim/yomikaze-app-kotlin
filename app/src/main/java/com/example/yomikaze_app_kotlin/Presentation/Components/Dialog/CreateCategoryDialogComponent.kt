@@ -184,7 +184,7 @@ fun CreateCategoryDialog(
                             ),
                             shape = MaterialTheme.shapes.medium
                         ) {
-                            Text(text = "Dismiss")
+                            Text(text = "Dismiss",color = Color(0xFFffF2FFFD))
                         }
                         Spacer(modifier = Modifier.width(20.dp))
                         Button(
@@ -204,7 +204,7 @@ fun CreateCategoryDialog(
                             ),
                             shape = MaterialTheme.shapes.medium,
                         ) {
-                            Text(text = "Create")
+                            Text(text = "Create",color = Color(0xFFffF2FFFD))
                         }
                     }
                 }

@@ -212,7 +212,7 @@ fun <T, VM> EditDialogComponent(
                             ),
                             shape = MaterialTheme.shapes.medium,
                         ) {
-                            Text(text = "Save")
+                            Text(text = "Save",color = Color(0xFFffF2FFFD))
                         }
                     }
                 }

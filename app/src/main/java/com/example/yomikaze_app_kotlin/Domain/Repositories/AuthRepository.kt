@@ -1,9 +1,11 @@
 package com.example.yomikaze_app_kotlin.Domain.Repositories
 
 
+import com.example.yomikaze_app_kotlin.Domain.Models.ChangePasswordRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.UserInfoResponse
+import retrofit2.Response
 
 /**
  * AuthRepository is an interface for the AuthRepositoryImpl class.
@@ -28,5 +30,11 @@ interface AuthRepository {
     suspend fun getUserInfo(token: String): Result<UserInfoResponse>
 
     suspend fun logout()
+
+    //change password
+    suspend fun changePassword(
+        token: String,
+        changePasswordRequest: ChangePasswordRequest
+    ): Response<Unit>
 
 }

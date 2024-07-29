@@ -206,7 +206,7 @@ fun <T, VM> DeleteConfirmDialogComponent(
                             ),
                             shape = MaterialTheme.shapes.medium
                         ) {
-                            Text(text = "Dismiss")
+                            Text(text = "Dismiss", color = Color(0xFFffF2FFFD))
                         }
 
                         Spacer(modifier = Modifier.width(20.dp))
@@ -229,7 +229,7 @@ fun <T, VM> DeleteConfirmDialogComponent(
                             ),
                             shape = MaterialTheme.shapes.medium,
                         ) {
-                            Text(text = "Confirm")
+                            Text(text = "Confirm",color = Color(0xFFffF2FFFD))
                         }
 
                     }

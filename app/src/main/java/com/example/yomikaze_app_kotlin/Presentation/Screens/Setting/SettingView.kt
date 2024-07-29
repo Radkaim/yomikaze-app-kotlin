@@ -61,13 +61,24 @@ fun SettingView(
     settingViewModel.setMainViewModel(viewModel)
     val state by settingViewModel.state.collectAsState()
 
+    val context = LocalContext.current
+    val appPreference = AppPreference(context)
 
     val listIconSettingProfile = listOf(
         SettingObject(
             iconStart = R.drawable.ic_login_logout,
             title = "Login Method",
-            iconEnd = R.drawable.ic_next,
-            route = ""
+            iconEnd = if (appPreference.isUserLoggedIn) {
+                if (appPreference.isLoginWithGoogle) {
+                    R.drawable.ic_google
+                } else {
+                    R.drawable.logo
+                }
+            } else {
+                R.drawable.ic_next
+            },
+            route = "login_route",
+            isLoginMethod = appPreference.isUserLoggedIn
         ),
         SettingObject(
             iconStart = R.drawable.ic_edit,
@@ -145,6 +156,7 @@ fun SettingView(
                     iconStartColor = settingObject.iconStartColor,
                     title = settingObject.title,
                     iconEnd = settingObject.iconEnd,
+                    isLoginMethod = settingObject.isLoginMethod,
                     onClicked = { settingViewModel.onSettingItemCLicked(settingObject.route) }
                 )
             }

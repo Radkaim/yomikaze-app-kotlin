@@ -81,6 +81,15 @@ class AppPreference(context : Context) {
         encryptedPreferences.edit().remove("user_balance").apply()
     }
 
+    //isLoginWithGoogle
+    var isLoginWithGoogle: Boolean
+        get() = encryptedPreferences.getBoolean("is_login_with_google", false)
+        set(value) = encryptedPreferences.edit().putBoolean("is_login_with_google", value).apply()
+
+    //delete isLoginWithGoogle
+    fun deleteIsLoginWithGoogle() {
+        encryptedPreferences.edit().remove("is_login_with_google").apply()
+    }
 
     // save isUserLoggedIn
     var isUserLoggedIn: Boolean

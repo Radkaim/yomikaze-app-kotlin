@@ -14,6 +14,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ProfileRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.AdvancedSearchComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.ChangePasswordUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
@@ -136,6 +137,15 @@ object UseCaseModule {
     @Singleton
     fun provideLogoutUseCase(authRepository: AuthRepository): LogoutUC {
         return LogoutUC(authRepository)
+    }
+
+    /**
+     * Todo: Provide the ChangePasswordUseCase
+     */
+    @Provides
+    @Singleton
+    fun provideChangePasswordUseCase(authRepository: AuthRepository): ChangePasswordUC {
+        return ChangePasswordUC(authRepository)
     }
 
 

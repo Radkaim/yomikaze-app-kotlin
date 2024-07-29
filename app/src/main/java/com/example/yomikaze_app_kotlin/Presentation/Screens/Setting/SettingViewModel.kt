@@ -43,6 +43,7 @@ class SettingViewModel @Inject constructor(
 
     fun onSettingItemCLicked(route: String) {
         when (route) {
+            "login_route" -> navController?.navigate("login_route")
             "edit_profile_route" -> navController?.navigate("edit_profile_route")
             "reset_password_route" -> navController?.navigate("change_password_route")
             "coins_shop_route" -> navController?.navigate("coins_shop_route")

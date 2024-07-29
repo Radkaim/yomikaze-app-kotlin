@@ -299,7 +299,7 @@ fun ReportDialog(
                             ),
                             shape = MaterialTheme.shapes.medium,
                         ) {
-                            Text(text = "Submit")
+                            Text(text = "Submit",color = Color(0xFFffF2FFFD))
                         }
                     }
                 }

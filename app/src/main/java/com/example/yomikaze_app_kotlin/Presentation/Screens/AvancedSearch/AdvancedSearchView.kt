@@ -344,7 +344,7 @@ fun AdvancedSearchContent(
                         Text(
                             text = "Reset All",
                             fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = Color(0xFFffF2FFFD),
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                         )
@@ -374,7 +374,7 @@ fun AdvancedSearchContent(
                         Text(
                             text = if (hideAllColorCheck) "Show All" else "Hide All",
                             fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = Color(0xFFffF2FFFD),
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                         )
@@ -402,7 +402,7 @@ fun AdvancedSearchContent(
                         Text(
                             text = "Search",
                             fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = Color(0xFFffF2FFFD),
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                         )
@@ -964,7 +964,7 @@ fun showTitle(
             Text(
                 text = if (itemShowBoolean) "Hide" else "Show",
                 fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color(0xFFffF2FFFD),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
             )

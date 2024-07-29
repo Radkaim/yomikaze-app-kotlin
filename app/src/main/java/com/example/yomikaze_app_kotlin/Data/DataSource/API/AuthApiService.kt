@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Data.DataSource.API
 
+import com.example.yomikaze_app_kotlin.Domain.Models.ChangePasswordRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.RegisterRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
@@ -9,6 +10,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 
 /**
@@ -34,8 +36,17 @@ interface AuthApiService {
 //    @POST("authentication/changePassword")
 //    suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<TokenResponse>
 
+    //change password
+    @PUT("profile")
+    suspend fun changePassword(
+        @Header("Authorization") token: String,
+        @Body changePasswordRequest: ChangePasswordRequest
+    ): Response<Unit>
+
+
     @GET("authentication/info")
     suspend fun getUserInfo(@Header("Authorization") token: String): Response<UserInfoResponse>
+
 }
 
 

@@ -150,7 +150,7 @@ fun RatingComicDialog(
                                 text = "Vote",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = Color(0xFFffF2FFFD)
                             )
                         }
                     }
