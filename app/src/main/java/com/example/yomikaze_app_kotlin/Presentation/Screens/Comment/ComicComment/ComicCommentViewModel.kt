@@ -64,7 +64,7 @@ class ComicCommentViewModel @Inject constructor(
     }
 
     fun onNavigateToReplyCommentDetail(commentId: Long, comicId: Long, authorName: String) {
-        navController?.navigate("reply_comment_detail_route/$comicId/$commentId/{}/$authorName")
+        navController?.navigate("reply_comment_detail_route/$comicId/$commentId/$authorName")
     }
 
     /**
