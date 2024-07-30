@@ -47,6 +47,19 @@ interface AuthApiService {
     @GET("authentication/info")
     suspend fun getUserInfo(@Header("Authorization") token: String): Response<UserInfoResponse>
 
+    //Notification
+    @POST("notification/subscribe")
+    suspend fun subscribeToNotifications(
+        @Header("Authorization") token: String,
+        @Body fcmToken: String
+    ): Response<Unit>
+
+    @POST("notification/unsubscribe")
+    suspend fun unsubscribeFromNotifications(
+        @Header("Authorization") token: String,
+    ): Response<Unit>
+
+
 }
 
 

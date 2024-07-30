@@ -17,9 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
 import com.example.yomikaze_app_kotlin.Presentation.Components.AutoSlider.Autoslider
@@ -48,6 +52,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.Bookcas
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.ItemRankingTabHome
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.NormalComicCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.RankingComicCard
+import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.TagComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.HomeBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
@@ -184,6 +189,13 @@ fun HomeContent(
     onCloseClicked: () -> Unit = {},
 
     ) {
+
+    val context = LocalContext.current
+    val appPreference = AppPreference(context)
+//    val searchHistory by remember {
+//        mutableStateOf(appPreference.searchHistory)
+//    }
+
     if (searchWidgetState == SearchWidgetState.OPEN) {
 
         Scaffold(
@@ -206,11 +218,72 @@ fun HomeContent(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+
+                item {
+                    Row {
+                        if (appPreference.searchHistory != null) {
+                            val searchHistory = appPreference.searchHistory
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+                                    Text(
+                                        text = "Search History",
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier
+
+                                            .padding(bottom = 10.dp)
+                                    )
+
+                                    //icon clear search history
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_delete),
+                                        contentDescription = "Clear Search History",
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        modifier = Modifier
+                                            .padding(end = 10.dp)
+                                            .size(15.dp)
+                                            .clickable {
+                                                appPreference.deleteSearchHistory()
+
+                                            }
+                                    )
+                                }
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    items(searchHistory) {
+                                        TagComponent(
+                                            status = it,
+                                            modifier = Modifier
+                                                .padding(bottom = 10.dp)
+                                                .clickable {
+                                                    homeViewModel.updateSearchText(newValue = it)
+                                                    homeViewModel.searchComic(it)
+                                                }
+                                        )
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
                 item {
                     if (state.totalResults != 0) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                         ) {
+                            //show search history
+
                             Text(
                                 text = "Results: " + state.totalResults.toString(),
                                 color = MaterialTheme.colorScheme.inverseSurface,

@@ -151,6 +151,23 @@ class AuthRepositoryImpl @Inject constructor(
             return Result.success(result.body()!!)
         }
 
+
+        val errorResponse = result.errorBody()?.string()
+        if (errorResponse != null) {
+            return try {
+                val error = Gson().fromJson(errorResponse, ErrorResponse::class.java)
+                // Log.d("AuthRepositoryImpl", "login: ${error.errors}")
+                error.errors?.forEach { (field, messages) ->
+                    messages.forEach { message ->
+                        //    Log.d("AuthRepositoryImpl", "Field: $field, Error: $message")
+                    }
+                }
+                return error.errors?.let { Result.failure(Exception(Gson().toJson(error))) }!!
+            } catch (e: Exception) {
+                Result.failure(Exception("Register failed"))
+            }
+        }
+
         Log.d("AuthRepositoryImpl", "register: ${result.errorBody()?.string()}")
         return failure(Exception("Register failed"))
     }
@@ -173,6 +190,7 @@ class AuthRepositoryImpl @Inject constructor(
             appPreference.deleteUserName()
             appPreference.deleteUserBalance()
             appPreference.deleteIsLoginWithGoogle()
+            appPreference.deleteSearchHistory()
         }
         if (result != null) {
             Log.d("AuthRepositoryImpl", "logout: Successfully!!!")

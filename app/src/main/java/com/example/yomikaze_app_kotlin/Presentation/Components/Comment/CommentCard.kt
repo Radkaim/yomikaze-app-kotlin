@@ -71,6 +71,7 @@ fun CommentCard(
     isAdmin: Boolean,
     isUserLogin: Boolean,
 
+
     totalLikes: Long? = 0,
     onLikeClick: () -> Unit? = {},
     totalDislikes: Long? = 0,
@@ -329,7 +330,7 @@ fun CommentCard(
                                 }
                         ) {
 
-                            if (isOwnComment || isAdmin || isUserLogin ) {
+                            if (isOwnComment || isAdmin || isUserLogin) {
                                 IconButton(
                                     onClick = { showPopupMenu = true },
                                     modifier = Modifier
@@ -445,80 +446,108 @@ fun CommentCard(
                                     }
                                 }
                                 if (comicCommentViewModel == null && replyCommentDetailViewModel != null && chapterCommentViewModel == null) {
-                                    when (showDialog) {
-                                        1 -> {
-                                            EditCommentDialogComponent(
-                                                key = comicId,
-                                                key2 = commentId,
-                                                key3 = chapterNumber!!,
-                                                value = content,
-                                                title = "Edit Comment",
-                                                onDismiss = { showDialog = null },
-                                                viewModel = replyCommentDetailViewModel!!
-                                            )
+                                    if (chapterNumber != null) {
+                                        when (showDialog) {
+                                            1 -> {
+                                                EditCommentDialogComponent(
+                                                    key = comicId,
+                                                    key2 = commentId,
+                                                    key3 = chapterNumber!!,
+                                                    value = content,
+                                                    title = "Edit Comment",
+                                                    onDismiss = { showDialog = null },
+                                                    viewModel = replyCommentDetailViewModel!!
+                                                )
+                                            }
+
+                                            3 -> {
+                                                DeleteConfirmDialogComponent(
+                                                    key = comicId,
+                                                    key2 = commentId,
+                                                    key3 = chapterNumber!!,
+                                                    value = "",
+                                                    title = "Are you sure you want to delete this comment?",
+                                                    onDismiss = { showDialog = null },
+                                                    viewModel = replyCommentDetailViewModel!!
+                                                )
+
+                                            }
                                         }
+                                    } else {
+                                        when (showDialog) {
 
-                                        3 -> {
-                                            DeleteConfirmDialogComponent(
-                                                key = comicId,
-                                                key2 = commentId,
-                                                key3 = chapterNumber!!,
-                                                value = "",
-                                                title = "Are you sure you want to delete this comment?",
-                                                onDismiss = { showDialog = null },
-                                                viewModel = replyCommentDetailViewModel!!
-                                            )
+                                            1 -> {
+                                                EditCommentDialogComponent(
+                                                    key = comicId,
+                                                    key2 = commentId,
+                                                    value = content,
+                                                    title = "Edit Comment",
+                                                    onDismiss = { showDialog = null },
+                                                    viewModel = replyCommentDetailViewModel!!
+                                                )
+                                            }
 
+                                            3 -> {
+                                                DeleteConfirmDialogComponent(
+                                                    key = comicId,
+                                                    key2 = commentId,
+                                                    value = "",
+                                                    title = "Are you sure you want to delete this comment?",
+                                                    onDismiss = { showDialog = null },
+                                                    viewModel = replyCommentDetailViewModel!!
+                                                )
+                                            }
                                         }
                                     }
+                                    
                                 }
-                                if (comicCommentViewModel == null && replyCommentDetailViewModel == null && chapterCommentViewModel != null) {
-                                    when (showDialog) {
-                                        1 -> {
-                                            EditCommentDialogComponent(
-                                                key = comicId,
-                                                key2 = commentId,
-                                                key3 = chapterNumber!!,
-                                                value = content,
-                                                title = "Edit Comment",
-                                                onDismiss = { showDialog = null },
-                                                viewModel = chapterCommentViewModel!!
-                                            )
-                                        }
+                            }
+                            if (comicCommentViewModel == null && replyCommentDetailViewModel == null && chapterCommentViewModel != null) {
+                                when (showDialog) {
+                                    1 -> {
+                                        EditCommentDialogComponent(
+                                            key = comicId,
+                                            key2 = commentId,
+                                            key3 = chapterNumber!!,
+                                            value = content,
+                                            title = "Edit Comment",
+                                            onDismiss = { showDialog = null },
+                                            viewModel = chapterCommentViewModel!!
+                                        )
+                                    }
 
-                                        3 -> {
-                                            DeleteConfirmDialogComponent(
-                                                key = comicId,
-                                                key2 = commentId,
-                                                key3 = chapterNumber!!,
-                                                value = "",
-                                                title = "Are you sure you want to delete this comment?",
-                                                onDismiss = { showDialog = null },
-                                                viewModel = chapterCommentViewModel!!
-                                            )
+                                    3 -> {
+                                        DeleteConfirmDialogComponent(
+                                            key = comicId,
+                                            key2 = commentId,
+                                            key3 = chapterNumber!!,
+                                            value = "",
+                                            title = "Are you sure you want to delete this comment?",
+                                            onDismiss = { showDialog = null },
+                                            viewModel = chapterCommentViewModel!!
+                                        )
 
-                                        }
                                     }
                                 }
+                            }
 
-                                if (comicCommentViewModel != null || replyCommentDetailViewModel != null || chapterCommentViewModel != null) {
-                                    when (showDialog) {
-                                        2 -> {
-                                            ReportDialog(
-                                                title = "Report Comment",
-                                                keyId = commentId,
-                                                typeReport = "comment",
-                                                onDismiss = { showDialog = null },
-                                                listCommonReportReasons = listCommonCommentReportResponse,
-                                                onSubmitCommentReport = { commentId, reportReasonId, reportContent ->
-                                                    onReportClick(
-                                                        commentId,
-                                                        reportReasonId,
-                                                        reportContent
-                                                    )
-                                                },
-                                            )
-                                        }
+                            if (comicCommentViewModel != null || replyCommentDetailViewModel != null || chapterCommentViewModel != null) {
+                                when (showDialog) {
+                                    2 -> {
+                                        ReportDialog(
+                                            title = "Report Comment",
+                                            keyId = commentId,
+                                            typeReport = "comment",
+                                            onDismiss = { showDialog = null },
+                                            listCommonReportReasons = listCommonCommentReportResponse,
+                                            onSubmitCommentReport = { commentId, reportReasonId, reportContent ->
+                                                onReportClick(
+                                                    commentId,
+                                                    reportReasonId,
+                                                    reportContent
+                                                )
+                                            },
+                                        )
                                     }
                                 }
                             }
@@ -529,6 +558,7 @@ fun CommentCard(
         }
     }
 }
+
 
 
 

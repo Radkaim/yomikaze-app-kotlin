@@ -76,16 +76,16 @@ fun HomeBottomNavBar(navController: NavController) {
                 alwaysShowLabel = true,
                 selected = currentRoute == item.screen_route,
                 onClick = {
-                    navController.navigate(item.screen_route)
+                    navController.navigate(item.screen_route){
                           //                    {
-//                        navController.graph.startDestinationRoute?.let { screen_route ->
-//                            popUpTo(screen_route) {
-//                                saveState = true
-//                            }
-//                        }
-//                        launchSingleTop = true
-//                        restoreState = true
-//                    }
+                        navController.graph.startDestinationRoute?.let { screen_route ->
+                            popUpTo(screen_route) {
+                                saveState = true
+                            }
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 modifier = if (isSelected) Modifier.offset(y = (-4).dp) else Modifier
             )

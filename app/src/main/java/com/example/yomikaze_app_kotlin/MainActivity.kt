@@ -97,8 +97,8 @@ class MainActivity : ComponentActivity() {
             val token = task.result
 
             // Log and toast
+//            Log.d("yomikaze_fcm", token)
 //    val msg = getString(R.string.msg_token_fmt, token)
-            Log.d("yomikaze_fcm", token)
 //    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         })
         setContent {

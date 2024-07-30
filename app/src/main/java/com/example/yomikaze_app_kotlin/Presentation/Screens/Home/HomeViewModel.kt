@@ -49,6 +49,14 @@ class HomeViewModel @Inject constructor(
     private val _searchTextState: MutableState<String> = mutableStateOf(value = "")
     val searchTextState: MutableState<String> get() = _searchTextState
 
+    //data search history
+    //add to
+    fun addSearchHistory(searchText: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            appPreference.searchHistory = appPreference.searchHistory + searchText
+        }
+    }
+
 
     fun updateSearchWidgetState(newState: SearchWidgetState) {
         _searchWidgetState.value = newState
@@ -282,7 +290,9 @@ class HomeViewModel @Inject constructor(
                     _state.value = _state.value.copy(totalResults = baseResponse.totals)
                     _state.value.searchResult.value = results
                     _state.value = _state.value.copy(isSearchLoading = false)
-
+                    if (results.isNotEmpty()) {
+                        addSearchHistory(comicNameQuery)
+                    }
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -346,7 +356,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onNavigateComicDetail(comicId: Long) {
-            navController?.navigate("comic_detail_route/$comicId")
+        navController?.navigate("comic_detail_route/$comicId")
 //        navController?.navigate("comic_detail_route/$comicId")
     }
 

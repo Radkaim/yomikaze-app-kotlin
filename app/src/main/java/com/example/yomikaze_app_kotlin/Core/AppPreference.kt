@@ -146,4 +146,14 @@ class AppPreference(context : Context) {
         encryptedPreferences.edit().remove(APP_THEME_KEY).apply()
     }
 
+    //data search history, list of search history
+    var searchHistory: List<String>
+        get() = encryptedPreferences.getStringSet("search_history", null)?.toList() ?: emptyList()
+        set(value) = encryptedPreferences.edit().putStringSet("search_history", value.toSet()).apply()
+
+    //delete search history
+    fun deleteSearchHistory() {
+        encryptedPreferences.edit().remove("search_history").apply()
+    }
+
 }

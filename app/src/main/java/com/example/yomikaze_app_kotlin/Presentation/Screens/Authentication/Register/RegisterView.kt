@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +14,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -62,6 +64,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Setting.AboutUs.WebViewScreen
 import com.example.yomikaze_app_kotlin.R
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -96,11 +99,12 @@ fun RegisterContent(
     var passwordVisible by remember { mutableStateOf(false) }
     var passwordVisible1 by remember { mutableStateOf(false) }
 
-    var checked by remember { mutableStateOf(true) }
+    var isTermOfServiceChecked by remember { mutableStateOf(false) }
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
     val day = calendar.get(Calendar.DAY_OF_MONTH)
+    var url by remember { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
     val datePickerDialog = DatePickerDialog(
@@ -131,8 +135,11 @@ fun RegisterContent(
                 title = "Register",
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()
-
+                        if (url == null) {
+                            navController.popBackStack()
+                        } else {
+                            url = null // Close WebView and go back to the previous screen
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -144,445 +151,480 @@ fun RegisterContent(
         },
     )
     {
-        LazyColumn(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background)
-                .fillMaxSize()
-                .offset(y = (-60).dp)
-                .fillMaxWidth()
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    })
-                },
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            // TODO: for logo
-            item {
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "Logo",
-                    modifier = Modifier
-                        .offset(y = (20).dp)
-                        .height(200.dp)
-                        .width(100.dp),
-                    contentScale = ContentScale.Fit
-                )
-            }
-
-            // TODO: for email
-            item {
-
-                TextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = {
-                        Text(
-                            text = "Email",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-
+        if (url == null) {
+            LazyColumn(
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .fillMaxSize()
+                    .offset(y = (-70).dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
                     },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_email),
-                            contentDescription = "",
-                            tint = Color.Unspecified
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(start = 10.dp, end = 10.dp)
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large
-                        )
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(20.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                // TODO: for logo
+                item {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "Logo",
+                        modifier = Modifier
+                            .offset(y = (20).dp)
+                            .height(200.dp)
+
+                            .width(100.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+
+                // TODO: for email
+                item {
+
+                    TextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = {
+                            Text(
+                                text = "Email",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+
+                        },
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done // Đặt hành động IME thành Done
                         ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = MaterialTheme.colorScheme.surfaceTint,
-                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
-                    ),
-                    // isError = state.emailError != null
-                )
-                if (state.emailError != null) {
-                    Text(
-                        text = state.emailError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier
-                        //.align(Alignment.Start)
-                    )
-                }
-            }
-
-            // TODO: for username
-            item {
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = {
-                        Text(
-                            text = "User Name",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_personal),
-                            contentDescription = "",
-                            tint = Color.Unspecified
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(start = 10.dp, end = 10.dp)
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large
-                        )
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(20.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = MaterialTheme.colorScheme.surfaceTint,
-                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
-                    ),
-                    //   isError = state.usernameError != null
-                )
-                if (state.usernameError != null) {
-                    Text(
-                        text = state.usernameError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier
-                        // .align(Alignment.Start)
-                    )
-                }
-            }
-
-            // TODO: for birthday
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp)
-                        .height(58.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large
-                        )
-                        .background(
-                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp)
-                        )
-                        .clickable { datePickerDialog.show() },
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    val offsetYValue = if (birthday.isEmpty()) 0.dp else (-15).dp
-                    Text(
-                        text = "Date Of Birth",
-                        color = MaterialTheme.colorScheme.primary,
-                        fontSize = 12.sp,
-                        modifier = Modifier
-                            .offset(y = offsetYValue)
-                            .padding(start = 50.dp)
-                    )
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_dateofbirth),
-                        contentDescription = "",
-                        tint = Color.Unspecified,
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                    Text(
-                        text = birthday,
-                        color = MaterialTheme.colorScheme.surfaceTint,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(start = 50.dp, top = 5.dp)
-                    )
-                }
-                if (birthdayError != null) {
-                    Text(
-                        text = birthdayError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        textAlign = TextAlign.Start,
-                    )
-                }
-            }
-
-            //  TODO: for password
-            item {
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = {
-                        Text(
-                            text = "Password",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                    ),
-                    leadingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
-
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        leadingIcon = {
                             Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                                painter = painterResource(id = R.drawable.ic_email),
+                                contentDescription = "",
+                                tint = Color.Unspecified
                             )
-                        }
-                    },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, top = 20.dp, end = 10.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large,
-
-                            )
-                        .height(56.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(20.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = MaterialTheme.colorScheme.surfaceTint,
-                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
-                    ),
-                    //  isError = state.passwordError != null
-                )
-                if (state.passwordError != null) {
-                    Text(
-                        text = state.passwordError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontStyle = FontStyle.Italic
-                        ),
-                        textAlign = TextAlign.Start,
+                        },
                         modifier = Modifier
-                            //.align(Alignment.Start)
-
-                            .padding(start = 12.dp, bottom = 10.dp)
-                    )
-                }
-            }
-
-
-            // TODO: for confirm password
-            item {
-                TextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    label = {
-                        Text(
-                            text = "Confirm Password",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                    ),
-                    leadingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
-
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                shape = MaterialTheme.shapes.large
                             )
-                        }
-                    },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp)
-                        .offset(y = (-10).dp)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.large,
-                        )
-                        .height(56.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(20.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = MaterialTheme.colorScheme.surfaceTint,
-                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
-                    ),
-                    //  isError = state.passwordError != null
-                )
-                if (state.confirmPasswordError != null) {
-                    Text(
-                        text = state.confirmPasswordError ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontStyle = FontStyle.Italic
-                        ),
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier
-                            // .align(Alignment.Start)
-                            .padding(start = 12.dp, bottom = 10.dp)
-                    )
-                }
-
-            }
-
-            // TODO: for term of service
-            item {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .offset(y = (-20).dp)
-                ) {
-                    Box {
-                        Checkbox(
-                            checked = checked,
-                            onCheckedChange = { checked = it },
-                            modifier = Modifier.offset(x = (-40).dp, y = (-12).dp)
-
-                        )
-                        Text(
-                            text = "Term of Service",
-                            style = TextStyle(
-                                fontStyle = FontStyle.Italic,
+                            .background(
+                                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(20.dp),
                             ),
-                            color = MaterialTheme.colorScheme.onPrimary,
+                        shape = RoundedCornerShape(24.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colorScheme.surfaceTint,
+                            backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(
+                                alpha = 0.1f
+                            ),
+                            focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                        ),
+                        // isError = state.emailError != null
+                    )
+                    if (state.emailError != null) {
+                        Text(
+                            text = state.emailError.toString() ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            textAlign = TextAlign.Start,
+                            fontSize = 10.sp,
+                            modifier = Modifier
+                                .offset(x = -(70).dp, y = -(15).dp)
+                        )
+                    }
+                }
+
+                // TODO: for username
+                item {
+                    TextField(
+                        value = username,
+                        onValueChange = { username = it },
+                        label = {
+                            Text(
+                                text = "User Name",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+
+                        },
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_personal),
+                                contentDescription = "",
+                                tint = Color.Unspecified
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                shape = MaterialTheme.shapes.large
+                            )
+                            .background(
+                                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(20.dp),
+                            ),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colorScheme.surfaceTint,
+                            backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(
+                                alpha = 0.1f
+                            ),
+                            focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                        ),
+                        //   isError = state.usernameError != null
+                    )
+                    if (state.usernameError != null) {
+                        Text(
+                            text = state.usernameError.toString() ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            textAlign = TextAlign.Start,
+                            fontSize = 10.sp,
+                            modifier = Modifier
+                                .offset(x = -(60).dp, y = -(15).dp)
+
+                        )
+                    }
+                }
+
+                // TODO: for birthday
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
+                            .height(58.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                shape = MaterialTheme.shapes.large
+                            )
+                            .background(
+                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(24.dp)
+                            )
+                            .clickable { datePickerDialog.show() },
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        val offsetYValue = if (birthday.isEmpty()) 0.dp else (-15).dp
+                        Text(
+                            text = "Date Of Birth",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .offset(y = offsetYValue)
+                                .padding(start = 50.dp)
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_dateofbirth),
+                            contentDescription = "",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                        Text(
+                            text = birthday,
+                            color = MaterialTheme.colorScheme.surfaceTint,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(start = 50.dp, top = 5.dp)
+                        )
+                    }
+                    if (birthdayError != null) {
+                        Text(
+                            text = birthdayError ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier
+                                .offset(y = -(10).dp)
+                                .padding(start = 15.dp, bottom = 10.dp)
+                        )
+                    }
+                }
+
+                //  TODO: for password
+                item {
+                    TextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = {
+                            Text(
+                                text = "Password",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                        ),
+                        leadingIcon = {
+                            val image = if (passwordVisible)
+                                painterResource(id = R.drawable.ic_eye)
+                            else
+                                painterResource(id = R.drawable.ic_visibility_eye)
+
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(
+                                    tint = MaterialTheme.colorScheme.onTertiary,
+                                    painter = image,
+                                    contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                                )
+                            }
+                        },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                shape = MaterialTheme.shapes.large,
+
+                                )
+                            .height(56.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(20.dp),
+                            ),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colorScheme.surfaceTint,
+                            backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(
+                                alpha = 0.1f
+                            ),
+                            focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                        ),
+                        //  isError = state.passwordError != null
+                    )
+                    if (state.passwordError != null) {
+                        Text(
+                            text = state.passwordError.toString() ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontStyle = FontStyle.Italic
+                            ),
+                            textAlign = TextAlign.Start,
+                            fontSize = 10.sp,
+                            modifier = Modifier
+                                .offset(x = -(100).dp, y = -(15).dp)
+                        )
+                    }
+                }
+
+
+                // TODO: for confirm password
+                item {
+                    TextField(
+                        value = confirmPassword,
+                        onValueChange = { confirmPassword = it },
+                        label = {
+                            Text(
+                                text = "Confirm Password",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done // Đặt hành động IME thành Done
+                        ),
+                        leadingIcon = {
+                            val image = if (passwordVisible)
+                                painterResource(id = R.drawable.ic_eye)
+                            else
+                                painterResource(id = R.drawable.ic_visibility_eye)
+
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(
+                                    tint = MaterialTheme.colorScheme.onTertiary,
+                                    painter = image,
+                                    contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                                )
+                            }
+                        },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp, bottom = 40.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                shape = MaterialTheme.shapes.large,
+                            )
+                            .height(56.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(20.dp),
+                            ),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colorScheme.surfaceTint,
+                            backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(
+                                alpha = 0.1f
+                            ),
+                            focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                        ),
+                        //  isError = state.passwordError != null
+                    )
+                    if (state.confirmPasswordError != null) {
+                        Text(
+                            text = state.confirmPasswordError ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontStyle = FontStyle.Italic
+                            ),
+                            textAlign = TextAlign.Start,
+                            fontSize = 10.sp,
+                            modifier = Modifier
+                                .offset(x = -(120).dp, y = -(35).dp)
+                                .padding(bottom = 10.dp)
+                        )
+                    }
+
+                }
+
+                // TODO: for term of service
+                item {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .offset(y = (-20).dp)
+                    ) {
+                        Box() {
+                            Checkbox(
+                                checked = isTermOfServiceChecked,
+                                onCheckedChange = { isTermOfServiceChecked = it },
+                                modifier = Modifier.offset(x = (-40).dp, y = (-12).dp)
+
+                            )
+                            Text(
+                                text = "Term of Service",
+                                style = TextStyle(
+                                    fontStyle = FontStyle.Italic,
+                                ),
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier
+                                    .padding(
+                                        top = 3.dp,
+                                        end = 150.dp,
+                                    )
+                                    .clickable {   url = "https://yomikaze.org/term-of-service" }
+                            )
+                        }
+
+                        Text(
+                            text = "Sign In?",
+                            style = TextStyle(fontStyle = FontStyle.Italic),
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier
                                 .padding(
-                                    top = 3.dp,
-                                    end = 150.dp,
+                                    bottom = 20.dp
                                 )
-                                .clickable { checked = !checked }
+                                .offset(x = (30).dp)
+                                .clickable { registerViewModel.navigateToLogin() }
+
                         )
                     }
+                }
 
-                    Text(
-                        text = "Sign In?",
-                        style = TextStyle(fontStyle = FontStyle.Italic),
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                // TODO: for register button
+                item {
+                    OutlinedButton(
                         modifier = Modifier
-                            .padding(
-                                bottom = 20.dp
+                            //.fillMaxSize()
+                            .height(50.dp)
+                            .offset(y = (-20).dp)
+                            .width(200.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        onClick = {
+                            if (isTermOfServiceChecked) {
+                                registerViewModel.onRegister(
+                                    username = username,
+                                    password = password,
+                                    fullName = username,
+                                    confirmPassword = confirmPassword,
+                                    email = email,
+                                    birthday = birthday,
+                                )
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Please accept the terms of service",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        border = BorderStroke(
+                            1.dp,
+                            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.36f)
+                        ),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        )
+                    ) {
+                        if (state.isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp)
                             )
-                            .offset(x = (30).dp)
-                            .clickable { registerViewModel.navigateToRegister() }
-
-                    )
+                        } else {
+                            Text(
+                                text = "Register",
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                ),
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
                 }
             }
 
-            // TODO: for register button
-            item {
-                OutlinedButton(
-                    modifier = Modifier
-                        //.fillMaxSize()
-                        .height(50.dp)
-                        .offset(y = (-20).dp)
-                        .width(200.dp),
-                    shape = RoundedCornerShape(10.dp),
-                    onClick = {
-                        registerViewModel.onRegister(
-                            username = username,
-                            password = password,
-                            fullName = username,
-                            confirmPassword = confirmPassword,
-                            email = email,
-                            birthday = birthday,
-                        )
-                    },
-                    border = BorderStroke(
-                        1.dp,
-                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.36f)
-                    ),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                    )
-                ) {
-                    if (state.isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp)
-                        )
-                    } else {
-                        Text(
-                            text = "Register",
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                            ),
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
+        state.error?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 6.dp)
+            )
+        }
+    }else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 60.dp)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                item { WebViewScreen(url = url!!) }
             }
         }
-    }
-    state.error?.let {
-        Text(
-            text = it,
-            color = MaterialTheme.colorScheme.error,
-            modifier = Modifier.padding(top = 6.dp)
-        )
     }
 }
 

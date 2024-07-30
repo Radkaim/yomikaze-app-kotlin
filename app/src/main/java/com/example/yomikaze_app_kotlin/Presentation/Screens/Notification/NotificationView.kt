@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.HomeBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.NotSignIn.NotSignIn
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
@@ -24,6 +25,7 @@ fun NotificationView(
     viewModel: NotificationViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val appPreference = AppPreference(context)
     Scaffold(
         topBar = {
             CustomAppBar(
@@ -36,18 +38,20 @@ fun NotificationView(
                 navController = navController
             )
         }
-        )
+    )
 
     {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .height(200.dp)
-                .background(MaterialTheme.colorScheme.background),
+        if (!appPreference.isUserLoggedIn) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(200.dp)
+                    .background(MaterialTheme.colorScheme.background),
 
-        ){
-            NotSignIn(navController = navController)
+                ) {
+                NotSignIn(navController = navController)
+            }
+        } else {
         }
-
     }
 }

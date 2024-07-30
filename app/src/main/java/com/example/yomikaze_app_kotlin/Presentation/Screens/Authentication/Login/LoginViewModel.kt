@@ -78,8 +78,6 @@ class LoginViewModel @Inject constructor(
                             if (field == "Password") {
                                 _state.value = _state.value.copy(passwordError = message)
                             }
-
-
                         }
                     }
 

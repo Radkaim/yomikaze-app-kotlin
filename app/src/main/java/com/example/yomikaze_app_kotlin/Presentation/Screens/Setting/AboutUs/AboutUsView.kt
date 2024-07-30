@@ -75,7 +75,11 @@ fun AboutUsContent(
                 title = "About Us",
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()
+                        if (url == null) {
+                            navController.popBackStack()
+                        } else {
+                            url = null // Close WebView and go back to the previous screen
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -138,7 +142,7 @@ fun AboutUsContent(
                             onClicked = {
                                 url = when (aboutUsObject.title) {
                                     "Facebook" -> "https://www.facebook.com/people/Yomikaze-Comic/61559960255105/"
-                                    "Term of Service" -> "https://yomikaze.org/terms-of-service"
+                                    "Term of Service" -> "https://yomikaze.org/term-of-service"
                                     "Privacy Policy" -> "https://yomikaze.org/privacy-policy"
                                     else -> null
                                 }

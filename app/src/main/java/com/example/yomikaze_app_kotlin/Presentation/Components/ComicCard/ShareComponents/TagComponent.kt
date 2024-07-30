@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,11 +23,12 @@ fun TagComponent(
     textSize: TextUnit = 12.sp,
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceTint.copy(0.65f),
     textColor: Color = Color(0xFFffF2FFFD),
+    modifier: Modifier? = null
 
 ) {
     // TODO: Implement ComicStatus
     Surface(
-        modifier = Modifier.wrapContentWidth().wrapContentHeight(),
+        modifier = Modifier.wrapContentWidth().wrapContentHeight().then(modifier?:Modifier),
         color = backgroundColor,
         shape = RoundedCornerShape(50) // Making it oval
     ) {
@@ -49,10 +49,4 @@ fun TagComponent(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun ComicStatusPreview() {
-    TagComponent(status = "Completed")
 }
