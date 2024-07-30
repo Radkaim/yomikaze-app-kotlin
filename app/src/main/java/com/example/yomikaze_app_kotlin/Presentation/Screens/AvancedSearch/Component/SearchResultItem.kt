@@ -7,7 +7,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Domain.Models.ComicResponse
@@ -33,7 +32,8 @@ fun SearchResultItem(
         isSearch = true,
         modifier = Modifier
             .fillMaxWidth()
-            .pointerInput(Unit) {advancedSearchViewModel.onNavigateComicDetail(comic.comicId)  }
+//            .scale(0.8f)
+//            .pointerInput(Unit) {advancedSearchViewModel.onNavigateComicDetail(comic.comicId)  }
             .height(119.dp)
             .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.medium)
             .border(

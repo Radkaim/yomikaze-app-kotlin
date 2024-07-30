@@ -2,6 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter
 
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Domain.Models.Page
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 
 data class ViewChapterState(
     val isLoading: Boolean = false,
@@ -26,5 +27,7 @@ data class ViewChapterState(
 
     val isUnlockChapterSuccess: Boolean = false,
 
+    val listCommonChapterReportResponse: List<ReportResponse> = emptyList(),
 
-)
+
+    )

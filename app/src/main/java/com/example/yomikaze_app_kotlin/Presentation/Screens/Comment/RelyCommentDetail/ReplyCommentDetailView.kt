@@ -224,6 +224,7 @@ fun RelyCommentDetailContent(
                             creationTime = state.mainComment.creationTime,
                             isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(state.mainComment.author.id),
                             isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
+                            isUserLogin = appPreference.isUserLoggedIn,
                             totalLikes = state.mainComment.totalLikes.toLong(),
                             myReaction = state.mainComment.myReaction,
                             isReacted = state.mainComment.isReacted,
@@ -278,6 +279,14 @@ fun RelyCommentDetailContent(
                             },
                             totalReplies = state.mainComment.totalReplies.toLong(),
                             onClicked = {},
+                            listCommonCommentReportResponse = state.listCommonCommentReportResponse,
+                            onReportClick = { commentId, reasonId, reportContent ->
+                                replyCommentDetailViewModel.reportComment(
+                                    commentId = commentId,
+                                    reportReasonId = reasonId,
+                                    reportContent = reportContent
+                                )
+                            },
                             replyCommentDetailViewModel = replyCommentDetailViewModel
                         )
                     } else {
@@ -356,6 +365,7 @@ fun RelyCommentDetailContent(
                             creationTime = comment.creationTime,
                             isOwnComment = replyCommentDetailViewModel.checkIsOwnComment(comment.author.id),
                             isAdmin = replyCommentDetailViewModel.checkIsAdmin(),
+                            isUserLogin = appPreference.isUserLoggedIn,
                             totalLikes = comment.totalLikes.toLong(),
                             myReaction = comment.myReaction,
                             isReacted = comment.isReacted,
@@ -410,6 +420,14 @@ fun RelyCommentDetailContent(
                             },
                             totalReplies = comment.totalReplies.toLong(),
                             onClicked = {},
+                            listCommonCommentReportResponse = state.listCommonCommentReportResponse,
+                            onReportClick = { commentId, reasonId, reportContent ->
+                                replyCommentDetailViewModel.reportComment(
+                                    commentId = commentId,
+                                    reportReasonId = reasonId,
+                                    reportContent = reportContent
+                                )
+                            },
                             replyCommentDetailViewModel = replyCommentDetailViewModel
                         )
                     }

@@ -242,6 +242,7 @@ fun ComicCommentContent(
                             roleName = comment.author.roles?.get(0) ?: "",
                             creationTime = comment.creationTime,
                             isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author.id),
+                            isUserLogin = appPreference.isUserLoggedIn,
                             isAdmin = comicCommentViewModel.checkIsAdmin(),
                             totalLikes = comment.totalLikes.toLong(),
                             myReaction = comment.myReaction,
@@ -275,6 +276,14 @@ fun ComicCommentContent(
                                     commentId = comment.id,
                                     comicId = comicId,
                                     authorName = comment.author.name
+                                )
+                            },
+                            listCommonCommentReportResponse = state.listCommonCommentReportResponse,
+                            onReportClick = { commentId, reasonId, reportContent ->
+                                comicCommentViewModel.reportComment(
+                                    commentId = commentId,
+                                    reportReasonId = reasonId,
+                                    reportContent = reportContent
                                 )
                             },
                             comicCommentViewModel = comicCommentViewModel

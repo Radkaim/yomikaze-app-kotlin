@@ -3,6 +3,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyComment
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 
 data class ReplyCommentDetailState(
     //for comment
@@ -22,5 +23,8 @@ data class ReplyCommentDetailState(
     val isDeleteCommentSuccess: Boolean = true,
 
     val isChapterComment : Boolean = false,
-)
+
+    val listCommonCommentReportResponse: List<ReportResponse> = emptyList(),
+
+    )
 

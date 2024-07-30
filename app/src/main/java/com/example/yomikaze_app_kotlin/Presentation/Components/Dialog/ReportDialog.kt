@@ -67,6 +67,7 @@ fun ReportDialog(
     listCommonReportReasons: List<ReportResponse>,
     onSubmitComicReport: (Long, Long, String) -> Unit? = { _, _, _ -> },
     onSubmitChapterReport: (Long, Int, Long, String) -> Unit? = { _, _, _, _ -> },
+    onSubmitCommentReport: (Long, Long, String) -> Unit? = { _, _, _ -> },
     onDismiss: () -> Unit,
 ) {
 
@@ -289,6 +290,7 @@ fun ReportDialog(
                                     when(typeReport) {
                                         "comic" -> onSubmitComicReport(keyId, selectedReason.id, value)
                                         "chapter" -> onSubmitChapterReport(keyId, chapterNumber!!, selectedReason.id, value)
+                                        "comment" -> onSubmitCommentReport(keyId, selectedReason.id, value)
                                     }
                                     onDismiss()
                                 }

@@ -5,6 +5,8 @@ import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ReactionRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -103,6 +105,21 @@ interface ComicCommentApiService {
         @Path("comicId") comicId: Long,
         @Path("commentId") commentId: Long,
         @Body reactionRequest : ReactionRequest,
+    ): Response<Unit>
+
+
+    /**
+     * TODO --------------- REPORT COMMENT ----------------
+     * use for both chapter comment and comic comment
+     */
+    @GET("reports/comment/reasons")
+    suspend fun getCommonCommentReportReasons(): List<ReportResponse>
+
+    @POST("reports/comment/{commentId}")
+    suspend fun reportComment(
+        @Header("Authorization") token: String,
+        @Path("commentId") commentId: Long,
+        @Body reportRequest: ReportRequest
     ): Response<Unit>
 
 }

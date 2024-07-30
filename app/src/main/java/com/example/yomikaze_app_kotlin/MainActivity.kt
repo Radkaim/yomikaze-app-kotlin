@@ -1,6 +1,13 @@
 package com.example.yomikaze_app_kotlin
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -12,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -20,6 +28,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.BottomHomeNavItems
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.authGraph
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.homeGraph
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
@@ -28,6 +38,8 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
 import com.example.yomikaze_app_kotlin.ui.AppTheme
 import com.example.yomikaze_app_kotlin.ui.YomikazeappkotlinTheme
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +64,43 @@ class MainActivity : ComponentActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             checkAndChangeStatusBarColor(mainViewModel.stateApp.theme, window)
         }
+
+
+        createNotificationChannel()
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                1
+            )
+            return
+        }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+//    val msg = getString(R.string.msg_token_fmt, token)
+            Log.d("yomikaze_fcm", token)
+//    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        })
         setContent {
 
             // check view model stateApp theme
@@ -73,6 +122,8 @@ class MainActivity : ComponentActivity() {
                         composable("main_screen_route") {
                             MainView(mainViewModel)
                         }
+                        homeGraph(mainViewModel, navController)
+                        authGraph(mainViewModel, navController)
 
                         composable(
                             route = BottomHomeNavItems.Home.screen_route,
@@ -137,6 +188,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Yomikaze Notification Channel"
+            val descriptionText = "Yomikaze Notification Channel Description"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("default", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system.
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
     private fun handleDeepLinkIntent(intent: Intent?, navController: NavController) {
         intent?.data?.let { uri ->
             val pathSegments = uri.pathSegments
@@ -189,6 +257,8 @@ fun checkAndChangeStatusBarColor(
             false // Điều này sẽ đặt biểu tượng status bar màu sáng trên nền tối
     }
 }
+
+// Declare the launcher at the top of your Activity/Fragment:
 
 
 //@Preview(showBackground = true)

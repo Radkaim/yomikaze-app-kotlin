@@ -885,14 +885,14 @@ fun AdvancedSearchContent(
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
-                                androidx.compose.material3.Text(
+                                Text(
                                     text = "Results: " + state.totalResults.toString(),
                                     color = MaterialTheme.colorScheme.inverseSurface,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier
                                         .align(Alignment.Start)
-                                        .padding(bottom = 10.dp)
+                                        .padding(bottom = 10.dp, start = 10.dp)
                                 )
                             }
 //                        }
@@ -903,14 +903,14 @@ fun AdvancedSearchContent(
                         if (state.isSearchLoading) {
                             repeat(2) {
                                 NormalComicCardShimmerLoading()
-                                Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.height(20.dp))
                             }
                         } else {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(5.dp),
-                                verticalArrangement = Arrangement.spacedBy(5.dp),
+                                verticalArrangement = Arrangement.spacedBy(20.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 state.searchResults.forEach { comic ->
@@ -927,6 +927,49 @@ fun AdvancedSearchContent(
             }
         }
 
+//        Column(
+//            verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
+//            modifier = Modifier
+//                .padding(
+////                    start = 4.dp,
+////                    end = 4.dp,
+////                    bottom = 4.dp
+//                ) // Optional padding for the entire list
+//                .background(MaterialTheme.colorScheme.background)
+//                .wrapContentSize(Alignment.Center)
+//        ) {
+//            Text(
+//                text = "Results: " + state.totalResults.toString(),
+//                color = MaterialTheme.colorScheme.inverseSurface,
+//                fontSize = 16.sp,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier
+//                    .align(Alignment.Start)
+//                    .padding(bottom = 10.dp)
+//            )
+//
+//            if (state.isSearchLoading) {
+//                repeat(2) {
+//                    NormalComicCardShimmerLoading()
+//                    Spacer(modifier = Modifier.height(10.dp))
+//                }
+//            } else {
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(5.dp),
+//                    verticalArrangement = Arrangement.spacedBy(5.dp),
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    state.searchResults.forEach { comic ->
+//                        SearchResultItem(
+//                            comic = comic,
+//                            advancedSearchViewModel = advancedSearchViewModel
+//                        )
+//                    }
+//                }
+//            }
+//        }
     }
 }
 

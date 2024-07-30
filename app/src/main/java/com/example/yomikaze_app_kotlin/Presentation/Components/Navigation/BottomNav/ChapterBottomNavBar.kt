@@ -51,11 +51,13 @@ import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.Chapter
 import com.example.yomikaze_app_kotlin.Presentation.Components.Chapter.ChapterCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.ReportDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.UnlockChapterDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.FlipPage.FlipPagerOrientation
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapterModel
+import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapterState
 import com.example.yomikaze_app_kotlin.R
 
 @Composable
@@ -72,6 +74,7 @@ fun ChapterBottomNavBar(
     checkAutoScroll: (Boolean) -> Unit,
 
     viewChapterModel: ViewChapterModel,
+    state: ViewChapterState,
 
     onUpdateClick: () -> Unit,
 
@@ -146,12 +149,6 @@ fun ChapterBottomNavBar(
 
                     when (item.screen_route) {
                         "previous_chapter_route" -> if (canPrevious) {
-//                            Log.d("ChapterBottomNavBar", "onPreviousClick: ${canPrevious}")
-//                            Log.d("ChapterBottomNavBar", "onPreviousClick: ${viewChapterModel.state.value.currentChapterNumber - 1}")
-//                            viewChapterModel.getPagesByChapterNumberOfComic(
-//                                comicId,
-//                                viewChapterModel.state.value.currentChapterNumber - 1)
-//                            currentRoute = null
                             val previousChapterNumber =
                                 viewChapterModel.getPreviousChapterNumber(viewChapterModel.state.value.currentChapterNumber)
 
@@ -175,17 +172,17 @@ fun ChapterBottomNavBar(
                         }
 
                         "list_chapter_route" -> showDialog = 2
-                        "comment_route" -> {viewChapterModel.navigateToChapterComment(comicId = comicId, chapterNumber = viewChapterModel.state.value.currentChapterNumber, chapterTitle = viewChapterModel.state.value.currentChapterTitle!!)}
+                        "comment_route" -> {
+                            viewChapterModel.navigateToChapterComment(
+                                comicId = comicId,
+                                chapterNumber = viewChapterModel.state.value.currentChapterNumber,
+                                chapterTitle = viewChapterModel.state.value.currentChapterTitle!!
+                            )
+                        }
+
                         "setting_route" -> showDialog = 4
                         "next_chapter_route" -> if (canNext) {
-//                            Log.d("ChapterBottomNavBar", "onNextClick: ${canNext}")
 //
-//                            val nextChapter = viewChapterModel.state.value.currentChapterNumber + 1
-//                            Log.d("ChapterBottomNavBar", "onNextClick: $nextChapter")
-//                            viewChapterModel.getPagesByChapterNumberOfComic(
-//                                comicId,
-//                                nextChapter)
-//                            currentRoute = null
                             val nextChapterNumber =
                                 viewChapterModel.getNextChapterNumber(viewChapterModel.state.value.currentChapterNumber)
                             if (nextChapterNumber != null) {
@@ -225,7 +222,8 @@ fun ChapterBottomNavBar(
                             showDialog = null
                             currentRoute = null
                         },
-                        onUpdateClick = {onUpdateClick()}
+                        state = state,
+                        onUpdateClick = { onUpdateClick() }
                     )
                 }
 
@@ -456,7 +454,7 @@ fun ViewListChapterDialog(
     comicId: Long,
     viewChapterModel: ViewChapterModel,
     onUpdateClick: () -> Unit,
-
+    state: ViewChapterState,
     onDismiss: () -> Unit
 ) {
 
@@ -481,7 +479,8 @@ fun ViewListChapterDialog(
 
     val listChapter = viewChapterModel.state.value.listChapters
 
-    var showDialog by remember { mutableStateOf(false) }
+//    var showDialog by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf<Int?>(null) }
     var selectedChapter by remember { mutableStateOf<Chapter?>(null) }
     Dialog(
         onDismissRequest = onDismiss,
@@ -575,7 +574,7 @@ fun ViewListChapterDialog(
                                     } else {
                                         if (if (appPreference.isUserLoggedIn) !chapter.isUnlocked else chapter.hasLock) {
                                             selectedChapter = chapter
-                                            showDialog = true
+                                            showDialog = 1
                                         } else {
                                             if (isNetworkAvailable) {
                                                 onUpdateClick()
@@ -595,45 +594,68 @@ fun ViewListChapterDialog(
                                     }
 
                                 },
-                                onReportClick = {}
+                                onReportClick = {
+                                    if(appPreference.isUserLoggedIn) {
+                                        showDialog = 2
+                                        selectedChapter = chapter
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Please sign in to report this chapter",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
                             )
                         }
                     }
                 }
-
-                if (showDialog) {
-                    UnlockChapterDialogComponent(
-                        title = "Do you want to unlock this chapter?",
-                        chapterNumber = selectedChapter?.number!!,
-                        totalCoin = selectedChapter?.price?.toLong()!!,
-                        coinOfUserAvailable = appPreference.userBalance,
-                        onConfirmClick = {
-                            //UnlockUC
-                            //if(state.success) {navigateToViewChapter}
-                            viewChapterModel.unlockAChapter(
-                                comicId = comicId,
+                if (showDialog != null) {
+                    when (showDialog) {
+                        1 -> {
+                            UnlockChapterDialogComponent(
+                                title = "Do you want to unlock this chapter?",
                                 chapterNumber = selectedChapter?.number!!,
-                                price = selectedChapter?.price?.toLong() ?: 0
+                                totalCoin = selectedChapter?.price?.toLong()!!,
+                                coinOfUserAvailable = appPreference.userBalance,
+                                onConfirmClick = {
+                                    //UnlockUC
+                                    //if(state.success) {navigateToViewChapter}
+                                    viewChapterModel.unlockAChapter(
+                                        comicId = comicId,
+                                        chapterNumber = selectedChapter?.number!!,
+                                        price = selectedChapter?.price?.toLong() ?: 0
+                                    )
+                                },
+                                onDismiss = { showDialog = null },
+                                onBuyCoinsClick = {
+                                    //navigateToBuyCoins
+                                    viewChapterModel.navigateToCoinShop()
+                                }
                             )
-                        },
-                        onDismiss = { showDialog = false },
-                        onBuyCoinsClick = {
-                            //navigateToBuyCoins
-                            viewChapterModel.navigateToCoinShop()
                         }
-                    )
+
+                        2 -> {
+                            ReportDialog(
+                                title = "Report Chapter",
+                                keyId = comicId,
+                                chapterNumber = selectedChapter?.number!!,
+                                typeReport = "chapter",
+                                listCommonReportReasons = state.listCommonChapterReportResponse,
+                                onDismiss = { showDialog = null },
+                                onSubmitChapterReport = { comicId, chapterNumber, reasonId, reportContent ->
+                                    viewChapterModel.reportChapter(
+                                        comicId = comicId,
+                                        chapterNumber = chapterNumber,
+                                        reportReasonId = reasonId,
+                                        reportContent = reportContent
+                                    )
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-//fun for return offline mode choose or online mode choose
-@Composable
-fun getPageByMode(): Unit {
-    if (CheckNetwork()) {
-        //getPagesByChapterNumberOfComic
-    } else {
-        //getPageByComicIdAndChapterNumberInDB
     }
 }

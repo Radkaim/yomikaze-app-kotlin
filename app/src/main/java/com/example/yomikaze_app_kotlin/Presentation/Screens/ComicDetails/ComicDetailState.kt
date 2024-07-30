@@ -40,5 +40,7 @@ data class ComicDetailState(
     val listCommonComicReportResponse: List<ReportResponse> = emptyList(),
     val listCommonChapterReportResponse: List<ReportResponse> = emptyList(),
 
+    val listCommonCommentReportResponse: List<ReportResponse> = emptyList(),
+
 
     )

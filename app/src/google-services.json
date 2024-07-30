@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "664668404741",
+    "project_id": "yomikaze-fcm",
+    "storage_bucket": "yomikaze-fcm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664668404741:android:0b6727297037a38d97306c",
+        "android_client_info": {
+          "package_name": "org.yomikaze.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664668404741-jodbp65q34m3te1vusahqj4hdg97etag.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.yomikaze.app",
+            "certificate_hash": "696013681350d9271527f13d0b2a095f17e5adfd"
+          }
+        },
+        {
+          "client_id": "664668404741-1stjg8mmmal9hik4lo84gn9be7pspktb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOw_qoOw0Ir5vepzZbxrnpzJcCsSCNIds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664668404741-1stjg8mmmal9hik4lo84gn9be7pspktb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

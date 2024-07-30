@@ -36,6 +36,7 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.HomeBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.NetworkDisconnectedDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopAppBar.DefaultTopAppBar
@@ -63,6 +64,11 @@ fun ProfileView(
                 onLogoClicked = {},
                 onSearchClicked = {},
                 onSettingClicked = { profileViewModel.onSettingCLicked() }
+            )
+        },
+        bottomBar = {
+            HomeBottomNavBar(
+                navController = navController
             )
         })
     {

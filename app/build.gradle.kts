@@ -4,6 +4,10 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 
+
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
+
 }
 
 
@@ -73,6 +77,7 @@ dependencies {
     implementation("androidx.wear.compose:compose-material:1.3.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.media3:media3-common:1.4.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:24.0.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -156,6 +161,16 @@ dependencies {
 
     // constraint layout compose
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
+
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging")
 
 }
 kapt {

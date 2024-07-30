@@ -6,10 +6,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetChaptersByComicIdDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.Download.DB.GetPageByComicIdAndChapterNumberDBUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Bookcase.History.UpdateLastReadPageUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetCommonChapterReportReasonsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.ReportChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.UnlockAChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +30,9 @@ class ViewChapterModel @Inject constructor(
     private val getListChaptersByComicIdUC: GetListChaptersByComicIdUC,
     private val getChaptersByComicIdDBUC: GetChaptersByComicIdDBUC,
     private val unlockAChapterUC: UnlockAChapterUC,
-    private val updateLastReadPageUC: UpdateLastReadPageUC
+    private val updateLastReadPageUC: UpdateLastReadPageUC,
+    private val reportChapterUC: ReportChapterUC,
+    private val getCommonChapterReportReasonsUC: GetCommonChapterReportReasonsUC,
 ) : ViewModel() {
 
 
@@ -282,6 +287,54 @@ class ViewChapterModel @Inject constructor(
                 Log.d("ViewChapterModel", "updateLastReadPage: ${result.body()}")
             } else {
                 Log.e("ViewChapterModel", "updateLastReadPage: ${result.errorBody()?.string()}")
+            }
+        }
+    }
+    init {
+        getCommonChapterReportReasons()
+    }
+    /**
+     * Todo: Implement get common report reasons of chapter
+     */
+    fun getCommonChapterReportReasons() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = getCommonChapterReportReasonsUC.getCommonChapterReportReasons()
+            result.fold(
+                onSuccess = { listReportResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value = _state.value.copy(listCommonChapterReportResponse = listReportResponse)
+                    Log.d("ComicDetailViewModel", "getCommonChapterReportReasons: $result")
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicDetailViewModel", "getCommonChapterReportReasons: $exception")
+                }
+            )
+        }
+    }
+
+    /**
+     * Todo: Implement report chapter
+     */
+    fun reportChapter(
+        comicId: Long,
+        chapterNumber: Int,
+        reportReasonId: Long,
+        reportContent: String?
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+//            Log.d("ComicDetailViewModel", "reportChapter: $reportContent")
+//            Log.d("ComicDetailViewModel", "reportChapter: $reportReasonId")
+//            Log.d("ComicDetailViewModel", "reportChapter: $comicId")
+//            Log.d("ComicDetailViewModel", "reportChapter: $chapterNumber")
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val newReportRequest = ReportRequest(reportReasonId, reportContent)
+            val result =
+                reportChapterUC.reportChapter(token, comicId, chapterNumber, newReportRequest)
+            if (result.code() == 201) {
+                Log.d("ComicDetailViewModel", "reportChapter: $result")
+            } else {
+                Log.e("ComicDetailViewModel", "reportChapter: $result")
             }
         }
     }

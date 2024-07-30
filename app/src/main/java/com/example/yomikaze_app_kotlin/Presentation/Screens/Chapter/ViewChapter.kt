@@ -364,6 +364,7 @@ fun ViewChapterContent(
                     },
                     checkAutoScroll = { autoScroll = it },
                     viewChapterModel = viewChapterModel,
+                    state = state,
                     onUpdateClick = {
                         viewChapterModel.updateLastReadPage(
                             comicId = comicId,

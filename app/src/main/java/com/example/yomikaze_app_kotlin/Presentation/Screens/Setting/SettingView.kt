@@ -136,7 +136,9 @@ fun SettingView(
                     }
                 },
             )
-        })
+        }
+
+        )
     {
         Divider(
             color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),

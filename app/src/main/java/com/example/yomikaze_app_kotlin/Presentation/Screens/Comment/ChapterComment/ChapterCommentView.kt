@@ -252,6 +252,7 @@ fun ChapterCommentContent(
                             roleName = comment.author.roles?.get(0) ?: "",
                             creationTime = comment.creationTime,
                             isOwnComment = chapterCommentViewModel.checkIsOwnComment(comment.author.id),
+                            isUserLogin = appPreference.isUserLoggedIn,
                             isAdmin = chapterCommentViewModel.checkIsAdmin(),
                             totalLikes = comment.totalLikes.toLong(),
                             myReaction = comment.myReaction,
@@ -296,6 +297,14 @@ fun ChapterCommentContent(
                                     comicId = comicId,
                                     chapterNumber = chapterNumber,
                                     authorName = comment.author.name
+                                )
+                            },
+                            listCommonCommentReportResponse = state.listCommonCommentReportResponse,
+                            onReportClick = { commentId, reasonId, reportContent ->
+                                chapterCommentViewModel.reportComment(
+                                    commentId = commentId,
+                                    reportReasonId = reasonId,
+                                    reportContent = reportContent
                                 )
                             },
                             chapterCommentViewModel = chapterCommentViewModel

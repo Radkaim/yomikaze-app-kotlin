@@ -9,12 +9,15 @@ import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ReactionRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.DeleteChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.GetAllReplyChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.GetMainChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.PostReplyChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.ReactChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.UpdateChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.Common.GetCommonCommentReportReasonsUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.Common.ReportCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetMainCommentByCommentIdUC
@@ -49,7 +52,10 @@ class ReplyCommentDetailViewModel @Inject constructor(
     private val getMainChapterComment: GetMainChapterCommentUC,
 
     private val reactComicCommentByComicIdUC: ReactComicCommentByComicIdUC,
-    private val reactChapterCommentUC: ReactChapterCommentUC
+    private val reactChapterCommentUC: ReactChapterCommentUC,
+
+    private val reportCommentUC: ReportCommentUC,
+    private val getCommonCommentReportReasonsUC: GetCommonCommentReportReasonsUC
 ) : ViewModel(), StatefulViewModel<ReplyCommentDetailState> {
     //navController
     private var navController: NavController? = null
@@ -833,6 +839,45 @@ class ReplyCommentDetailViewModel @Inject constructor(
             } else {
                 Log.e("ChapterReplyReact", "reactComicCommentByComicId: $result")
             }
+        }
+    }
+
+    /**
+     * Todo: Implement report comment
+     */
+    fun reportComment(commentId: Long, reportReasonId: Long, reportContent: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val newReportRequest = ReportRequest(reportReasonId, reportContent)
+            val result = reportCommentUC.reportComment(token, commentId, newReportRequest)
+            if (result.code() == 201) {
+                Log.d("ComicDetailViewModel", "reportComment: $result")
+            } else {
+                Log.e("ComicDetailViewModel", "reportComment: $result")
+            }
+        }
+    }
+    init {
+        getCommonCommentReportReasons()
+    }
+    /**
+     * Todo: Implement get common comment report reasons
+     */
+    fun getCommonCommentReportReasons() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = getCommonCommentReportReasonsUC.getCommonCommentReport()
+            result.fold(
+                onSuccess = { listReportResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value =
+                        _state.value.copy(listCommonCommentReportResponse = listReportResponse)
+                    Log.d("ComicDetailViewModel", "getCommonCommentReportReasons: $result")
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicDetailViewModel", "getCommonCommentReportReasons: $exception")
+                }
+            )
         }
     }
 

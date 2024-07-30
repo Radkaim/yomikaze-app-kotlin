@@ -334,6 +334,7 @@ fun DescriptionInComicDetailView(
                             roleName = comment.author?.roles?.get(0) ?: "",
                             creationTime = comment.creationTime,
                             isOwnComment = comicCommentViewModel.checkIsOwnComment(comment.author!!.id),
+                            isUserLogin = appPreference.isUserLoggedIn,
                             isAdmin = comicCommentViewModel.checkIsAdmin(),
                             totalLikes = comment.totalLikes.toLong(),
                             totalDislikes = comment.totalDislikes.toLong(),
@@ -377,6 +378,14 @@ fun DescriptionInComicDetailView(
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
+                            },
+                            listCommonCommentReportResponse = state.listCommonCommentReportResponse,
+                            onReportClick = {commentId, reasonId, reportContent ->
+                                comicDetailViewModel.reportComment(
+                                    commentId = commentId,
+                                    reportReasonId = reasonId,
+                                    reportContent = reportContent
+                                )
                             },
                             comicCommentViewModel = comicCommentViewModel
                         )

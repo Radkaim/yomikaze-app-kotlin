@@ -44,10 +44,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat2
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.IconAndNumbers
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.DeleteConfirmDialogComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.EditCommentDialogComponent
+import com.example.yomikaze_app_kotlin.Presentation.Components.Dialog.ReportDialog
 import com.example.yomikaze_app_kotlin.Presentation.Components.DropdownMenu.MenuOptions
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ChapterComment.ChapterCommentViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
@@ -67,6 +69,7 @@ fun CommentCard(
 
     isOwnComment: Boolean,
     isAdmin: Boolean,
+    isUserLogin: Boolean,
 
     totalLikes: Long? = 0,
     onLikeClick: () -> Unit? = {},
@@ -79,9 +82,13 @@ fun CommentCard(
 
 
     onClicked: () -> Unit? = {},
+
+    listCommonCommentReportResponse: List<ReportResponse> = emptyList(),
     comicCommentViewModel: ComicCommentViewModel? = null,
     replyCommentDetailViewModel: ReplyCommentDetailViewModel? = null,
     chapterCommentViewModel: ChapterCommentViewModel? = null,
+
+    onReportClick: (Long, Long, String) -> Unit? = { _, _, _ -> },
 
     ) {
     var showPopupMenu by remember { mutableStateOf(false) }
@@ -281,7 +288,7 @@ fun CommentCard(
                 MenuOptions("Delete", "delete_comment_route", R.drawable.ic_delete),
             )
 
-            val listTitlesOfComicMenuOptionUserNotLogin = listOf(
+            val listTitlesOfComicMenuOptionUserLogin = listOf(
                 MenuOptions("Report", "report_comment_route", R.drawable.ic_report),
             )
 
@@ -297,7 +304,7 @@ fun CommentCard(
                     listTitlesOfComicMenuOptionAdmin
                 } else {
                     Log.d("CommentCard", "CommentCard: $isAdmin")
-                    listTitlesOfComicMenuOptionUserNotLogin
+                    listTitlesOfComicMenuOptionUserLogin
                 }
             }
 
@@ -322,23 +329,26 @@ fun CommentCard(
                                 }
                         ) {
 
-
-                            IconButton(
-                                onClick = { showPopupMenu = true },
-                                modifier = Modifier
-                                    .padding(start = 350.dp)
+                            if (isOwnComment || isAdmin || isUserLogin ) {
+                                IconButton(
+                                    onClick = { showPopupMenu = true },
+                                    modifier = Modifier
+                                        .padding(start = 350.dp)
 //                                    .offset(y = (-110).dp)
-                                    .align(Alignment.TopEnd)
+                                        .align(Alignment.TopEnd)
 //                                    .constrainAs(iconButton) {
 //                                        top.linkTo(parent.top)
 //                                        start.linkTo(parent.start)
 //                                    }
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_more),
-                                    contentDescription = "More option menu",
-                                    tint = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f),
-                                )
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_more),
+                                        contentDescription = "More option menu",
+                                        tint = MaterialTheme.colorScheme.secondaryContainer.copy(
+                                            alpha = 0.8f
+                                        ),
+                                    )
+                                }
                             }
                         }
 
@@ -369,7 +379,6 @@ fun CommentCard(
                                                 "edit_comment_route" -> showDialog = 1
                                                 "report_comment_route" -> showDialog = 2
                                                 "delete_comment_route" -> showDialog = 3
-
                                             }
                                         }) {
                                         Row(
@@ -417,7 +426,7 @@ fun CommentCard(
                                                 key2 = commentId,
                                                 value = content,
                                                 title = "Edit Comment",
-                                                onDismiss = { showDialog = 0 },
+                                                onDismiss = { showDialog = null },
                                                 viewModel = comicCommentViewModel
                                             )
                                         }
@@ -428,7 +437,7 @@ fun CommentCard(
                                                 key2 = commentId,
                                                 value = "",
                                                 title = "Are you sure you want to delete this comment?",
-                                                onDismiss = { showDialog = 0 },
+                                                onDismiss = { showDialog = null },
                                                 viewModel = comicCommentViewModel
                                             )
 
@@ -444,7 +453,7 @@ fun CommentCard(
                                                 key3 = chapterNumber!!,
                                                 value = content,
                                                 title = "Edit Comment",
-                                                onDismiss = { showDialog = 0 },
+                                                onDismiss = { showDialog = null },
                                                 viewModel = replyCommentDetailViewModel!!
                                             )
                                         }
@@ -456,7 +465,7 @@ fun CommentCard(
                                                 key3 = chapterNumber!!,
                                                 value = "",
                                                 title = "Are you sure you want to delete this comment?",
-                                                onDismiss = { showDialog = 0 },
+                                                onDismiss = { showDialog = null },
                                                 viewModel = replyCommentDetailViewModel!!
                                             )
 
@@ -472,7 +481,7 @@ fun CommentCard(
                                                 key3 = chapterNumber!!,
                                                 value = content,
                                                 title = "Edit Comment",
-                                                onDismiss = { showDialog = 0 },
+                                                onDismiss = { showDialog = null },
                                                 viewModel = chapterCommentViewModel!!
                                             )
                                         }
@@ -484,37 +493,34 @@ fun CommentCard(
                                                 key3 = chapterNumber!!,
                                                 value = "",
                                                 title = "Are you sure you want to delete this comment?",
-                                                onDismiss = { showDialog = 0 },
+                                                onDismiss = { showDialog = null },
                                                 viewModel = chapterCommentViewModel!!
                                             )
 
                                         }
                                     }
                                 }
-//                                    when (showDialog) {
-//                                        1 -> {
-//                                            EditCommentDialogComponent(
-//                                                key = comicId,
-//                                                key2 = commentId,
-//                                                value = content,
-//                                                title = "Edit Comment",
-//                                                onDismiss = { showDialog = 0 },
-//                                                viewModel = replyCommentDetailViewModel!!
-//                                            )
-//                                        }
-//
-//                                        3 -> {
-//                                            DeleteConfirmDialogComponent(
-//                                                key = comicId,
-//                                                key2 = commentId,
-//                                                value = "",
-//                                                title = "Are you sure you want to delete this comment?",
-//                                                onDismiss = { showDialog = 0 },
-//                                                viewModel = replyCommentDetailViewModel!!
-//                                            )
-//
-//                                        }
-//                                    }
+
+                                if (comicCommentViewModel != null || replyCommentDetailViewModel != null || chapterCommentViewModel != null) {
+                                    when (showDialog) {
+                                        2 -> {
+                                            ReportDialog(
+                                                title = "Report Comment",
+                                                keyId = commentId,
+                                                typeReport = "comment",
+                                                onDismiss = { showDialog = null },
+                                                listCommonReportReasons = listCommonCommentReportResponse,
+                                                onSubmitCommentReport = { commentId, reportReasonId, reportContent ->
+                                                    onReportClick(
+                                                        commentId,
+                                                        reportReasonId,
+                                                        reportContent
+                                                    )
+                                                },
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -523,6 +529,7 @@ fun CommentCard(
         }
     }
 }
+
 
 
 

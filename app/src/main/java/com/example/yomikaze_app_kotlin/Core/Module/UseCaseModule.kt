@@ -70,6 +70,8 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.Po
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.PostReplyChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.ReactChapterCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ChapterComment.UpdateChapterCommentUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.Common.GetCommonCommentReportReasonsUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.Common.ReportCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.DeleteComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllReplyCommentByComicIdUC
@@ -768,6 +770,29 @@ object UseCaseModule {
     ): ReactComicCommentByComicIdUC {
         return ReactComicCommentByComicIdUC(comicCommentRepository)
     }
+
+    /**
+     * TODO: Provide GetCommonCommentReportReasonsUC
+     */
+    @Provides
+    @Singleton
+    fun provideGetCommonCommentReportReasonsUC(
+        comicCommentRepository: ComicCommentRepository
+    ): GetCommonCommentReportReasonsUC {
+        return GetCommonCommentReportReasonsUC(comicCommentRepository)
+    }
+
+    /**
+     * TODO: ReportCommentUC
+     */
+    @Provides
+    @Singleton
+    fun provideReportCommentUC(
+        comicCommentRepository: ComicCommentRepository
+    ): ReportCommentUC {
+        return ReportCommentUC(comicCommentRepository)
+    }
+
 
     /**
      *-------------------------------------------------------------------------

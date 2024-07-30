@@ -156,8 +156,16 @@ fun ListChapterInComicDetailView(
                             }
                         },
                         onReportClick = {
-                            showDialog = 2
-                            selectedChapter = chapter
+                            if (appPreference.isUserLoggedIn) {
+                                showDialog = 2
+                                selectedChapter = chapter
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Please sign in to report this chapter",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         },
                     )
 

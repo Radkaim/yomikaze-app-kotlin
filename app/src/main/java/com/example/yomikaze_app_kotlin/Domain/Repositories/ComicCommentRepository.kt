@@ -5,6 +5,8 @@ import com.example.yomikaze_app_kotlin.Domain.Models.CommentRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.CommentResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ReactionRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.ReportResponse
 import retrofit2.Response
 
 interface ComicCommentRepository {
@@ -87,6 +89,18 @@ interface ComicCommentRepository {
         comicId: Long,
         commentId: Long,
         reactionRequest: ReactionRequest
+    ): Response<Unit>
+
+    /**
+     * TODO --------------- REPORT COMMENT ----------------
+     * use for both chapter comment and comic comment
+     */
+    suspend fun getCommonCommentReportReasons(): Result<List<ReportResponse>>
+
+    suspend fun reportComment(
+        token: String,
+        commentId: Long,
+        reportRequest: ReportRequest
     ): Response<Unit>
 
 }

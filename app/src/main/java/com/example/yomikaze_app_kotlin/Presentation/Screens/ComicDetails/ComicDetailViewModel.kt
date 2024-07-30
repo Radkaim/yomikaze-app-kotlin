@@ -20,6 +20,8 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetListChaptersByCo
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.RatingComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.ReportChapterUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.ReportComicUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.Common.GetCommonCommentReportReasonsUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.Common.ReportCommentUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.GetAllComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,7 +49,10 @@ class ComicDetailViewModel @Inject constructor(
     private val reportComicUC: ReportComicUC,
 
     private val getCommonChapterReportReasonsUC: GetCommonChapterReportReasonsUC,
-    private val reportChapterUC: ReportChapterUC
+    private val reportChapterUC: ReportChapterUC,
+
+    private val reportCommentUC: ReportCommentUC,
+    private val getCommonCommentReportReasonsUC: GetCommonCommentReportReasonsUC
 ) : ViewModel() {
     //navController
     private var navController: NavController? = null
@@ -97,6 +102,7 @@ class ComicDetailViewModel @Inject constructor(
 
     init {
         getComicCommonReportReasons()
+        getCommonCommentReportReasons()
     }
 
     fun getComicDetailsFromApi(comicId: Long) {
@@ -445,6 +451,46 @@ class ComicDetailViewModel @Inject constructor(
             } else {
                 Log.e("ComicDetailViewModel", "reportChapter: $result")
             }
+        }
+    }
+
+    /**
+     * Todo: Implement report comment
+     */
+    fun reportComment(commentId: Long, reportReasonId: Long, reportContent: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("ComicDetailViewModel", "reportComment: $reportContent")
+            Log.d("ComicDetailViewModel", "reportComment: $reportReasonId")
+            Log.d("ComicDetailViewModel", "reportComment: $commentId")
+            val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            val newReportRequest = ReportRequest(reportReasonId, reportContent)
+            val result = reportCommentUC.reportComment(token, commentId, newReportRequest)
+            if (result.code() == 201) {
+                Log.d("ComicDetailViewModel", "reportComment: $result")
+            } else {
+                Log.e("ComicDetailViewModel", "reportComment: $result")
+            }
+        }
+    }
+
+    /**
+     * Todo: Implement get common comment report reasons
+     */
+    fun getCommonCommentReportReasons() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = getCommonCommentReportReasonsUC.getCommonCommentReport()
+            result.fold(
+                onSuccess = { listReportResponse ->
+                    // Xử lý kết quả thành công
+                    _state.value =
+                        _state.value.copy(listCommonCommentReportResponse = listReportResponse)
+                    Log.d("ComicDetailViewModel", "getCommonCommentReportReasons: $result")
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ComicDetailViewModel", "getCommonCommentReportReasons: $exception")
+                }
+            )
         }
     }
 }

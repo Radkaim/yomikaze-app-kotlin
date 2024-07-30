@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.HomeBottomNavBar
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.Download.DownloadView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Bookcase.History.HistoryView
@@ -49,7 +50,13 @@ fun BookcaseView(
                 title = "Bookcase",
                 navigationIcon = {},
             )
-        })
+        },
+        bottomBar = {
+            HomeBottomNavBar(
+                navController = navController
+            )
+        }
+        )
     {
 
         Column(modifier = Modifier.fillMaxWidth()) {
