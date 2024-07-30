@@ -194,7 +194,6 @@ fun HistoryContent(
                 isDeleted = true,
                 lastChapter = historyRecord.chapter.number.toString(),
                 publishedDate = historyRecord.comic.publicationDate,
-                backgroundColor = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(119.dp)
@@ -237,7 +236,9 @@ fun showListHistories(
     var isReversed by remember { mutableStateOf(true) }
     // Lưu vị trí hiện tại trước khi thay đổi
     val lastVisibleItemIndex = remember { mutableStateOf(-1) }
-
+//    LaunchedEffect(Unit){
+//        historyViewModel.getHistories()
+//    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
@@ -422,26 +423,31 @@ fun showListHistories(
 
     LaunchedEffect(
         key1 = page.value,
-        //key2 = state.totalPages
+        key2 = state,
+        key3 = isReversed,
     ) {
-        Log.d("HistoryViewModel", "page1: ${page.value}")
+//        Log.d("HistoryView", "page1: ${page.value}")
         if (page.value > state.currentPage.value && !loading.value) {
             loading.value = true
 //            if (state.listHistoryRecords.isEmpty() && state.currentPage.value >2) {
 //            historyViewModel.getHistories(page.value)
 //            } else {
-            historyViewModel.getHistories(page.value)
-//            }
+            Log.d("HistoryView", "page2: ${page.value}")
+            historyViewModel.getHistories(
+                page = page.value,
+                orderBy =  if (isReversed) "LastModifiedDesc" else "LastModified"
+            )
             loading.value = false
         }
 
     }
     // Sử dụng SideEffect để phát hiện khi người dùng cuộn tới cuối danh sách
-    LaunchedEffect(listState, key2 = page.value) {
+    LaunchedEffect(key1 = listState, key2 = page.value) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
             .collectLatest { lastVisibleItemIndex ->
                 if (!loading.value && lastVisibleItemIndex != null && lastVisibleItemIndex >= state.listHistoryRecords.size - 2) {
                     if (state.currentPage.value < state.totalPages.value) {
+
                         page.value++
                     }
                 }

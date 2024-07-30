@@ -57,6 +57,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEff
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.TagShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentViewModel
 import com.example.yomikaze_app_kotlin.R
+import kotlinx.coroutines.withContext
 
 /**
  * TODO: Description and List Chapter view
@@ -84,7 +85,20 @@ fun DescriptionInComicDetailView(
         comicDetailViewModel.getAllComicCommentByComicId(comicId = comicId)
     }
 
-    //for tag genre
+    LaunchedEffect(Unit) {
+        withContext(coroutineContext) {
+            if (state.listChapters.isNullOrEmpty()) {
+                comicDetailViewModel.getListChapterByComicId(comicId = comicId)
+            }
+            Log.d(
+                "DescriptionInComicDetailView",
+                "ListChapterInComicDetailView: ${state.listChapters}"
+            )
+        }
+
+    }
+
+//for tag ls
     val listTag = state.listTagGenres ?: emptyList()
 //    val ofsety = if (state.listComicComment!!.isNotEmpty()) 0.dp else -70.dp
     LazyColumn(
@@ -187,9 +201,17 @@ fun DescriptionInComicDetailView(
                                     comicId = comicId,
                                 )
                             } else {
-                                comicDetailViewModel.onStartReading(
-                                    comicId = comicId,
-                                )
+                                if (state.listChapters!!.isNotEmpty()) {
+                                    comicDetailViewModel.onStartReading(
+                                        comicId = comicId,
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        context1,
+                                        "This comic has no chapter",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         }) {
                         if (state.comicResponse?.isRead ?: false) {
@@ -380,7 +402,7 @@ fun DescriptionInComicDetailView(
                                 }
                             },
                             listCommonCommentReportResponse = state.listCommonCommentReportResponse,
-                            onReportClick = {commentId, reasonId, reportContent ->
+                            onReportClick = { commentId, reasonId, reportContent ->
                                 comicDetailViewModel.reportComment(
                                     commentId = commentId,
                                     reportReasonId = reasonId,

@@ -80,7 +80,7 @@ fun HomeBottomNavBar(navController: NavController) {
                           //                    {
                         navController.graph.startDestinationRoute?.let { screen_route ->
                             popUpTo(screen_route) {
-                                saveState = true
+                                saveState = false
                             }
                         }
                         launchSingleTop = true

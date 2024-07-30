@@ -60,9 +60,9 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
         // for history tab in bookcase screen
         composable("${BottomHomeNavItems.Bookcase.screen_route}/{param}") { navBackStackEntry ->
             navController.navigate("${BottomHomeNavItems.Bookcase.screen_route}") {
-//                popUpTo(BottomHomeNavItems.Home.screen_route) {
-//                    inclusive = true
-//                } // pop up to home screen
+                popUpTo(BottomHomeNavItems.Home.screen_route) {
+                    inclusive = true
+                } // pop up to home screen
             }
             val param = navBackStackEntry.arguments?.getString("param")
             when (param) {

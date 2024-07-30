@@ -42,15 +42,15 @@ class HistoryViewModel @Inject constructor(
     }
 
     // Reset state
-//    private fun resetState() {
-//        _state.value = HistoryState()
-//    }
-//
-//    override fun onCleared() {
-//        super.onCleared()
-//        // Reset page and size if needed
-//        resetState()
-//    }
+    private fun resetState() {
+        _state.value = HistoryState()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        // Reset page and size if needed
+        resetState()
+    }
 
     /**
      * Todo: Implement check user is login
@@ -77,16 +77,20 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
-    init {
-        getHistories()
-    }
+//    init {
+//        getHistories()
+//    }
 
     /**
      * Get all history records
      */
-    fun getHistories(page: Int? = 1) {
+    fun getHistories(
+        page: Int? = 1,
+        orderBy: String? = "LastModifiedDesc",
+    ) {
 
         viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isHistoryListLoading = true)
 
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val size = _state.value.size
@@ -94,8 +98,14 @@ class HistoryViewModel @Inject constructor(
             val currentPage = _state.value.currentPage.value
             val totalPages = _state.value.totalPages.value
 
-            if (currentPage > totalPages && totalPages != 0) return@launch
-            val orderBy = "LastModifiedDesc"
+            if (currentPage > totalPages && totalPages != 0 ) { //|| currentPage == 1
+//                Log.d("HistoryViewModel", "currentPage: $currentPage")
+//                Log.d("HistoryViewModel", "totalPages: $totalPages")
+//                Log.d("HistoryViewModel", "page: $page")
+                _state.value = _state.value.copy(isHistoryListLoading = false)
+                return@launch
+            }
+
             val result = getHistoriesUC.getHistories(token, orderBy, page, size)
             result.fold(
                 onSuccess = { baseResponse ->

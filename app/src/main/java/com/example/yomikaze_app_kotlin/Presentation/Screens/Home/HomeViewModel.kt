@@ -362,7 +362,11 @@ class HomeViewModel @Inject constructor(
     fun onViewMoreHistoryClicked() {
         // remove current screen from backstack
 
-        navController?.navigate("bookcase_route/1")
+        navController?.navigate("bookcase_route/1"){
+            popUpTo("home_route"){
+                inclusive = true
+            }
+        }
     }
 
     fun onViewRankingMore(tabIndex: Int) {

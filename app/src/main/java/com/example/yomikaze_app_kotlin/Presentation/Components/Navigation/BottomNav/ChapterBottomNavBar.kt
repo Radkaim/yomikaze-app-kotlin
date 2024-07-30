@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -271,9 +272,9 @@ fun SettingDialog(
 ) {
 
     val listModes = listOf(
-        ModeSelected("Scroll", R.drawable.ic_plus),
-        ModeSelected("Vertical", R.drawable.ic_delete),
-        ModeSelected("Horizontal", R.drawable.ic_edit),
+        ModeSelected("Scroll", R.drawable.ic_vertical_scrolling),
+        ModeSelected("Vertical", R.drawable.ic_horizontal_flip),
+        ModeSelected("Horizontal", R.drawable.ic_vertical_flip),
     )
 
 
@@ -307,7 +308,7 @@ fun SettingDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .align(Alignment.End)
-                            .padding(top = 20.dp, end = 10.dp)
+                            .padding(top = 20.dp, end = 20.dp)
                     ) {
                         Text(
                             text = "Reading Mode",
@@ -403,17 +404,24 @@ fun SelectedModeComponent(
     onModeSelected: () -> Unit,
     isSelected: Boolean,
 ) {
+    var width =0.dp
+    if(title =="horizontal"){
+        width = 100.dp
+    }else
+    {
+        width = 70.dp
+    }
     IconButton(
         onClick = {
             onModeSelected()
         },
         modifier = Modifier
             .shadow(8.dp, RoundedCornerShape(10.dp))
-            .width(70.dp)
-            .height(30.dp)
+            .width(width)
+            .height(35.dp)
             .background(
-                color = if (isSelected) MaterialTheme.colorScheme.surface.copy(0.2f) else MaterialTheme.colorScheme.secondary.copy(
-                    alpha = 0.2f
+                color = if (isSelected) MaterialTheme.colorScheme.surface.copy(0.6f) else MaterialTheme.colorScheme.secondary.copy(
+                    alpha = 0.6f
                 ),
                 shape = RoundedCornerShape(10.dp)
             )
@@ -425,9 +433,11 @@ fun SelectedModeComponent(
                 shape = RoundedCornerShape(10.dp)
             )
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+//            horizontalArrangement = Arrangement.spacedBy(8.dp),
+//            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = title,
@@ -439,7 +449,8 @@ fun SelectedModeComponent(
             Icon(
                 painterResource(id = icon),
                 contentDescription = "Switch Mode",
-                tint = Color.White
+                tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(0.8f),
+                modifier = Modifier.size(15.dp)
             )
         }
 
