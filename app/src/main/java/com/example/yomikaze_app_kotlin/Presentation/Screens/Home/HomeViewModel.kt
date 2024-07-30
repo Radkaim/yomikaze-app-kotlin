@@ -51,9 +51,27 @@ class HomeViewModel @Inject constructor(
 
     //data search history
     //add to
+
+    init{
+        _state.value = _state.value.copy(searchHistory = appPreference.searchHistory)
+    }
+
     fun addSearchHistory(searchText: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            // check if search history contains searchText
+            if (_state.value.searchHistory.contains(searchText)) {
+                return@launch
+            }
+            _state.value = _state.value.copy(searchHistory = _state.value.searchHistory + searchText)
             appPreference.searchHistory = appPreference.searchHistory + searchText
+        }
+    }
+
+    //remove search history
+    fun removeSearchHistory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(searchHistory = emptyList())
+            appPreference.searchHistory = emptyList()
         }
     }
 

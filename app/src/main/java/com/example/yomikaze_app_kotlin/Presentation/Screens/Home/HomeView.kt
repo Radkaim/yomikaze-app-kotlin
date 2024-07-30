@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -192,7 +192,7 @@ fun HomeContent(
 
     val context = LocalContext.current
     val appPreference = AppPreference(context)
-//    val searchHistory by remember {
+//    var searchHistory by remember {
 //        mutableStateOf(appPreference.searchHistory)
 //    }
 
@@ -220,9 +220,12 @@ fun HomeContent(
             ) {
 
                 item {
-                    Row {
-                        if (appPreference.searchHistory != null) {
-                            val searchHistory = appPreference.searchHistory
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+                    ) {
+
+                        if (state.searchHistory.isNotEmpty()) {
+
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
@@ -238,38 +241,40 @@ fun HomeContent(
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier
-
                                             .padding(bottom = 10.dp)
                                     )
 
-                                    //icon clear search history
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_delete),
-                                        contentDescription = "Clear Search History",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    Text(
+                                        text = "Clear History",
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Normal,
+                                        fontStyle = FontStyle.Italic,
+                                        textDecoration = TextDecoration.Underline,
                                         modifier = Modifier
-                                            .padding(end = 10.dp)
-                                            .size(15.dp)
+                                            .padding(end = 20.dp)
                                             .clickable {
-                                                appPreference.deleteSearchHistory()
-
+                                                homeViewModel.removeSearchHistory()
                                             }
                                     )
+
                                 }
                                 LazyRow(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 ) {
-                                    items(searchHistory) {
-                                        TagComponent(
-                                            status = it,
-                                            modifier = Modifier
-                                                .padding(bottom = 10.dp)
-                                                .clickable {
-                                                    homeViewModel.updateSearchText(newValue = it)
-                                                    homeViewModel.searchComic(it)
-                                                }
-                                        )
+                                    if (state.searchHistory.isNotEmpty()) {
+                                        items(state.searchHistory) {
+                                            TagComponent(
+                                                status = it,
+                                                modifier = Modifier
+                                                    .padding(bottom = 10.dp)
+                                                    .clickable {
+                                                        homeViewModel.updateSearchText(newValue = it)
+                                                        homeViewModel.searchComic(it)
+                                                    }
+                                            )
+                                        }
                                     }
                                 }
                             }

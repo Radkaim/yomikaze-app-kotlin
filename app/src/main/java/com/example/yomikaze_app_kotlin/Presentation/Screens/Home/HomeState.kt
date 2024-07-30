@@ -35,4 +35,6 @@ data class HomeState(
     val listComicWeekly: List<ComicResponse> = emptyList(),
     val isLoadingComicWeekly: Boolean = true,
 
+    val searchHistory: List<String> = emptyList(),
+
 )
