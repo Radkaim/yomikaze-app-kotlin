@@ -11,6 +11,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.NotificationRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ProfileRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.AdvancedSearchComicUC
@@ -80,6 +81,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentB
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.GetNotificationAPIUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetTagsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
@@ -906,4 +908,17 @@ object UseCaseModule {
     ): GetProfileUC {
         return GetProfileUC(profileRepository)
     }
+
+    /**
+     *--------------------------------------------------------------------------------------------------------
+     * TODO Notification Use Case
+     */
+    @Provides
+    @Singleton
+    fun provideNotificationUseCase(
+        notificationRepository: NotificationRepository
+    ): GetNotificationAPIUC {
+        return GetNotificationAPIUC(notificationRepository)
+    }
+
 }

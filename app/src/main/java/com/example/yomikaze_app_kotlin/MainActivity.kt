@@ -65,27 +65,152 @@ class MainActivity : ComponentActivity() {
             checkAndChangeStatusBarColor(mainViewModel.stateApp.theme, window)
         }
 
+        checkAndRequestPermissions()
 
-        createNotificationChannel()
+
+//        createNotificationChannel()
+//        if (ActivityCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.POST_NOTIFICATIONS
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            ActivityCompat.requestPermissions(
+//                this,
+//                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+//                1
+//            )
+//            return
+//        }
+//
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+//            if (!task.isSuccessful) {
+//                Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
+//                return@OnCompleteListener
+//            }
+//
+//            // Get new FCM registration token
+//            val token = task.result
+//
+//            // Log and toast
+////            Log.d("yomikaze_fcm", token)
+////    val msg = getString(R.string.msg_token_fmt, token)
+////    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+//        })
+//        setContent {
+//
+//            // check view model stateApp theme
+////            val viewModel: MainViewModel = MainViewModel()
+//            YomikazeappkotlinTheme(appTheme = mainViewModel.stateApp.theme) {
+//                // A surface container using the 'background' color from the theme
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                )
+//                {
+//                    val navController = rememberNavController()
+//                    NavHost(navController, startDestination = "splash_route") {
+//                        composable("splash_route") {
+//                            SplashScreen(navController)
+//                            // After a delay or when app is ready, navigate to main content
+//                            // navController.navigate("main_content_route")
+//                        }
+//                        composable("main_screen_route") {
+//                            MainView(mainViewModel)
+//                        }
+//                        homeGraph(mainViewModel, navController)
+//                        authGraph(mainViewModel, navController)
+//
+//                        composable(
+//                            route = BottomHomeNavItems.Home.screen_route,
+//                            deepLinks = listOf(
+//                                navDeepLink {
+//                                    uriPattern = "https://yomikaze.org/"
+//                                    action = Intent.ACTION_VIEW
+//                                }
+//                            )
+//
+//                        ) {
+//                            HomeView(navController = navController)
+//                        }
+//
+//                        composable(
+//                            route = "comic_detail_route/{comicId}",
+//                            deepLinks = listOf(
+//                                navDeepLink {
+//                                    uriPattern = "https://yomikaze.org/comic_detail/{comicId}"
+//                                    action = Intent.ACTION_VIEW
+//                                }
+//                            ),
+//                            arguments = listOf(navArgument("comicId") { defaultValue = "0" })
+//                        ) { navBackStackEntry ->
+//                            val comicId = navBackStackEntry.arguments?.getString("comicId")
+//                            ComicDetailsView(comicId = comicId?.toLong() ?: 0, navController)
+//                        }
+//
+//                        composable(
+//                            route = "view_chapter_route/{comicId}/{chapterNumber}/{lastPageNumber}",
+//                            deepLinks = listOf(
+//                                navDeepLink {
+//                                    uriPattern =
+//                                        "https://yomikaze.org/view_chapter/{comicId}/{chapterNumber}"
+//                                    action = Intent.ACTION_VIEW
+//                                }
+//                            ),
+//                            arguments = listOf(
+//                                navArgument("comicId") { defaultValue = "0" },
+//                                navArgument("chapterNumber") { defaultValue = "0" }
+//                            )
+//                        ) { navBackStackEntry ->
+//                            val comicId = navBackStackEntry.arguments?.getString("comicId")
+//                            val chapterNumber =
+//                                navBackStackEntry.arguments?.getString("chapterNumber")
+//                            val lastPageNumber =
+//                                navBackStackEntry.arguments?.getString("lastPageNumber") ?: "0"
+//
+//                            ViewChapter(
+//                                comicId = comicId?.toLong()!!,
+//                                chapterNumber = chapterNumber?.toInt() ?: 0,
+//                                lastPageNumber = lastPageNumber.toInt(),
+//                                navController = navController
+//                            )
+//                        }
+//
+//                    }
+//                    // Handle deep link intent
+//                    handleDeepLinkIntent(intent, navController)
+//                }
+//            }
+//        }
+    }
+
+    private fun checkAndRequestPermissions() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // Permission already granted, initialize content
+            initializeContent()
+        } else {
+            // Request permission
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                 1
             )
-            return
+            initializeContent()
         }
+    }
+
+    private fun initializeContent() {
+        createNotificationChannel()
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
@@ -93,31 +218,20 @@ class MainActivity : ComponentActivity() {
                 return@OnCompleteListener
             }
 
-            // Get new FCM registration token
             val token = task.result
-
-            // Log and toast
-//            Log.d("yomikaze_fcm", token)
-//    val msg = getString(R.string.msg_token_fmt, token)
-//    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            Log.d("yomikaze_fcm", token)
         })
-        setContent {
 
-            // check view model stateApp theme
-//            val viewModel: MainViewModel = MainViewModel()
+        setContent {
             YomikazeappkotlinTheme(appTheme = mainViewModel.stateApp.theme) {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                )
-                {
+                ) {
                     val navController = rememberNavController()
                     NavHost(navController, startDestination = "splash_route") {
                         composable("splash_route") {
                             SplashScreen(navController)
-                            // After a delay or when app is ready, navigate to main content
-                            // navController.navigate("main_content_route")
                         }
                         composable("main_screen_route") {
                             MainView(mainViewModel)
@@ -133,7 +247,6 @@ class MainActivity : ComponentActivity() {
                                     action = Intent.ACTION_VIEW
                                 }
                             )
-
                         ) {
                             HomeView(navController = navController)
                         }
@@ -156,8 +269,7 @@ class MainActivity : ComponentActivity() {
                             route = "view_chapter_route/{comicId}/{chapterNumber}/{lastPageNumber}",
                             deepLinks = listOf(
                                 navDeepLink {
-                                    uriPattern =
-                                        "https://yomikaze.org/view_chapter/{comicId}/{chapterNumber}"
+                                    uriPattern = "https://yomikaze.org/view_chapter/{comicId}/{chapterNumber}"
                                     action = Intent.ACTION_VIEW
                                 }
                             ),
@@ -167,21 +279,17 @@ class MainActivity : ComponentActivity() {
                             )
                         ) { navBackStackEntry ->
                             val comicId = navBackStackEntry.arguments?.getString("comicId")
-                            val chapterNumber =
-                                navBackStackEntry.arguments?.getString("chapterNumber")
-                            val lastPageNumber =
-                                navBackStackEntry.arguments?.getString("lastPageNumber") ?: "0"
+                            val chapterNumber = navBackStackEntry.arguments?.getString("chapterNumber")
+                            val lastPageNumber = navBackStackEntry.arguments?.getString("lastPageNumber") ?: "0"
 
                             ViewChapter(
-                                comicId = comicId?.toLong()!!,
+                                comicId = comicId?.toLong() ?: 0,
                                 chapterNumber = chapterNumber?.toInt() ?: 0,
                                 lastPageNumber = lastPageNumber.toInt(),
                                 navController = navController
                             )
                         }
-
                     }
-                    // Handle deep link intent
                     handleDeepLinkIntent(intent, navController)
                 }
             }

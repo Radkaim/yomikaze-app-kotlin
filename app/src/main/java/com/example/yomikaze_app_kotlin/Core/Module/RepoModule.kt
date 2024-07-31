@@ -10,6 +10,7 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicCommentApiServic
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.HistoryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryCategoryApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.NotificationApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.PageApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ProfileApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.DB.DAOs.ChapterDao
@@ -26,6 +27,7 @@ import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.HistoryRepositoryIm
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ImageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.LibraryCategoryRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.LibraryRepositoryImpl
+import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.NotificationRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.PageRepositoryImpl
 import com.example.yomikaze_app_kotlin.Data.RepositoriesImpl.ProfileRepositoryImpl
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
@@ -39,6 +41,7 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.HistoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryCategoryRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.LibraryRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.NotificationRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ProfileRepository
 import dagger.Module
@@ -221,5 +224,17 @@ object RepoModule {
         profileApiService: ProfileApiService
     ): ProfileRepository {
         return ProfileRepositoryImpl(profileApiService)
+    }
+
+    /**
+     * --------------------------------------------------------------------------
+     * Todo: Provide the the Notification Repository
+     */
+    @Provides
+    @Singleton
+    fun provideNotificationRepository(
+        notificationApiService: NotificationApiService
+    ): NotificationRepository {
+        return NotificationRepositoryImpl(notificationApiService)
     }
 }

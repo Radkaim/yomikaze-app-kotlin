@@ -9,6 +9,7 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicCommentApiServic
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.HistoryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryCategoryApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.NotificationApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.PageApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ProfileApiService
 import dagger.Module
@@ -119,5 +120,15 @@ object ServiceModule {
     @Singleton
     fun provideProfileApiService(retrofit: Retrofit): ProfileApiService {
         return retrofit.create(ProfileApiService::class.java)
+    }
+
+    /**
+     * TODO: Provide the NotificationApiService
+     *
+     */
+    @Provides
+    @Singleton
+    fun provideNotificationApiService(retrofit: Retrofit): NotificationApiService {
+        return retrofit.create(NotificationApiService::class.java)
     }
 }
