@@ -21,7 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
@@ -39,7 +41,7 @@ fun NotificationCard(
     Surface(
         modifier = Modifier
             .width(370.dp)
-            .height(100.dp)
+            .height(70.dp)
             .offset(x = 10.dp)
             .clickable(onClick = { onClicked() }),
         color = MaterialTheme.colorScheme.onErrorContainer,
@@ -72,7 +74,7 @@ fun NotificationCard(
                     horizontalArrangement = Arrangement.spacedBy(20.dp),
                     modifier = Modifier
                         .padding(start = 20.dp)
-                        .height(30.dp)
+
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_notification),
@@ -86,14 +88,12 @@ fun NotificationCard(
                         verticalArrangement = Arrangement.spacedBy(5.dp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(100.dp)
-
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.offset(y = (-10).dp)
-                        ) {
+
+                            ) {
                             Text(
                                 text = title,
                                 style = MaterialTheme.typography.bodyLarge,
@@ -108,23 +108,41 @@ fun NotificationCard(
                                 if (!isRead) {
                                     TagComponent(
                                         status = "Unread",
-                                        backgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                                        backgroundColor = MaterialTheme.colorScheme.onPrimary.copy(
+                                            alpha = 0.8f
+                                        ),
                                     )
                                 }
                             }
 
                         }
-                        Text(
-                            text = content,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                        Text(
-                            text = changeDateTimeFormat(creationTime),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+
+                            ) {
+                            Text(
+                                text = content,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier.width(200.dp)
+                            )
+                            Text(
+                                text = "Date: " + changeDateTimeFormat(creationTime),
+                                fontSize = 10.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                fontStyle = FontStyle.Italic,
+                                modifier = Modifier.padding(end= 20.dp)
+                            )
+                        }
+
+
                     }
+
 
                 }
             }
