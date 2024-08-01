@@ -2,15 +2,15 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Chan
 
 data class ChangePasswordState(
 
-    val oldPassword: String? = null,
-    val oldPasswordError: String? = null,
+    val currentPassword: String? = null,
+    val currentPasswordError: String? = null,
 
     val newPassword: String? = null,
     val newPasswordError: String? = null,
 
-    val confirmPassword: String? = null,
-    val confirmPasswordError: String? = null,
+    val isChangePasswordSuccess: Boolean = false,
 
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
+
     val error: String? = null,
 )

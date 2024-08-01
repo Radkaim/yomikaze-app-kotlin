@@ -6,7 +6,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.HistoryResponse
 
 data class HistoryState(
     val listHistoryRecords: List<HistoryResponse> = emptyList(),
-    val isHistoryListLoading: Boolean = true,
+    val isHistoryListLoading: Boolean = false,
     val isDeleteHistoryRecordSuccess: Boolean = true,
     val currentPage: MutableState<Int> = mutableStateOf(0),
     val totalPages: MutableState<Int> = mutableStateOf(0),

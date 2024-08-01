@@ -51,6 +51,16 @@ class AppPreference(context : Context) {
         encryptedPreferences.edit().remove("user_id").apply()
     }
 
+    //list user email
+    var userEmail: List<String>?
+        get() = encryptedPreferences.getStringSet("user_email", null)?.toList()
+        set(value) = encryptedPreferences.edit().putStringSet("user_email", value?.toSet()).apply()
+
+    //delete user email
+    fun deleteUserEmail() {
+        encryptedPreferences.edit().remove("user_email").apply()
+    }
+
     //save userRole
     var userRoles: List<String>?
         get() = encryptedPreferences.getStringSet("user_role", null)?.toList()

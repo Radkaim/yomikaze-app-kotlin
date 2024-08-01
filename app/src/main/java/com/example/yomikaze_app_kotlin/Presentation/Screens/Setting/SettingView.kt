@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Setting
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -195,6 +196,7 @@ fun SettingView(
                 )
 
                 if (settingViewModel.checkUserIsLogin()) {
+                    Log.d("SettingView", "${settingViewModel.checkUserIsLogin()}")
                     Button(
                         onClick = { settingViewModel.onLogout() },
                         modifier = Modifier

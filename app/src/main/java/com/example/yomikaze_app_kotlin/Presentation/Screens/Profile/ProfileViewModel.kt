@@ -47,6 +47,10 @@ class ProfileViewModel @Inject constructor(
         navController?.navigate("login_route")
     }
 
+//    init {
+//        getUserInfo(true)
+//    }
+
     fun getUserInfo(isNetwork: Boolean) {
         if (isNetwork) {
             viewModelScope.launch {

@@ -166,13 +166,13 @@ class LibraryViewModel @Inject constructor(
      */
     fun getAllCategory() {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = _state.value.copy(isCategoryLoading = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             if (token.isEmpty()) {
-
+                _state.value = _state.value.copy(isCategoryLoading = false)
                 return@launch
             }
+            _state.value = _state.value.copy(isCategoryLoading = true)
 
             val result = getLibraryCategoryUC.getLibraryCategory(token, 1, 500)
 
@@ -493,13 +493,14 @@ class LibraryViewModel @Inject constructor(
      */
     fun getDefaultComicsInLibrary() {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = _state.value.copy(isDefaultComicLoading = true)
+
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
             if (token.isEmpty()) {
-
+                _state.value = _state.value.copy(isDefaultComicLoading = false)
                 return@launch
             }
+            _state.value = _state.value.copy(isDefaultComicLoading = true)
             val result =
                 getDefaultComicsInLibraryUC.getDefaultComicsInLibrary(token, "CreationTime", 1, 500)
 

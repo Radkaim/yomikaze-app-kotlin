@@ -1,13 +1,13 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.ChangePassword
 
 import android.annotation.SuppressLint
+import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,21 +15,24 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,12 +43,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -75,6 +80,7 @@ fun ChangePasswordContent(
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     val focusManager = LocalFocusManager.current
 
@@ -96,29 +102,23 @@ fun ChangePasswordContent(
             )
         })
     {
-        Box(
+        LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .offset(y = (-50).dp)
+                .background(MaterialTheme.colorScheme.background)
+//                .padding(bottom = 10.dp)
+                .offset(y = -(100).dp)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
                         focusManager.clearFocus()
                     })
                 }
-                .background(color = MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
 
-            Column(
-//            Alignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 40.dp)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-
-            ) {
+            item {
                 Image(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo",
@@ -128,12 +128,14 @@ fun ChangePasswordContent(
                         .width(100.dp),
                     contentScale = ContentScale.Fit
                 )
+            }
+            item {
                 TextField(
                     value = oldPassword,
                     onValueChange = { oldPassword = it },
                     label = {
                         Text(
-                            text = "Old Password",
+                            text = "Current Password",
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -161,36 +163,38 @@ fun ChangePasswordContent(
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(5.dp)
+                        .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
                         .height(56.dp)
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.small
+                            shape = RoundedCornerShape(20.dp),
                         )
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = RoundedCornerShape(20.dp),
                         ),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
+                        textColor = MaterialTheme.colorScheme.surfaceTint,
+                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
                         unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
+                        cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
                     ),
-                    isError = state.oldPassword != null
+                    isError = state.currentPassword != null
                 )
-                if (state.oldPassword != null) {
+                if (state.currentPassword != null) {
                     Text(
-                        text = state.oldPassword ?: "",
+                        text = state.currentPassword ?: "",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Start,
                         modifier = Modifier
-                            .align(Alignment.Start)
                     )
                 }
+            }
+            item {
 
                 TextField(
                     value = newPassword,
@@ -225,120 +229,83 @@ fun ChangePasswordContent(
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(5.dp)
+                        .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            shape = MaterialTheme.shapes.small
-                        )
-                        .height(56.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
-                        ),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-                    isError = state.oldPassword != null
-                )
-                if (state.oldPassword != null) {
-                    Text(
-                        text = state.oldPassword ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier
-                            .align(Alignment.Start)
-                    )
-                }
+                            shape = RoundedCornerShape(20.dp),
 
-                TextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    label = {
-                        Text(
-                            text = "Confirm Password",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done // Đặt hành động IME thành Done
-                    ),
-                    leadingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_eye)
-                        else
-                            painterResource(id = R.drawable.ic_visibility_eye)
-
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
                             )
-                        }
-                    },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier
-                        .fillMaxWidth()
                         .height(56.dp)
                         .background(
                             color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(24.dp),
+                            shape = RoundedCornerShape(20.dp),
                         ),
-                    shape = RoundedCornerShape(24.dp),
+                    shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
+                        textColor = MaterialTheme.colorScheme.surfaceTint,
+                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.1f),
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onSecondary,
                         unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
+                        cursorColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
                     ),
-                    isError = state.confirmPasswordError != null
+                    isError = state.currentPassword != null
                 )
-                if (state.confirmPasswordError != null) {
+                if (state.currentPassword != null) {
                     Text(
-                        text = state.confirmPasswordError ?: "",
+                        text = state.currentPassword ?: "",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Start,
                         modifier = Modifier
-                            .align(Alignment.Start)
+
                     )
                 }
+            }
+            item {
+                LaunchedEffect(key1 = state.isChangePasswordSuccess) {
+                    if (state.isChangePasswordSuccess ) {
+                        Toast.makeText(
+                            context,
+                            "Change password successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        navController.popBackStack()
+                    }
+
+                }
+
+//
                 OutlinedButton(
                     modifier = Modifier
-                        .padding(top = 12.dp)
                         .height(40.dp)
                         .width(200.dp),
                     shape = RoundedCornerShape(12.dp),
-                    onClick = {
-                    },
-                )
-                {
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.36f)
+                    ),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                    onClick = { changePasswordViewModel.changePass(oldPassword, newPassword) }
+                ) {
                     if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp)
+                        )
+                    } else {
                         Text(
                             text = "SAVE",
-                            color = Color.Black,
+                            color = Color.White,
                             style = TextStyle(
                                 fontSize = 16.sp,
                             ),
                         )
 
-                    } else {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp)
-                        )
-
                     }
-
                 }
             }
         }
+        }
     }
-}

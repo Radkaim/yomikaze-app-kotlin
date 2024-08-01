@@ -37,10 +37,21 @@ class AuthRepositoryImpl @Inject constructor(
                     appPreference.userAvatar = profileResponse.getOrNull()?.avatar
                     appPreference.userName = profileResponse.getOrNull()?.name
                     appPreference.userBalance = profileResponse.getOrNull()?.balance ?: 0
-//                    Log.d("AuthRepositoryImpl", "login: ${appPreference.userId}")
+                    Log.d("AuthRepositoryImpl", "login: ${appPreference.authToken}")
                 } else {
                     Log.d("AuthRepositoryImpl", "login: ${profileResponse.exceptionOrNull()}")
                 }
+
+//                val result = getUserInfo(tokenResponse.token)
+//                if (result.isSuccess) {
+//                    appPreference.userEmail = result.getOrNull()?.claims?.email!!
+//                    Log.d("AuthRepositoryImpl", "loginWithGoogle: ${appPreference.userEmail}")
+//                } else {
+//                    Log.d(
+//                        "AuthRepositoryImpl",
+//                        "loginWithGoogle: ${result.exceptionOrNull()}"
+//                    )
+//                }
                 return Result.success(tokenResponse)
             }
 
@@ -89,6 +100,17 @@ class AuthRepositoryImpl @Inject constructor(
                         "loginWithGoogle: ${profileResponse.exceptionOrNull()}"
                     )
                 }
+
+//                val result = getUserInfo(tokenResponse.token)
+//                if (result.isSuccess) {
+//                    appPreference.userEmail = result.getOrNull()?.claims?.email!!
+//                    Log.d("AuthRepositoryImpl", "loginWithGoogle: ${appPreference.userEmail}")
+//                } else {
+//                    Log.d(
+//                        "AuthRepositoryImpl",
+//                        "loginWithGoogle: ${result.exceptionOrNull()}"
+//                    )
+//                }
 
                 return Result.success(tokenResponse)
             }

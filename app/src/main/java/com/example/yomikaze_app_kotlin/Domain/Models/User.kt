@@ -89,6 +89,11 @@ data class UserInfoResponse(
     //for database
     @ColumnInfo(name = "user")
     val user: User,
+
+    // For API
+    @SerializedName("claims")
+    @ColumnInfo(name = "claims")
+    val claims: Claims
 )
 
 data class ProfileResponse(
@@ -131,4 +136,35 @@ data class User(
     //for database
     @ColumnInfo(name = "balance")
     val balance: Int,
+)
+
+
+data class Claims(
+    @SerializedName("jti")
+    @ColumnInfo(name = "jti")
+    val jti: List<String>,
+
+    @SerializedName("iat")
+    @ColumnInfo(name = "iat")
+    val iat: List<String>,
+
+    @SerializedName("sub")
+    @ColumnInfo(name = "sub")
+    val sub: List<String>,
+
+    @SerializedName("name")
+    @ColumnInfo(name = "name")
+    val name: List<String>,
+
+    @SerializedName("email")
+    @ColumnInfo(name = "email")
+    val email: List<String>,
+
+    @SerializedName("sid")
+    @ColumnInfo(name = "sid")
+    val sid: List<String>,
+
+    @SerializedName("roles")
+    @ColumnInfo(name = "roles")
+    val roles: List<String>,
 )

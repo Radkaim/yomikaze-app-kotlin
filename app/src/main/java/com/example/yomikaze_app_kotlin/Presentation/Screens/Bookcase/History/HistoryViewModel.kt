@@ -90,13 +90,15 @@ class HistoryViewModel @Inject constructor(
     ) {
 
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = _state.value.copy(isHistoryListLoading = true)
+
 
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             if (token.isEmpty()) {
+                _state.value = _state.value.copy(isHistoryListLoading = false)
                 return@launch
             }
+            _state.value = _state.value.copy(isHistoryListLoading = true)
             val size = _state.value.size
 
             val currentPage = _state.value.currentPage.value

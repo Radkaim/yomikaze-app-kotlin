@@ -179,7 +179,8 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
         LazyColumn(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(bottom = 100.dp)
+//                .padding(bottom = 100.dp)
+                .offset(y = -(80).dp)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
                         focusManager.clearFocus()
