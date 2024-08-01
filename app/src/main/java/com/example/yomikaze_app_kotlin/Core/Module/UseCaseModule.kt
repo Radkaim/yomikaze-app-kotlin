@@ -52,6 +52,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetCoinPricingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetPaymentSheetResponseUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.CoinShop.GetTransactionHistoryUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetChapterDetailUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicByRolePublisherUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicCommonReportReasonsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicDetailsFromApiUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetCommonChapterReportReasonsUC
@@ -247,6 +248,16 @@ object UseCaseModule {
     @Singleton
     fun provideRatingComicUC(comicRepository: ComicRepository): RatingComicUC {
         return RatingComicUC(comicRepository)
+    }
+
+
+    /**
+     * Todo: get comic by role publisher
+     */
+    @Provides
+    @Singleton
+    fun provideGetComicByRolePublisherUC(comicRepository: ComicRepository): GetComicByRolePublisherUC {
+        return GetComicByRolePublisherUC(comicRepository)
     }
 
     /**

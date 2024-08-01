@@ -50,7 +50,7 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             BookcaseView(navController)
         }
         composable(BottomHomeNavItems.Profile.screen_route) {
-            ProfileView(navController, viewModel)
+            ProfileView(navController)
         }
         composable(BottomHomeNavItems.Notification.screen_route) {
             NotificationView(navController = navController)

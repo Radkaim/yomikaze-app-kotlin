@@ -53,6 +53,7 @@ fun BasicComicCard(
     isDelete: Boolean? = false,
     onDeletedClicked: () -> Unit? = {},
     onAddClicked: () -> Unit? = {},
+    modifier: Modifier = Modifier,
 
     onClick: () -> Unit
 ) {
@@ -68,7 +69,8 @@ fun BasicComicCard(
                 color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.3f),
                 shape = MaterialTheme.shapes.small
             )
-            .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small),
+            .shadow(elevation = 4.dp, shape = MaterialTheme.shapes.small)
+            .then(modifier)
     ) {
         Card(
             shape = RoundedCornerShape(5.dp),

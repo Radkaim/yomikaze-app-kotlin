@@ -160,4 +160,11 @@ interface ComicRepository {
         comicId: Long,
         reportRequest: ReportRequest,
     ): Response<Unit>
+
+    //get comic by role publisher
+    suspend fun getComicByRolePublisher(
+        token: String,
+        page: Int? = null,
+        size: Int? = null
+    ): Result<BaseResponse<ComicResponse>>
 }

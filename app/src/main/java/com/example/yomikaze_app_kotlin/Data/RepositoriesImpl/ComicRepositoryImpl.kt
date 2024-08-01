@@ -393,5 +393,19 @@ class ComicRepositoryImpl @Inject constructor(
         }
         return response
     }
+
+    //get comic by role publisher
+    override suspend fun getComicByRolePublisher(
+        token: String,
+        page: Int?,
+        size: Int?
+    ): Result<BaseResponse<ComicResponse>> {
+        return try {
+            val response = api.getComicByRolePublisher("Bearer $token", page, size)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
 

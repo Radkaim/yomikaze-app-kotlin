@@ -88,6 +88,17 @@ fun NormalComicCardShimmerLoading() {
             .shimmerLoadingAnimation() // <--- Here.
     )
 }
+@Composable
+fun ComicIWroteCardShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .height(200.dp)
+            .fillMaxWidth()
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
 
 @Composable
 fun HistoryCardShimmerLoading(){

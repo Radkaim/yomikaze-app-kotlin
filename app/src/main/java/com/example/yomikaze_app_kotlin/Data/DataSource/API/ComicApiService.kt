@@ -149,4 +149,12 @@ interface ComicApiService {
     ): Response<Unit>
 
 
+    //get comic by role publisher
+    @GET("comics/management")
+    suspend fun getComicByRolePublisher(
+        @Header("Authorization") token: String,
+        @Query("Page") page: Int? = null,
+        @Query("Size") size: Int? = null,
+    ): BaseResponse<ComicResponse>
+
 }

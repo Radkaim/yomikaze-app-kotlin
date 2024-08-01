@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Comic.GetComicByRolePublisherUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,8 @@ class ProfileViewModel @Inject constructor(
     appPreference: AppPreference,
     private val logoutUC: LogoutUC,
     private val getUserInfoUC: GetUserInfoUC,
-    private val getProfileUc: GetProfileUC
+    private val getProfileUc: GetProfileUC,
+    private val getComicByRolePublisherUC: GetComicByRolePublisherUC
 ) : ViewModel() {
 
     private val appPreference = appPreference
@@ -46,6 +48,10 @@ class ProfileViewModel @Inject constructor(
     fun onSignInButtonClicked() {
         navController?.navigate("login_route")
     }
+    fun navigateToComicDetail(comicId: Long) {
+        navController?.navigate("comic_detail_route/$comicId")
+    }
+
 
 //    init {
 //        getUserInfo(true)
@@ -94,13 +100,47 @@ class ProfileViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         profileResponse = profileResponse
                     )
-                    Log.d("CoinShopViewModel", "getProfile: $profileResponse")
+                    Log.d("ProfileViewModel", "getProfile: $profileResponse")
                     _state.value = _state.value.copy(isGetProfileLoading = false)
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
-                    Log.e("CoinShopViewModel", "getProfile: $exception")
+                    Log.e("ProfileViewModel", "getProfile: $exception")
                     _state.value = _state.value.copy(isGetProfileLoading = false)
+                }
+            )
+        }
+    }
+
+    //getComicByRolePublisher
+
+    fun getComicByRolePublisher() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isGetComicByRolePublisherLoading = true)
+
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+                _state.value = _state.value.copy(isGetComicByRolePublisherLoading = false)
+                return@launch
+            }
+            val result =
+                getComicByRolePublisherUC.getComicByRolePublisher(token, 1, 400)
+            result.fold(
+                onSuccess = { baseResponse ->
+                    // Xử lý kết quả thành công
+                    val comicResponse = baseResponse.results
+                    _state.value = _state.value.copy(
+                        comicResponse = comicResponse,
+                        totalComic = comicResponse.size
+                    )
+                    Log.d("ProfileViewModel", "getComicByRolePublisher: $comicResponse")
+                    _state.value = _state.value.copy(isGetComicByRolePublisherLoading = false)
+                },
+                onFailure = { exception ->
+                    // Xử lý lỗi
+                    Log.e("ProfileViewModel", "getComicByRolePublisher: $exception")
+                    _state.value = _state.value.copy(isGetComicByRolePublisherLoading = false)
                 }
             )
         }
