@@ -47,8 +47,12 @@ class TransactionHistoryViewModel @Inject constructor(
 
     fun getTransactionHistory(page: Int? = 1) {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isLoadingTransactionHistory = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
-
+            if (token.isEmpty()) {
+                _state.value = _state.value.copy(isLoadingTransactionHistory = false)
+                return@launch
+            }
             val size = _state.value.size
 
             val currentPage = _state.value.currentPage.value

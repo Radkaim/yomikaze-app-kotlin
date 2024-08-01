@@ -116,6 +116,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isHistoryListLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+
+            if (token.isEmpty()) {
+                _state.value = _state.value.copy(isHistoryListLoading = false)
+                return@launch
+            }
             val orderBy = "LastModifiedDesc"
             val result = getHistoriesUC.getHistories(token, orderBy, page, 3)
             result.fold(

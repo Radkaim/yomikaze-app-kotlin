@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,7 +41,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
@@ -62,6 +62,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Core.Module.APIConfig
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.changeDateTimeFormat
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.RankingComicCard.processNameByComma
@@ -80,6 +81,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEff
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.TagShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.TriangleShimmerLoading
 import com.example.yomikaze_app_kotlin.R
+import com.example.yomikaze_app_kotlin.ui.AppTheme
 
 @Composable
 fun ComicDetailsView(
@@ -154,6 +156,7 @@ fun ComicDetailContent(
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Description", "Chapter")
     val context = LocalContext.current
+    val appPreference = AppPreference(context)
 
     var hasShared by remember { mutableStateOf(false) }
 
@@ -187,24 +190,42 @@ fun ComicDetailContent(
             if (state.isLoading) {
                 ImageShimmerLoading()
             } else {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(imagePath + state.comicResponse?.banner)
-                        .memoryCachePolicy(CachePolicy.ENABLED)
-                        .build(),
-                    placeholder = painterResource(R.drawable.placeholder_430_184),
-                    error = painterResource(R.drawable.placeholder_430_184),
-                    contentDescription = "Comic Banner Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(194.dp) //bug background
-                        .blur(10.dp),
-                )
+                Box {
+                    Box {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imagePath + state.comicResponse?.banner)
+                                .memoryCachePolicy(CachePolicy.ENABLED)
+                                .build(),
+                            placeholder = painterResource(R.drawable.placeholder_430_184),
+                            error = painterResource(R.drawable.placeholder_430_184),
+                            contentDescription = "Comic Banner Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(194.dp) //bug background
+
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .background(
+                                color = if (appPreference.getTheme() == AppTheme.DARK)
+                                    Color.Black.copy(alpha = 0.7f)
+                                else
+                                    Color.White.copy(alpha = 0.7f)
+                            )
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {}
+                }
             }
         }
 
         // Content including back button and menu
+        val textColor = if (appPreference.getTheme() == AppTheme.DARK) Color.White else Color.Black
         Box() {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -242,12 +263,14 @@ fun ComicDetailContent(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back Icon",
+                            tint = textColor
                         )
                     }
+
                     // Menu
                     Box() {
                         IconButton(onClick = { showPopupMenu = true }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = "More")
+                            Icon(Icons.Default.MoreVert, contentDescription = "More", tint = textColor )
                         }
 
                         DropdownMenu(
@@ -346,7 +369,7 @@ fun ComicDetailContent(
                             }
                         }
                         if (showDialog != null) {
-                            val context = LocalContext.current
+//                            val context = LocalContext.current
 
                             when (showDialog) {
                                 1 -> AddToLibraryDialog(
@@ -454,27 +477,30 @@ fun ComicDetailContent(
                             } else {
                                 Text(
                                     text = state.comicResponse?.name ?: "Comic Name",
-                                    fontSize = 12.sp,
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     maxLines = 4,
                                     overflow = TextOverflow.Ellipsis,
                                     lineHeight = 15.sp,
+                                    color = textColor,
                                     modifier = Modifier.width(250.dp)
                                 )
                             }
                             if (state.isLoading) {
                                 LineLongShimmerLoading()
                             } else {
-                                Text(
-                                    text = processNameByComma(
-                                        state.comicResponse?.aliases ?: listOf("")
-                                    ),
-                                    fontSize = 11.sp,
-                                    maxLines = 1,
-                                    lineHeight = 15.sp,
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontWeight = FontWeight.Normal
-                                )
+                                    Text(
+                                        text = processNameByComma(
+                                            state.comicResponse?.aliases ?: listOf("")
+                                        ),
+                                        fontSize = 11.sp,
+                                        maxLines = 1,
+                                        lineHeight = 15.sp,
+                                        overflow = TextOverflow.Ellipsis,
+                                        fontWeight = FontWeight.Normal,
+                                        color =  textColor,
+                                    )
+
                             }
                             if (state.isLoading) {
                                 LineLongShimmerLoading()
@@ -489,8 +515,9 @@ fun ComicDetailContent(
                                             )
                                         )
                                     }",
-                                    fontSize = 13.sp,
-                                    fontWeight = FontWeight.Medium
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = textColor
                                 )
                             }
                             Spacer(modifier = Modifier.height(1.dp))
@@ -504,7 +531,8 @@ fun ComicDetailContent(
                                     text = "Publish Date: ${changeDateTimeFormat(state.comicResponse?.publicationDate ?: "")}",
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Normal,
-                                    fontStyle = FontStyle.Italic
+                                    fontStyle = FontStyle.Italic,
+                                    color = textColor
 
                                 )
                             }

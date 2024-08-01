@@ -39,16 +39,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Presentation.Components.AnimationIcon.LottieAnimationComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.CoinShop.TransactionHistoryCard
 import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareComponents.SortComponent
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
+import com.example.yomikaze_app_kotlin.Presentation.Components.NotSignIn.NotSignIn
 import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.CoinShopCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 import kotlinx.coroutines.flow.collectLatest
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun TransactionHistoryView(
     transactionHistoryViewModel: TransactionHistoryViewModel = hiltViewModel(),
@@ -58,19 +61,49 @@ fun TransactionHistoryView(
     //state
     val state by transactionHistoryViewModel.state.collectAsState()
 
+    val context = LocalContext.current
+    val appPreference = AppPreference(context)
 
     //set navController for viewModel
     transactionHistoryViewModel.setNavController(navController)
 
-
-    if (CheckNetwork()) {
-        TransactionHistoryViewContent(
-            transactionHistoryViewModel = transactionHistoryViewModel,
-            state = state,
-            navController = navController,
-        )
+    if (appPreference.isUserLoggedIn) {
+        if (CheckNetwork()) {
+            TransactionHistoryViewContent(
+                transactionHistoryViewModel = transactionHistoryViewModel,
+                state = state,
+                navController = navController,
+            )
+        } else {
+            UnNetworkScreen()
+        }
     } else {
-        UnNetworkScreen()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .height(200.dp)
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+            Scaffold(
+                topBar = {
+                    CustomAppBar(
+                        title = "Transaction History",
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                navController.popBackStack()
+                            }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back Icon"
+                                )
+                            }
+                        },
+                    )
+                },
+            ) {
+                NotSignIn(navController = navController)
+            }
+        }
     }
 
 }

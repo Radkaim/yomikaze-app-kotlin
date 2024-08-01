@@ -42,16 +42,10 @@ class NotificationViewModel @Inject constructor(
             _state.value = _state.value.copy(isNotificationLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             if (token.isEmpty()) {
-
+                _state.value = _state.value.copy(isNotificationLoading = false)
                 return@launch
             }
 
-//            val size = _state.value.size
-//
-//            val currentPage = _state.value.currentPage.value
-//            val totalPages = _state.value.totalPages.value
-//
-//            if (currentPage >= totalPages && totalPages != 0) return@launch
 
             val result =
                 getNotificationAPIUC.getNotification(token = token)

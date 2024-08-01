@@ -7,7 +7,7 @@ import com.example.yomikaze_app_kotlin.Domain.Models.TransactionHistoryResponse
 data class TransactionHistoryState(
     val error: String? = null,
     val listTransactionHistory: List<TransactionHistoryResponse> = emptyList(),
-    val isLoadingTransactionHistory : Boolean = true,
+    val isLoadingTransactionHistory : Boolean = false,
     val currentPage: MutableState<Int> = mutableStateOf(0),
     val totalPages: MutableState<Int> = mutableStateOf(0),
     val page: Int = 1,
