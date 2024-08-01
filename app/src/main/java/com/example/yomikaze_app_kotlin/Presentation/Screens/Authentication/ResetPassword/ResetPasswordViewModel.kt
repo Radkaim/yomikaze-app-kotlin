@@ -2,7 +2,7 @@ package com.example.yomikaze_app_kotlin.Presentation.Screens.Authentication.Rese
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.ChangePasswordUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.ChangePasswordUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -19,7 +19,6 @@ import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ChapterComme
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.ComicComment.ComicCommentView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Comment.RelyCommentDetail.RelyCommentDetailView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Notification.NotificationView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Profile.ProfileView
@@ -243,8 +242,8 @@ fun NavGraphBuilder.homeGraph(viewModel: MainViewModel, navController: NavContro
             TransactionHistoryView(navController = navController)
         }
 
-        composable("main_screen_route") {
-            MainView(viewModel)
-        }
+//        composable("main_screen_route") {
+//            MainView(viewModel)
+//        }
     }
 }

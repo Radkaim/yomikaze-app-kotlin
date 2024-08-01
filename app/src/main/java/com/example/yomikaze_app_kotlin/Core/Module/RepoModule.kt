@@ -62,9 +62,10 @@ object RepoModule {
     fun provideAuthRepository(
         api: AuthApiService,
         appPreference: AppPreference,
-        profileRepository: ProfileRepository
+        profileRepository: ProfileRepository,
+        notificationRepository: NotificationRepository
     ): AuthRepository {
-        return AuthRepositoryImpl(api, appPreference, profileRepository)
+        return AuthRepositoryImpl(api, appPreference, profileRepository, notificationRepository)
     }
 
 

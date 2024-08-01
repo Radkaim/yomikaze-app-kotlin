@@ -52,7 +52,7 @@ fun SettingItemComponent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 5.dp)
-            .clickable { onClicked() }
+            .clickable { if (title == "Login Method" && !isLoginMethod!! || title!="Login Method") onClicked() }
             .height(50.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween

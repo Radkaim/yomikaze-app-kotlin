@@ -31,6 +31,16 @@ class AppPreference(context : Context) {
         encryptedPreferences.edit().remove("auth_token").apply()
     }
 
+    //fcm token
+    var fcmToken: String?
+        get() = encryptedPreferences.getString("fcm_token", null)
+        set(value) = encryptedPreferences.edit().putString("fcm_token", value).apply()
+
+    //delete fcm token
+    fun deleteFcmToken() {
+        encryptedPreferences.edit().remove("fcm_token").apply()
+    }
+
     // save user id
     var userId: Long
         get() = encryptedPreferences.getLong("user_id", 0)

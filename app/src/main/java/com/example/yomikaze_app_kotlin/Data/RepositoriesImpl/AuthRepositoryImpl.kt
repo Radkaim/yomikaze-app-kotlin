@@ -3,16 +3,15 @@ package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 import android.util.Log
 import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.AuthApiService
-import com.example.yomikaze_app_kotlin.Domain.Models.ChangePasswordRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ErrorResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.LoginRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.RegisterRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.TokenResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.UserInfoResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.AuthRepository
+import com.example.yomikaze_app_kotlin.Domain.Repositories.NotificationRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ProfileRepository
 import com.google.gson.Gson
-import retrofit2.Response
 import javax.inject.Inject
 import kotlin.Result.Companion.failure
 
@@ -20,7 +19,8 @@ import kotlin.Result.Companion.failure
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApiService,
     private val appPreference: AppPreference,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val notificationRepository: NotificationRepository,
 ) : AuthRepository {
     override suspend fun login(loginRequest: LoginRequest): Result<TokenResponse> {
         val result = api.login(LoginRequest(loginRequest.username, loginRequest.password))
@@ -29,7 +29,7 @@ class AuthRepositoryImpl @Inject constructor(
             if (tokenResponse?.token != null) {
                 appPreference.authToken = tokenResponse.token
                 appPreference.isUserLoggedIn = true
-
+                subscribeToNotification(tokenResponse.token, appPreference.fcmToken!!)
                 val profileResponse = profileRepository.getProfile(tokenResponse.token)
                 if (profileResponse.isSuccess) {
                     appPreference.userId = profileResponse.getOrNull()?.id!!
@@ -74,6 +74,7 @@ class AuthRepositoryImpl @Inject constructor(
                 appPreference.authToken = tokenResponse.token
                 appPreference.isUserLoggedIn = true
                 appPreference.isLoginWithGoogle = true
+                subscribeToNotification(tokenResponse.token, appPreference.fcmToken!!)
                 val profileResponse = profileRepository.getProfile(tokenResponse.token)
                 if (profileResponse.isSuccess) {
                     appPreference.userId = profileResponse.getOrNull()?.id!!
@@ -132,7 +133,7 @@ class AuthRepositoryImpl @Inject constructor(
         if (result.isSuccessful) {
             appPreference.authToken = result.body()?.token
             appPreference.isUserLoggedIn = true
-
+            subscribeToNotification(result.body()?.token!!, appPreference.fcmToken!!)
             val profileResponse = profileRepository.getProfile(result.body()?.token!!)
             if (profileResponse.isSuccess) {
                 appPreference.userId = profileResponse.getOrNull()?.id!!
@@ -191,21 +192,20 @@ class AuthRepositoryImpl @Inject constructor(
             appPreference.deleteUserBalance()
             appPreference.deleteIsLoginWithGoogle()
             appPreference.deleteSearchHistory()
+            unsubscribeToNotification(it, appPreference.fcmToken!!)
         }
         if (result != null) {
             Log.d("AuthRepositoryImpl", "logout: Successfully!!!")
         }
     }
 
-    //change password
-    override suspend fun changePassword(
-        token: String,
-        changePasswordRequest: ChangePasswordRequest
-    ): Response<Unit> {
-        val response = api.changePassword("Bearer $token", changePasswordRequest)
-        if (response.isSuccessful) {
-            Result.success(Unit)
-        }
-        return response
+
+
+    private suspend fun subscribeToNotification(token: String, fcmToken: String) {
+        notificationRepository.subscribeToNotification(token, fcmToken)
+    }
+
+    private suspend fun unsubscribeToNotification(token: String, fcmToken: String) {
+        notificationRepository.unsubscribeToNotification(token, fcmToken)
     }
 }

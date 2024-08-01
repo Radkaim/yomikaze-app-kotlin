@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetNotificationAPIUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Noti.GetNotificationAPIUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,12 +32,19 @@ class NotificationViewModel @Inject constructor(
 
      init {
          getNotifications()
+//         appPreference.fcmToken?.let {
+//             Log.d("NotificationViewModel", "fcmToken: $it")
+//         }
      }
     //get notification
     fun getNotifications() {
         viewModelScope.launch {
             _state.value = _state.value.copy(isNotificationLoading = true)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
 
 //            val size = _state.value.size
 //

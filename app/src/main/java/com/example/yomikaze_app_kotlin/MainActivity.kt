@@ -27,13 +27,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.example.yomikaze_app_kotlin.Core.AppPreference
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.BottomNav.BottomHomeNavItems
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.authGraph
 import com.example.yomikaze_app_kotlin.Presentation.Components.Navigation.homeGraph
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Chapter.ViewChapter
 import com.example.yomikaze_app_kotlin.Presentation.Screens.ComicDetails.ComicDetailsView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Home.HomeView
-import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainView
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Main.MainViewModel
 import com.example.yomikaze_app_kotlin.Presentation.Screens.Splash.SplashScreen
 import com.example.yomikaze_app_kotlin.ui.AppTheme
@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
 
     //    private val loginViewModel: LoginViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
+
 
     //    @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -217,9 +218,19 @@ class MainActivity : ComponentActivity() {
                 Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }
+            val context = this
+            val appPreference = AppPreference(context)
 
             val token = task.result
-            Log.d("yomikaze_fcm", token)
+
+            when (token){
+                appPreference.fcmToken -> return@OnCompleteListener
+                else -> {
+                    appPreference.fcmToken = token
+                }
+            }
+
+//            Log.d("yomikaze_fcm", token)
         })
 
         setContent {
@@ -233,9 +244,9 @@ class MainActivity : ComponentActivity() {
                         composable("splash_route") {
                             SplashScreen(navController)
                         }
-                        composable("main_screen_route") {
-                            MainView(mainViewModel)
-                        }
+//                        composable("main_screen_route") {
+//                            MainView(mainViewModel)
+//                        }
                         homeGraph(mainViewModel, navController)
                         authGraph(mainViewModel, navController)
 
@@ -269,7 +280,8 @@ class MainActivity : ComponentActivity() {
                             route = "view_chapter_route/{comicId}/{chapterNumber}/{lastPageNumber}",
                             deepLinks = listOf(
                                 navDeepLink {
-                                    uriPattern = "https://yomikaze.org/view_chapter/{comicId}/{chapterNumber}"
+                                    uriPattern =
+                                        "https://yomikaze.org/view_chapter/{comicId}/{chapterNumber}"
                                     action = Intent.ACTION_VIEW
                                 }
                             ),
@@ -279,8 +291,10 @@ class MainActivity : ComponentActivity() {
                             )
                         ) { navBackStackEntry ->
                             val comicId = navBackStackEntry.arguments?.getString("comicId")
-                            val chapterNumber = navBackStackEntry.arguments?.getString("chapterNumber")
-                            val lastPageNumber = navBackStackEntry.arguments?.getString("lastPageNumber") ?: "0"
+                            val chapterNumber =
+                                navBackStackEntry.arguments?.getString("chapterNumber")
+                            val lastPageNumber =
+                                navBackStackEntry.arguments?.getString("lastPageNumber") ?: "0"
 
                             ViewChapter(
                                 comicId = comicId?.toLong() ?: 0,

@@ -15,7 +15,6 @@ import com.example.yomikaze_app_kotlin.Domain.Repositories.NotificationRepositor
 import com.example.yomikaze_app_kotlin.Domain.Repositories.PageRepository
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ProfileRepository
 import com.example.yomikaze_app_kotlin.Domain.UseCases.AdvancedSearchComicUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.ChangePasswordUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LoginWithGoogleUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Auth.LogoutUC
@@ -81,10 +80,11 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostComicCommentB
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.PostReplyCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.ReactComicCommentByComicIdUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Comment.UpdateComicCommentByComicIdUC
-import com.example.yomikaze_app_kotlin.Domain.UseCases.GetNotificationAPIUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetPagesByChapterNumberOfComicUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetTagsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Noti.GetNotificationAPIUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.ChangePasswordUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
@@ -148,8 +148,8 @@ object UseCaseModule {
      */
     @Provides
     @Singleton
-    fun provideChangePasswordUseCase(authRepository: AuthRepository): ChangePasswordUC {
-        return ChangePasswordUC(authRepository)
+    fun provideChangePasswordUseCase(profileRepository: ProfileRepository): ChangePasswordUC {
+        return ChangePasswordUC(profileRepository)
     }
 
 

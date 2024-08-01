@@ -182,6 +182,7 @@ fun WebViewScreen(
 
 
                 settings.loadWithOverviewMode = true
+                settings.domStorageEnabled = true // need
                 settings.useWideViewPort = true
                 settings.setSupportZoom(true)
                 settings.builtInZoomControls = true
@@ -191,7 +192,7 @@ fun WebViewScreen(
         update = { webView ->
             if (url.isNotEmpty() && url.startsWith("https://yomikaze.org/")) {
                 webView.loadUrl(url)
-            }else {
+            } else {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 context.startActivity(intent)
             }

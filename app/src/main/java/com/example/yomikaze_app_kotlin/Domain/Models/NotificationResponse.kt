@@ -19,3 +19,8 @@ data class NotificationResponse(
     val creationTime: String,
 
 )
+
+data class FcmToken(
+    @SerializedName("fcmToken")
+    val fcmToken: String
+)

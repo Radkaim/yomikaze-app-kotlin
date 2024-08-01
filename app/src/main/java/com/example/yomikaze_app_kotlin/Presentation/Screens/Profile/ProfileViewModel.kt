@@ -79,6 +79,9 @@ class ProfileViewModel @Inject constructor(
 
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+                return@launch
+            }
             val result =
                 getProfileUc.getProfile(token)
             result.fold(

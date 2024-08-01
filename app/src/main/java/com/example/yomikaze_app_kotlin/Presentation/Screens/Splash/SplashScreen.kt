@@ -50,7 +50,7 @@ fun SplashScreen(navController: NavController) {
 //        delay(100L)
             // Optionally, show the system bars again after the splash screen
 
-            navController.navigate("main_screen_route")
+            navController.navigate("home_route")
         }
 
     }

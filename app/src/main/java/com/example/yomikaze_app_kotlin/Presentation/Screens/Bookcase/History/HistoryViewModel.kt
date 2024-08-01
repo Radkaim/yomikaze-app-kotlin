@@ -93,6 +93,10 @@ class HistoryViewModel @Inject constructor(
             _state.value = _state.value.copy(isHistoryListLoading = true)
 
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+
+            if (token.isEmpty()) {
+                return@launch
+            }
             val size = _state.value.size
 
             val currentPage = _state.value.currentPage.value
@@ -137,6 +141,10 @@ class HistoryViewModel @Inject constructor(
     private fun deleteAllHistoryRecords() {
         viewModelScope.launch(Dispatchers.IO) {
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
             val response = deleteAllHistoryUC.deleteAllHistories(token)
             if (response.code() == 204) {
                 _state.value = _state.value.copy(
@@ -151,6 +159,10 @@ class HistoryViewModel @Inject constructor(
     private fun deleteHistoryRecord(historyRecordId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
             val response = deleteHistoryRecordUC.deleteHistoryRecord(token, historyRecordId)
             if (response.code() == 204) {
                 val listHistoryRecords = _state.value.listHistoryRecords.toMutableList()

@@ -1,4 +1,4 @@
-package com.example.yomikaze_app_kotlin.Domain.UseCases
+package com.example.yomikaze_app_kotlin.Domain.UseCases.Noti
 
 import com.example.yomikaze_app_kotlin.Domain.Models.NotificationResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.NotificationRepository

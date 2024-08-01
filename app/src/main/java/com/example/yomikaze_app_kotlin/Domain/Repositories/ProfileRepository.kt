@@ -15,5 +15,10 @@ interface ProfileRepository {
 //        authorResponse: AuthorResponse
 //    ): Result<AuthorResponse>
 
+    //change password
+    suspend fun changePassword(
+        token: String,
+        changePasswordRequest: ChangePasswordRequest
+    ): Response<Unit>
 
 }

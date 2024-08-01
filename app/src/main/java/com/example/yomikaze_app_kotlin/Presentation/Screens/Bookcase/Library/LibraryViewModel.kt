@@ -127,6 +127,10 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
 
             val result = searchInLibraryUC.searchComic(token, comicNameQuery)
 
@@ -165,6 +169,10 @@ class LibraryViewModel @Inject constructor(
             _state.value = _state.value.copy(isCategoryLoading = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
 
             val result = getLibraryCategoryUC.getLibraryCategory(token, 1, 500)
 
@@ -199,6 +207,9 @@ class LibraryViewModel @Inject constructor(
         var totalComics = 0
         val token =
             if (appPreference.authToken == null) "" else appPreference.authToken!!
+        if (token.isEmpty()) {
+            return 0
+        }
         return withContext(Dispatchers.IO) {
             val result = getComicsInCateUC.getComicsInCate(
                 token = token,
@@ -228,6 +239,10 @@ class LibraryViewModel @Inject constructor(
         var coverImage: String? = ""
         val token =
             if (appPreference.authToken == null) "" else appPreference.authToken!!
+        if (token.isEmpty()) {
+
+            return null
+        }
         return withContext(Dispatchers.IO) {
             val result = getComicsInCateUC.getComicsInCate(
                 token = token,
@@ -261,6 +276,10 @@ class LibraryViewModel @Inject constructor(
             _state.value = _state.value.copy(isCreateCategorySuccess = false)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
             Log.d("LibraryViewModel", "Create category: $categoryName")
             val result = createLibraryCategoryUC.createLibraryCategory(
                 token,
@@ -289,6 +308,11 @@ class LibraryViewModel @Inject constructor(
             _state.value = _state.value.copy(isUpdateCategoryNameSuccess = false)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+
+            if (token.isEmpty()) {
+
+                return@launch
+            }
             val listPathRequest = listOf(
                 PathRequest(value, "/name", "replace")
             )
@@ -313,6 +337,10 @@ class LibraryViewModel @Inject constructor(
             _state.value = _state.value.copy(isDeleteCategorySuccess = false)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
             val response = deleteCategoryUC.deleteCategory(token, key)
             if (response.code() == 204) {
                 _state.value = _state.value.copy(isDeleteCategorySuccess = true)
@@ -361,6 +389,9 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+                return@launch
+            }
             val result = addComicToLibraryFirstTimeUC.addComicToLibraryFirstTime(
                 token,
                 LibraryRequest(comicId, categoriesId)
@@ -384,6 +415,10 @@ class LibraryViewModel @Inject constructor(
             _state.value = _state.value.copy(isAddComicToCategorySecondTimeSuccess = false)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
             val result = addComicToLibrarySecondTimeUC.addComicToLibrarySecondTime(
                 token,
                 comicId,
@@ -407,6 +442,10 @@ class LibraryViewModel @Inject constructor(
             _state.value = _state.value.copy(isRemoveComicFromCategorySuccess = false)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
             val result = removeComicFromCategoryUC.removeComicFromCategory(
                 token,
                 comicId,
@@ -431,6 +470,10 @@ class LibraryViewModel @Inject constructor(
             _state.value = _state.value.copy(isUnFollowComicSuccess = false)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
             val result = unfollowComicFromLibraryUC.unfollowComicFromLibrary(
                 token,
                 comicId
@@ -453,6 +496,10 @@ class LibraryViewModel @Inject constructor(
             _state.value = _state.value.copy(isDefaultComicLoading = true)
             val token =
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+
+                return@launch
+            }
             val result =
                 getDefaultComicsInLibraryUC.getDefaultComicsInLibrary(token, "CreationTime", 1, 500)
 

@@ -31,10 +31,5 @@ interface AuthRepository {
 
     suspend fun logout()
 
-    //change password
-    suspend fun changePassword(
-        token: String,
-        changePasswordRequest: ChangePasswordRequest
-    ): Response<Unit>
 
 }
