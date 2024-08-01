@@ -228,8 +228,8 @@ fun ProfileContent(
                         modifier = Modifier
                             .width(150.dp)
                             .height(50.dp)
-                            .clip(RoundedCornerShape(5.dp)),
-                        shape = RoundedCornerShape(5.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
                             text = "Sign In",
