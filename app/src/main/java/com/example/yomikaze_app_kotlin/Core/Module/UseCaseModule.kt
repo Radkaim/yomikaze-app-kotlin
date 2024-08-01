@@ -87,6 +87,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Noti.GetNotificationAPIUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.ChangePasswordUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.UploadImageUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByFollowRankingUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByRatingRankingUC
@@ -931,5 +932,19 @@ object UseCaseModule {
     ): GetNotificationAPIUC {
         return GetNotificationAPIUC(notificationRepository)
     }
+
+
+    /**
+     *-------------------------------------------------------------------------
+     * TODO Upload Image Use Case
+     */
+    @Provides
+    @Singleton
+    fun provideUploadImageUC(
+        imageRepository: ImageRepository
+    ): UploadImageUC {
+        return UploadImageUC(imageRepository)
+    }
+
 
 }

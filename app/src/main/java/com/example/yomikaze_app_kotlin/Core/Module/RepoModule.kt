@@ -8,6 +8,7 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.API.CoinShopApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicCommentApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.HistoryApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.ImageApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryCategoryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.NotificationApiService
@@ -145,8 +146,10 @@ object RepoModule {
      */
     @Provides
     @Singleton
-    fun provideImageRepository(): ImageRepository {
-        return ImageRepositoryImpl()
+    fun provideImageRepository(
+        imageApiService: ImageApiService
+    ): ImageRepository {
+        return ImageRepositoryImpl(imageApiService)
     }
 
     /**

@@ -103,6 +103,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.okhttp3:logging-interceptor:4.7.2")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+//    implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
 
     //hilt for dependency injection
     implementation("com.google.dagger:hilt-android:2.51.1")

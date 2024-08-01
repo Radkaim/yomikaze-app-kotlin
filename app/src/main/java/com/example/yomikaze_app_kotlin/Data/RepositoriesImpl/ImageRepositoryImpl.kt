@@ -4,7 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.ImageApiService
+import com.example.yomikaze_app_kotlin.Domain.Models.ImageResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ImageRepository
+import okhttp3.MultipartBody
+import retrofit2.HttpException
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
@@ -16,7 +20,7 @@ sealed class DownloadResult {
     object Failure : DownloadResult()
 }
 class ImageRepositoryImpl @Inject constructor(
-
+    private val imageApiService: ImageApiService
 ) : ImageRepository {
     override suspend fun returnImageLocalPath(image: ByteArray, context: Context): String {
         val fileName = "image_${System.currentTimeMillis()}.jpg"
@@ -109,5 +113,20 @@ class ImageRepositoryImpl @Inject constructor(
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
         val byteArray = outputStream.toByteArray()
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
+    override suspend fun uploadImage(token: String, file: MultipartBody.Part): Result<ImageResponse> {
+//        val requestBody = "file".toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        return try {
+            val response = imageApiService.uploadImage("Bearer $token", file)
+            Log.d("ImageRepositoryImpl", "Uploaded image: $response")
+            Result.success(response)
+        } catch (e: HttpException) {
+            Log.e("ImageRepositoryImpl", "Error uploading image", e)
+            val errorBody = e.response()?.errorBody()?.string()
+            Log.e("ImageRepositoryImpl", "Error uploading image: $errorBody", e)
+            Result.failure(e)
+        }
+
     }
 }

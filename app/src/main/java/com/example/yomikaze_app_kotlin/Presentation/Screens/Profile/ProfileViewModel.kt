@@ -100,7 +100,7 @@ class ProfileViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         profileResponse = profileResponse
                     )
-                    Log.d("ProfileViewModel", "getProfile: $profileResponse")
+//                    Log.d("ProfileViewModel", "getProfile: $profileResponse")
                     _state.value = _state.value.copy(isGetProfileLoading = false)
                 },
                 onFailure = { exception ->
@@ -134,7 +134,7 @@ class ProfileViewModel @Inject constructor(
                         comicResponse = comicResponse,
                         totalComic = comicResponse.size
                     )
-                    Log.d("ProfileViewModel", "getComicByRolePublisher: $comicResponse")
+//                    Log.d("ProfileViewModel", "getComicByRolePublisher: $comicResponse")
                     _state.value = _state.value.copy(isGetComicByRolePublisherLoading = false)
                 },
                 onFailure = { exception ->

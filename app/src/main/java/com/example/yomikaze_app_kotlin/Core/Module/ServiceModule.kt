@@ -7,6 +7,7 @@ import com.example.yomikaze_app_kotlin.Data.DataSource.API.CoinShopApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ComicCommentApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.HistoryApiService
+import com.example.yomikaze_app_kotlin.Data.DataSource.API.ImageApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.LibraryCategoryApiService
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.NotificationApiService
@@ -27,8 +28,8 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideAuthApiService(retrofit: Retrofit): AuthApiService {
-        return retrofit.create(AuthApiService::class.java)
+    fun provideAuthApiService(@MainRetrofit mainRetrofit: Retrofit): AuthApiService {
+        return mainRetrofit.create(AuthApiService::class.java)
     }
 
     /**
@@ -36,8 +37,8 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideComicApiService(retrofit: Retrofit): ComicApiService {
-        return retrofit.create(ComicApiService::class.java)
+    fun provideComicApiService(@MainRetrofit mainRetrofit: Retrofit): ComicApiService {
+        return mainRetrofit.create(ComicApiService::class.java)
     }
 
     /**
@@ -45,8 +46,8 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideChapterApiService(retrofit: Retrofit): ChapterApiService {
-        return retrofit.create(ChapterApiService::class.java)
+    fun provideChapterApiService(@MainRetrofit mainRetrofit: Retrofit): ChapterApiService {
+        return mainRetrofit.create(ChapterApiService::class.java)
     }
 
     /**
@@ -54,17 +55,18 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun providePageApiService(retrofit: Retrofit): PageApiService {
-        return retrofit.create(PageApiService::class.java)
+    fun providePageApiService(@MainRetrofit mainRetrofit: Retrofit): PageApiService {
+        return mainRetrofit.create(PageApiService::class.java)
     }
+
 
     /**
      * Todo: Provide the LibraryApiService
      */
     @Provides
     @Singleton
-    fun provideLibraryApiService(retrofit: Retrofit): LibraryApiService {
-        return retrofit.create(LibraryApiService::class.java)
+    fun provideLibraryApiService(@MainRetrofit mainRetrofit: Retrofit): LibraryApiService {
+        return mainRetrofit.create(LibraryApiService::class.java)
     }
 
     /**
@@ -72,8 +74,8 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideLibraryCategoryApiService(retrofit: Retrofit): LibraryCategoryApiService {
-        return retrofit.create(LibraryCategoryApiService::class.java)
+    fun provideLibraryCategoryApiService(@MainRetrofit mainRetrofit: Retrofit): LibraryCategoryApiService {
+        return mainRetrofit.create(LibraryCategoryApiService::class.java)
     }
 
     /**
@@ -81,8 +83,8 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideHistoryApiService(retrofit: Retrofit): HistoryApiService {
-        return retrofit.create(HistoryApiService::class.java)
+    fun provideHistoryApiService(@MainRetrofit mainRetrofit: Retrofit): HistoryApiService {
+        return mainRetrofit.create(HistoryApiService::class.java)
     }
 
     /**
@@ -90,8 +92,8 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideCoinSopApiService(retrofit: Retrofit): CoinShopApiService {
-        return retrofit.create(CoinShopApiService::class.java)
+    fun provideCoinSopApiService(@MainRetrofit mainRetrofit: Retrofit): CoinShopApiService {
+        return mainRetrofit.create(CoinShopApiService::class.java)
     }
 
     /**
@@ -99,8 +101,8 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideComicCommentApiService(retrofit: Retrofit): ComicCommentApiService {
-        return retrofit.create(ComicCommentApiService::class.java)
+    fun provideComicCommentApiService(@MainRetrofit mainRetrofit: Retrofit): ComicCommentApiService {
+        return mainRetrofit.create(ComicCommentApiService::class.java)
     }
 
     /**
@@ -108,8 +110,8 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideChapterCommentApiService(retrofit: Retrofit): ChapterCommentApiService {
-        return retrofit.create(ChapterCommentApiService::class.java)
+    fun provideChapterCommentApiService(@MainRetrofit mainRetrofit: Retrofit): ChapterCommentApiService {
+        return mainRetrofit.create(ChapterCommentApiService::class.java)
     }
 
 
@@ -118,8 +120,8 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideProfileApiService(retrofit: Retrofit): ProfileApiService {
-        return retrofit.create(ProfileApiService::class.java)
+    fun provideProfileApiService(@MainRetrofit mainRetrofit: Retrofit): ProfileApiService {
+        return mainRetrofit.create(ProfileApiService::class.java)
     }
 
     /**
@@ -128,7 +130,16 @@ object ServiceModule {
      */
     @Provides
     @Singleton
-    fun provideNotificationApiService(retrofit: Retrofit): NotificationApiService {
-        return retrofit.create(NotificationApiService::class.java)
+    fun provideNotificationApiService(@MainRetrofit mainRetrofit: Retrofit): NotificationApiService {
+        return mainRetrofit.create(NotificationApiService::class.java)
     }
+
+    //image retrofit
+    //image api service
+    @Provides
+    @Singleton
+    fun provideImageApiService(@ImageRetrofit imageRetrofit: Retrofit): ImageApiService {
+        return imageRetrofit.create(ImageApiService::class.java)
+    }
+
 }

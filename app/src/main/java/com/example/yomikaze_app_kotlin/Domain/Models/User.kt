@@ -113,6 +113,9 @@ data class ProfileResponse(
     @SerializedName("roles")
     var roles: List<String>? = null,
 
+    @SerializedName("bio")
+    var bio: String? = null,
+
     @SerializedName("birthday")
     var birthday: String = "",
 )
