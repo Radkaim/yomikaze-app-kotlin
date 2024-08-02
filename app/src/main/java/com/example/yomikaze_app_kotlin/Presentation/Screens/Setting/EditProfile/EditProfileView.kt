@@ -58,6 +58,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -104,7 +105,7 @@ fun EditProfileContent(
     var birthday by remember { mutableStateOf("") }
     var birthdayError by remember { mutableStateOf<String?>(null) }
     var bio by remember { mutableStateOf("") }
-    val textSizeBio = 1024
+    val textSizeBio = 255
     val textSizeName = 50
 
 
@@ -233,11 +234,19 @@ fun EditProfileContent(
                     value = name,
                     onValueChange = { name = it },
                     label = {
-                        Text(
-                            text = "Name",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        if (name.length > textSizeName) {
+                            Text(
+                                text = "You have reached the maximum number of characters",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        } else {
+                            Text(
+                                text = "Name",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
 
                     },
                     maxLines = 1,
@@ -248,6 +257,7 @@ fun EditProfileContent(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_personal),
                             contentDescription = "",
+                            tint = MaterialTheme.colorScheme.primaryContainer,
                         )
                     },
                     modifier = Modifier
@@ -329,11 +339,11 @@ fun EditProfileContent(
                     value = bio,
                     onValueChange = { bio = it },
                     label = {
-                        if( bio.length >textSizeBio){
+                        if (bio.length > textSizeBio) {
                             Text(
                                 text = "You have reached the maximum number of characters",
                                 fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         } else {
                             Text(
@@ -342,12 +352,6 @@ fun EditProfileContent(
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
-
-                        Text(
-                            text = "About Me",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
 
                     },
                     maxLines = 4,
@@ -403,17 +407,26 @@ fun EditProfileContent(
 //
 //               ),
                     onClick = {
-                        editProfileViewModel.editProfile(
-                            avatar = state.imageResponse?.images?.get(0),
-                            name = name,
-                            birthday = birthday,
-                            bio = bio,
-                            file = if (imageUri != null) {
-                                createMultipartBodyFromUri(context, imageUri!!, "File")
-                            } else {
-                                null
-                            }
-                        )
+                        if (bio.length > textSizeBio || name.length > textSizeName) {
+                            Toast.makeText(
+                                context,
+                                "You have reached the maximum number of characters",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return@OutlinedButton
+                        } else {
+                            editProfileViewModel.editProfile(
+                                avatar = state.imageResponse?.images?.get(0),
+                                name = name,
+                                birthday = birthday,
+                                bio = bio,
+                                file = if (imageUri != null) {
+                                    createMultipartBodyFromUri(context, imageUri!!, "File")
+                                } else {
+                                    null
+                                }
+                            )
+                        }
                     },
 
                     )
@@ -423,8 +436,9 @@ fun EditProfileContent(
                             text = "SAVE",
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = TextStyle(
-                                fontSize = 16.sp,
+                                fontSize = 14.sp,
                             ),
+                            fontWeight = FontWeight.Medium
                         )
 
                     } else {

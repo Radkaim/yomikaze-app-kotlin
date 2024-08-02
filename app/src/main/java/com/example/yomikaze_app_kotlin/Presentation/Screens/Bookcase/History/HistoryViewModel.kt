@@ -60,7 +60,7 @@ class HistoryViewModel @Inject constructor(
     }
 
     fun onHistoryComicClicked(comicId: Long, chapterNumber: Int, lastPageNumber: Int? = 0) {
-        Log.d("ViewChapterContent", "onHistoryComicClicked: $lastPageNumber")
+//        Log.d("ViewChapterContent", "onHistoryComicClicked: $lastPageNumber")
         navController?.navigate("view_chapter_route/$comicId/$chapterNumber/$lastPageNumber")
     }
 
@@ -126,7 +126,7 @@ class HistoryViewModel @Inject constructor(
                     _state.value = _state.value.copy(isHistoryListLoading = false)
 //                    Log.d("HistoryViewModel", "getHistories: ${baseResponse.currentPage}")
 //                    Log.d("HistoryViewModel", "getHistories: ${baseResponse.totalPages}")
-                    Log.d("HistoryViewModel", "getHistories: $results")
+//                    Log.d("HistoryViewModel", "getHistories: $results")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi

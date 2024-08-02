@@ -77,7 +77,7 @@ class TransactionHistoryViewModel @Inject constructor(
                     _state.value.totalPages.value = baseResponse.totalPages
                     delay(200)
                     _state.value = _state.value.copy(isLoadingTransactionHistory = false)
-                    Log.d("TransactionHistoryViewModel", "result: $results")
+//                    Log.d("TransactionHistoryViewModel", "result: $results")
 
                 },
                 onFailure = { exception ->

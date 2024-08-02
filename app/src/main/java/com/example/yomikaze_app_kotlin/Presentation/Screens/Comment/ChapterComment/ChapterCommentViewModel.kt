@@ -155,10 +155,10 @@ class ChapterCommentViewModel @Inject constructor(
 
                     _state.value = _state.value.copy(isListChapterCommentLoading = false)
 
-                    Log.d(
-                        "ChapterCommentViewModel",
-                        "listComicComment: ${state.value.listChapterComment.size}"
-                    )
+//                    Log.d(
+//                        "ChapterCommentViewModel",
+//                        "listComicComment: ${state.value.listChapterComment.size}"
+//                    )
                 },
 
                 onFailure = { exception ->
@@ -192,7 +192,7 @@ class ChapterCommentViewModel @Inject constructor(
                 _state.value = _state.value.copy(isPostChapterCommentSuccess = true)
                 // add new item to list
                 val newComment = result.body() ?: return@launch
-                Log.d("ChapterCommentViewModel", "postComicCommentByComicId: $newComment")
+//                Log.d("ChapterCommentViewModel", "postComicCommentByComicId: $newComment")
                 var newCommentResponse = newComment
                 newCommentResponse.author = ProfileResponse(
                     id = appPreference.userId,
@@ -201,7 +201,7 @@ class ChapterCommentViewModel @Inject constructor(
                     balance = 0,
                     roles = appPreference.userRoles
                 )
-                Log.d("ChapterCommentViewModel", "postComicCommentByComicId: $newCommentResponse")
+//                Log.d("ChapterCommentViewModel", "postComicCommentByComicId: $newCommentResponse")
                 val list = _state.value.listChapterComment.toMutableList()
                 if (!list.any { it.id == newComment.id }) {
                     list.add(newCommentResponse)
@@ -249,7 +249,7 @@ class ChapterCommentViewModel @Inject constructor(
 
             } else {
                 _state.value = _state.value.copy(isDeleteCommentSuccess = false)
-                Log.e("ChapterCommentViewModel", "deleteComicCommentByComicId: $result")
+//                Log.e("ChapterCommentViewModel", "deleteComicCommentByComicId: $result")
             }
         }
     }
@@ -267,7 +267,7 @@ class ChapterCommentViewModel @Inject constructor(
             _state.value = _state.value.copy(isUpdateCommentSuccess = false)
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             //log content
-            Log.d("ChapterCommentViewModel", "updateComicCommentByComicId: $content")
+//            Log.d("ChapterCommentViewModel", "updateComicCommentByComicId: $content")
             val listPathRequest = listOf(
                 PathRequest(content, "/content", "replace")
             )
@@ -279,7 +279,7 @@ class ChapterCommentViewModel @Inject constructor(
                 pathRequest = listPathRequest
             )
             if (result.code() == 204) {
-                Log.d("ChapterCommentViewModel", "updateComicCommentByComicId: $result")
+//                Log.d("ChapterCommentViewModel", "updateComicCommentByComicId: $result")
                 _state.value = _state.value.copy(isUpdateCommentSuccess = true)
                 // update it content
                 val list = _state.value.listChapterComment.toMutableList()
@@ -316,7 +316,7 @@ class ChapterCommentViewModel @Inject constructor(
                 reactionRequest = reactionRequest
             )
             if (result.code() == 200 || result.code() == 204) {
-                Log.d("ChapterCommentViewModel", "reactComicCommentByComicId: $result")
+//                Log.d("ChapterCommentViewModel", "reactComicCommentByComicId: $result")
                 // update it content
                 _state.value = _state.value.copy(
                     listChapterComment = _state.value.listChapterComment.map {
@@ -380,7 +380,7 @@ class ChapterCommentViewModel @Inject constructor(
             val newReportRequest = ReportRequest(reportReasonId, reportContent)
             val result = reportCommentUC.reportComment(token, commentId, newReportRequest)
             if (result.code() == 201) {
-                Log.d("ComicDetailViewModel", "reportComment: $result")
+//                Log.d("ComicDetailViewModel", "reportComment: $result")
             } else {
                 Log.e("ComicDetailViewModel", "reportComment: $result")
             }
@@ -401,7 +401,7 @@ class ChapterCommentViewModel @Inject constructor(
                     // Xử lý kết quả thành công
                     _state.value =
                         _state.value.copy(listCommonCommentReportResponse = listReportResponse)
-                    Log.d("ComicDetailViewModel", "getCommonCommentReportReasons: $result")
+//                    Log.d("ComicDetailViewModel", "getCommonCommentReportReasons: $result")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi

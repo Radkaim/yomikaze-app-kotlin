@@ -91,7 +91,7 @@ class ViewChapterModel @Inject constructor(
     }
 
     fun getNextChapterNumber(currentChapterNumber: Int): Int? {
-        Log.d("ViewChapterModel", "getNextChapterNumber1: $currentChapterNumber")
+//        Log.d("ViewChapterModel", "getNextChapterNumber1: $currentChapterNumber")
         val currentIndex =
             state.value.listChapters!!.indexOfFirst { it.number == currentChapterNumber }
         return if (currentIndex >= 0 && currentIndex < state.value.listChapters!!.size - 1) state.value.listChapters!![currentIndex + 1].number else null
@@ -140,7 +140,7 @@ class ViewChapterModel @Inject constructor(
                     // Xử lý lỗi
                     _state.value = _state.value.copy(isGetPageApiSuccess = false)
                     _state.value = _state.value.copy(pagesImage = emptyList())
-                    Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: $exception")
+//                    Log.e("ViewChapterModel", "getPagesByChapterNumberOfComic: $exception")
 
                     // catch 403 code
                     if (exception.message == "403") {
@@ -153,10 +153,10 @@ class ViewChapterModel @Inject constructor(
                         if (chapter != null) {
                             _state.value = _state.value.copy(priceToUnlockChapter = chapter.price)
                         }
-                        Log.e(
-                            "ViewChapterModel",
-                            "getPagesByChapterNumberOfComic: Chapter is locked (403) $chapterNumber"
-                        )
+//                        Log.e(
+//                            "ViewChapterModel",
+//                            "getPagesByChapterNumberOfComic: Chapter is locked (403) $chapterNumber"
+//                        )
                     }
 
                     if (exception.message == "401") {
@@ -174,7 +174,7 @@ class ViewChapterModel @Inject constructor(
     // get page by comic id and chapter number
     fun getPageByComicIdAndChapterNumberInDB(comicId: Long, chapterNumber: Int) {
         _state.value = _state.value.copy(isPagesExistInDB = false)
-        Log.d("ViewChapterModel", "getPageByComicIdAndChapterNumberInDB: $comicId, $chapterNumber")
+//        Log.d("ViewChapterModel", "getPageByComicIdAndChapterNumberInDB: $comicId, $chapterNumber")
         viewModelScope.launch(Dispatchers.IO) {
 
             val result = getPageByComicIdAndChapterNumberDBUC.getPageByComicIdAndChapterNumberDB(
@@ -282,7 +282,7 @@ class ViewChapterModel @Inject constructor(
                 chapterNumber,
                 listPathRequest
             )
-            Log.d("ViewChapterModel", "updateLastReadPage: $result")
+//            Log.d("ViewChapterModel", "updateLastReadPage: $result")
             if (result.isSuccessful) {
                 Log.d("ViewChapterModel", "updateLastReadPage: ${result.body()}")
             } else {
@@ -303,7 +303,7 @@ class ViewChapterModel @Inject constructor(
                 onSuccess = { listReportResponse ->
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(listCommonChapterReportResponse = listReportResponse)
-                    Log.d("ComicDetailViewModel", "getCommonChapterReportReasons: $result")
+//                    Log.d("ComicDetailViewModel", "getCommonChapterReportReasons: $result")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -332,7 +332,7 @@ class ViewChapterModel @Inject constructor(
             val result =
                 reportChapterUC.reportChapter(token, comicId, chapterNumber, newReportRequest)
             if (result.code() == 201) {
-                Log.d("ComicDetailViewModel", "reportChapter: $result")
+//                Log.d("ComicDetailViewModel", "reportChapter: $result")
             } else {
                 Log.e("ComicDetailViewModel", "reportChapter: $result")
             }

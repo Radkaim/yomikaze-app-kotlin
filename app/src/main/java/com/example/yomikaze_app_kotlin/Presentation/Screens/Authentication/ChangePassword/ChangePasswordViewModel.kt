@@ -69,8 +69,8 @@ class ChangePasswordViewModel @Inject constructor(
             if (result.isSuccessful) {
                 appPreference.deleteUserToken()
                 withContext(Dispatchers.IO){
-                    Log.d("ChangePassVM", "onChangePass: ${appPreference.userName!!}, $newpassword")
-                    Log.d("ChangePassVM", "onChangePass: ${appPreference.userName!!}, $newpassword")
+//                    Log.d("ChangePassVM", "onChangePass: ${appPreference.userName!!}, $newpassword")
+//                    Log.d("ChangePassVM", "onChangePass: ${appPreference.userName!!}, $newpassword")
 
 
                     if (appPreference.userName == null) {

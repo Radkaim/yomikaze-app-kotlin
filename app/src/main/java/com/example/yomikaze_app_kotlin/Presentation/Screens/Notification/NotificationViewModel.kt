@@ -58,7 +58,7 @@ class NotificationViewModel @Inject constructor(
 //                    _state.value.currentPage.value = baseResponse.currentPage
 //                    _state.value.totalPages.value = baseResponse.totalPages
                     _state.value = _state.value.copy(isNotificationLoading = false)
-                    Log.d("NotificationViewModel", "getNotification: $results")
+//                    Log.d("NotificationViewModel", "getNotification: $results")
 //
                 },
                 onFailure = { exception ->

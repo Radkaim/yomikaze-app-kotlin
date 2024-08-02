@@ -263,7 +263,7 @@ class AdvancedSearchViewModel @Inject constructor(
             if (queryToPublishedDate.isEmpty()) {
                 _state.value = _state.value.copy(queryToPublishedDate = null)
             } else {
-                Log.d("AdvancedSearchViewModel", "queryToPublishedDate: $queryToPublishedDate")
+//                Log.d("AdvancedSearchViewModel", "queryToPublishedDate: $queryToPublishedDate")
                 _state.value = _state.value.copy(queryToPublishedDate = queryToPublishedDate)
             }
         }
@@ -449,7 +449,7 @@ class AdvancedSearchViewModel @Inject constructor(
                 if (appPreference.authToken == null) "" else appPreference.authToken!!
 
             try {
-                Log.d("AdvancedSearchViewModel", "queryMap: $queryMap")
+//                Log.d("AdvancedSearchViewModel", "queryMap: $queryMap")
                 val result = advancedSearchComicUC.executeAdvancedSearchComic(token, queryMap)
                 result.fold(
                     onSuccess = { baseResponse ->

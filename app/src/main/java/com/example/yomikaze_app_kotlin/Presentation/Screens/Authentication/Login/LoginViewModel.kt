@@ -60,7 +60,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
             val result = loginUseCase.login(loginRequest)
-            Log.d("LoginViewModel", "onLogin: $username, $password")
+//            Log.d("LoginViewModel", "onLogin: $username, $password")
             _state.value = _state.value.copy(isLoading = false)
             result.onSuccess { token ->
                 // Handle success
@@ -90,7 +90,7 @@ class LoginViewModel @Inject constructor(
 
     fun onGoogleLogin(token: String) {
         viewModelScope.launch {
-            Log.d("LoginViewModel", "onGoogleLogin1: $token")
+//            Log.d("LoginViewModel", "onGoogleLogin1: $token")
             val result = loginWithGoogleUC.loginWithGoogle(TokenResponse(token))
             result.onSuccess { token ->
                 // Handle success

@@ -75,7 +75,7 @@ class ChooseChapterDownloadViewModel @Inject constructor(
 
     //fun get selectedCapterContainIsUnlocked
     fun getSelectedChaptersContainIsUnlocked(): List<Chapter> {
-        Log.d("ChooseChapterDownloadViewModel", "getSelectedChaptersContainIsUnlocked: ${_state.value.listChapterForDownloaded.filter { it.isSelected }}")
+//        Log.d("ChooseChapterDownloadViewModel", "getSelectedChaptersContainIsUnlocked: ${_state.value.listChapterForDownloaded.filter { it.isSelected }}")
         return if (appPreference.isUserLoggedIn) {
             _state.value.listChapterForDownloaded.filter { it.isSelected && !it.isUnlocked }
         } else {
@@ -133,7 +133,7 @@ class ChooseChapterDownloadViewModel @Inject constructor(
         //create a downloadWorkerRequest that when download is broken, it will retry
 
         workManager.enqueue(downloadWorkRequest)
-        Log.d("ChooseChapterDownloadViewModel", "getComicDetailsAndDownload: $selectedChapters")
+//        Log.d("ChooseChapterDownloadViewModel", "getComicDetailsAndDownload: $selectedChapters")
     }
 
     /**
@@ -194,7 +194,7 @@ class ChooseChapterDownloadViewModel @Inject constructor(
 //                navController?.navigateUp()
 //                getPagesByChapterNumberOfComic(comicId, chapterNumber)
                 _state.value = _state.value.copy(isUnlockChapterSuccess = true)
-                Log.d("ViewChapterModel", "unlockAChapter: ${result.code()}")
+//                Log.d("ViewChapterModel", "unlockAChapter: ${result.code()}")
                 //set isUnlocked of selected chapters to true
 //                val updatedChapters = _state.value.listChapterForDownloaded.map { chapter ->
 //                    if (listChapterNumbers.contains(chapter.number)) {

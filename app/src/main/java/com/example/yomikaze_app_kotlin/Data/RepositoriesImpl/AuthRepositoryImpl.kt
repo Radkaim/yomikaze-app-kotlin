@@ -37,7 +37,7 @@ class AuthRepositoryImpl @Inject constructor(
                     appPreference.userAvatar = profileResponse.getOrNull()?.avatar
                     appPreference.userName = profileResponse.getOrNull()?.name
                     appPreference.userBalance = profileResponse.getOrNull()?.balance ?: 0
-                    Log.d("AuthRepositoryImpl", "login: ${appPreference.authToken}")
+//                    Log.d("AuthRepositoryImpl", "login: ${appPreference.authToken}")
                 } else {
                     Log.d("AuthRepositoryImpl", "login: ${profileResponse.exceptionOrNull()}")
                 }
@@ -163,7 +163,7 @@ class AuthRepositoryImpl @Inject constructor(
                 appPreference.userAvatar = profileResponse.getOrNull()?.avatar
                 appPreference.userName = profileResponse.getOrNull()?.name
                 appPreference.userBalance = profileResponse.getOrNull()?.balance ?: 0
-                Log.d("AuthRepositoryImpl", "loginWithGoogle: ${appPreference.userRoles}")
+//                Log.d("AuthRepositoryImpl", "loginWithGoogle: ${appPreference.userRoles}")
             } else {
                 Log.d(
                     "AuthRepositoryImpl",

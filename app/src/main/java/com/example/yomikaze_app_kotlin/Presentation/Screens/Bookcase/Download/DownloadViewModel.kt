@@ -65,7 +65,7 @@ class DownloadViewModel @Inject constructor(
                     }
                     _state.value = state.value.copy(listComicsDB = it)
                 }
-                Log.d("DownloadViewModel", "getAllComicsDownloadedDB: ${it.size}")
+//                Log.d("DownloadViewModel", "getAllComicsDownloadedDB: ${it.size}")
             }
         }
     }

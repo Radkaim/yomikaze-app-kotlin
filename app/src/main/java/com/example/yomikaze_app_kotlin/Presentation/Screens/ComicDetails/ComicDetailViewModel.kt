@@ -122,7 +122,7 @@ class ComicDetailViewModel @Inject constructor(
                         isLoading = false,
                     )
                     //  comic = comicDetailResponse
-                    Log.d("ComicDetailsViewModel", "ComicDetailsViewLocal: $comicDetailResponse")
+//                    Log.d("ComicDetailsViewModel", "ComicDetailsViewLocal: $comicDetailResponse")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -200,9 +200,7 @@ class ComicDetailViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         listChapters = listChapter.results.sortedBy { it.number }
                     )
-                    listChapter.results.forEach() {
-                        Log.d("ComicDetailViewModel", "getListChapterByComicId: $it")
-                    }
+//
                     _state.value = _state.value.copy(isListChaptersLoading = false)
                 },
                 onFailure = { exception ->
@@ -253,7 +251,7 @@ class ComicDetailViewModel @Inject constructor(
                         listComicComment = baseResponse.results,
                         isListComicCommentLoading = false
                     )
-                    Log.d("ComicDetailViewModel", "getAllComicCommentByComicId: $result")
+//                    Log.d("ComicDetailViewModel", "getAllComicCommentByComicId: $result")
                 },
 
                 onFailure = { exception ->
@@ -285,7 +283,7 @@ class ComicDetailViewModel @Inject constructor(
                     // Xử lý kết quả thành công
 //
                     navController?.navigate("view_chapter_route/${comicId}/${continueReadingResponse.chapter.number}/${continueReadingResponse.pageNumber}")
-                    Log.d("ComicDetailViewModel", "getContinueReading: $result")
+//                    Log.d("ComicDetailViewModel", "getContinueReading: $result")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -313,7 +311,7 @@ class ComicDetailViewModel @Inject constructor(
                 reactionRequest = reactionRequest
             )
             if (result.code() == 200 || result.code() == 204) {
-                Log.d("ComicCommentViewModel", "reactComicCommentByComicId: $result")
+//                Log.d("ComicCommentViewModel", "reactComicCommentByComicId: $result")
                 // update it content
                 _state.value = _state.value.copy(
                     listComicComment = _state.value.listComicComment.map {
@@ -378,7 +376,7 @@ class ComicDetailViewModel @Inject constructor(
                 onSuccess = { listReportResponse ->
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(listCommonComicReportResponse = listReportResponse)
-                    Log.d("ComicDetailViewModel", "getComicCommonReportReasons: $result")
+//                    Log.d("ComicDetailViewModel", "getComicCommonReportReasons: $result")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -394,14 +392,14 @@ class ComicDetailViewModel @Inject constructor(
     fun reportComic(comicId: Long, reportReasonId: Long, reportContent: String?) {
         viewModelScope.launch(Dispatchers.IO) {
 //            Log.d("ComicDetailViewModel", "reportComic: $reportContent")
-            Log.d("ComicDetailViewModel", "reportComic: $reportReasonId")
+//            Log.d("ComicDetailViewModel", "reportComic: $reportReasonId")
 //            Log.d("ComicDetailViewModel", "reportComic: $comicId")
 
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val newReportRequest = ReportRequest(reportReasonId, reportContent)
             val result = reportComicUC.reportComic(token, comicId, newReportRequest)
             if (result.code() == 201) {
-                Log.d("ComicDetailViewModel", "reportComic: $result")
+//                Log.d("ComicDetailViewModel", "reportComic: $result")
             } else {
                 Log.e("ComicDetailViewModel", "reportComic: $result")
             }
@@ -418,7 +416,7 @@ class ComicDetailViewModel @Inject constructor(
                 onSuccess = { listReportResponse ->
                     // Xử lý kết quả thành công
                     _state.value = _state.value.copy(listCommonChapterReportResponse = listReportResponse)
-                    Log.d("ComicDetailViewModel", "getCommonChapterReportReasons: $result")
+//                    Log.d("ComicDetailViewModel", "getCommonChapterReportReasons: $result")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
@@ -447,7 +445,7 @@ class ComicDetailViewModel @Inject constructor(
             val result =
                 reportChapterUC.reportChapter(token, comicId, chapterNumber, newReportRequest)
             if (result.code() == 201) {
-                Log.d("ComicDetailViewModel", "reportChapter: $result")
+//                Log.d("ComicDetailViewModel", "reportChapter: $result")
             } else {
                 Log.e("ComicDetailViewModel", "reportChapter: $result")
             }
@@ -459,9 +457,9 @@ class ComicDetailViewModel @Inject constructor(
      */
     fun reportComment(commentId: Long, reportReasonId: Long, reportContent: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("ComicDetailViewModel", "reportComment: $reportContent")
-            Log.d("ComicDetailViewModel", "reportComment: $reportReasonId")
-            Log.d("ComicDetailViewModel", "reportComment: $commentId")
+//            Log.d("ComicDetailViewModel", "reportComment: $reportContent")
+//            Log.d("ComicDetailViewModel", "reportComment: $reportReasonId")
+//            Log.d("ComicDetailViewModel", "reportComment: $commentId")
             val token = if (appPreference.authToken == null) "" else appPreference.authToken!!
             val newReportRequest = ReportRequest(reportReasonId, reportContent)
             val result = reportCommentUC.reportComment(token, commentId, newReportRequest)
@@ -484,7 +482,7 @@ class ComicDetailViewModel @Inject constructor(
                     // Xử lý kết quả thành công
                     _state.value =
                         _state.value.copy(listCommonCommentReportResponse = listReportResponse)
-                    Log.d("ComicDetailViewModel", "getCommonCommentReportReasons: $result")
+//                    Log.d("ComicDetailViewModel", "getCommonCommentReportReasons: $result")
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi

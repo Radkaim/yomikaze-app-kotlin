@@ -77,11 +77,11 @@ class RegisterViewModel @Inject constructor(
             _state.value = _state.value.copy(isLoading = true)
             val result =
                 registerUC.register(username, password, fullName, confirmPassword, email, birthday)
-            Log.d("RegisterViewModel", "onRegister: $result")
-            Log.d(
-                "RegisterViewModel",
-                "onRegister: $username $password $fullName $confirmPassword $email $birthday"
-            )
+//            Log.d("RegisterViewModel", "onRegister: $result")
+//            Log.d(
+//                "RegisterViewModel",
+//                "onRegister: $username $password $fullName $confirmPassword $email $birthday"
+//            )
             _state.value = _state.value.copy(isLoading = false)
             result.onSuccess { token ->
                 //handle success

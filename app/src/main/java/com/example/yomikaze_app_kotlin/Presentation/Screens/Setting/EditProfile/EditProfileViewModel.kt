@@ -63,7 +63,7 @@ class EditProfileViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         profileResponse = profileResponse
                     )
-                    Log.d("ProfileViewModel", "getProfile: $profileResponse")
+//                    Log.d("ProfileViewModel", "getProfile: $profileResponse")
                     _state.value = _state.value.copy(isGetProfileLoading = false)
                 },
                 onFailure = { exception ->
@@ -92,7 +92,7 @@ class EditProfileViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         imageResponse = imageResponse
                     )
-                    Log.d("ProfileViewModel", "uploadImage: $imageResponse")
+//                    Log.d("ProfileViewModel", "uploadImage: $imageResponse")
                     _state.value = _state.value.copy(isUploadImageLoading = false)
                 },
                 onFailure = { exception ->
@@ -147,7 +147,7 @@ class EditProfileViewModel @Inject constructor(
 
                 delay(1000)// for upload image
                 _state.value = _state.value.copy(isLoading = true)
-                Log.d("EditProfileViewModel", "editProfile: $avatar $name $bio $birthday, file: $file")
+
 
 
                 val pathRequest = mutableListOf<PathRequest>()
@@ -161,7 +161,6 @@ class EditProfileViewModel @Inject constructor(
                     pathRequest.add(PathRequest(bio, "bio", "replace"))
                 }
 
-                Log.d("EditProfileViewModel", "editProfilePath req: $pathRequest")
 
                 val response =
                     editProfileUC.updateProfile(token, pathRequest)
