@@ -197,7 +197,7 @@ class EditProfileViewModel @Inject constructor(
                 pathRequest.add(PathRequest(bio, "bio", "replace"))
             }
 
-            Log.d("EditProfileViewModel", "pathRequest: $pathRequest")
+//            Log.d("EditProfileViewModel", "pathRequest: $pathRequest")
             val response = editProfileUC.updateProfile(token, pathRequest)
             if (response.isSuccessful) {
                 appPreference.profileChangeStatus = true
