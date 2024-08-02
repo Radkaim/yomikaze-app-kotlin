@@ -147,8 +147,7 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                 Toast.makeText(context, "Failed to sign in!", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Log.e("GeneralException", "An error occurred: ${e.message}")
-                Toast.makeText(context, "An error occurred: ${e.message}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(context, "Failed to sign in!", Toast.LENGTH_SHORT).show()
             }
         }
 

@@ -166,10 +166,10 @@ class EditProfileViewModel @Inject constructor(
 
             if (file != null) {
                 uploadImage(file) { imageUrl ->
-                    updateProfile(token, imageUrl, name, bio)
+                    updateProfile(token, imageUrl, name, bio, birthday)
                 }
             } else {
-                updateProfile(token, avatar, name, bio)
+                updateProfile(token, avatar, name, bio, birthday)
             }
         }
 
@@ -181,7 +181,8 @@ class EditProfileViewModel @Inject constructor(
         token: String,
         avatarUrl: String?,
         name: String?,
-        bio: String?
+        bio: String?,
+        birthday: String?
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isLoading = true)
@@ -192,6 +193,9 @@ class EditProfileViewModel @Inject constructor(
             }
             if (name != null && name != _state.value.profileResponse?.name) {
                 pathRequest.add(PathRequest(name, "name", "replace"))
+            }
+            if (birthday != null && birthday != _state.value.profileResponse?.birthday) {
+                pathRequest.add(PathRequest(birthday, "birthday", "replace"))
             }
             if (bio != null && bio != _state.value.profileResponse?.bio) {
                 pathRequest.add(PathRequest(bio, "bio", "replace"))
