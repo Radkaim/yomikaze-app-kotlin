@@ -186,7 +186,7 @@ fun ProfileContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .width(300.dp)
                     .padding(top = 10.dp)
             ) {
 

@@ -4,14 +4,10 @@ import com.example.yomikaze_app_kotlin.Domain.Models.ImageResponse
 import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
 
 data class EditProfileState(
-    val username: String,
-    val usernameError: String,
-    val password: String,
-    val passwordError: String,
-    val dateOfBirth: String,
-    val dateOfBirthError: String,
-    val aboutMe: String,
-    val aboutMeError: String,
+    val username: String? = null,
+    val dateOfBirth: String? = null,
+    val bio: String ? = null,
+
     val isLoading: Boolean = true,
     val error: String? = null,
 
@@ -20,4 +16,6 @@ data class EditProfileState(
 
     val imageResponse: ImageResponse? = null,
     val isUploadImageLoading: Boolean = false,
+
+    val isUpdateProfileSuccess: Boolean = false,
 )

@@ -1,5 +1,6 @@
 package com.example.yomikaze_app_kotlin.Presentation.Screens.Setting
 
+import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,14 +42,38 @@ class SettingViewModel @Inject constructor(
     }
 
 
-    fun onSettingItemCLicked(route: String) {
+    fun onSettingItemCLicked(route: String, context: Context) {
         when (route) {
             "login_route" -> navController?.navigate("login_route")
-            "edit_profile_route" -> navController?.navigate("edit_profile_route")
-            "reset_password_route" -> navController?.navigate("change_password_route")
+            "edit_profile_route" -> if (appPreference.isUserLoggedIn) {
+                navController?.navigate("edit_profile_route")
+            } else {
+                Toast.makeText(context, "Please login to use this feature", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            "change_password_route" ->
+                if (appPreference.isUserLoggedIn) {
+                    if (appPreference.isLoginWithGoogle){
+                        Toast.makeText(context, "This feature is not available for Google Login yet", Toast.LENGTH_SHORT)
+                            .show()
+                        return
+                    }
+                    navController?.navigate("change_password_route")
+                } else {
+                    Toast.makeText(context, "Please login to use this feature", Toast.LENGTH_SHORT)
+                        .show()
+                }
             "coins_shop_route" -> navController?.navigate("coins_shop_route")
             "about_us_route" -> navController?.navigate("about_us_route")
-            "transaction_history_route" -> navController?.navigate("transaction_history_route")
+            "transaction_history_route" ->
+                if (appPreference.isUserLoggedIn) {
+                    navController?.navigate("transaction_history_route")
+                } else {
+                    Toast.makeText(context, "Please login to use this feature", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
             "advance_search_route" -> navController?.navigate("advance_search_route/null-null-null")
         }
     }

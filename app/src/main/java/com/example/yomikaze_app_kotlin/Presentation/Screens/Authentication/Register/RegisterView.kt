@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -202,7 +203,7 @@ fun RegisterContent(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_email),
                                 contentDescription = "",
-                                tint = Color.Unspecified
+                                tint = MaterialTheme.colorScheme.primaryContainer
                             )
                         },
                         modifier = Modifier
@@ -264,7 +265,7 @@ fun RegisterContent(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_personal),
                                 contentDescription = "",
-                                tint = Color.Unspecified
+                                tint = MaterialTheme.colorScheme.primaryContainer
                             )
                         },
                         modifier = Modifier
@@ -338,7 +339,7 @@ fun RegisterContent(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_dateofbirth),
                             contentDescription = "",
-                            tint = Color.Unspecified,
+                            tint = MaterialTheme.colorScheme.primaryContainer,
                             modifier = Modifier.padding(start = 16.dp)
                         )
                         Text(
@@ -385,7 +386,7 @@ fun RegisterContent(
 
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(
-                                    tint = MaterialTheme.colorScheme.onTertiary,
+                                    tint = MaterialTheme.colorScheme.primaryContainer,
                                     painter = image,
                                     contentDescription = if (passwordVisible) "Hide password" else "Show password"
                                 )
@@ -459,7 +460,7 @@ fun RegisterContent(
 
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(
-                                    tint = MaterialTheme.colorScheme.onTertiary,
+                                    tint = MaterialTheme.colorScheme.primaryContainer,
                                     painter = image,
                                     contentDescription = if (passwordVisible) "Hide password" else "Show password"
                                 )
@@ -514,13 +515,18 @@ fun RegisterContent(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .offset(y = (-20).dp)
+                            .offset(y = (-20).dp, x = (-30).dp)
                     ) {
                         Box() {
                             Checkbox(
                                 checked = isTermOfServiceChecked,
                                 onCheckedChange = { isTermOfServiceChecked = it },
-                                modifier = Modifier.offset(x = (-40).dp, y = (-12).dp)
+                                modifier = Modifier.offset(x = (-45).dp, y = (-12).dp),
+                                colors = CheckboxDefaults.colors(
+                                    checkmarkColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    checkedColor = MaterialTheme.colorScheme.primary,
+                                    uncheckedColor = MaterialTheme.colorScheme.primary
+                                )
 
                             )
                             Text(
@@ -534,22 +540,22 @@ fun RegisterContent(
                                         top = 3.dp,
                                         end = 150.dp,
                                     )
-                                    .clickable {   url = "https://yomikaze.org/term-of-service" }
+                                    .clickable { url = "https://yomikaze.org/term-of-service" }
                             )
                         }
-
-                        Text(
-                            text = "Sign In?",
-                            style = TextStyle(fontStyle = FontStyle.Italic),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier
-                                .padding(
-                                    bottom = 20.dp
-                                )
-                                .offset(x = (30).dp)
-                                .clickable { registerViewModel.navigateToLogin() }
-
-                        )
+//
+//                        Text(
+//                            text = "Sign In?",
+//                            style = TextStyle(fontStyle = FontStyle.Italic),
+//                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+//                            modifier = Modifier
+//                                .padding(
+//                                    bottom = 20.dp
+//                                )
+//                                .offset(x = (30).dp)
+//                                .clickable { registerViewModel.navigateToLogin() }
+//
+//                        )
                     }
                 }
 
@@ -606,14 +612,14 @@ fun RegisterContent(
                 }
             }
 
-        state.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 6.dp)
-            )
-        }
-    }else {
+            state.error?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+            }
+        } else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()

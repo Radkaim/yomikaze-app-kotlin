@@ -8,13 +8,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.yomikaze_app_kotlin.Core.AppPreference
+import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.EditProfileUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.UploadImageUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -27,18 +31,21 @@ import javax.inject.Inject
 class EditProfileViewModel @Inject constructor(
     private val appPreference: AppPreference,
     private val getProfileUc: GetProfileUC,
-    private val uploadImageUC: UploadImageUC
-): ViewModel(){
-    private val _state = MutableStateFlow(EditProfileState("", "","","","","","",""))
+    private val uploadImageUC: UploadImageUC,
+    private val editProfileUC: EditProfileUC,
+) : ViewModel() {
+    private val _state = MutableStateFlow(EditProfileState())
     private var navController: NavController? = null
 
     val state: StateFlow<EditProfileState> get() = _state
     fun setNavController(navController: NavController) {
         this.navController = navController
     }
+
     init {
         getProfile()
     }
+
     fun getProfile() {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isGetProfileLoading = true)
@@ -115,6 +122,62 @@ class EditProfileViewModel @Inject constructor(
         } catch (e: Exception) {
             Log.e("EditProfileViewModel", "Error getting bitmap from URI: $e")
             null
+        }
+    }
+
+    fun editProfile(
+        avatar: String?,
+        name: String?,
+        bio: String?,
+        birthday: String?,
+        file: MultipartBody.Part?
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isUpdateProfileSuccess = false)
+            val token =
+                if (appPreference.authToken == null) "" else appPreference.authToken!!
+            if (token.isEmpty()) {
+                return@launch
+            }
+
+            withContext(Dispatchers.IO) {
+                if (file != null) {
+                    uploadImage(file)
+                }
+
+                delay(1000)// for upload image
+                _state.value = _state.value.copy(isLoading = true)
+                Log.d("EditProfileViewModel", "editProfile: $avatar $name $bio $birthday, file: $file")
+
+
+                val pathRequest = mutableListOf<PathRequest>()
+                if (_state.value.imageResponse != null) {
+                    pathRequest.add(PathRequest(_state.value.imageResponse?.images?.get(0).toString(), "avatar", "replace"))
+                }
+                if (name != null && name != _state.value.profileResponse?.name) {
+                    pathRequest.add(PathRequest(name, "name", "replace"))
+                }
+                if (bio != null && bio != _state.value.profileResponse?.bio) {
+                    pathRequest.add(PathRequest(bio, "bio", "replace"))
+                }
+
+                Log.d("EditProfileViewModel", "editProfilePath req: $pathRequest")
+
+                val response =
+                    editProfileUC.updateProfile(token, pathRequest)
+                if (response.isSuccessful) {
+                    _state.value = _state.value.copy(isUpdateProfileSuccess = true)
+                    _state.value = _state.value.copy(isLoading = false)
+                } else {
+                    _state.value = _state.value.copy(isLoading = false)
+                    Log.d(
+                        "EditProfileViewModel",
+                        "editProfile: ${response.errorBody()?.string()}"
+                    )
+//                _state.value = _state.value.copy(error = response.errorBody()?.string())
+                }
+            }
+
         }
     }
 

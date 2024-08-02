@@ -1,6 +1,7 @@
 package com.example.yomikaze_app_kotlin.Domain.Repositories
 
 import com.example.yomikaze_app_kotlin.Domain.Models.ChangePasswordRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
 import retrofit2.Response
 
@@ -20,5 +21,12 @@ interface ProfileRepository {
         token: String,
         changePasswordRequest: ChangePasswordRequest
     ): Response<Unit>
+
+    //update profile
+    suspend fun updateProfile(
+        token: String,
+        pathRequest: List<PathRequest>
+    ): Response<Unit>
+
 
 }

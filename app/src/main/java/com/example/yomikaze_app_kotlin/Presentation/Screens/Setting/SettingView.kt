@@ -91,7 +91,7 @@ fun SettingView(
             iconStart = R.drawable.ic_changepassword,
             title = "Change Password",
             iconEnd = R.drawable.ic_next,
-            route = "reset_password_route"
+            route = "change_password_route"
         ),
         //  SettingObject(R.drawable.ic_darkmode, "Dark Mode", R.drawable.ic_next, ),
         SettingObject(
@@ -160,7 +160,7 @@ fun SettingView(
                     title = settingObject.title,
                     iconEnd = settingObject.iconEnd,
                     isLoginMethod = settingObject.isLoginMethod,
-                    onClicked = { settingViewModel.onSettingItemCLicked(settingObject.route) }
+                    onClicked = { settingViewModel.onSettingItemCLicked(settingObject.route, context) }
                 )
             }
             Column {

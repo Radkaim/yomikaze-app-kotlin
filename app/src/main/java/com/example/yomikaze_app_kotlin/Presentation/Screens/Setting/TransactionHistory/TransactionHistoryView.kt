@@ -46,7 +46,7 @@ import com.example.yomikaze_app_kotlin.Presentation.Components.ComicCard.ShareCo
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.CheckNetwork
 import com.example.yomikaze_app_kotlin.Presentation.Components.Network.UnNetworkScreen
 import com.example.yomikaze_app_kotlin.Presentation.Components.NotSignIn.NotSignIn
-import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.CoinShopCardShimmerLoading
+import com.example.yomikaze_app_kotlin.Presentation.Components.ShimmerLoadingEffect.TransactionHistoryCardShimmerLoading
 import com.example.yomikaze_app_kotlin.Presentation.Components.TopBar.CustomAppBar
 import com.example.yomikaze_app_kotlin.R
 import kotlinx.coroutines.flow.collectLatest
@@ -154,7 +154,6 @@ fun TransactionHistoryViewContent(
 //                    top = 15.dp,
 //                    start = 4.dp,
 //                    end = 4.dp,
-//                    bottom = 4.dp
                 ) // Optional padding for the entire list
                 .background(MaterialTheme.colorScheme.background)
                 .wrapContentSize(Alignment.Center)
@@ -196,9 +195,16 @@ fun TransactionHistoryViewContent(
 
                 if (state.isLoadingTransactionHistory) {
                     item {
-                        repeat(6) {
-                            CoinShopCardShimmerLoading()
-                            Spacer(modifier = Modifier.height(10.dp))
+                        repeat(5) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                TransactionHistoryCardShimmerLoading()
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
                         }
                     }
                 }

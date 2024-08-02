@@ -9,6 +9,7 @@ import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Log
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,6 +44,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,11 +56,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -99,15 +100,21 @@ fun EditProfileContent(
 
     val context = LocalContext.current
     val appPreference = AppPreference(context)
-    var username by remember { mutableStateOf(state.profileResponse?.name ?: "") }
-    var birthday by remember { mutableStateOf(state.profileResponse?.birthday ?: "") }
+    var name by remember { mutableStateOf("") }
+    var birthday by remember { mutableStateOf("") }
     var birthdayError by remember { mutableStateOf<String?>(null) }
-    var bio by remember { mutableStateOf(state.profileResponse?.bio ?: "") }
-    var aboutMeError by remember { mutableStateOf("") }
-    val focusManager = LocalFocusManager.current
+    var bio by remember { mutableStateOf("") }
+    val textSizeBio = 1024
+    val textSizeName = 50
 
 
-    var passwordVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = state.isUpdateProfileSuccess) {
+        if (state.isUpdateProfileSuccess) {
+            Toast.makeText(context, "Update profile successfully", Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
+        }
+    }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
 
@@ -115,8 +122,11 @@ fun EditProfileContent(
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
     val day = calendar.get(Calendar.DAY_OF_MONTH)
-    var url by remember { mutableStateOf<String?>(null) }
+
+
     birthday = changeDateTimeFormat2(state.profileResponse?.birthday ?: "")
+    name = state.profileResponse?.name ?: ""
+    bio = state.profileResponse?.bio ?: ""
 
 
     val datePickerDialog = DatePickerDialog(
@@ -171,7 +181,9 @@ fun EditProfileContent(
                 .fillMaxHeight()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(10.dp)
+
         ) {
+            //TODO AVATAR
             item {
                 Box(
                     modifier = Modifier
@@ -200,19 +212,29 @@ fun EditProfileContent(
                 }
             }
 
+            //TODO UPLOAD IMAGE
             item {
-                UploadImageButton(editProfileViewModel, LocalContext.current) { uri ->
-                    imageUri = uri
+                Box(
+                    modifier = Modifier
+                        .width(130.dp)
+                        .height(120.dp)
+
+
+                ) {
+
+                    UploadImageButton(editProfileViewModel, LocalContext.current) { uri ->
+                        imageUri = uri
+                    }
                 }
             }
-
+            //TODO NAME
             item {
                 TextField(
-                    value = state.profileResponse?.name ?: "",
-                    onValueChange = { username = it },
+                    value = name,
+                    onValueChange = { name = it },
                     label = {
                         Text(
-                            text = "User Name",
+                            text = "Name",
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -226,7 +248,6 @@ fun EditProfileContent(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_personal),
                             contentDescription = "",
-                            tint = Color.Unspecified
                         )
                     },
                     modifier = Modifier
@@ -254,21 +275,9 @@ fun EditProfileContent(
                     ),
                     //   isError = state.usernameError != null
                 )
-                if (state.usernameError != null) {
-                    Text(
-                        text = state.usernameError.toString() ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        textAlign = TextAlign.Start,
-                        fontSize = 10.sp,
-                        modifier = Modifier
-                            .offset(x = -(60).dp, y = -(15).dp)
-
-                    )
-                }
             }
 
-
+            //TODO BIRTHDAY
             item {
                 Box(
                     modifier = Modifier
@@ -300,12 +309,12 @@ fun EditProfileContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_dateofbirth),
                         contentDescription = "",
-                        tint = Color.Unspecified,
+                        tint = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier.padding(start = 16.dp)
                     )
 
                     Text(
-                        text = if (birthday.isEmpty()) birthday else birthday,
+                        text = birthday,
                         color = MaterialTheme.colorScheme.surfaceTint,
                         fontSize = 12.sp,
                         modifier = Modifier.padding(start = 50.dp, top = 5.dp)
@@ -314,11 +323,26 @@ fun EditProfileContent(
 
             }
 
+            //TODO BIO
             item {
                 TextField(
-                    value = state.profileResponse?.bio ?: "",
+                    value = bio,
                     onValueChange = { bio = it },
                     label = {
+                        if( bio.length >textSizeBio){
+                            Text(
+                                text = "You have reached the maximum number of characters",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        } else {
+                            Text(
+                                text = "About Me",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
                         Text(
                             text = "About Me",
                             fontSize = 12.sp,
@@ -334,13 +358,13 @@ fun EditProfileContent(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_personal),
                             contentDescription = "",
-                            tint = Color.Unspecified
+                            tint = MaterialTheme.colorScheme.primaryContainer,
                         )
                     },
                     modifier = Modifier
                         .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
                         .fillMaxWidth()
-                        .height(56.dp)
+                        .height(150.dp)
                         .border(
                             width = 1.dp,
                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
@@ -365,6 +389,7 @@ fun EditProfileContent(
             }
 
 
+
             item {
                 OutlinedButton(
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
@@ -378,17 +403,25 @@ fun EditProfileContent(
 //
 //               ),
                     onClick = {
-                        //  navController.navigate("login_route")
-
+                        editProfileViewModel.editProfile(
+                            avatar = state.imageResponse?.images?.get(0),
+                            name = name,
+                            birthday = birthday,
+                            bio = bio,
+                            file = if (imageUri != null) {
+                                createMultipartBodyFromUri(context, imageUri!!, "File")
+                            } else {
+                                null
+                            }
+                        )
                     },
 
                     )
                 {
                     if (state.isLoading) {
                         Text(
-
                             text = "SAVE",
-                            color = MaterialTheme.colorScheme.tertiary,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
                             style = TextStyle(
                                 fontSize = 16.sp,
                             ),
@@ -398,7 +431,6 @@ fun EditProfileContent(
                         CircularProgressIndicator(
                             modifier = Modifier.size(20.dp)
                         )
-
                     }
                 }
             }
@@ -406,44 +438,6 @@ fun EditProfileContent(
     }
 }
 
-//@Composable
-//fun UploadImageButton(
-//    editProfileViewModel: EditProfileViewModel,
-//    context: Context,
-//    navController: NavController
-//) {
-//    var imageUri by remember { mutableStateOf<Uri?>(null) }
-//
-//    // Launcher để chọn ảnh từ thư viện
-//    val galleryLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.GetContent()
-//    ) { uri: Uri? ->
-//        uri?.let {
-//            imageUri = it
-//            Log.d("myImageUri", "$imageUri")
-//
-//            // Chuyển URI thành MultipartBody.Part và tải ảnh lên
-//            val multipartBodyPart = createMultipartBodyFromUri(context, uri, "image")
-//            multipartBodyPart?.let { part ->
-//                editProfileViewModel.uploadImage(part)
-//            }
-//        }
-//    }
-//
-//    OutlinedButton(
-//        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surface),
-//        modifier = Modifier
-//            .padding(top = 20.dp)
-//            .height(40.dp)
-//            .width(200.dp),
-//        shape = RoundedCornerShape(12.dp),
-//        onClick = {
-//            galleryLauncher.launch("image/*") // Khởi chạy ActivityResultLauncher để chọn ảnh
-//        }
-//    ) {
-//        Text(text = "Upload Image")
-//    }
-//}
 
 @Composable
 fun UploadImageButton(
@@ -462,7 +456,7 @@ fun UploadImageButton(
             onImageUriSelected(it) // Trả về URI đã chọn
 //            Log.d("myImageUri", "$imageUri")
 
-            // Chuyển URI thành MultipartBody.Part và tải ảnh lên
+//             Chuyển URI thành MultipartBody.Part và tải ảnh lên
 //            val multipartBodyPart = createMultipartBodyFromUri(context, it, "File")
 //            multipartBodyPart?.let { part ->
 //                editProfileViewModel.uploadImage(part)
@@ -481,7 +475,25 @@ fun UploadImageButton(
             galleryLauncher.launch("image/*") // Khởi chạy ActivityResultLauncher để chọn ảnh
         }
     ) {
-        Text(text = "Upload Image")
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.fillMaxWidth()
+
+        ) {
+
+            Icon(
+                painterResource(id = R.drawable.ic_gallery),
+                contentDescription = "Upload Image",
+                tint = MaterialTheme.colorScheme.onErrorContainer,
+                modifier = Modifier.size(15.dp)
+            )
+            Text(
+                text = "Upload Image",
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                style = TextStyle(fontSize = 12.sp)
+            )
+        }
     }
 }
 

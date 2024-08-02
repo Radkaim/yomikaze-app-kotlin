@@ -195,6 +195,18 @@ fun CoinShopCardShimmerLoading() {
 }
 
 @Composable
+fun TransactionHistoryCardShimmerLoading() {
+    Box(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(8.dp))
+            .background(color = Color.LightGray)
+            .width(370.dp)
+            .height(70.dp)
+            .shimmerLoadingAnimation() // <--- Here.
+    )
+}
+
+@Composable
 //triangle shape
 fun TriangleShimmerLoading() {
     Box(

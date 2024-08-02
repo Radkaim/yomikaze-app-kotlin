@@ -86,6 +86,7 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.GetTagsUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.GetUserInfoUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Noti.GetNotificationAPIUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.ChangePasswordUC
+import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.EditProfileUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.UploadImageUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Ranking.GetComicByCommentsRankingUC
@@ -919,6 +920,17 @@ object UseCaseModule {
         profileRepository: ProfileRepository
     ): GetProfileUC {
         return GetProfileUC(profileRepository)
+    }
+
+    /**
+     * TODO: Edit profile use case
+     */
+    @Provides
+    @Singleton
+    fun provideEditProfileUseCase(
+        profileRepository: ProfileRepository
+    ): EditProfileUC {
+        return EditProfileUC(profileRepository)
     }
 
     /**

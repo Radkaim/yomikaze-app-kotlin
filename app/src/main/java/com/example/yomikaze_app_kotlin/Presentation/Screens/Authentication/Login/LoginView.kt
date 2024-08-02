@@ -358,7 +358,10 @@ fun LoginContent(state: LoginState, loginViewModel: LoginViewModel, navControlle
                                 top = 3.dp,
                                 bottom = 3.dp
                             )
-                            .clickable { loginViewModel.navigateToForgotPassword() }
+                            .clickable {
+                            Toast.makeText(context, "This feature is not available yet", Toast.LENGTH_SHORT).show()
+//                                loginViewModel.navigateToForgotPassword()
+                            }
                     )
 
                 }

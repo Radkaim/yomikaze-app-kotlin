@@ -1,7 +1,9 @@
 package com.example.yomikaze_app_kotlin.Data.RepositoriesImpl
 
+import android.util.Log
 import com.example.yomikaze_app_kotlin.Data.DataSource.API.ProfileApiService
 import com.example.yomikaze_app_kotlin.Domain.Models.ChangePasswordRequest
+import com.example.yomikaze_app_kotlin.Domain.Models.PathRequest
 import com.example.yomikaze_app_kotlin.Domain.Models.ProfileResponse
 import com.example.yomikaze_app_kotlin.Domain.Repositories.ProfileRepository
 import retrofit2.Response
@@ -30,6 +32,19 @@ class ProfileRepositoryImpl @Inject constructor(
         if (response.isSuccessful) {
             Result.success(Unit)
         }
+        return response
+    }
+
+    //update profile
+    override suspend fun updateProfile(
+        token: String,
+        pathRequest: List<PathRequest>
+    ): Response<Unit> {
+        val response = api.updateProfile("Bearer $token", pathRequest)
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        }
+        Log.d("ProfileRepositoryImpl", "updateProfile: $response")
         return response
     }
 

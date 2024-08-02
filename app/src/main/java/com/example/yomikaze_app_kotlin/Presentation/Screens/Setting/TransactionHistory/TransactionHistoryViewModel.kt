@@ -33,15 +33,15 @@ class TransactionHistoryViewModel @Inject constructor(
 
 
     // Reset state
-    private fun resetState() {
-        _state.value = TransactionHistoryState()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        // Reset page and size if needed
-        resetState()
-    }
+//    private fun resetState() {
+//        _state.value = TransactionHistoryState()
+//    }
+//
+//    override fun onCleared() {
+//        super.onCleared()
+//        // Reset page and size if needed
+//        resetState()
+//    }
 
 
 
