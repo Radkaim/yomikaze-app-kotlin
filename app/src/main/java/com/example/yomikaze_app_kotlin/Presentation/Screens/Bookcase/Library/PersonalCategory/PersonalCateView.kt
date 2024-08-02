@@ -6,12 +6,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -105,22 +104,16 @@ fun PersonalCategoryViewContent(
     val loading = remember { mutableStateOf(false) }
     
 
-    Column(
-        verticalArrangement = Arrangement.spacedBy(15.dp), // 15.dp space between each card
-        modifier = Modifier
-            .padding(
-                top = 15.dp,
-                start = 4.dp,
-                end = 4.dp,
-                bottom = 4.dp
-            ) // Optional padding for the entire list
-            .background(MaterialTheme.colorScheme.background)
-            .wrapContentSize(Alignment.Center)
-    ) {
+
         LazyColumn(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp), // 8.dp space between each item
-            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+            modifier = Modifier
+                .fillMaxSize()
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(top = 15.dp)
+                .padding(bottom = 60.dp) // for show all content
         ) {
 
             if (state.isLoadingComicCate) {
@@ -175,7 +168,7 @@ fun PersonalCategoryViewContent(
                         )
                     }
                 }
-            }
+
         }
     }
 
