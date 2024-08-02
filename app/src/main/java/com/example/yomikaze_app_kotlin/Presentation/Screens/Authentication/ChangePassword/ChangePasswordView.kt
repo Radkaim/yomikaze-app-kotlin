@@ -79,7 +79,8 @@ fun ChangePasswordContent(
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
+    var currentPasswordVisible by remember { mutableStateOf(false) }
+    var newPasswordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val focusManager = LocalFocusManager.current
@@ -147,20 +148,20 @@ fun ChangePasswordContent(
 
                     leadingIcon = {
 
-                        val image = if (passwordVisible)
+                        val image = if (currentPasswordVisible)
                             painterResource(id = R.drawable.ic_eye)
                         else
                             painterResource(id = R.drawable.ic_visibility_eye)
 
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        IconButton(onClick = { currentPasswordVisible = !currentPasswordVisible }) {
                             Icon(
                                 tint = MaterialTheme.colorScheme.onTertiary,
                                 painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                                contentDescription = if (currentPasswordVisible) "Hide password" else "Show password"
                             )
                         }
                     },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    visualTransformation = if (currentPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
@@ -213,20 +214,20 @@ fun ChangePasswordContent(
 
                     leadingIcon = {
 
-                        val image = if (passwordVisible)
+                        val image = if (newPasswordVisible)
                             painterResource(id = R.drawable.ic_eye)
                         else
                             painterResource(id = R.drawable.ic_visibility_eye)
 
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        IconButton(onClick = { newPasswordVisible = !newPasswordVisible }) {
                             Icon(
                                 tint = MaterialTheme.colorScheme.onTertiary,
                                 painter = image,
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                                contentDescription = if (newPasswordVisible) "Hide password" else "Show password"
                             )
                         }
                     },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp, bottom = 20.dp)
@@ -288,7 +289,7 @@ fun ChangePasswordContent(
                     colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = MaterialTheme.colorScheme.surface,
                     ),
-                    onClick = { changePasswordViewModel.changePass(oldPassword, newPassword) }
+                    onClick = { changePasswordViewModel.changePass(oldPassword, newPassword, context) }
                 ) {
                     if (state.isLoading) {
                         CircularProgressIndicator(
