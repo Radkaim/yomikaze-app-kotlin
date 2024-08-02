@@ -74,6 +74,13 @@ fun ProfileView(
     val context = LocalContext.current
     val appPreference = AppPreference(context)
 
+    LaunchedEffect(key1 = appPreference.profileChangeStatus) {
+        if (appPreference.isUserLoggedIn && appPreference.profileChangeStatus) {
+            profileViewModel.getProfile()
+            appPreference.profileChangeStatus = false
+        }
+    }
+
 
 
 

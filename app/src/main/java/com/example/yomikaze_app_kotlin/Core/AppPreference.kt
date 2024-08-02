@@ -176,4 +176,14 @@ class AppPreference(context : Context) {
         encryptedPreferences.edit().remove("search_history").apply()
     }
 
+    // profile change status
+    var profileChangeStatus: Boolean
+        get() = encryptedPreferences.getBoolean("profile_change_status", false)
+        set(value) = encryptedPreferences.edit().putBoolean("profile_change_status", value).apply()
+
+    // delete profile change status
+    fun deleteProfileChangeStatus() {
+        encryptedPreferences.edit().remove("profile_change_status").apply()
+    }
+
 }

@@ -14,11 +14,9 @@ import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.GetProfileUC
 import com.example.yomikaze_app_kotlin.Domain.UseCases.Profile.UploadImageUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -75,7 +73,7 @@ class EditProfileViewModel @Inject constructor(
         }
     }
 
-    fun uploadImage(file: MultipartBody.Part) {
+    fun uploadImage(file: MultipartBody.Part, onUploadComplete: (String?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(isUploadImageLoading = true)
 
@@ -94,13 +92,120 @@ class EditProfileViewModel @Inject constructor(
                     )
 //                    Log.d("ProfileViewModel", "uploadImage: $imageResponse")
                     _state.value = _state.value.copy(isUploadImageLoading = false)
+                    onUploadComplete(imageResponse.images?.get(0))
                 },
                 onFailure = { exception ->
                     // Xử lý lỗi
                     Log.e("ProfileViewModel", "uploadImage: $exception")
                     _state.value = _state.value.copy(isUploadImageLoading = false)
+                    onUploadComplete(null)
                 }
             )
+        }
+    }
+
+    fun editProfile(
+        avatar: String?,
+        name: String?,
+        bio: String?,
+        birthday: String?,
+        file: MultipartBody.Part?
+    ) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _state.value = _state.value.copy(isUpdateProfileSuccess = false)
+//            val token =
+//                if (appPreference.authToken == null) "" else appPreference.authToken!!
+//            if (token.isEmpty()) {
+//                return@launch
+//            }
+//
+//            withContext(Dispatchers.IO) {
+//                if (file != null) {
+//                    uploadImage(file)
+//                }
+//
+//                delay(2000)// for upload image
+//                _state.value = _state.value.copy(isLoading = true)
+//
+//
+//
+//                val pathRequest = mutableListOf<PathRequest>()
+//                if (_state.value.imageResponse != null) {
+//                    pathRequest.add(PathRequest(_state.value.imageResponse?.images?.get(0).toString(), "avatar", "replace"))
+//                }
+//                if (name != null && name != _state.value.profileResponse?.name) {
+//                    pathRequest.add(PathRequest(name, "name", "replace"))
+//                }
+//                if (bio != null && bio != _state.value.profileResponse?.bio) {
+//                    pathRequest.add(PathRequest(bio, "bio", "replace"))
+//                }
+//
+//                Log.d("EditProfileViewModel", "pathRequest: $pathRequest")
+//                val response =
+//                    editProfileUC.updateProfile(token, pathRequest)
+//                if (response.isSuccessful) {
+//                    appPreference.profileChangeStatus = true
+//                    _state.value = _state.value.copy(isUpdateProfileSuccess = true)
+//                    _state.value = _state.value.copy(isLoading = false)
+//                } else {
+//                    _state.value = _state.value.copy(isLoading = false)
+//                    Log.d(
+//                        "EditProfileViewModel",
+//                        "editProfile: ${response.errorBody()?.string()}"
+//                    )
+////                _state.value = _state.value.copy(error = response.errorBody()?.string())
+//                }
+//            }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isUpdateProfileSuccess = false)
+            val token = appPreference.authToken ?: ""
+            if (token.isEmpty()) {
+                return@launch
+            }
+
+            if (file != null) {
+                uploadImage(file) { imageUrl ->
+                    updateProfile(token, imageUrl, name, bio)
+                }
+            } else {
+                updateProfile(token, avatar, name, bio)
+            }
+        }
+
+
+
+    }
+
+    private fun updateProfile(
+        token: String,
+        avatarUrl: String?,
+        name: String?,
+        bio: String?
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value = _state.value.copy(isLoading = true)
+
+            val pathRequest = mutableListOf<PathRequest>()
+            if (avatarUrl != null) {
+                pathRequest.add(PathRequest(avatarUrl, "avatar", "replace"))
+            }
+            if (name != null && name != _state.value.profileResponse?.name) {
+                pathRequest.add(PathRequest(name, "name", "replace"))
+            }
+            if (bio != null && bio != _state.value.profileResponse?.bio) {
+                pathRequest.add(PathRequest(bio, "bio", "replace"))
+            }
+
+            Log.d("EditProfileViewModel", "pathRequest: $pathRequest")
+            val response = editProfileUC.updateProfile(token, pathRequest)
+            if (response.isSuccessful) {
+                appPreference.profileChangeStatus = true
+                _state.value = _state.value.copy(isUpdateProfileSuccess = true, isLoading = false)
+            } else {
+                _state.value = _state.value.copy(isLoading = false)
+                Log.d("EditProfileViewModel", "editProfile: ${response.errorBody()?.string()}")
+            }
         }
     }
 
@@ -124,60 +229,4 @@ class EditProfileViewModel @Inject constructor(
             null
         }
     }
-
-    fun editProfile(
-        avatar: String?,
-        name: String?,
-        bio: String?,
-        birthday: String?,
-        file: MultipartBody.Part?
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _state.value = _state.value.copy(isUpdateProfileSuccess = false)
-            val token =
-                if (appPreference.authToken == null) "" else appPreference.authToken!!
-            if (token.isEmpty()) {
-                return@launch
-            }
-
-            withContext(Dispatchers.IO) {
-                if (file != null) {
-                    uploadImage(file)
-                }
-
-                delay(1000)// for upload image
-                _state.value = _state.value.copy(isLoading = true)
-
-
-
-                val pathRequest = mutableListOf<PathRequest>()
-                if (_state.value.imageResponse != null) {
-                    pathRequest.add(PathRequest(_state.value.imageResponse?.images?.get(0).toString(), "avatar", "replace"))
-                }
-                if (name != null && name != _state.value.profileResponse?.name) {
-                    pathRequest.add(PathRequest(name, "name", "replace"))
-                }
-                if (bio != null && bio != _state.value.profileResponse?.bio) {
-                    pathRequest.add(PathRequest(bio, "bio", "replace"))
-                }
-
-
-                val response =
-                    editProfileUC.updateProfile(token, pathRequest)
-                if (response.isSuccessful) {
-                    _state.value = _state.value.copy(isUpdateProfileSuccess = true)
-                    _state.value = _state.value.copy(isLoading = false)
-                } else {
-                    _state.value = _state.value.copy(isLoading = false)
-                    Log.d(
-                        "EditProfileViewModel",
-                        "editProfile: ${response.errorBody()?.string()}"
-                    )
-//                _state.value = _state.value.copy(error = response.errorBody()?.string())
-                }
-            }
-
-        }
-    }
-
 }
