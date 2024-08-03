@@ -251,19 +251,43 @@ fun ViewChapterContent(
 //        }
 //    }
 
-    LaunchedEffect(key1 = autoScroll) {
-        if (autoScroll && isScrollMode) {
+//    LaunchedEffect(key1 = autoScroll) {
+//        if (autoScroll && isScrollMode) {
+//            while (autoScroll) {
+//                delay(3000)
+//                Log.e("ViewChapterContent", "Last Page Number: $lastPageNumber")
+//                scrollState.animateScrollToItem(lastPageNumber + 1)
+//            }
+//        } else if (autoScroll && !isScrollMode) {
+//            while (autoScroll) {
+//                delay(3000) // Adjust delay time as needed for auto-flip
+//                Log.e("ViewChapterContent", "Last Page Number: $lastPageNumber")
+//                pagerState.animateScrollToPage(lastPageNumber + 1)
+//            }
+//        }
+//
+//    }
+
+    LaunchedEffect(autoScroll) {
+        if (autoScroll) {
             while (autoScroll) {
                 delay(3000)
-                scrollState.animateScrollToItem(lastPageNumber + 1)
-            }
-        } else if (autoScroll && !isScrollMode) {
-            while (autoScroll) {
-                delay(3000) // Adjust delay time as needed for auto-flip
-                pagerState.animateScrollToPage(lastPageNumber + 1)
+                if (isScrollMode) {
+                    val nextItem = scrollState.firstVisibleItemIndex + 1
+                    if (nextItem < images.size) {
+                        scrollState.animateScrollToItem(nextItem)
+                    }
+                } else {
+                    val nextPage = pagerState.currentPage + 1
+                    if (nextPage < images.size) {
+                        pagerState.animateScrollToPage(nextPage)
+                    }
+                }
             }
         }
     }
+
+
 
 
     var (selectedTabIndex, setSelectedTabIndex) = remember {
